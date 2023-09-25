@@ -1,0 +1,35 @@
+<div class="container main width-alignment">
+    <div class="col-12 row createGroup">
+        <div class="col-6">
+            <div class="noti-head custusername">Notifications <span
+                    class="total">(TOTAL <b *ngIf="notificationsList">
+                        {{notificationsList.length}} </b>)</span></div>
+        </div>
+        <div class="col-6 icon-align">
+            <i class="fa-solid fa-check" aria-hidden="true"
+                (click)="readNotification()"></i>
+            <i class="fa fa-trash" aria-hidden="true"
+                (click)="deleteNotification()"></i>
+        </div>
+    </div>
+</div>
+<div>
+    <div class="container main width-alignment">
+        <div class="col-12 row createGroup rone" *ngFor="let note of
+            notificationsList">
+            <div class="col-11">
+                <div class="note" [ngClass]="{'bold':note.status=='unread'}">{{note.message}}</div>
+                <div class=""><i class="fa-regular fa-calendar-days"></i><span>{{note.timestamp}}
+                    </span></div>
+
+            </div>
+            <div class="col-1 check">
+                <input type="checkbox" #inputEl class="larger" name="checkBox2"
+                    (change)="isCheckBox(inputEl.checked,note)">
+            </div>
+        </div>
+
+    </div>
+
+
+</div>

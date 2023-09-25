@@ -1,0 +1,88 @@
+<div class="container-fluid width-alignment" *ngIf="showheader">
+  <div class="row">
+    <div class="form-group">
+      <label for="matter_id" class="fontbold">Event Type
+      </label>
+      </div>
+    <div class="row main stepitem compstep ">
+      <div class="col-sm-12 compswitch ">
+        <div class="row">
+
+          <fieldset>
+            
+            <div class="some-class" *ngIf="product == 'lauditor' && roleId != 'AAM'" ><!--product != 'content' && -->
+              <input type="radio" id="legalMatter" name="fav_language" value="legalMatter" (click)="selectedValue='legalMatter'" >
+               <label for="legalMatter">Legal Matter</label>
+              <input type="radio" id="generalMatter" name="fav_language" value="generalMatter" (click)="selectedValue='generalMatter'">
+               <label for="generalMatter">General Matter</label>
+              <input type="radio" id="overHead" name="fav_language" value="overHead" (click)="selectedValue='overHead'">
+               <label for="overHead">Overhead</label>
+              <input type="radio" id="Others" name="fav_language" value="Others" (click)="selectedValue='Others'">
+              <label for="Others">Others</label>
+              <input type="radio" id="Reminders" name="fav_language" value="Reminders" (click)="selectedValue='Reminders'">
+              <label for="Reminders" class="remainPading">Reminders</label>
+            </div>
+
+            <div class="some-class" *ngIf="product == 'corporate' && roleId != 'AAM'" ><!--product != 'content' && -->
+              <input type="radio" id="legalMatter" name="fav_language" value="legalMatter" (click)="selectedValue='legalMatter'" >
+               <label for="legalMatter">Legal Matter</label>
+              <input type="radio" id="generalMatter" name="fav_language" value="generalMatter" (click)="selectedValue='generalMatter'">
+               <label for="generalMatter">General Matter</label>
+              <input type="radio" id="overHead" name="fav_language" value="overHead" (click)="selectedValue='overHead'">
+               <label for="overHead">Overhead</label>
+              <input type="radio" id="Others" name="fav_language" value="Others" (click)="selectedValue='Others'">
+              <label for="Others">Others</label>
+              <input type="radio" id="Reminders" name="fav_language" value="Reminders" (click)="selectedValue='Reminders'">
+              <label for="Reminders" class="remainPading">Reminders</label>
+            </div>
+
+              <div class="some-class" *ngIf="product == 'lauditor' && roleId == 'AAM'">
+                <input type="radio" id="overHead" name="fav_language" value="overHead" (click)="selectedValue='overHead'" checked>
+                 <label for="overHead">Overhead</label>
+                <input type="radio" id="Others" name="fav_language" value="Others" (click)="selectedValue='Others'">
+                <label for="Others">Others</label>
+                <input type="radio" id="Reminders" name="fav_language" value="Reminders" (click)="selectedValue='Reminders'">
+                <label for="Reminders">Reminders</label>
+              </div>
+            
+
+            <div class="some-class" *ngIf="product == 'content'">
+              <input type="radio" id="overHead" name="fav_language" value="overHead" (click)="selectedValue='overHead'" checked>
+               <label for="overHead">Overhead</label>
+              <input type="radio" id="Others" name="fav_language" value="Others" (click)="selectedValue='Others'">
+              <label for="Others">Others</label>
+              <input type="radio" id="Reminders" name="fav_language" value="Reminders" (click)="selectedValue='Reminders'">
+              <label for="Reminders">Reminders</label>
+            </div>
+
+            <div class="some-class" *ngIf="product == 'connect'">
+              <input type="radio" id="overHead" name="fav_language" value="overHead" (click)="selectedValue='overHead'" checked>
+               <label for="overHead">Overhead</label>
+              <input type="radio" id="Others" name="fav_language" value="Others" (click)="selectedValue='Others'">
+              <label for="Others">Others</label>
+              <input type="radio" id="Reminders" name="fav_language" value="Reminders" (click)="selectedValue='Reminders'">
+              <label for="Reminders">Reminders</label>
+            </div>
+
+          </fieldset>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="selectedValue=='legalMatter'">
+  <app-legalmatter-calender  (submitted)="onSubmit($event)"></app-legalmatter-calender>
+</div>
+<div *ngIf="selectedValue=='generalMatter'">
+  <app-generalmatter-calender (submitted)="onSubmit($event)"></app-generalmatter-calender>
+</div>
+<div *ngIf="selectedValue=='overHead'">
+  <app-overhead-calender (submitted)="onSubmit($event)"></app-overhead-calender>
+</div>
+<div *ngIf="selectedValue=='Others'">
+  <app-others-calender (submitted)="onSubmit($event)"></app-others-calender>
+</div>
+<div *ngIf="selectedValue=='Reminders'">
+  <app-reminders-calender></app-reminders-calender>
+</div>

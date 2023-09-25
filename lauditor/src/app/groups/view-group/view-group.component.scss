@@ -1,0 +1,55 @@
+.lable-size {
+    font-size: 19px;
+    font-weight: bold;
+    color: #437CA7;
+  }
+  .createGroup{
+    input,textarea{
+        background: #EEEEEE;
+        border: none;
+    }
+  }
+  .nameSet{
+    width:90%;
+  }
+
+
+.width-alignment {
+    max-width: 90%;
+    margin: 0 auto;
+}
+ tr.veiw-items:hover {
+    background:#003A5C;
+    color:#fff;
+    .actionbtn {
+        background: #fff !important;
+        color:#111;
+        border: none;
+        &:hover,:focus ,.show{
+            background: #00B3A7 !important;
+        }
+    }
+    .actionbtn.show{
+        background: #00B3A7 !important;
+    }
+}
+tr.veiw-items {
+
+    li{
+        height: 30px;
+        line-height: 30px;
+        a{
+            height: 30px;
+            line-height: 20px;
+            &:hover{
+                background: #00B3A7 !important;
+            }
+        }
+    }
+    .custom-dropdown{
+        inset: 0px auto auto -119px !important;
+        background: #F0F0F0;
+        padding: unset;
+    }
+}
+

@@ -1,0 +1,52 @@
+.nameSet {
+    width: 90%;
+}
+
+.createGroup {
+
+    input,
+    textarea {
+        background: #EEEEEE;
+        border: none;
+    }
+
+    .group-custom-align {
+        width: 41%;
+        margin: 0 auto;
+        margin-top:5px;
+    }
+    .multicheck{
+        text-align: left;
+    }
+}
+.round-icon {
+    text-align:center;
+}
+.stepone{
+text-align: center;
+    margin: 0 auto;
+    padding-bottom: 0px;
+}
+.steprow{
+    margin-bottom: 10px;
+}
+.btncancel, .btnsave{
+    margin-left: 20px;
+}
+.hide{
+    display: none;
+}
+.btnsave{
+    margin-left: 0px;
+    margin-top: 10px;
+}
+.update{
+    color: #004d87;
+    font-weight: 800;
+    font-size: 1.5rem;
+  }
+  .lable-size{
+    font-size: 20px;
+    font-weight: bold;
+    color: #437CA7;
+}

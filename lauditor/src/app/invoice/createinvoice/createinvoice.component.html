@@ -1,0 +1,447 @@
+<div class="container-fluid">
+    <div class="row">
+  
+      <!-- right dashboard row starts here -->
+      <div class="row main headertop" [ngStyle]="{'display':isDisplay?'block':'none'}">
+        <div class="col-sm-12 compswitch ">
+          <!--<div class="switch  cswitch">
+            <a href="javascript:void(0);" class="optionone compone" [ngClass]="{'active': selectedMatter === 'legalmatter'}" (click)="onClick('legalmatter')">Legal Matters</a>
+            <a href="javascript:void(0);" class="optiontwo comptwo" [ngClass]="{'active': selectedMatter === 'generalmatter'}" (click)="onClick('generalmatter')">General Matters</a>
+          </div>-->
+          <div class="switch  cswitch cswitchtwo">
+            <a href="javascript:void(0);" class="optionone compone" [ngClass]="{'active': selectedValue === 'create'}" (click)="isActive('create')">Create</a>
+            <a href="javascript:void(0);" class="optiontwo comptwo" [ngClass]="{ 'active' : selectedValue === 'view' }" (click)="isActive('view')">View</a>
+          </div>
+        </div>
+      </div>
+      <div class="arrowitem" (click)="hideAndShow()">
+        <!-- <img src="assets/img/arrowdown.svg" class="slideico"> -->
+        <i *ngIf="isDisplay"class= "fa fa-light fa-chevron-up"></i>
+        <i *ngIf="!isDisplay" class=" fa fa-light fa-chevron-down"></i>
+      </div>
+  
+    </div>
+</div>
+
+
+<div *ngIf="isCreate">
+<form [formGroup]="createinvoiceForm"> 
+<!-- Invoice form -->
+            <!-- <div class="container main width-alignmentz">
+                <div class="firm-head"></div>
+            </div> -->
+        
+<div class="row main main-width stepitem topup">
+<!-- Left side component layout-->
+        <div class="col-xs-12 col-sm-12 col-md-6">          
+                <div class="row containerbox containerboxone">
+                  <div class="col-sm-12">
+                    <div class="container">
+
+             <!-- Logo Upload -->
+                  <div class="form-group">
+                    <label class="fontbold firm-head logo">Logo</label>
+                  
+                    <!-- <div class="input-group">
+                      <input #file type="file" id="file" style="display:none;" accept="image/*" class="form-control txttxt"
+                        (change)="getFileDetails($event.target)" (change)="uploadFile($event)" />
+                      <input type="text" id="file" class="form-control txttxt" style="border-radius:5px;" placeholder="Select New Logo" disabled />
+                  
+                      <button [ngClass]="{'bgColor':uploadDocs.length>0}" id="btnadd" for="file" class="input-group-append appendadd" (click)="file.click()">Upload</button>
+                    </div> -->
+                    
+                    <div class="form-group topped" style="margin-top: 18px;">
+                      <div class="avatar-upload pull-left">
+                        <div class="avatar-edit">
+                          <input type='file' id="imageUpload" accept="image/*" 
+                           #fileInput (change)="onSelectFile($event)"/>
+                        </div>
+                  
+                         <!--Upload new logo-->
+                         <div class="avatar-preview image-container" *ngIf="imgDisplay">
+                          <div id="imagePreview" [style.backgroundImage]="'url('+ imageUrl +')'" (click)="fileInput.click()">
+                          <!-- <i class="fa fa-times calimg calitems input-group-append sgroup" (click)="removeImg()" aria-hidden="true"></i>   -->
+                         </div>
+                        </div>
+                  
+                         <!--Get Logo-->
+                        <div class="avatar-preview image-container" *ngIf="imgGet">
+                          <i class="fa fa-times calimg calitems input-group-append sgroup" (click)="removeImg()" aria-hidden="true"></i>
+                          <img src="{{imageToShow}}">
+                        </div>
+
+                      </div>
+                    </div>
+                    <div *ngIf="errorMessage" class="errorStyle">{{ errorMessage }}</div>
+                  </div>
+              <!-- Logo Upload -->
+
+        </div>
+        </div>
+        </div>
+        </div>
+<!-- Left side component layout ends here -->
+
+<!-- Right side component layout-->
+              <div class="col-xs-12 col-sm-12 col-md-6 ">
+                <div class="row containerbox formcontainer">
+                  <div class="col-sm-12">
+                    <div class="container">
+                      <!-- Invoice Date  -->
+                      <div class="form-group">
+                        <label for="date" class="fontbold firm-head">Invoice Date<span class="mandate">*</span> </label>
+                        <div class="input-group court">
+                          <input id="drp" #dp="bsDatepicker" bsDatepicker placeholder="Select" style="background: #eeeeee;"
+                            (bsValueChange)='selectDurationIn()' (change)="selectClearIn(); clearInDateError()" formControlName="date" 
+                            [bsValue]="bsValue" [minDate]="minDate" [maxDate]="maxDate"
+                            [bsConfig]="{dateInputFormat: 'DD/MM/YYYY', showWeekNumbers:false}" class="form-control textbox invoiceCls" readonly>
+                            <img src="assets/img/formcalendor.svg" class="" id="datepicker" (click)="dp.show()">
+                        </div>
+                        
+                        <!--  Highlight the date-->
+                        <!-- <input class="form-control" [minDate]="minDate" [maxDate]="maxDate" placeholder="Select"
+                          #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue" 
+                          [bsConfig]="{dateInputFormat: 'MM/DD/YYYY'}" readonly>  -->
+
+                        <div *ngIf="submitted" class="errorStyle">
+                          <div *ngIf="!createinvoiceForm.value.date">This field is required</div>
+                        </div>
+                        <!-- <div *ngIf="date.invalid && date.errors.invalidDuration" class="errorStyle">
+                          Invoice Date should be less than the Due Date.
+                        </div>
+                        <div *ngIf="date.invalid && date.errors.invalidEqual" class="errorStyle">
+                          Invoice Date Should not be Equal to Due Date.
+                        </div> -->
+                      </div>
+                      <!-- Invoice Date  -->
+
+                      <!-- Invoice -->
+                      <!--<div class="form-group">
+                        <label for="contactname" class="fontbold firm-head">Invoice Number<span class="mandate">*</span> </label>
+                        <div class="input-group">
+                          <input type="text"  class="form-control textbox" name="contact_person" />
+                        </div>
+                      </div>-->
+                      <!-- Invoice -->
+
+                                          <!-- Client name -->
+                    <div class="form-group">
+                      <label for="name" class="fontbold firm-head">Select Client<span class="mandate">*</span></label>
+                      <div class="input-group">
+                        <ng-autocomplete [data]="data" [searchKeyword]="keyword" class="sele" style="width: 100%;"
+                          placeholder="Type to select" (selected)='selectEvent($event)' (inputCleared)='onChangeSearch($event)'
+                          (inputFocused)='onFocused($event)' [itemTemplate]="itemTemplate" [notFoundTemplate]="notFoundTemplate"
+                          >  <!-- [readonly]="isReadOnly" -->
+                        </ng-autocomplete>
+                    
+                        <ng-template #itemTemplate let-item>
+                          <a [innerHTML]="item.name"></a>
+                        </ng-template>
+                        <ng-template #notFoundTemplate let-notFound>
+                          <div [innerHTML]="notFound"></div>
+                        </ng-template>
+                      </div>
+                    
+                      <div *ngIf="submitted" class="errorStyle">
+                        <div *ngIf="clients.length == 0">This field is required</div>
+                      </div>
+                    </div>
+                    <!-- Client name -->
+
+                      <!-- Client Address-->
+                      <div class="form-group">
+                        <label for="websites" class="fontbold firm-head">Client Address<span class="mandate">*</span></label>
+                        <div class="input-group">
+                          <input type="text" formControlName="billto" maxlength="150" [ngModel]="billto" class="form-control textbox invoiceCls" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@,.]|^ /g,'')"/>
+                        </div>
+                        <div *ngIf="createinvoiceForm.get('billto').errors && submitted" class="errorStyle">
+                          <div *ngIf="createinvoiceForm.get('billto').errors.required">This field is required</div>
+                          <div *ngIf="createinvoiceForm.get('billto').errors.pattern">Invalid Pattern</div>
+                        </div>
+                      </div>
+                      <!-- Client Address-->
+
+                      <!-- Phone Number -->
+                      <!-- <div class="form-group">
+                        <label for="websites" class="fontbold firm-head">Phone Number</label>
+                        <div class="input-group">
+                          <input type="text"  class="form-control textbox invoiceCls" name="websites" />
+                        </div>
+                      </div> -->
+                      <!-- Phone Number -->
+
+                      <!-- Attention -->
+                      <!--<div class="form-group">
+                        <label for="websites" class="fontbold firm-head">Attention</label>
+                        <div class="input-group">
+                          <input type="text"  class="form-control textbox" name="websites" />
+                        </div>
+                      </div>-->
+                      <!-- Attention -->
+
+                      <!-- Due Date --> 
+                      <div class="form-group ">
+                        <label for="websites" class="fontbold firm-head">Due Date<span class="mandate">*</span></label>
+                         <div class="input-group court">
+                            <input bsDatepicker id="drp" #dp2="bsDatepicker" placeholder="Select" style="background: #eeeeee;"
+                            (bsValueChange)='selectDuration()' [min]="date.value" (change)="selectClearDue(); clearDueDateError()" formControlName="duedate" 
+                            [bsConfig]="{dateInputFormat: 'DD/MM/YYYY', showWeekNumbers:false }"  class="form-control textbox invoiceCls" readonly>
+                            <img src="assets/img/formcalendor.svg" class="" id="datepicker" #bsDatepicker (click)="dp2.show()">
+                         </div>
+                          
+                          <div *ngIf="submitted" class="errorStyle">
+                            <div *ngIf="!createinvoiceForm.value.duedate">This field is required</div>
+                          </div>
+                          <!-- <div *ngIf="duedate.invalid && duedate.errors.invalidDurationof" class="errorStyle">
+                            Due date can not be earlier than invoice date
+                         </div> 
+                         <div *ngIf="duedate.invalid && duedate.errors.invalidEqual" class="errorStyle">
+                            Due Date Should not be Equal to Invoice Date.
+                          </div> -->
+                          <div *ngIf="date.invalid && date.errors.invalidDuration" class="errorStyle">
+                            Due Date can't be earlier than Invoice Date
+                          </div>
+                      </div>
+                      <!-- Due Date -->
+
+
+                      
+                    </div>
+                    </div>
+                    </div>
+              </div>
+
+
+<div class="row main">
+  <div class="col-sm-12 gridtable width-alignmentz">
+<div>
+  <section class="row">
+    <div formArrayName="invoice_items">
+      <table class="table table-borderless tblgrid myTableBg1 table-fixed">
+        <thead style="background-color: #004D87;">
+          <tr class="theader">
+            <th>
+              <p class="thheadnames"> SI.No. </p>
+            </th>
+            <th>
+              <p class="thheadnames"> Description </p>
+            </th>
+            <th>
+              <p class="thheadnames"> Rate </p>
+            </th>
+            <th>
+              <p class="thheadnames"> Quantity </p>
+            </th>
+            <th>
+              <p class="thheadnames"> Amount </p>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="rone veiw-items" *ngFor="let item of createinvoiceForm.get('invoice_items').controls; let i = index" [formGroupName]="i">
+            <!-- Index No.-->
+            <td>{{ i + 1 }}</td>
+            <!-- Description -->
+            <td style="padding: 25px;">
+              <div class="form-group input-group">
+                  <input class="desp" type="text" formControlName="name" maxlength="250" style="width: 250px;" class="form-control textbox txtS" placeholder="Description" oninput="this.value = this.value.replace(/[^A-Za-z0-9 ]|^ /g,'')" >
+              </div>
+              <div *ngIf="submitted && createinvoiceForm.get('invoice_items').controls[i].get('name').invalid" style="height: 0px;">
+                <small *ngIf="submitted && createinvoiceForm.get('invoice_items').controls[i].get('name').errors.required" class="errorStyle">
+                  This field is required.
+                </small>
+              </div>
+           </td>
+           <!-- Rate -->
+
+           <td style="padding: 25px;">
+            <div class="form-group input-group">
+                 <input maxlength="10" (input)="onInput($event)" formControlName="unitPrice" class="form-control textbox txtS" placeholder="Rate" style="width: 100px;" required/> 
+            </div>
+            <div *ngIf="submitted && createinvoiceForm.get('invoice_items').controls[i].get('unitPrice').invalid" class="errorStyle" style="height: 0px;">
+              <small *ngIf="createinvoiceForm.get('invoice_items').controls[i].get('unitPrice').errors.required">This field is required</small>
+              <small *ngIf="createinvoiceForm.get('invoice_items').controls[i].get('unitPrice').errors.pattern">Enter valid number</small>
+              <small *ngIf="createinvoiceForm.get('invoice_items').controls[i].get('unitPrice').errors.minlength || createinvoiceForm.get('invoice_items').controls[i].get('unitPrice').errors.maxlength">Accepts only 10-digits</small>
+            </div>
+          </td>
+          <!-- <td style="padding: 25px;">
+            <div class="form-group input-group">
+                 <input type="number"  min="0" max="10000000000" (keypress)="validateInput($event)" step="any" pattern="^[1-9][0-9]{0,9}$"  (input)="onInput($event)" formControlName="unitPrice" class="form-control textbox txtS" placeholder="Rate" style="width: 100px;" required/> 
+            </div>
+            <div *ngIf="submitted && createinvoiceForm.get('invoice_items').controls[i].get('unitPrice').invalid" style="height: 0px;">
+              <small class="errorStyle" *ngIf="submitted && createinvoiceForm.get('invoice_items').controls[i].get('unitPrice').errors.required">
+                Rate is required.
+              </small>
+             <small class="errorStyle" *ngIf="createinvoiceForm.get('invoice_items').controls[i].get('unitPrice').errors.max">
+                Accepts only 10-digits.
+              </small>
+               <small class="errorStyle" *ngIf="createinvoiceForm.get('invoice_items').controls[i].get('unitPrice').errors.pattern && !createinvoiceForm.get('invoice_items').controls[i].get('unitPrice').errors.max">
+                Can't accept Zero.
+              </small>
+            </div>
+          </td> -->
+
+          <!-- Quantity -->
+          <td style="padding: 25px;">
+            <div class="form-group input-group">
+                 <input maxlength="10" (input)="onInput($event)" formControlName="quantity" class="form-control textbox txtS" placeholder="Quantity" style="width: 100px;" required/> 
+            </div>
+            <div *ngIf="submitted && createinvoiceForm.get('invoice_items').controls[i].get('quantity').invalid" class="errorStyle" style="height: 0px;">
+              <small *ngIf="createinvoiceForm.get('invoice_items').controls[i].get('quantity').errors.required">This field is required</small>
+              <small *ngIf="createinvoiceForm.get('invoice_items').controls[i].get('quantity').errors.pattern">Enter valid number</small>
+              <small *ngIf="createinvoiceForm.get('invoice_items').controls[i].get('quantity').errors.minlength || createinvoiceForm.get('invoice_items').controls[i].get('quantity').errors.maxlength">Accepts only 10-digits</small>
+            </div>
+          </td>
+          <!-- <td style="padding: 25px;">
+            <div class="form-group input-group">
+                 <input type="number"  min="0" max="10000000000" (keypress)="validateInput($event)" step="any" pattern="^[1-9][0-9]{0,9}$"  (input)="onInput($event)" formControlName="quantity" style="width: 100px;" class="form-control textbox txtS" placeholder="Quantity" required/>
+            </div>
+            <div *ngIf="submitted && createinvoiceForm.get('invoice_items').controls[i].get('quantity').invalid" style="height: 0px;">
+              <small class="errorStyle" *ngIf="submitted && createinvoiceForm.get('invoice_items').controls[i].get('quantity').errors.required">
+                Quantity is required.
+              </small>
+             <small class="errorStyle" *ngIf="createinvoiceForm.get('invoice_items').controls[i].get('quantity').errors.max">
+               Accepts only 10-digits.
+              </small>
+               <small class="errorStyle" *ngIf="createinvoiceForm.get('invoice_items').controls[i].get('quantity').errors.pattern && !createinvoiceForm.get('invoice_items').controls[i].get('quantity').errors.max">
+                Can't accept Zero.
+              </small>
+            </div>
+          </td> -->
+
+            <!-- Total Amount -->
+            <td style="width:200px">&dollar; {{calculateAmount(item)}} </td>
+
+              <i (click)="removeItem(i)" *ngIf="i != 0" class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup removedoc"  aria-hidden="true"></i>
+          </tr>
+        </tbody>      
+      </table>
+  
+      <button [disabled]="isInvoiceItemsInvalid()" type="button" class="btn btn-primary" (click)="addItem()"> + Add </button>
+
+      <!-- <div *ngIf="submitted && isInvoiceItemsInvalid() || this.createinvoiceForm.value.invoice_items.length == 0" class="errorStyle">
+        Add atleast one Item.
+      </div> -->
+
+      <div *ngIf="createinvoiceForm.get('invoice_items').errors && submitted" class="errorStyle">
+        <div *ngIf="createinvoiceForm.get('invoice_items').errors.required">Add atleast one Item.</div>
+      </div>
+
+    </div>
+  </section>
+</div>
+</div>
+</div>
+
+
+</div>
+<!-- Right side component layout ends here -->
+
+
+<!-- Last two left & right -->
+<div class="row main main-width stepitem topup">
+  
+<!-- Adding notes/desc -->
+
+<div class="col-xs-12 col-sm-12 col-md-6">
+<div class="form-group duedatepaded">
+  <label for="filling date" class="fontbold firm-head">Notes</label>
+    <textarea rows="5" class="form-control textbox txttxt"  maxlength="250" formControlName="notes" name="description" oninput="this.value = this.value.replace(/[^A-Za-z0-9-,!@$%^*.;'&/.()# ]|^ /g,'')" placeholder="Please Add Billing Information for Clients"></textarea>
+</div>
+
+<div class="form-group">
+  <label for="name" class="fontbold firm-head firmey"> THANK YOU FOR YOUR BUSINESS! </label>
+</div>
+</div>
+
+<!-- Adding notes/desc ends here-->
+
+<!-- Total details -->
+<div class="col-xs-12 col-sm-12 col-md-6 form-group subtotal">
+<div>
+
+<table class="myTableBg2">
+  <tr>
+    <th class="mainBold">Sub Total</th>
+    <th class="mainBold">{{ calculateTotalAmount() | number: '1.2-2' }}</th>
+  </tr>
+
+  <tr>
+    <th>
+      <div class="form-group input-group">
+        <input placeholder="Discount Type" maxlength="80"  class="form-controle " formControlName="discount_type" name="Disc" oninput="this.value = this.value.replace(/[^A-Za-z0-9 ]|^ /g,'')"/>
+      </div>
+
+      <!-- <div *ngIf="f['discount_type'].errors" class="errorStyle">
+        <div *ngIf="f['discount_type'].errors.required">Required!</div>
+      </div> -->
+
+    </th>
+
+    <th>
+      <div class="form-group input-group">
+        <input  placeholder="(%)" maxlength="5" (input)="totalVal($event)" min="0" max="100" step="any" class="form-controle" formControlName="discount" name="Disc" />
+      </div>
+    
+      <div *ngIf="f['discount'].errors" class="errorStyle">
+        <div *ngIf="f['discount'].errors.max">Should be less than or equal to 100</div>
+        <!-- <div *ngIf="f['discount'].errors.maxLength">Maximum length should be 4</div> -->
+        <div *ngIf="f['discount'].errors.pattern">Accepts only numbers & two decimal places</div> 
+        <!-- <div *ngIf="f['discount'].errors.pattern">Symbols/Characters are not allowed</div>  -->
+        <div *ngIf="f['discount'].errors.min">Should be greater than or equal to 0</div>
+      </div>
+      
+    </th>
+  </tr>
+
+  <tr>
+    <th>
+      <div class="form-group input-group">
+        <input placeholder="Tax Type" maxlength="80" class="form-controlf " formControlName="tax_type" name="Tax" oninput="this.value = this.value.replace(/[^A-Za-z0-9 ]|^ /g,'')"/>
+      </div>
+    </th>
+
+    <th>
+      <div class="form-group input-group">
+        <input  placeholder="(%)" maxlength="5" (input)="totalVal($event)"  min="0" max="100" step="any" class="form-controle" formControlName="tax" name="Disc" />
+      </div>
+    
+      <div *ngIf="f['tax'].errors" class="errorStyle">
+        <div *ngIf="f['tax'].errors.max">Should be less than or equal to 100</div>
+        <!-- <div *ngIf="f['tax'].errors.maxLength">Maximum length should be 4</div> -->
+        <div *ngIf="f['tax'].errors.pattern">Accepts only numbers & two decimal places</div>
+        <!-- <div *ngIf="f['tax'].errors.pattern">Symbols/Characters are not allowed</div> -->
+        <div *ngIf="f['tax'].errors.min">Should be greater than or equal to 0</div>
+      </div>
+
+    </th>
+  </tr>
+
+  <tr>
+    <th class="mainBold">Total</th>
+    <th class="mainBold">{{ calculateTotalAmountWithOthers() | number: '1.2-2' }}</th>
+  </tr>
+
+</table>
+
+</div>
+</div>
+<!-- Total details ends here-->
+
+</div>
+<!-- Last two left & right -->
+    
+    <div class="btnbox">
+    <button type="reset" [routerLink]="['/invoice']" class="btn btn-default btncancel btnrightitem">Cancel</button>
+    <button type="button"  [disabled]="disabled" (click)="onSubmit()" class="btn btn-primary btnsave savecls">Save</button>
+    <!--[disabled]="createinvoiceForm.invalid"-->
+
+</div>
+</form>
+</div>
+
+<!-- Firm profile ends here!! -->
+        
+
+
+  

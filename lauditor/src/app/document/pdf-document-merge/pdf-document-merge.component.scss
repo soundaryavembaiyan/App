@@ -1,0 +1,205 @@
+// component css goes here
+.label-name {
+    color: #004d87;
+    font-size: 20px;
+    padding-top: 5px;
+}
+
+.align-top {
+    padding-top: 30px;
+}
+
+
+
+.check-box {
+    label.checkbox-inline {
+        padding: 10px 10px 0 0;
+
+        input {
+            margin: 0 10px 0 0;
+        }
+    }
+}
+
+input.larger {
+    width: 40px;
+    height: 40px;
+}
+
+input.medium {
+    width: 30px;
+    height: 30px
+}
+
+input.titleChecks {
+    width: 35px;
+    height: 35px;
+    margin-right: 10px;
+}
+
+.page-container {
+
+    label,
+    .form-check-label {
+        color: #004d87;
+        font-weight: bold;
+        margin: 10px 0;
+    }
+
+}
+
+.page-number {
+    label {
+        padding:unset;
+    }
+
+}
+
+.blank_page {
+    background: #eeeeee;
+
+    .page-position {
+
+        .bottom-align,
+        .top-align {
+            width: 80%;
+            margin: 0 auto;
+
+            .form-check-inline {
+                margin-right: unset;
+                width: 33.1%;
+            }
+
+        }
+
+    }
+
+
+}
+
+.fontbold {
+    margin: 10px 0;
+}
+
+.white {
+    width: 80%;
+    height: 500px;
+    background: #fff;
+    margin: 0 auto;
+}
+
+.doc-number {
+    font-size: 20px;
+    color: #004d87;
+    font-weight: bold;
+   
+    span {
+        margin-left: 5px;
+        font-size: 13px;
+        color: #111;
+        margin-top: 7px;
+    }
+}
+
+.badge {
+    font-size: 14px;
+    color: red;
+}
+
+.doc-align {
+    margin-right: 40px;
+}
+
+.dic-title {
+    font-weight: 900;
+    line-height: 35px;
+}
+
+.example-list {
+    border: solid 1px #ccc;
+    display: block;
+    background: white;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.example-box {
+    padding: 5px 10px;
+    border: solid 1px #ccc;
+    color: rgba(0, 0, 0, 0.87);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    cursor: move;
+    background: #EEE;
+    font-size: 14px;
+}
+
+.cdk-drag-preview {
+    box-sizing: border-box;
+    border-radius: 4px;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14),
+        0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.example-box:last-child {
+    border: none;
+}
+
+.example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.example-custom-placeholder {
+    background: #ccc;
+    border: dotted 3px #999;
+    min-height: 60px;
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.btn-align {
+    position: relative;
+    left: 20%;
+}
+
+.jw-modal-body {
+    width: 90% !important;
+    margin: 0 auto !important;
+    text-align: center;
+    position: relative;
+    top: 19%;
+}
+
+.form-check-input[type=radio] {
+    height: 30px;
+    width: 30px;
+}
+
+ul#pills-tab {
+
+    float: none !important;
+}
+jw-modal#custom-modal-2 .jw-modal-body{
+    width:30%;
+}
+.selectprior {
+    width: 100px !important;
+    height: unset !important;
+    border: none;
+}
+
+
+div.selectprior {
+    height: unset;
+}
+
+.add_pdf {
+    height: fit-content;
+}

@@ -1,0 +1,64 @@
+<div class="container update-members main width-alignment">
+    <div class="col-12 Individual createGroup">
+        <div class="update-group">
+        <label for="select" class="lable-size" *ngIf="product != 'corporate'">Modify Group Access - {{relname}}</label>
+        <label for="select" class="lable-size" *ngIf="product == 'corporate'">Update Department Access - {{relname}}</label>
+    </div>
+        <div class="row">
+            <div class="col-3"></div>
+            <div class="col-6">
+                <div class="form-group " id="selectbx">
+                  <div class="input-group group-custom-align court"
+                       *ngFor="let grp of groupList"
+                       style="margin-bottom:3px;">
+                    <div class="multicheck form-control textbox">
+                      <div class="callselect" [innerHtml]="grp.name"></div>
+                      <input class="form-check-inpu calimg calitem input-group-app end checkboxitem"
+                             #inputEl
+                             [ngClass]="{'active': selectedIds.includes(grp.id)}"
+                             [checked]="selectedIds.includes(grp.id)"
+                             type="checkbox"
+                             (change)="selectGrp(grp, inputEl.checked)">
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+     <div class="btnbox">
+        <button type="button" class="btn btn-default btncancel" (click)= "cancel()">Cancel</button>
+        <button type="button" class="btn btn-default btnsave"  (click)="confirmSave()">Save</button>
+     </div>
+</div>
+<div class="modal"
+     *ngIf='showConfirm'
+     style="display:block;" 
+     tabindex="-1">
+  <div class="modal-dialog">
+      <div class="modal-content">
+        
+              <button type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal" (click)="showConfirm = false;" aria-label="Close"></button>
+
+          <div class="modal-body">
+              <div class="alertpara">
+                  <p class="alertparatxt">Confirm</p>
+                </div>
+          </div>
+          <div class="alertext" style="height:130px;">
+            Are you sure you want to modify group access for
+            <strong>{{reldata.name}}</strong>.
+          </div>
+          <div class="alertbutton">
+              <button class="btn btn-default  alertbtn alertbtnno"
+                      data-bs-dismiss="modal"
+                      (click)="showConfirm = false;"
+                      aria-label="Close">No</button>
+              <button class="btn btn-default alertbtn alertbtnyes"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                      (click)="save()">Yes</button>
+          </div>
+      </div>
+  </div>
+</div>

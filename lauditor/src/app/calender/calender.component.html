@@ -1,0 +1,9 @@
+<div class="row width-alignment center" [ngStyle]="{'display':isDisplay?'block':'none'}">
+
+       <div class="switch  cswitch cswitchtwo msgswitch">
+          <a href="javascript:void(0);" class="optionone compone" [ngClass]="{'active': selectedValue === 'create'}" (click)="isActive('create')">Create</a>
+          <a href="javascript:void(0);" class="optiontwo comptwo" [ngClass]="{'active': selectedValue === 'view'}" (click)="isActive('view')">View</a>
+        </div>
+
+</div>
+<router-outlet></router-outlet>

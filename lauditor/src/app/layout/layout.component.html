@@ -1,0 +1,80 @@
+<div class="headers">
+    <div class="ul topnav">
+        <div class="product-icon ">
+            <img  src="assets\image\Group 486.png">
+        </div>
+       
+        <div class=" li dashboard-title">
+            <!-- <div class="icon-inn">
+                <img src="assets\assets\Group 486.png">
+            </div> -->
+            <div class="title">Dashboard</div>
+        </div>
+        <div class="li inp">
+            <input type="text" placeholder="Search">
+        </div>
+        <div class=" li goal" (click)="getCategory('Dashboard')"><a routerLink="main">
+            <img src="assets\image\widget(1).png">
+            <div class="notify">12</div>
+        </a>
+        </div>
+        <div class=" li user-details">
+            <img src="assets\image\Image 75.png">
+            <div class="user-text">
+                <p class="name">Vijayanath Bhuvanagiri</p>
+                <p class="des">Practice Head</p>
+                <p class="time">10:11:53 AM</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1 sidebar">
+        <div class="">
+            <nav class="navv navigation-bar">
+                
+                <div class="icon-inn" (click)="getCategory('Matter')"> <a routerLink="matter">
+                    <img class="inn-logo" src="assets\image\Group 391.png">
+                    <div class="caption-doc">Matter</div></a>
+                </div>
+                <div class="icon-inn" (click)="getCategory('Documents')"><a routerLink="documents">
+                    <img class="inn-logo" src="assets\image\Group 393.png">
+                    <div class="caption-doc">Documents</div></a>
+                </div>
+                <div class="icon-inn" (click)="getCategory('Relationship')"><a routerLink="relationships">
+                    <img class="inn-logo" src="assets\image\Group 398.png">
+                    <div class="caption-doc"> Relationship</div></a>
+                </div>
+                <div class="icon-inn" (click)="getCategory('Timesheet')"><a routerLink="timesheets">
+                    <img class="inn-logo" src="assets\image\Group 401.png">
+                    <div class="caption-doc">Timesheet</div></a>
+                </div>
+                <div class="icon-inn" (click)="getCategory('EMail')"><a routerLink="emails">
+                    <img class="inn-logo" src="assets\image\Group 499.png">
+                    <div class="caption-doc">EMail</div></a>
+                </div>
+                <div class="icon-inn" (click)="getCategory('Notes')"><a routerLink="timesheets">
+                    <img class="inn-logo" src="assets\image\Group 499.png">
+                    <div class="caption-doc">Notes</div></a>
+                </div>
+                <div class="icon-inn" (click)="getCategory('Meeting')"><a routerLink="meetings">
+                    <img class="inn-logo" src="assets\image\Group 501.png">
+                    <div class="caption-doc">Meeting</div></a>
+                </div>
+                <div class="icon-inn" (click)="getCategory('Notification')"><a routerLink="messages">
+                    <img class="inn-logo" src="assets\image\Image 74.png">
+                    <div class="caption-doc">Notification</div></a>
+                </div>
+                <div class="icon-inn" (click)="getCategory('Chat')">
+                    <img class="inn-logo" src="assets\image\Group 502.png">
+                    <div class="caption-doc">Chat</div>
+                </div>
+            </nav>
+        </div>
+    </div>
+    
+</div>
+
+
+ <div class="content-box">
+    <router-outlet></router-outlet>
+    
+</div> 

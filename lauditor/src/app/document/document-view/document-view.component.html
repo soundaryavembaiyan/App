@@ -1,0 +1,572 @@
+<!--component html goes here -->
+<div class="row view-document">
+  <div class="col-12">
+    <div class="row">
+
+      <div class="col-6" *ngIf="filterKey==='client'">
+        <div class="form-group" *ngIf="product != 'corporate'">
+          <label for="title" class="fontbold">Client Name <span class="mandate">*</span></label>
+          <div class="ng-autocomplete textbox">
+            <ng-autocomplete [data]="data" [searchKeyword]="keyword" placeholder="Type to select"
+              (selected)='selectEvent($event)' (inputChanged)='onChangeSearch($event)' [initialValue]="selectedValue"
+              (inputFocused)='onFocused($event)' [itemTemplate]="itemTemplate" [notFoundTemplate]="notFoundTemplate">
+              <!-- <i class="fa fa-chevron-down" aria-hidden="true"></i> -->
+            </ng-autocomplete>
+
+            <ng-template #itemTemplate let-item>
+              <a [innerHTML]="item.name"></a>
+            </ng-template>
+
+            <ng-template #notFoundTemplate let-notFound>
+              <div [innerHTML]="notFound"></div>
+            </ng-template>
+            <!-- <i class="fa fa-chevron-down"></i> -->
+          </div>
+        </div>
+        <div class="form-group" >
+          <label for="title" class="fontbold" *ngIf="product != 'corporate'">Matter </label>
+          <label for="title" class="fontbold" *ngIf="product == 'corporate'">Matter <span class="mandate">*</span></label>
+          <div class="dropdown-select textbox">
+            <select class="textbox" (change)="onChangeMatters($event.target)">
+              <option hidden value="">Type to select</option>
+              <option class="textbox" *ngFor="let i of matterList " value="{{i.id}}">{{i.title}}</option>
+            </select>
+            <i class="fa fa-chevron-down"></i>
+          </div>
+        </div>
+      </div>
+      <!-- firm code -->
+      <div class="col-6" *ngIf="filterKey==='firm'">
+        <div class="form-group " id="selectbx">
+          <div class="input-group court" id="search">
+            <div class="multicheck form-control textbox">
+              <label class="callselect" *ngIf="product != 'corporate'">Select Group(s) <span class="mandate">*</span></label>
+              <label class="callselect" *ngIf="product == 'corporate'">Select Department(s) <span class="mandate">*</span></label>
+              <i *ngIf="!isSelectGroup"
+                class=" fa fa-plus  calimg calitem input-group-append checkboxitem"
+                aria-hidden="true" (click)="selectGroup(true)"></i>
+              <i *ngIf="isSelectGroup"
+                class=" fa fa-minus  calimg calitem input-group-append checkboxitem"
+                aria-hidden="true" (click)="selectGroup(false)"></i>
+            </div>
+          </div>
+          <div class="" *ngIf="isSelectGroup">
+            <div class="input-group index court" id="search">
+              <div class="multicheck form-control textbox" *ngFor="let item of groupViewItems">
+
+                <label class="callselect">{{item.name}}</label>
+                <input type="checkbox" class="calimg calitem
+                input-group-append checkboxitem " 
+                value=""  id="flexCheckDefault" [checked]="item.isChecked"  #inputEl (change)="selectGroupItem(item,inputEl.checked)">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div *ngIf="!isSelectGroup" class="codeAlign selected-group">
+              <div class="cod" *ngFor="let item of selectedGroupItems;let i = index">
+                <div class="documents-list ng-item"> {{item.name}}
+                  <div class="icon-list">
+                    <div class="icons"><i class="fa fa fa-regular fa-circle-xmark" style="color:red;font-size: 24px;"
+                        (click)="removeGroup(item)"></i>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+ 
+        </div>
+        <div class="form-group" *ngIf="!isFromEmail">
+          <label for="title" class="fontbold">Categories </label>
+          <input type="text" class="form-control textbox" id="caseType" name="caseno">
+        </div>
+      </div>
+  
+      <div class="col-6" >
+        <div class="form-group float-right">
+          <div class="input-group court" id="search">
+            <input type="text" class="form-control textbox" placeholder="Search " [(ngModel)]="term" />
+            <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
+          </div>
+        </div>
+        <!-- <div class="form-group float-right">
+          <div class="input-group court" id="search">
+            <input type="text" class="form-control textbox" disabled placeholder="Advanced Search " />
+          <img src="assets/img/" class="calimg calitem input-group-append searchimg">
+        <--  </div>
+        </div> -->
+        <div class="form-group float-right" *ngIf="!isFromEmail">
+          <div class="dropdown-select filter" *ngIf="product !='connect'">
+            <select (change)="onChange($event.target)">
+              <option [selected]="i.value ==value" *ngFor="let i of options">{{i.name}}</option>
+            </select>
+             <!-- <i class="fa fa-chevron-down"></i>  -->
+          </div>
+
+          <div class="dropdown-select filter" *ngIf="product =='connect'">
+            <select (change)="onChange($event.target)">
+              <option [selected]="i.value ==value" *ngFor="let i of optionc">{{i.name}}</option>
+            </select>
+             <!-- <i class="fa fa-chevron-down"></i>  -->
+          </div>
+
+        </div>
+        <!-- <ul class="nav nav-pills">
+          <li [class.active]="viewMode=='map'"><a (click)="viewMode='map'">Map View</a></li>
+          <li [class.active]="viewMode=='list'"><a (click)="viewMode='list'">List View</a></li>
+        </ul> -->
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+<div *ngIf="!errorMsg" class="margin-top">
+  <div *ngIf="filterKey=='client' && documents && documents?.length==0" class="custom-alert">Please Select Client name </div>
+  <div *ngIf="filterKey=='firm' && selectedGroupItems && selectedGroupItems.length==0 && product != 'corporate'" class="custom-alert">Please Select Group name </div>
+  <div *ngIf="filterKey=='firm' && selectedGroupItems && selectedGroupItems.length==0 && product == 'corporate'" class="custom-alert">Please Select Department name </div>
+</div>
+<div [ngSwitch]="viewMode">
+  <div *ngSwitchCase=0>
+    <div class="col-sm-12 gridtable  width-alignment">View All</div>
+  </div>
+  <div *ngSwitchCase=1>
+    <div class="col-sm-12 gridtable  width-alignment">
+      <div *ngIf="filterKey==='client' && product !='corporate'" class="custusername tab-margin fontweight">List of Client Documents</div>
+
+      <div *ngIf="filterKey==='firm' && product != 'corporate'" class="custusername tab-margin fontweight">List of Firm Documents</div>
+      <div *ngIf="filterKey==='firm' && product == 'corporate'" class="custusername tab-margin fontweight">List of Internal Documents</div>
+
+     <div *ngIf="documents && documents?.length==0 &&  errorMsg" class="custom-alert"> List of  Documents not available !!</div>
+     <div *ngIf="documents.length>0">
+      <table  class="table table-borderless tblgrid">
+        <thead>
+          <tr class="theader">
+            <th style="width:200px !important">
+              <p class="thheadname"> Name</p>
+              <img src="assets/img/SORT.PNG" (click)="sortDocuments('name')" class="sortico">
+            </th>
+            <th style="width:200px !important">
+              <p class="thheadname"> Description</p>
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sortDocuments('description')">
+            </th>
+            <th>
+              <p class="thheadname"> Created on</p>
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sortDocuments('created')">
+            </th>
+            <th>
+              <p class="thheadname"> Created By</p>
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sortDocuments('uploaded_by')">
+            </th>
+            <th>
+              <p class="thheadname"> Tags</p>
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sortDocuments('tag')">
+            </th>
+            <th>
+              <p class="thheadname"> </p>
+              <img class="sortico">
+            </th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="rone veiw-items" [ngClass]="{'active': document.isChecked}"
+            *ngFor="let document of documents | filter:term | paginate: { itemsPerPage: 10,
+              currentPage: p } ">
+            <td style="text-decoration: underline;">{{document.name}}</td>
+            <td>{{document.description}}</td>
+            <td>{{document.created| date:'MMM d, y'}}</td>
+            <td>{{document.uploaded_by}}</td>
+            <td *ngIf="document && document.tags">
+              <div *ngFor="let tag of document.tags">{{tag}}</div>
+            </td>
+            <!-- <i class="fa-light fa-arrow-down-to-line"></i> -->
+            <td><i class="fa-solid fa-arrow-down" aria-hidden="true" [class.disable]="!document.is_disabled"></i></td>
+            <td>
+              <div class="dropdown">
+                <button type="button" class="btn btn-primary  dropdown-toggle actionbtn" 
+                data-bs-toggle="dropdown" [ngClass]="{'disabled': document.isdisabled}">
+                  Action
+                </button>
+                <ul class="dropdown-menu dropdown-menu-start">
+                  <li>
+                    <a class="dropdown-item" (click)="viewDocument(document);openModal('view-doc-1')">View</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editInfoModal1"
+                      (click)="editDocInfo(document)">Edit info</a>
+                  </li>
+                  <!-- <li>
+                  <a class="dropdown-item">Share</a>
+                </li> -->
+                  <li *ngIf="document.is_disabled">
+                    <a class="dropdown-item" [class.disable]="!document.is_disabled"
+                      (click)="downloadDoc(document)">Download</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" (click)="editDocInfo(document);openModal('custom-modal-2')">Delete</a>
+                  </li>
+
+                  <li>
+                    <a class="dropdown-item"> Update tags</a>
+                  </li>
+                  <!-- <li>
+                  <a class="dropdown-item">Update client Info</a>
+                </li> -->
+                </ul>
+              </div>
+            </td>
+            <td *ngIf="isFromEmail">
+              <input type="checkbox"  #inputE2 (change)="selectDoc(document,inputE2.checked)">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="row">
+        <div class="col-6"> <label for="">Showing <span>{{fromCount}}</span>to <span>{{toCount}}</span> of <span *ngIf="documents">{{documents.length}}</span> entries</label></div>
+        <div class="col-6">
+            <pagination-controls class="float-right" (pageChange)="p= $event"
+                [maxSize]="7"
+                [responsive]="true" (pageChange)="pageChanged($event)" >
+            </pagination-controls></div>
+    </div>
+    </div>
+    <div class="row main stepitem " *ngIf="isFromEmail">
+      <div class="col-sm-12">
+          <!-- button cancel and save -->
+          <div class="btnbox">
+              <button type="reset" class="btn btn-default
+                  btncancel" (click)="cancelAttachments()" >Cancel</button>
+              <button  type="submit"
+                  class="btn btn-default btnsave savecls"
+                  [ngClass]="{'disable':!(selectedAttachments.length>0)
+                  }" (click)="saveAttachments()">Attach Documents</button>
+          </div>
+      </div>
+    </div>
+    </div>
+  </div>
+  <div *ngSwitchCase=2>
+    <div class="col-sm-12 gridtable  width-alignment">
+      <div class="custusername tab-margin fontweight">
+        List of Merged Documents
+
+      </div>
+      <div *ngIf="documents && documents?.length==0 && errorMsg" class="custom-alert"> List of merged Documents not available !!</div>
+      <div *ngIf="documents.length>0">
+      <table class="table table-borderless tblgrid">
+        <thead>
+          <tr class="theader">
+            <th style="width:200px !important">
+              <p class="thheadname"> Name</p>
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sortDocuments('name')">
+            </th>
+            <th style="width:200px !important">
+              <p class="thheadname"> Status</p>
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sortDocuments('status')">
+            </th>
+            <th>
+              <p class="thheadname"> Created on</p>
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sortDocuments('created')">
+            </th>
+            <th>
+              <p class="thheadname"> Created By</p>
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sortDocuments('createdby')">
+            </th>
+            <th>
+               <p class="thheadname"> Tags</p>
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sortDocuments('tags')"> 
+            </th>
+            <th>
+              <p class="thheadname"> </p>
+              <img class="sortico">
+            </th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- <tr class="rone veiw-items" [ngClass]="{'processing':document.status=='processing'}"
+            *ngFor="let document of documents | filter:term "> -->
+            <tr class="rone veiw-items" [ngClass]="{'processing':document.status=='processing'}"
+            *ngFor="let document of documents | filter:term | paginate: { itemsPerPage: 10,
+              currentPage: p } ">
+
+            <td style="text-decoration: underline">{{document.name}}</td>
+            <td>{{document.status}}</td>
+            <td>{{document.created| date:'MMM d, y'}}</td>
+            <td>{{document.createdby}}</td>
+            <td>
+              <div *ngFor="let tag of document.tags">{{tag}}</div>
+            </td>
+            <td><i class="fa-solid fa-arrow-down"></i></td>
+            <td>
+              <div class="dropdown">
+                <button type="button" class="btn btn-primary  dropdown-toggle actionbtn" 
+                [ngClass]="{'disabled': document.isdisabled}" data-bs-toggle="dropdown">
+                  Action
+                </button>
+                <ul class="dropdown-menu custom-dropdown">
+                  <li>
+                    <a class="dropdown-item" (click)="reMergeDocument(document)">Re-Merge</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" (click)="editDocMetadata(document)">Edit Metadeta</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" (click)="viewMergedDocument(document)">View</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" (click)="downloadMergePDF(document)">Download</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" (click)="editDocInfo(document);openModal('custom-modal-merge-pdf')">Delete PDF</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" (click)="addShortText(document)">Add Short Text</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" (click)="addWatermark(document)">Add Watermark</a>
+                  </li>
+
+                  <li>
+                    <a class="dropdown-item" (click)="addCustomPages(document)">Add Page Numbers</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" (click)="deletePages(document)">Delete Pages</a>
+                  </li>
+                  <!-- <li>
+                    <a class="dropdown-item">Update Client</a>
+                  </li> -->
+                </ul>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="row">
+        <div class="col-6"> <label for="">Showing <span>{{fromCount}}</span>to <span>{{toCount}}</span> of <span *ngIf="documents">{{documents.length}}</span> entries</label></div>
+        <div class="col-6">
+            <pagination-controls  class="float-right" (pageChange)="p= $event"
+                [maxSize]="7" 
+                [responsive]="true" (pageChange)="pageChanged($event)" >
+            </pagination-controls></div>
+    </div>
+
+
+    </div>
+    </div>
+  </div>
+
+</div>
+
+
+<jw-modal id="view-doc-1" class=" view-doc-1 doc-view-scs ">
+  
+
+    <div class="iconclose" (click)="closeModal('view-doc-1');">X</div>
+
+
+      <iframe *ngIf="pdfSrc" height="100%" width="100%" [src]="pdfSrc"></iframe>
+
+
+
+</jw-modal>
+
+
+<!-- <div *ngIf="successMsg">
+    
+      {{successMsg}}
+  </div> -->
+
+<!-- Modal -->
+<div class="modal fade editInfoModal1" id="editInfoModal1" tabindex="-1" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog  modal-xl">
+    <div class="modal-content">
+
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+      <div class="modal-body">
+        <div class="col-12  editdoc modal-content" *ngIf="editDoc">
+          <form [formGroup]="editDocform" (ngSubmit)="onSubmit()">
+            <div class="row width-alignment">
+              <div class="col-6">
+                <div class="form-group nameSet">
+                  <label for="title" class="lable-size">Document Name <span class="mandate">*</span></label>
+                  <input type="text" formControlName="name" class="text-size form-control group-name-text"
+                    [ngClass]="{ 'is-invalid': submitted && f.name.errors }" id="caseTitle" name="name"
+                    [(ngModel)]="editDoc.name">
+                  <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+                    <div *ngIf="f.name.errors.required">Document Name is required</div>
+                  </div>
+                  <div class="count-div">
+                    <div class="count-text" *ngIf="editDoc.name">{{editDoc.name.length}}/300</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group nameSet">
+                  <label for="comment" class="lable-size">Description <span class="mandate">*</span></label>
+                  <textarea formControlName="description" class="form-control text-size text-area-height"
+                    [ngClass]="{ 'is-invalid': submitted && f.description.errors }" name="description"
+                    [(ngModel)]="editDoc.description"></textarea>
+                  <div *ngIf="submitted && f.description.errors" class="invalid-feedback">
+                    <div *ngIf="f.description?.errors?.required">Description is required</div>
+                  </div>
+                  <div class="count-div">
+                    <div class="count-text" *ngIf="editDoc.description">{{editDoc?.description?.length}}/300</div>
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <label for="title" class="fontbold"> Expiration Date</label>
+                  <div class="input-group">
+                    <input class="form-control" formControlName="expiration_date" bsDatepicker id="drp" #dp="bsDatepicker" 
+                      (bsValueChange)='selectDuration($event)'   [(ngModel)]="editDoc.expiration_date" readonly>
+                    <span _ngcontent-syx-c6="" class="input-group-btn">
+                      <a _ngcontent-syx-c6="" class="btn btn-default" (click)="dp.show()">
+                        <i _ngcontent-syx-c6="" aria-hidden="true" class="fa fa-calendar"></i>
+                      </a>
+                    </span>
+                  </div>
+
+                </div>
+
+              </div>
+
+
+            </div>
+            <div class="btnbox">
+              <button type="button" class="btn btn-default  test btncancel" data-bs-dismiss="modal" aria-label="Close"
+                (click)="reset()">Cancel</button>
+              <button type="submit" class="btn btn-default btnsave" data-bs-dismiss="modal" aria-label="Close"
+                [disabled]="editDocform.invalid">Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<jw-modal id="custom-modal-1" class="doc-view-scs">
+  <!-- <div class="doc-view-scs-body">
+    <div class="close-x" (click)="closeModal('custom-modal-1');">X</div>
+    <h3>Suceess</h3>
+    <div *ngIf="!isDelete">
+      Congratulations!!<br>
+      You have successfully updated the <br>document information.
+    </div>
+    <div *ngIf="isDelete">
+      Congratulations!!<br>
+      You have successfully deleted the <br> <b>{{editDoc.name}}</b> document
+    </div>
+  </div> -->
+
+  <div class="container">
+    <div class="row" *ngIf="data">
+      <div class="alertbox">
+        <div class="close-x float-right" (click)="closeModal('custom-modal-1');">X</div>
+        <div class="alertpara">
+          <p class="alertparatxt"> Success</p>
+        </div>
+        <div *ngIf="!isDelete" class="alertext">Congratulations!! You have successfully updated document information.
+        </div>
+        <div *ngIf="isDelete" class="alertext">Congratulations!! You have successfully deleted <b>{{editDoc.name}}</b>
+          document.
+        </div>
+        <div class="center">
+          <button class="btn btn-primary  " (click)="closeModal('custom-modal-1')">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</jw-modal>
+
+<jw-modal id="custom-modal-merge-pdf" class="doc-view-scs">
+  <div class="doc-view-scs-body" *ngIf="editDoc">
+    <div class="container">
+      <div class="row">
+        <div class="">
+          <div class="iconclose" (click)="closeModal('custom-modal-merge-pdf');">X</div>
+          <div class="alertpara">
+            <p class="alertparatxt"> Alert</p>
+          </div>
+          <div class="alertext">
+            Are you sure you want to delete<br>
+            <b>{{editDoc.name}}</b> document ?
+          </div>
+        </div>
+        <div class="alertbutton">
+          <button class="btn btn-default  alertbtn alertbtnno" (click)="closeModal('custom-modal-merge-pdf');">No</button>
+          <button class="btn btn-default alertbtn alertbtnyes"
+            (click)="closeModal('custom-modal-merge-pdf');deletePdfDocument(editDoc)">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</jw-modal>
+
+<jw-modal id="custom-modal-2" class="doc-view-scs">
+  <div class="doc-view-scs-body" *ngIf="editDoc">
+    <div class="container">
+      <div class="row">
+        <div class="">
+          <div class="iconclose" (click)="closeModal('custom-modal-2');">X</div>
+          <div class="alertpara">
+            <p class="alertparatxt"> Alert </p>
+          </div>
+          <div class="alertext">
+            Are you sure you want to delete<br>
+            <b>{{editDoc.name}}</b> document ?
+          </div>
+        </div>
+        <div class="alertbutton">
+          <button class="btn btn-default  alertbtn alertbtnno" (click)="closeModal('custom-modal-2');">No</button>
+          <button class="btn btn-default alertbtn alertbtnyes"
+            (click)="closeModal('custom-modal-2');deleteDocument(editDoc)">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</jw-modal>
+
+
+
+
+<jw-modal id="custom-modal-iframe" class="doc-iframe-scs">
+  <div class="doc-iframe-scs-body ">
+    <div class="close-x float-right" (click)="closeModal('custom-modal-iframe');">X</div>
+    <!-- <img width="900" height="500" [src]="urlSafe | safe"/> -->
+    <div class="safeurl" *ngIf="urlSafe">
+      <iframe height="100%" width="100%" [src]="urlSafe"></iframe>
+    </div>
+  </div>
+</jw-modal>
+
+<jw-modal id="doc-download-success" class="doc-del-success  alert-box">
+  <div class="doc-iframe-scs-body ">
+
+    <div class="container">
+      <div class="row" *ngIf="data">
+        <div class="alertbox">
+          <div class="close-x float-right" (click)="closeModal('doc-download-success');">X</div>
+          <div class="alertpara">
+            <p class="alertparatxt"> Success</p>
+          </div>
+          <div class="alertext">Congratulations!! You have successfully downloaded {{data.name}} document.
+          </div>
+          <div class="center">
+            <button class="btn btn-primary  " (click)="closeModal('doc-download-success')">OK</button>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</jw-modal>
+

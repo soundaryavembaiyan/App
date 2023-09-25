@@ -1,0 +1,710 @@
+  <!-- right dashboard row starts here -->
+  <div class="row main width-alignment">
+    <div class="col-xs-12 col-sm-12 col-md-6">
+      <!-- card layout -->
+      <!-- left row card 1 layout -->
+      <div class="row containerbox containerboxone ">
+        <div class="col-sm-12">
+          <div class="row meetingcontainer ">
+            <div class="col-sm-12">
+              <div class="row">
+                <div class="col-sm-2">
+                  <p class="mmonth dDay" [innerHtml]='dateMonth'></p>
+                </div>
+                <div class="col-sm-2" >
+                  <p class="Day dDay" [innerHtml]='date' ></p>
+                </div>
+                <div class="col-sm-3">
+                  <p class="year dDay" [innerHtml]='dateFullYear'></p>
+                </div>
+                <div class="col-sm-5 timecontainer">
+                  <!--<p class="time">{{Time}}:{{minute}} | {{ampm}} </p>-->
+                  <p class="time">{{ time | date: 'hh:mm' }} | {{ampm}}</p>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ends here -->
+      <!-- left row  card  2 layout -->
+      <div class="row">
+        <div class="col-sm-12 customcontainer">
+          <!-- <div class="switch">
+            <a href="javascript:void(0);" class="optionone">My Day</a>
+            <a href="javascript:void(0);" class="optiontwo">KPIs</a>
+          </div> -->
+          <!-- <div class="personalizebtn">
+            <a href="javascript:void(0);" class="Personalize">Personalize</a>
+          </div> -->
+        </div>
+      </div>
+      <!-- left row  card 3 layout -->
+      <div class="row containerbox card" (click)="categoryRoute('/meetings')">
+        <div class="col-sm-12">
+          <div class="row meetingcontainer legalboxleft">
+            <div class="col-sm-5">
+              <div class="row">
+                <div class="col-sm-4">
+                  <img src="assets/img/meet.svg" alt="Meeting" class="icongroup">
+                </div>
+                <div class="col-sm-8" >
+                  <p class="mname toalhours approxmeet  meetone">Meeting</p>
+                  <p class="mtime mmessage meetime" *ngIf="userRole == 'SU'">{{meetingModel?.fromTs}} - {{meetingModel?.toTs}} </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-1">
+              <span class="vertical verticaltotal"></span>
+            </div>
+            <div class="col-sm-5">
+              <div class="rightmname" >
+                <div class="rightmname righmnamecontext rytcentMeet">
+                  <p  class="rightbox righboxshared"></p><!--{{meetingModel?.subject}}-->
+                </div>
+
+                <div class="rightmname righmnamecontext"><!--jumbotron text-center-->
+                  <p class="rightbox righboxshared text-align-center">{{meetingModel?.subject}} {{meetingMessage}}</p>
+                </div>
+
+              </div>
+            </div>
+
+
+            <!--<div class="col-sm-1">
+                <div class="circlecontainer">
+                <span class="rightsubitem">5</span>
+              </div>
+            </div>-->
+          </div>
+        </div>
+      </div>
+      <!-- ends here -->
+      <!-- left row card 4 layout -->
+      <div class="row containerbox card" *ngIf="userRole != 'AAM'" (click)="categoryRoute('/messages/clients')">
+        <div class="col-sm-12">
+          <div class="meetingcontainer row">
+            <div class="col-6">
+              <div class="meetingimg">
+                <img src="assets/img/chat.svg" alt="Meeting" class="icongroup msgicon">
+              </div>
+              <div class="meetingname">
+                <p class="mname cmname cmsgtxt" *ngIf="product != 'corporate'">Client</p>
+                <p class="mname cmname cmsgtxt" *ngIf="product == 'corporate'">External Counsel</p>
+                <p class="mtime mmessage msgtxt cmsgtxt">Messages</p>
+              </div>
+            </div>
+            <div class="col-1">
+              <span class="vertical"></span>
+            </div>
+            <div class="col-sm-2">
+              <p class="rightbox rightboxtxt float-right rightrate cards billhour ">0</p>
+            </div>
+
+            <!--<div class="col-3 middlecontainer">
+              <img class="midprofile" src="/assets/img/clientbuilding.jpg">
+              <p class="midtime" id="clienttime">
+                Mon <br>
+                09:15 AM
+              </p>
+            </div>
+            <div class="col-3">
+              <div class="rightmname rightnameone">
+                <p class="rightbox rightboxtwo">Finn Hartung</p>
+                <p class="clientmsg">
+                  Sue, <br>
+                  Let us discuss the terms and conditions of the
+                  agreement.
+                </p>
+              </div>
+            </div>
+            <div class="col-1">
+              <div class="circlecontainer">
+                <span class="rightsubitem">7</span>
+              </div>
+            </div>-->
+          </div>
+        </div>
+      </div>
+      <!-- ends here -->
+      <!-- left row  card 5 layout -->
+      <div class="row containerbox card" (click)="categoryRoute('/messages/teams')">
+        <div class="col-sm-12">
+          <div class="row meetingcontainer">
+            <div class="col-4">
+              <div class="meetingimg">
+                <img src="/assets/img/team.svg" alt="Meeting" class="icongroup">
+              </div>
+              <div class="meetingname">
+                <p class="mname">Team </p>
+                <p class="mtime mmessage msgtxt">Messages</p>
+              </div>
+            </div>
+            <div class="col-1">
+              <span class="vertical"></span>
+            </div>
+            <!--<div class="col-2 middlecontainer">
+              <img class="midprofile" src="assets/img/amy.JPG">
+              <p class="midtime" 
+                id="clienttime" *ngIf="chatteamModel.team && chatteamModel.team.timestamp" [innerHtml]='chatteamModel.team.timestamp'></p>
+            </div>
+            <div class="col-4">
+              <div class="rightmname rightnameone">
+                <p class="rightbox rightboxthree" *ngIf="chatteamModel.team && chatteamModel.team.user" [innerHtml]='chatteamModel.team.user'></p>
+                <p class="clientmsg"*ngIf="chatteamModel.team && chatteamModel.team.message" [innerHtml]='chatteamModel.team.message'></p>
+              </div>
+            </div>--
+            <div class="col-1">
+              <span class="rightsubitem righbxone">4</span>
+            </div>-->
+
+            <div class="col-sm-2">
+              <p class="rightbox rightboxtxt float-right rightrate cards billhour ">0</p>
+            </div>
+
+            <!--<div class="col-sm-2">
+              <div class="rightbox rightboxtxt float-right rightrate cards billhour ">0
+                <p class="mtime mmessage yeartxt yearrightbox monthname cmsgtxtone">Heolooooooo</p>
+              </div>
+            </div>-->
+
+          </div>
+        </div>
+      </div>
+      <!-- ends here -->
+      <!-- left row card 6  layout -->
+      <div class="row containerbox card" (click)="categoryRoute('/notifications')">
+        <div class="col-sm-12">
+       <div class="row meetingcontainer mbox">
+            <div class="col-sm-6">
+                    <div class="row">
+                      <div class="col-sm-4 mobicol">
+                        <img src="/assets/img/mobile.svg" alt="Meeting" class="icongroup mobilesvg">
+                      </div>
+                      <div class="col-sm-8 junitem">
+                        <p class="mname toalhours approxmonth approxbillhour cmsgtxtone">
+                        Notification
+                        <!--{{notifyModel?.date}}-->
+                        </p>
+
+                        <p class="mtime mmessage yeartxt yearrightbox monthname cmsgtxtone">
+                          {{notifyModel?.timestamp}}
+                        </p>
+                       
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-1 softvertical">
+                    <span class="vertical verticaltotal"></span>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="rightbox rightboxtxt rightrate notifyhour" *ngIf="product == 'corporate'">Internal Lawyers</div>
+                    <div class="rightmname righmnamecontext rytcentNotify righboxshared">
+                      <!--Notification messages!-->
+                      {{notifyModel?.message}} {{notifyMessage}} 
+                      <!--<p class="rightbox righboxshared"> {{notifyModel?.message}}  {{notifyMessage}} </p>-->
+                      <!--<p class="rightbox123"> {{notifyMessage}} </p>-->
+                    </div>
+
+                    <!--<div class="rightmname righmnamecontext">
+                      <p class="rightbox righboxshared text-align-center"> {{notifyModel?.message}} {{notifyMessage}} </p>
+                    </div>-->
+
+                  </div>
+                  <!--<div class="col-sm-1">
+                    <div class="circlecontainer">
+                      <span class="rightsubitem bonethree">1</span>
+                    </div>
+                  </div>-->
+                </div> 
+        </div>
+      </div>
+      <!-- ends here -->
+
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-6">
+      <!-- card layout right side -->
+      <!-- right row  card 7 layout -->
+      <div class="row containerbox">
+        <div class="col-sm-12"  >
+          <div class="row rightcontainerbox rightcontainerboxapprox"
+                *ngIf="kpiCards.includes('billable')" (click)="categoryRoute('/timesheets/aggregate-members')">
+            <div class="col-sm-12" *ngIf="product != 'corporate'">
+              <div class="row meetingcontainer">
+                <div class="col-sm-6">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <img src="assets/img/bill.svg" alt="Meeting" class="icongroup icoright">
+                    </div>
+                    <div class="col-sm-8">
+                      <p class="mname toalhours approx approxbillhour">Total <br> Billable Hours </p>
+                      <p class="mtime mmessage yeartxt yearrightbox ">Year to Date</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-1">
+                  <span class="vertical verticaltotal"></span>
+                </div>
+                <div class="col-sm-2">
+                  <p class="rightbox rightboxtxt rightrate billhour">{{hoursModel.billableHours}}</p>
+                </div>
+                <div class="col-sm-1">
+                  <span class="vertical verticaltotal"></span>
+                </div>
+                <div class="col-sm-2">
+                  <p class="rightbox rightboxtxt rightpercentage">{{hoursModel.billablePercentage}}%</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ends here -->
+          <!-- right row card 8 layout -->
+          <div class="row rightcontainerbox rightcontainerboxapprox"
+                *ngIf="kpiCards.includes('nonBillable')" (click)="categoryRoute('/timesheets/aggregate-members')">
+            <div class="col-sm-12" *ngIf="product != 'corporate'">
+              <div class="row meetingcontainer">
+                <div class="col-sm-6">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <img src="assets/img/billable.svg" alt="Meeting" class="icongroup icoright">
+                    </div>
+                    <div class="col-sm-8">
+                      <p class="mname toalhours approx approxbillhour">Total <br> Non-Billable Hours </p>
+                      <p class="mtime mmessage yeartxt yearrightbox ">Year to Date</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-1">
+                  <span class="vertical verticaltotal"></span>
+                </div>
+                <div class="col-sm-2">
+                  <p class="rightbox rightboxtxt rightrate billhour tbill">{{hoursModel.nonBillableHours}}</p>
+                </div>
+                <div class="col-sm-1">
+                  <span class="vertical verticaltotal"></span>
+                </div>
+                <div class="col-sm-2">
+                  <p class="rightbox rightboxtxt rightpercentage">{{hoursModel.nonBillablePercentage}}%</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ends here -->
+          <!-- right row card 9 layout -->
+          <div class="row rightcontainerbox rightcontainerboxapprox"
+                *ngIf="kpiCards.includes('approxRevenue')" >
+            <div class="col-sm-12" *ngIf="product != 'corporate'">
+              <div class="row meetingcontainer">
+                <div class="col-sm-7">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <img src="assets/img/approx.svg" alt="Meeting" class="icongroup">
+                    </div>
+                    <div class="col-sm-6">
+                      <p class="mname toalhours approx">Approximate <br> Revenue </p>
+                    </div>
+                    <div class="col-sm-1">
+                      <span class="vertical verticaltotal"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-5">
+                  <p class="rightbox rightboxtxt rightrate itemprice" 
+                  *ngIf="hoursModel || hoursModel.approxRevenue" 
+                  [innerHtml]="hoursModel.approxRevenue|currency:'USD'" ></p>
+
+                  <!--<p class="rightbox rightboxtxt billhour tbill">{{hoursModel.approxRevenue}}</p>-->
+                  <p class="mtime mmessage yeartxt yearrightbox ">Year to Date</p>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ends here -->
+                 <!-- right row card 10 layout -->
+          <div class="row rightcontainerbox rightcontainerboxapprox "
+                *ngIf="kpiCards.includes('avgBillingRate')">
+            <div class="col-sm-12" *ngIf="product != 'corporate'">
+              <div class="row meetingcontainer avbill">
+                <div class="col-sm-7">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <img src="assets/img/bill.svg" alt="Meeting" class="icongroup">
+                    </div>
+                    <div class="col-sm-6">
+                      <p class="mname toalhours approx">Average <br> Billing Rate </p>
+                    </div>
+                    <div class="col-sm-1">
+                      <span class="vertical verticaltotal"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-5">
+                  <p class="rightbox rightboxtxt rightrate itemprice" *ngIf="hoursModel && hoursModel.averageBillingRate" [innerHtml]="hoursModel.averageBillingRate |currency:'USD'"></p>
+                  <p class="mtime mmessage yeartxt yearrightbox ">Per hour</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ends here -->
+                 <!-- right row card 11 layout -->
+          <div class="row rightcontainerbox rightcontainerboxapprox "
+                *ngIf="kpiCards.includes('matters')" (click)="categoryRoute('/matter')">
+            <div class="col-sm-12">
+              <div class="row meetingcontainer legalbox">
+                <div class="col-sm-7">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <img src="assets/img/matter.svg" alt="Meeting" class="icongroup">
+                    </div>
+                    <div class="col-sm-8">
+                      <p class="mname toalhours approx rightmatter" *ngIf="product != 'corporate'">Closed</p>
+                      <p class="mname toalhours approx rightmatter" *ngIf="product == 'corporate'">External Counsel</p>
+                      <span class="mattertxt">Matters</span>
+                      <span class="mattercount" [innerHtml]="matterModel?.closed?.total"></span><!--*ngIf="matterModel.closed && matterModel.closed.total"-->
+                       <span class="mattertxt"
+                        *ngIf="matterModel.closed && matterModel.closed.countsByType[0]">{{matterModel.closed.countsByType[0].count}} {{matterModel.closed.countsByType[0].type}}</span>
+                  &nbsp;
+                      <span class="mattertxt" *ngIf="matterModel.closed && matterModel.closed.countsByType[1]">{{matterModel.closed.countsByType[1].count}} {{matterModel.closed.countsByType[1].type}}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-1 verticalwidth" *ngIf="product != 'corporate'">
+                    <span class="vertical verticaltotal closedvertical"></span>
+                </div>
+                <div class="col-sm-4">
+                  <p class="rightbox rightboxtxt rightmatter" *ngIf="product != 'corporate'">Active</p>
+                  <!--<p class="rightbox rightboxtxt rightmatter" *ngIf="product == 'corporate'"></p>-->
+                  <span class="mattertxt" *ngIf="product != 'corporate'">Matters</span>
+                  <span class="mattertxt tops" *ngIf="product == 'corporate'">Matters</span>
+
+                  <span class="mattercount" [innerHtml]="matterModel?.active?.total"></span><!--*ngIf="matterModel.active && matterModel.active.total"-->
+                  <span class="mattertxt" *ngIf="matterModel.active && matterModel.active.countsByType[0]">{{matterModel.active.countsByType[0].count}} {{matterModel.active.countsByType[0].type}}</span>
+                  &nbsp;
+                  <span class="mattertxt" *ngIf="matterModel.active && matterModel.active.countsByType[1]">{{matterModel.active.countsByType[1].count}} {{matterModel.active.countsByType[1].type}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ends here -->
+                  <!-- right row card 12 layout -->
+          <div class="row rightcontainerbox rightcontainerboxapprox "
+                *ngIf="kpiCards.includes('newClients')" (click)="categoryRoute('/relationship/view/individuals')">
+            <div class="col-sm-12">
+              <div class="row meetingcontainer legalbox">
+                <div class="col-sm-7">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <img src="assets/img/client.svg" alt="Meeting" class="icongroup">
+                    </div>
+                    <div class="col-sm-8">
+                      <p class="mname toalhours approx rightmatter cmatter">New Clients</p>
+                      <span class="mattertxt">{{clientModel[0]['type']}}</span>
+                      <span class="mattercount"
+                            [innerHtml]="hiringModel[0]['count']"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-1 verticalwidth">
+                    <span class="vertical verticaltotal closedvertical"></span>
+                </div>
+                <div class="col-sm-4">
+                  <p class="rightbox rightboxtxt rightmatter dotcontent">.</p>
+                  <span class="mattertxt">{{clientModel[1]['type']}}</span>
+                  <span class="mattercount"
+                        [innerHtml]="hiringModel[1]['count']"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ends here -->
+             <!-- right row card 13 layout -->
+          <div class="row rightcontainerbox rightcontainerboxapprox "
+                *ngIf="kpiCards.includes('newHires')" (click)="categoryRoute('/groups/view-member')">
+            <div class="col-sm-12" *ngIf="product != 'corporate'">
+              <div class="row meetingcontainer legalbox">
+                <div class="col-sm-7">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <img src="assets/img/law.svg" alt="Meeting" class="icongroup">
+                    </div>
+                    <div class="col-sm-8">
+                      <p class="mname toalhours approx rightmatter cmatter">New Hires</p>
+                      <span class="mattertxt">{{hiringModel[0]['type']}}</span>
+                      <span class="mattercount"
+                            [innerHtml]="hiringModel[0]['count']"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-1 verticalwidth">
+                    <span class="vertical verticaltotal closedvertical"></span>
+                </div>
+                <div class="col-sm-4">
+                  <p class="rightbox rightboxtxt rightmatter dotcontent">.</p>
+                  <span class="mattertxt">{{hiringModel[1]['type']}}</span>
+                  <span class="mattercount"
+                        [innerHtml]="hiringModel[1]['count']"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ends here -->
+          <!-- right row card 14 layout -->
+          <div class="row rightcontainerbox rightcontainerboxapprox"
+                *ngIf="kpiCards.includes('storage')">
+            <div class="col-sm-12">
+              <div class="row meetingcontainer legalbox">
+                <div class="col-sm-7">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <img src="assets/img/data.svg" alt="Meeting" class="icongroup">
+                    </div>
+                    <div class="col-sm-8">
+                      <p class="mname toalhours approx rightmatter">Data Storage</p>
+                      <span class="mattercount closedm"
+                            *ngIf=" storageModel&&storageModel.totalStorage"
+                            [innerHtml]="storageModel.totalStorage"></span> 
+                      <span class="mattertxtdata gb">GB</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-1 verticalwidth">
+                    <span class="vertical verticaltotal "></span>
+                </div>
+                <div class="col-sm-4">
+                  <p class="rightbox rightboxtxt rightmatter ">Balance Storage</p>
+                  <span class="mattercount closedm"
+                        *ngIf=" storageModel&&storageModel.balanceStorage"
+                        [innerHtml]='storageModel.balanceStorage'></span>
+                  <span class="mattertxtdata gb">GB</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ends here -->
+                  <!-- right row card 15 layout -->
+          <div class="row rightcontainerbox rightcontainerboxapprox"
+                *ngIf="kpiCards.includes('activeMatters')" (click)="categoryRoute('/matters')">
+            <div class="col-sm-12">
+              <div class="row meetingcontainer legalbox">
+                <div class="col-sm-7">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <img src="assets/img/matter.svg" alt="Meeting" class="icongroup">
+                    </div>
+                    <div class="col-sm-8">
+                      <p class="mname toalhours rightmatter cmatter">My Active Matters</p>
+                      <span class="mattercount closedm " *ngIf="matterModel.active && matterModel.active.countsByType[1]"[innerHtml]="matterModel.active.countsByType[1].count"></span>&nbsp;
+                      <span class="mattertxtdata" *ngIf="matterModel.active && matterModel.active.countsByType[1]"[innerHtml]="matterModel.active.countsByType[1].type"></span>
+                    </div>
+                  </div>
+                </div>
+                <!-- <span class="mattertxt" *ngIf="matterModel.active && matterModel.active.countsByType[0]">{{matterModel.active.countsByType[0].count}} {{matterModel.active.countsByType[0].type}}</span>
+                  <span class="mattertxt" *ngIf="matterModel.active && matterModel.active.countsByType[1]">{{matterModel.active.countsByType[1].count}} {{matterModel.active.countsByType[1].type}}</span> -->
+                <div class="col-sm-5">
+                  <p class="rightbox rightboxtxt rightmatter  dotcontent">.</p>
+                  <span class="mattercount closedm " *ngIf="matterModel.active && matterModel.active.countsByType[0]" [innerHtml]="matterModel.active.countsByType[0].count"></span>&nbsp;
+                  <span class="mattertxtdata" *ngIf="matterModel.active && matterModel.active.countsByType[0]" [innerHtml]="matterModel.active.countsByType[0].type"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ends here -->
+                  <!-- right row card 16 layout -->
+          <div class="row rightcontainerbox rightcontainerboxapprox"
+                *ngIf="kpiCards.includes('storage')" >
+            <div class="col-sm-12">
+              <div class="row meetingcontainer legalbox" *ngIf="product =='lauditor'">
+                <div class="col-sm-7">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <img src="assets/img/data.svg" alt="Meeting" class="icongroup">
+                    </div>
+                    <div class="col-sm-8">
+                      <p class="mname toalhours rightmatter cmatter">Used Storage</p>
+                      <span class="mattercount closedm"
+                            *ngIf=" storageModel || storageModel.currentStorage"
+                            [innerHtml]="storageModel.currentStorage"></span>
+                      <span class="mattertxtdata gb">GB</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ends here -->
+                 <!-- right row card 17 layout -->
+          <div class="row rightcontainerbox rightcontainerboxapprox"
+                *ngIf="kpiCards.includes('groups')" (click)="categoryRoute('/groups')">
+            <div class="col-sm-12">
+              <div class="row meetingcontainer legalbox">
+                <div class="col-sm-10">
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <img src="assets/img/total.svg" alt="Meeting" class="icongroup">
+                    </div>
+                    <div class="col-sm-7">
+                      <span class="mattertxtdata tpara"> Total</span>
+                      <p *ngIf = "product !='corporate'" class="mname toalhours approx tnumber">Number of Groups</p>
+                      <p *ngIf = "product =='corporate'" class="mname toalhours approx tnumber">Number of Departments</p>
+                    </div>
+                    <div class="col-sm-1">
+                      <span class="vertical verticaltotal"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-2">
+                  <p class="rightbox rightboxtxt rightrate rightratetime" [innerHtml]="groupsandtmsModel.totalGroups"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ends here -->
+                  <!-- right row card 18 layout -->
+          <div class="row rightcontainerbox rightcontainerboxapprox"
+                *ngIf="kpiCards.includes('teamMembers')" (click)="categoryRoute('/groups/view-member')">
+            <div class="col-sm-12">
+              <div class="row meetingcontainer legalbox">
+                <div class="col-sm-10">
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <img src="assets/img/totalteam.svg" alt="Meeting" class="icongroup">
+                    </div>
+                    <div class="col-sm-7">
+                      <span class="mattertxtdata tpara"> Total</span>
+                      <p class="mname toalhours approx tnumber">Team Members</p>
+                    </div>
+                    <div class="col-sm-1">
+                      <span class="vertical verticaltotal"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-2">
+                  <p class="rightbox rightboxtxt rightrate rightratetime" [innerHtml]="groupsandtmsModel.totalTms"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ends here -->
+                 <!-- right row card 19 layout -->
+          <div class="row rightcontainerbox rightcontainerboxapprox"
+                *ngIf="kpiCards.includes('submittedTs')" (click)="categoryRoute('/timesheets')">
+            <div class="col-sm-12">
+              <div class="row meetingcontainer legalbox">
+                <div class="col-sm-7">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <img src="assets/img/timesheet.svg" alt="Meeting" class="icongroup">
+                    </div>
+                    <div class="col-sm-6">
+                      <p class="mname toalhours approx">Submitted <br> Timesheet </p>
+                    </div>
+                    <div class="col-sm-1">
+                      <span class="vertical verticaltotal"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-5">
+                  <p class="rightbox rightboxtxt rightrate legaldate" *ngIf="!flag_submitted"> {{timesheetModelsub?.startDate}} TO <br>{{timesheetModelsub?.endDate}} </p>
+                  <p class="rightbox rightboxtxt rightrate legaldate" *ngIf="flag_submitted">No Timesheets</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ends here -->
+          <!-- right row card 20 layout -->
+          <div class="row rightcontainerbox rightcontainerboxapprox"
+                *ngIf="kpiCards.includes('pendingTs')" (click)="categoryRoute('/timesheets')">
+            <div class="col-sm-12">
+              <div class="row meetingcontainer legalbox">
+                <div class="col-sm-7">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <img src="assets/img/timesheet_pending.svg" alt="Meeting" class="icongroup">
+                    </div>
+                    <div class="col-sm-6">
+                      <p class="mname toalhours approx">Pending <br> Timesheet </p>
+                    </div>
+                    <div class="col-sm-1">
+                      <span class="vertical verticaltotal"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-5">
+
+                  <p class="rightbox rightboxtxt rightrate legaldate" *ngIf="!flag_pending">{{timesheetModelpen?.startDate}} TO <br> {{timesheetModelpen?.endDate}}</p>
+                  <p class="rightbox rightboxtxt rightrate legaldate" *ngIf="flag_pending">No Timesheets</p>
+
+                  
+   
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ends here -->
+          <!-- right row card 21 layout -->
+          <div class="row rightcontainerbox rightcontainerboxapprox"
+                *ngIf="kpiCards.includes('subscription') && subscriptionModel?.is_paid_sub ">
+            <div class="col-sm-12">
+              <div class="row meetingcontainer legalbox">
+                <div class="col-sm-8">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <img src="assets/img/widgetlogo.jpg" alt="Meeting" class="icongroup iconsub">
+                    </div>
+                    <div class="col-sm-8">
+                      <p class="mname toalhours rightmatter cmatter">Product Subscription</p>
+                      <span class="mattertxtdata subsdata"> Pending Payment</span>
+                      <button class="btn btn-primary actionbtn" *ngIf="subscriptionModel?.active_pay_btn" (click)="onButtonClick(subscriptionModel)">Pay Now</button>
+                    </div>
+                  </div>
+                  </div>
+                  <div class="col-sm-1">
+                      <span class="vertical verticaltotal verticaltwo"></span>
+                  </div>
+                  <div class="col-sm-3">
+                      <p class="rightbox rightboxtxt rightrate rightratetime maymonth"
+                         [innerHtml]="subscriptionModel.month">
+                      </p>
+                  </div> 
+              </div>
+            </div>
+          </div>
+          <!-- ends here -->
+                 <!-- right row card 22 layout -->
+          <div class="row rightcontainerbox rightcontainerboxapprox test card"
+                *ngIf="kpiCards.includes('relationships')" (click)="categoryRoute('/relationship/view/individuals')">
+            <div class="col-sm-12">
+              <div class="row meetingcontainer legalbox">
+                <div class="row mcontainer">
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <img src="assets/img/law.svg" alt="Meeting" class="icongroup">
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="mname toalhours approx rightmatter ">Relationship</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-3"></div>
+                  <div class="col-sm-4">
+                    <span class="mattertxt rtxt">Accepted</span>
+                    <span class="mattercount">{{relationshipModel.accepted}}</span>
+                  </div>
+                  <div class="col-sm-4">
+                    <span class="mattertxt rtxt">Pending</span>
+                    <span class="mattercount">{{relationshipModel.pending}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ends here -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- right dashboard ends here -->

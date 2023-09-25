@@ -1,0 +1,29 @@
+<div class="container update-members main width-alignment">
+    <div class="col-12 Individual createGroup">
+        <label for="select" class="lable-size update" *ngIf="product != 'corporate'">Update Groups</label>
+        <label for="select" class="lable-size update" *ngIf="product == 'corporate'">Update Departments</label>
+        <div class="row">
+            <div class="col-3"></div>
+            <div class="col-6">
+                <div class="form-group " id="selectbx">
+                  <div class="input-group group-custom-align court"
+                       *ngFor="let grp of groupList">
+                    <div class="multicheck form-control textbox"
+                       [class.active]="selectedIds.indexOf(grp.id) > -1">
+                      <div class="callselect" [innerHtml]="grp.name"></div>
+                      <input class="form-check-inpu calimg calitem input-group-app end checkboxitem"
+                             #inputEl
+                             [ngClass]="{'active': selectedIds.includes(grp.id)}"
+                             [checked]="selectedIds.includes(grp.id)"
+                             type="checkbox"
+                             (change)="selectGrp(grp, inputEl.checked)">
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+     <div class="btnbox">
+        <button type="button" class="btn btn-default btncancel" (click)= "cancel()">Cancel</button>
+        <button type="button" class="btn btn-default btnsave" (click)="save()">Save</button>
+     </div>
+</div>

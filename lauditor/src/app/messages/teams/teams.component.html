@@ -1,0 +1,89 @@
+<div class="row main width-alignment   stepitem ">
+    <div class="col-xs-12 col-sm-12 col-md-6">
+        <!-- Form Component -->
+        <!-- left row card 1 layout -->
+        <div class="row containerbox containerboxone messagecontainer ">
+            <div class="col-sm-12">
+                <div class="container seobox">
+                    <form>
+                        <!-- input filled with search icon -->
+                        <label for="title" class="msglabel" *ngIf="product != 'corporate'">List of Groups</label>
+                        <label for="title" class="msglabel" *ngIf="product == 'corporate'">List of Departments</label>
+                        <div class="form-group">
+                            <div class="input-group court" id="search">
+                                <input type="text" class="form-control textbox" placeholder="Search" />
+                                <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg"
+                                    style="margin-top:12px">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- container for msg notifcation -->
+            <!-- message notifcation box one -->
+            <div class="col-sm-12 messagecont" *ngFor="let admin of data ; let i = index">
+                <div class="row meetingcontainer legalboxleft container msgcontainer toggelchat" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    <div class="col-sm-9 col-xs-9 toggleresponse">
+                        <div class="row">
+                            <div class="col-sm-2 col-xs-2">
+                                <div class="chatpretxt">
+                                    <span class="chatuser">{{admin.groupName[0]}}</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-10 col-xs-10 usertag usertagadmin">
+                                <p class="chatusertitle"> {{admin.groupName}} </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 ">
+                        <div class="msgtime">
+                            <label class="mtime mchildtimetxt">09:30am</label>
+                        </div>
+                        <div class="circlemsg">
+                            <img src="assets/img/pluscricle.JPG" class="subcircleimg chatevent">
+                        </div>
+                    </div>
+                </div>
+           
+              
+
+                <!-- message box2 to ends here  -->
+                <!-- message box3 to starts here  -->
+                <div class="col-sm-12 " class="collapse" id="collapseExample" *ngFor="let i of admin.users;let j = index">
+                    <div  (click)="getClientInfo(i)" class="row meetingcontainer legalboxleft container msgcontainer toggelchat">
+                        <div class="col-sm-9 col-xs-9 toggleresponse">
+                            <div class="row">
+                                <div class="col-sm-2 col-xs-2">
+                                    <div class="chatpretxt">
+                                        <img src="assets/img/marry.JPG" class="expanduserico">
+                                    </div>
+                                </div>
+                                <div class="col-sm-10 col-xs-10  usertag ">
+                                    <p class="chatusertitle"> {{i.name}} </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 ">
+                            <div class="msgtime">
+                                <label class="mtime timeexpand">09:30am</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- ends here -->
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-6">
+        <chat></chat>
+    </div>
+</div>
+<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+    Button with data-bs-target
+  </button>
+<div class="collapse" id="collapseExample">
+  <div class="card card-body">
+    Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+  </div>
+</div>

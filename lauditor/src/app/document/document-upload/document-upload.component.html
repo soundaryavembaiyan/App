@@ -1,0 +1,385 @@
+<!--component html goes here -->
+<!--component html goes here -->
+<div>
+  <div class="row upload-document ">
+    <div style="background:#f8f8f8;height:auto; padding:30px 0">
+      <div class="col-12 main-width">
+        <div class="row">
+          <div class="col-6" *ngIf="filter==='client'">
+            <div class="form-group" *ngIf="product != 'corporate'">
+              <label for="title" class="fontbold" *ngIf="product != 'content'">Client Name <span class="mandate">*</span></label>
+              <label for="title" class="fontbold" *ngIf="product == 'content'">Customer Name <span class="mandate">*</span></label>
+              <div class="ng-autocomplete textbox">
+                <form autocomplete="off" novalidate [formGroup]="reactiveForm"
+                  (ngSubmit)="uploadMore()">
+                  <!-- Product != Content -->
+                  <ng-autocomplete [data]="data" [searchKeyword]="keyword"
+                    placeholder="Type to select " 
+                    (selected)='selectEvent($event)'
+                    (inputCleared)='onChangeSearch($event)'
+                    (inputFocused)='onFocused($event)'
+                    [itemTemplate]="itemTemplate"
+                    [notFoundTemplate]="notFoundTemplate">
+                    <!-- <i class="fa fa-chevron-down" aria-hidden="true"></i> -->
+                  </ng-autocomplete>
+                  <!-- Product == Content -->
+                  <!--<ng-autocomplete [data]="data" [searchKeyword]="keyword"
+                    placeholder="select customer" *ngIf="product == 'content'"
+                    (selected)='selectEvent($event)'
+                    (inputChanged)='onChangeSearch($event)'
+                    (inputFocused)='onFocused($event)'
+                    [itemTemplate]="itemTemplate"
+                    [notFoundTemplate]="notFoundTemplate">
+                    <!-- <i class="fa fa-chevron-down" aria-hidden="true"></i> --
+                  </ng-autocomplete>-->
+
+                  <ng-template #itemTemplate let-item>
+                    <a [innerHTML]="item.name"></a>
+                  </ng-template>
+
+                  <ng-template #notFoundTemplate let-notFound>
+                    <div [innerHTML]="notFound"></div>
+                  </ng-template>
+                  <!-- <i class="fa fa-chevron-down"></i> -->
+                </form>
+
+                <ng-template #notFoundTemplate let-notFound>
+                  <div [innerHTML]="notFound"></div>
+                </ng-template>
+                <!-- <i class="fa fa-chevron-down"></i> -->
+              </div>
+            </div>
+            <div class="form-group" *ngIf="product == 'lauditor' || product == 'corporate'">
+              <label for="title" class="fontbold" *ngIf="product == 'lauditor'">Matter</label>
+              <label for="title" class="fontbold" *ngIf="product == 'corporate'">Matter<span class="mandate">*</span></label>
+              <div class="dropdown-select textbox">
+                <select class="textbox" (change)="onChange($event.target)">
+                  <option hidden value="">Type to select</option>
+                  <option class="textbox" *ngFor="let i of matterList "
+                    value="{{i.id}}">{{i.title}}</option>
+                </select>
+                <i class="fa fa-chevron-down"></i>
+              </div>
+            </div>
+          </div>
+          <!-- firm code -->
+          <div class="col-6" *ngIf="filter==='firm'">
+            <div class="form-group " id="selectbx">
+              <div class="input-group court" id="search">
+                <div class="multicheck form-control textbox">
+                  <label class="callselect" *ngIf="product != 'corporate'">Select Group(s) <span class="mandate">*</span></label>
+                  <label class="callselect" *ngIf="product == 'corporate'">Select Department(s) <span class="mandate">*</span></label>
+                  <i *ngIf="!isSelectGroup"
+                    class=" fa fa-plus form-check-inpu calimg calitem
+                    input-group-append checkboxitem"
+                    aria-hidden="true" (click)="selectGroup(true)"></i>
+                  <i *ngIf="isSelectGroup"
+                    class=" fa fa-minus form-check-inpu calimg calitem
+                    input-group-append checkboxitem"
+                    aria-hidden="true" (click)="selectGroup(false)"></i>
+                </div>
+              </div>
+              <div class="" *ngIf="isSelectGroup">
+                <div class="input-group index court" id="search">
+                  <div class="multicheck form-control textbox" *ngFor="let item
+                    of groupViewItems">
+                    <label class="callselect">{{item.name}}</label>
+                    <input type="checkbox" class="calimg calitem
+                      input-group-append checkboxitem " 
+                      value="" id="flexCheckDefault" [checked]="item.isChecked"
+                      #inputEl (change)="selectGroupItem(item,inputEl.checked)">
+                     
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div *ngIf="!isSelectGroup" class="codeAlign selected-group">
+                  <div class="cod" *ngFor="let item of selectedGroupItems;let i=
+                    index">
+                    <div class="documents-list ng-item"> {{item.name}}
+                      <div class="icon-list">
+                        <div class="icons"><i class="fa fa fa-regular
+                            fa-circle-xmark" style="color:red;font-size: 24px;"
+                            (click)="removeGroup(item)"></i>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <div class="form-group ">
+              <label for="title" class="fontbold">Categories </label>
+              <input type="text" class="form-control textbox" id="caseType" placeholder="Type to select"
+                name="caseno">
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group ggg">
+              <label for="title" class="fontbold" *ngIf="uploadDocs.length==0">Select Document(s)
+                <span class="mandate">*</span></label>
+                <label for="title" class="fontbold" *ngIf="uploadDocs.length>0">Selected Document(s) to upload
+                  <span class="mandate">*</span></label>
+              <div class="input-group court" id="search">
+                <input multiple #file type="file" id="file"
+                  style="display:none;" class="myclass"
+                  class="form-control textbox"
+                  (change)="getFileDetails($event.target)" />
+                <input type="text" id="file" class="myclass" class="form-control
+                  textbox"
+                  [value]="uploadDocs.length + ' files'" disabled />
+                <button  [ngClass]="{'bgColor':uploadDocs.length>0}"  id="btnadd" for="file" class="input-group-append
+                  appendadd"
+                  (click)="file.click()">Browse</button>
+              </div>
+              <h6 class="m-tb">Upload one or more documents </h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 main-width">
+      <label for="title" 
+        class=" selected">Selected Document(s)</label>
+      <div class="row">
+        <div class=" col-6 m-tb"
+          [ngClass]="{'mouseAction':uploadDocs.length==0}">
+          <!-- <div class="btnaction">
+            <a href="#" class="selectprior optionhigh active"> Enable Download</a>
+            <a href="#" class="selectprior optionaling"> Disable Download</a>
+          </div> -->
+          <div class="btn-group  buttonSize" role="group" aria-label="Basic radio toggle
+            button group">
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio1"
+              autocomplete="off" [checked]="checker">
+            <label class="btn btn-outline-primary" for="btnradio1"
+              (click)="docEnable('enable')">Enable Download</label>
+
+            <input type="radio" class="btn-check" name="btnradio" id="btnradio2"
+              autocomplete="off" [checked]="!checker">
+            <label class="btn btn-outline-primary" for="btnradio2"
+              (click)="docEnable('disable')">Disable Download</label>
+          </div>
+
+        </div>
+        <div class="col-6 m-tb width-align-upload">
+          <div class="btn-group" role="group" aria-label="Basic radio toggle
+            button group">
+            <!-- <input type="radio" class="btn-check" name="btnradio1" id="btnradio3" autocomplete="off">
+            <label class="btn btn-outline-primary active" for="btnradio3" (click)="filterDoc('editMeta')">Edit Metadeta</label> -->
+            <!-- <input type="radio" class="btn-check" name="btnradio1"
+              id="btnradio4" autocomplete="off"> -->
+            <label class="btn btn-outline-primary" for="btnradio4" [ngClass]="{'active':addTag}"
+              (click)="filterDoc('addTags')">Add Tags</label>
+          </div>
+          <div *ngIf="!editMetaFlag" class="selectAll float-right"> Select All
+            <input  type="checkbox" class="inputEl" #inputEl [checked]="allCheck"  (change)="checkAllItem(inputEl.checked)"></div>
+        </div>
+        <div class="codeAlign">
+          <div class="cod" *ngFor="let item of uploadDocs;let i= index">
+
+            <div #itemlist class="documents-list ng-item" [ngClass]="{'active':
+              selectedIdx == i}">
+              <div class="row">
+                <div class="col-10 text-over">
+                  {{item.name}}
+                </div>
+                <div class="col-2">
+                  <div class="icon-list">
+                    <!-- <div class="icons" *ngIf="editMetaFlag && editMetaData"> <i (click)="editDocument(item,i)"
+                    class="fa fa-edit"></i></div> -->
+                    <table>
+                      <tbody>
+                        <tr>
+                    <td class="icons"> <i (click)="editDocument(item,i)"
+                        class="fa fa-edit"></i></td>
+                    <td class="icons" *ngIf="addTag"><input
+                        type="checkbox" [checked]="item.checked" #inputE2
+                        (change)="checkedItem(inputE2.checked,item)"></td>
+                    <td class="icons" [ngClass]="{'disable':
+                      !item.downloadDisabled}"><i class="fa fa-download"
+                        (click)="disableDoc(item ,item.downloadDisabled)"></i></td>
+                    <td class="icons"><i class="fa fa-times-circle"
+                        style="color:red" (click)="removeDocument(item)"></i>
+                    </td>
+
+                  </tr>
+                  </tbody>
+                  </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+        <div *ngIf="editDoc">
+          <hr class="new3">
+          <form [formGroup]="documentDetail" (ngSubmit)="onSubmit()">
+            <div class="col-12 ">
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="documentName" class="fontbold">Document Name
+                      <span class="mandate">*</span>
+                    </label>
+                    <input type="text" class="form-control textbox"
+                      [(ngModel)]="editMeta.name" id="documentName"
+                      name="name" formControlName="name" [maxLength]="50"
+                      [ngClass]="{'is-invalid':submitted && f.name.errors}">
+                    <div *ngIf="submitted && f.name.errors"
+                      class="invalid-feedback">
+                      <div *ngIf="f.name.errors.required">Document Name is
+                        required</div>
+                    </div>
+                    <div class="count-div">
+                      <div class="count-text" *ngIf="editMeta.name">{{editMeta.name.length}}/50</div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="title" class="fontbold"> Expiration Date</label>
+                    <div class="input-group">
+                      <mat-form-field>
+                        <input matInput [matDatepicker]="picker"
+                          placeholder="Choose a date"
+                          formControlName="date_of_filling"
+                          [(ngModel)]="editMeta.date_of_filling">
+                        <mat-datepicker-toggle matSuffix [for]="picker"
+                          (dateChange)="setNewDepartureDate()"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="filling date" class="fontbold">Description<span
+                        class="mandate">*</span></label>
+                    <textarea rows="4" [(ngModel)]="editMeta.description"
+                      cols="50" class="form-control textbox"
+                      formControlName="description" name="description"
+                      [ngClass]="{'is-invalid':submitted &&
+                      f.description.errors}" maxlength="300"></textarea>
+                    <div *ngIf="submitted && f.description.errors"
+                      class="invalid-feedback">
+                      <div *ngIf="f.description.errors.required">Description is required</div>
+                    </div>
+                    <div class="count-div">
+                      <div class="count-text" *ngIf="editMeta.description">{{editMeta.description.length}}/300</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="btnbox">
+              <button type="button" class="btn btn-default btncancel"
+                (click)="onReset()">Cancel</button>
+              <button type="submit" class="btn btn-default btnsave savecls">Save</button>
+            </div>
+          </form>
+        </div>
+        <div class="row metadata">
+          <div class="col-3"></div>
+          <div *ngIf="noOfDocs>0 && addTag" class="col-6">
+            <div class=" name-set">
+              <div class="tags">
+                <div class="tags-width float-right"><button class="btn
+                    btn-primary" (click)="addvalue()">ADD</button>
+                </div>
+              </div>
+
+              <div *ngFor="let value of values; let i= index">
+                <div class="col-12">
+                  <div class="row">
+                    <div class="col-5">
+                      <div class="form-group name-set">
+                        <label for="title" class="fontbold tab-margin">Tag Type
+                        </label>
+                        <input type="text" [(ngModel)]="value.tagtype"
+                          #name="ngModel" name="tags{{ i }}"
+                          class="form-control textbox" id="caseType">
+                      </div>
+                    </div>
+                    <div class="col-5">
+                      <div class="form-group name-set">
+                        <label for="title" class="fontbold tab-margin">Tags
+                        </label>
+                        <input type="text" [(ngModel)]="value.tag"
+                          #name="ngModel" name="tags{{ i }}"
+                          class="form-control textbox" id="caseType">
+                      </div>
+                    </div>
+                    <div class="col-1">
+                      <label for="title" class="fontbold tab-margin"> </label>
+                      <div (click)="removevalue(i)"><i class="fa
+                          fa-times-circle" aria-hidden="true"></i></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="btnbox">
+              <button type="button" class="btn btn-default btncancel"
+                (click)="cancel()">Cancel</button>
+              <button type="submit" class="btn btn-default btnsave"
+                (click)="submit()">Save</button>
+
+            </div>
+          </div>
+          <div class="col-3"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class=" row main stepitem ">
+      <div class="col-sm-12" *ngIf="!addTag && !editDoc">
+        <!-- button cancel and save -->
+        <div class="btnbox">
+          <button type="reset" class="btn btn-default btncancel"
+            (click)="cancelUpload()">Cancel</button>
+          <button type="submit" class="btn btn-default btnsave savecls"
+            [ngClass]="{'disabled':!((uploadDocs.length>0 && clientId.length>0)
+            || (uploadDocs.length>0 && selectedGroupItems.length>0)) }"
+            (click)="saveFiles()">Upload</button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Button trigger modal -->
+
+<!-- Modal -->
+
+<jw-modal id="custom-modal-2" class="custom-modal-2 upload-doc">
+  <div class="container">
+    <div class="row">
+      <div class="alertbox">
+        <div class="iconclose" (click)="closeModal('custom-modal-2');">X</div>
+        <div class="alertpara">
+          <p class="alertparatxt" *ngIf="errorRes"> Success</p>
+          <p class="alertparatxt" *ngIf="!errorRes"> Uploading</p>
+        </div>
+        <div class="alertext" *ngIf="errorRes">Congratulations!! <br> You have
+          successfully uploaded <br>
+          <b>{{successRes.length}} </b> documents</div>
+        <!-- <div class="alertexjljksakdt" *ngIf="!errorRes">{{message}}</div> -->
+        <div class="alertbutton">
+          <button class="btn btn-default upload-btn"
+            (click)="closeModal('custom-modal-2');uploadMore()">Upload
+            More</button>
+          <button class="btn btn-default alertbtn"
+            (click)="closeModal('custom-modal-2');viewChanges()">View
+            Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</jw-modal>

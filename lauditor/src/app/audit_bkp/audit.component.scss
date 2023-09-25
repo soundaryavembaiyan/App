@@ -1,0 +1,89 @@
+.nameSet {
+    width: 90%;
+}
+
+.createGroup {
+
+    select,
+    input,
+    textarea {
+        background: #EEEEEE;
+        border: none;
+    }
+
+    .group-custom-align {
+        width: 41%;
+        margin: 0 auto;
+        margin-top: 5px;
+    }
+
+    .multicheck {
+        text-align: left;
+    }
+}
+
+.round-icon {
+    text-align: center;
+}
+
+.stepone {
+    text-align: center;
+    margin: 0 auto;
+    padding-bottom: 0px;
+}
+
+.steprow {
+    margin-bottom: 10px;
+}
+
+.btncancel,
+.btnsave {
+    margin-left: 20px;
+}
+
+.hide {
+    display: none;
+}
+
+.btnsave {
+    margin-left: 0px;
+    margin-top: 10px;
+}
+
+.Individual {
+    width: unset;
+}
+
+.audit-head {
+    color: #004d87;
+    font-size: 25px;
+    font-weight: bold;
+    text-align: center;
+}
+
+label.lable-size {
+    color: #004d87;
+    font-size: 15px;
+    font-weight: 700;
+    padding-bottom: 5px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label.lable-size.advance {
+    font-size: 20px;
+    margin-top: 10px;
+}
+
+tbody tr:nth-child(odd) {
+    background: #EEEEEE;
+}
+
+tbody tr:nth-child(even) {
+    background: #FFF;
+}
+pagination-controls {
+    text-align: end;
+}

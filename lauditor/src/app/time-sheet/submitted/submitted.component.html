@@ -1,0 +1,195 @@
+<!--component html goes here -->
+<!--component html goes here -->
+
+
+<div class="row width-alignment">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-12 width-alignment">
+                <div class="timesheettitle margin-div">Timesheet Entry :</div>
+                <div class="row  margin-div">
+                    <div class="col-2">
+                        <label for="title" class="fontbold"> From</label>
+                        <div class="input-group dates">
+                            <!-- <input type="text" class="disable calendorselect" [(ngModel)]="minDate" disabled="true"> -->
+                           
+                            {{timeSheetData?.headers?.Mon}}
+                            <!-- <input class="form-control" bsDatepicker id="drp" #dp="bsDatepicker" [(ngModel)]="minDate"
+                                [bsValue]="minDate" (bsValueChange)='selectFromDuration($event)'
+                                [bsConfig]="{ dateInputFormat: 'MMM DD, YYYY', containerClass:'theme-dark-blue', showWeekNumbers:false, customTodayClass: 'custom-today-class' }"
+                                readonly disabled="true"> -->
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <label for="title" class="fontbold"> To</label>
+                        <div class="input-group dates">
+                            {{timeSheetData?.headers?.Sun}}
+                            <!-- <input type="text" class="disable calendorselect" [(ngModel)]="maxDate" disabled="true"> -->
+                            <!-- <input class="form-control" bsDatepicker id="drp" #dp="bsDatepicker" [(ngModel)]="maxDate"
+                                [bsValue]="maxDate" (bsValueChange)='selectToDuration($event)'
+                                [bsConfig]="{ dateInputFormat: 'MMM DD, YYYY', containerClass:'theme-dark-blue', showWeekNumbers:false, customTodayClass: 'custom-today-class' }"
+                                readonly disabled="true"> -->
+                        </div>
+                    </div>
+                    <!-- <div class="col-1 fa-icon">
+                        <i class="fa fa-chevron-left" aria-hidden="true" (click)="preAndNextWeek('pre')"></i>
+                        <i class="fa fa-chevron-right" aria-hidden="true" (click)="preAndNextWeek('next')"></i>
+
+                    </div> -->
+                    <div class="col-1 fa-icon">
+                        <div class="itemlist">
+                            <i class="fa fa-thin fa-chevron-left" aria-hidden="true"  (click)="preAndNextWeek('pre')"></i> 
+                            <i class="fa fa-thin fa-chevron-right" aria-hidden="true" (click)="preAndNextWeek('next')"></i>
+                            <!-- <img src="assets/img/right.PNG" (click)="preAndNextWeek('pre')" class="lefticon">
+                            <img src="assets/img/left.PNG" (click)="preAndNextWeek('next')" class="righticon"> -->
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="btn-align form-group">
+                            <a href="javascript:void(0);" class="selectprior optionhigh active"> Week</a>
+                            <a href="javascript:void(0);" class="selectprior optionlow optionaling"> Month</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div *ngIf="timeSheetData && isFrozen" style="width:90%;margin:0 auto">
+    <div class="hr-line">
+        <h1></h1>
+    </div>
+    <table class="tsheet-table margin-div" >
+        <thead>
+            <tr>
+                <!-- <th *ngFor="let item of timesheetList.headers" class="tHeader">{{item}}<br>{{item}}</th> -->
+                <th class="projectName" style="vertical-align: middle;">{{timeSheetData['headers'].header1}}</th>
+                <th class="taskname" style="vertical-align: middle;">{{timeSheetData['headers'].header2}}</th>
+                <th class="date">Mon <br>{{timeSheetData['headers'].Mon}}</th>
+                <th class="date">Tue <br>{{timeSheetData['headers'].Tue}}</th>
+                <th class="date">Wed <br>{{timeSheetData['headers'].Wed}}</th>
+                <th class="date">Thu <br>{{timeSheetData['headers'].Thu}}</th>
+                <th class="date">Fri <br>{{timeSheetData['headers'].Fri}}</th>
+                <th class="date">Sat <br>{{timeSheetData['headers'].Sat}}</th>
+                <th class="date">Sun <br>{{timeSheetData['headers'].Sun}}</th>
+                <th class="date">{{timeSheetData['headers'].header3}}</th>
+            </tr>
+        </thead>
+        <tbody>
+        
+            <ng-container *ngFor="let item of timeSheetData['matters']; let pIndex = index">
+                <tr class="task-name" *ngIf="item.tasks[0]?.total">
+                    <td class="projectN" [attr.rowspan]="item.tasks.length">{{item.matterName}}
+                        <!-- <br><button class="btn btn-xs btn-primary" (click)="addTask(item.matterId, item.matterName, pIndex)"
+                          [disabled]="frozen">Add Task</button> -->
+                    </td>
+                    <td class="tasks">{{item.tasks[0].taskName}}<span *ngIf="item.tasks[0].taskName != ''"> </span>
+                    </td>
+                    <ng-container *ngIf="item.tasks[0].taskName == ''">
+                        <td>{{item.tasks[0].Mon['hours']}}</td>
+                        <td>{{item.tasks[0].Tue['hours']}}</td>
+                        <td>{{item.tasks[0].Wed['hours']}}</td>
+                        <td>{{item.tasks[0].Thu['hours']}}</td>
+                        <td>{{item.tasks[0].Fri['hours']}}</td>
+                        <td>{{item.tasks[0].Sat['hours']}}</td>
+                        <td>{{item.tasks[0].Sun['hours']}}</td>
+                    </ng-container>
+                    <ng-container *ngIf="item.tasks[0].taskName != ''">
+                        <td>
+                            <div *ngIf="item.tasks[0].Mon['hours']!=0 || item.tasks[0].Mon['minutes']!=0 ">
+                                {{item.tasks[0].Mon['hours']}}:{{item.tasks[0].Mon['minutes']}}
+                            </div>
+                        </td>
+                        <td>
+                            <div *ngIf="item.tasks[0].Tue['hours']!=0 || item.tasks[0].Tue['minutes']!=0 ">
+                                {{item.tasks[0].Tue['hours']}}:{{item.tasks[0].Tue['minutes']}}
+                            </div>
+                        </td>
+                        <td>
+                            <div *ngIf="item.tasks[0].Wed['hours']!=0 || item.tasks[0].Wed['minutes']!=0 ">
+                                {{item.tasks[0].Wed['hours']}}:{{item.tasks[0].Wed['minutes']}}
+                            </div>
+                        </td>
+                        <td>
+                            <div *ngIf="item.tasks[0].Thu['hours']!=0 || item.tasks[0].Thu ['minutes']!=0 ">
+                                {{item.tasks[0].Thu['hours']}}:{{item.tasks[0].Thu['minutes']}}
+                            </div>
+                        </td>
+                        <td>
+                            <div *ngIf="item.tasks[0].Fri['hours']!=0 || item.tasks[0].Fri['minutes']!=0 ">
+                                {{item.tasks[0].Fri['hours']}}:{{item.tasks[0].Fri['minutes']}}
+                            </div>
+                        </td>
+                        <td>
+                            <div *ngIf="item.tasks[0].Sat['hours']!=0 || item.tasks[0].Sat['minutes']!=0 ">
+                                {{item.tasks[0].Sat['hours']}}:{{item.tasks[0].Sat['minutes']}}
+                            </div>
+                        </td>
+                        <td>
+                            <div *ngIf="item.tasks[0].Sun['hours']!=0 || item.tasks[0].Sun['minutes']!=0 ">
+                                {{item.tasks[0].Sun['hours']}}:{{item.tasks[0].Sun['minutes']}}
+                            </div>
+                        </td>
+                    </ng-container>
+                    <td>{{item.tasks[0].total}}</td>
+                </tr>
+                <ng-container *ngFor="let number of item.tasks; let tIndex= index;">
+                    <tr *ngIf="tIndex!=0">
+                        <td class="tasks">{{number.taskName}} </td>
+
+                        <td>
+                            <div *ngIf="number.Mon['hours']!=0 || number.Mon['minutes']!=0">
+                                {{number.Mon['hours']}}:{{number.Mon['minutes']}}
+                            </div>
+                        </td>
+
+                        <td>
+                            <div *ngIf="number.Tue['hours']!=0 || number.Tue['minutes']!=0">
+                            {{number.Tue['hours']}}:{{number.Tue['minutes']}}
+                                    </div>
+                        </td>
+                        <td>
+                            <div *ngIf="number.Wed['hours']!=0 || number.Wed['minutes']!=0">
+                            {{number.Wed['hours']}}:{{number.Wed['minutes']}}
+                                </div>
+                                </td>
+                                
+                        <td>
+                            <div *ngIf="number.Thu['hours']!=0 || number.Thu['minutes']!=0">
+                            {{number.Thu['hours']}}:{{number.Thu['minutes']}}
+                            </div>
+                                </td>
+                        <td>
+                            <div *ngIf="number.Fri['hours']!=0|| number.Fri['minutes']!=0">
+                            {{number.Fri['hours']}}:{{number.Fri['minutes']}}
+                            </div>
+                                </td>
+                        <td>
+                            <div *ngIf="number.Sat['hours']!=0|| number.Sat['minutes']!=0">
+                            {{number.Sat['hours']}}:{{number.Sat['minutes']}}
+                                    </div>
+                                </td>
+                        <td>
+                            <div *ngIf="number.Sun['hours']!=0|| number.Sun['minutes']!=0">
+                            {{number.Sun['hours']}}:{{number.Sun['minutes']}}
+                                </div>
+                                </td>
+                                
+
+                        <td>{{number.total}}</td>
+                    </tr>
+                </ng-container>
+            </ng-container>
+        
+        </tbody>
+    </table>
+<table  class="table-total margin-bottom">
+    <tr class="total-hours"><td style="width:100%; padding: 0 39px;
+        font-weight: bolder;" >Total <span class="float-right">{{timeSheetData.weekTotal.wTotal}}</span></td> </tr>
+</table>
+
+</div>

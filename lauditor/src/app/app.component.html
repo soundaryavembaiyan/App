@@ -1,0 +1,9 @@
+<app-dashboard *ngIf="isDisplayDashboard"></app-dashboard>
+<!-- <router-outlet></router-outlet> -->
+<ng-container *ngIf="!isDisplayDashboard">
+<div [ngSwitch]="path" >
+<app-forgotpwd *ngSwitchCase="'forgotpassword'" ></app-forgotpwd>
+<app-resetpwd *ngSwitchCase="'resetpwd'" ></app-resetpwd>
+<app-login  *ngSwitchDefault ></app-login>
+</div>
+</ng-container>

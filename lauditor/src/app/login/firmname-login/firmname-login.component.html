@@ -1,0 +1,41 @@
+<div class="loginform">
+    <div class="lblmsg">
+       <label class="logininfo">The email address is associated with muliple firms.</label>
+       <label class="logininfo">Please select firm to sign in</label>
+    </div>
+  <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+    <div class="lblmsg">
+        <label id="id_alert" class="logininfo"></label>
+    </div>
+    <div class="form-floating mb-3 mt-3">
+        <select class="form-select custselect"
+                formControlName="firmname">
+          <option *ngFor="let item of firms; let i = index"
+                  [ngValue]="item.id">{{ item.firmName }}</option>
+        </select>
+        <label for="firmname" class="lblfocus">Select Firm</label>
+    </div>
+   <div class="form-floating mt-3 mb-3">
+        <input type="password"
+               class="form-control custominput"
+               id="pwd"
+               formControlName='password'
+               placeholder="Enter password"
+               [ngClass]="{ 'is-invalid': submitted && f.password.errors }"
+               name="pswd">
+        <label for="pwd" class="lblfocus">Password</label>
+        <img src="/assets/site/images/eyesview.JPG"
+             class=" input-group-append viewpass " onclick="showpass()">
+        <div *ngIf="submitted && f['password'].errors" class="text-danger">
+            <div *ngIf="f['password'].errors">Password is required</div>
+            <div *ngIf="f['password'].errors">{{f['password'].errors['msg']}}</div>
+        </div>
+    </div> 
+   <div class="btnlogin">
+      <button type="button"
+              (click)="cancelml()"
+              class="btn btn-secondary btnlogincancel btncomman">Cancel</button>
+      <button type="submit" class="btn btn-primary btnloginsubmit btncomman">Submit</button>
+    </div> 
+  </form>
+</div>

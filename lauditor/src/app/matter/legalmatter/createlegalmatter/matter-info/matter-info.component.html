@@ -1,0 +1,246 @@
+<form [formGroup]="caseRegister" (ngSubmit)="onSubmit()">
+  <div class="row main main-width stepitem ">
+
+    <div class="col-xs-12 col-sm-12 col-md-6">
+      <!-- Form Component -->
+      <!-- left row card 1 layout -->
+
+      <div class="row containerbox containerboxone ">
+        <div class="col-sm-12">
+          <div class="container">
+
+            <!-- input field  -->
+            <div class="form-group">
+              <label for="title" class="fontbold">Case Title <span class="mandate">*</span>
+              </label>
+              <input formControlName="title" type="text" class="form-control textbox" id="title" name="title"
+                [ngClass]="{'is-invalid':submitted && f.title.errors}">
+              <div *ngIf="submitted && f.title.errors" class="invalid-feedback">
+                <div *ngIf="f.title.errors.required">Case Title is required</div>
+                <div *ngIf="f.title.errors.pattern"> Restricted Space at First Position </div>
+              </div>
+            </div>
+
+            <!-- input field  -->
+            <div class="form-group">
+              <label for="title" class="fontbold">Case Number <span class="mandate">*</span>
+              </label>
+              <input type="text" class="form-control textbox" id="caseNumbr" name="case_number"
+                formControlName="case_number" [ngClass]="{'is-invalid':submitted && f.case_number.errors}">
+              <div *ngIf="submitted && f.case_number.errors" class="invalid-feedback">
+                <div *ngIf="f.case_number.errors.required">Case Number is required</div>
+                <div *ngIf="f.case_number.errors.pattern"> Restricted Space at First Position </div>
+              </div>
+            </div>
+            <!-- calendor with icon -->
+            <div class="form-group">
+              <label for="filling date" class="fontbold">Date of Filling </label>
+              <div class="input-group date" id="datepicker">
+                <mat-form-field appearance="fill" class="form-group" style="width: 100%;">
+                  <input matInput [matDatepicker]="picker" formControlName="date_of_filling" name="date_of_filling"
+                    class="form-control " (click)="picker.open()" (dateChange)="addEvent('change', $event)" readonly>
+
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                  <!-- <div *ngIf="submitted && f.date_of_filling.errors" class="invalid-feedback">
+                    <div *ngIf="f.date_of_filling.errors.required">Date is required</div>
+                  </div> -->
+                </mat-form-field>
+                <!-- <img src="assets/img/calendor.svg" class="calimg calitem input-group-append calicon"> -->
+                <div *ngIf="submitted && f.date_of_filling.errors" class="invalid-feedback">
+                  <div *ngIf="f.date_of_filling.errors.required">Date is required</div>
+                </div>
+              </div>
+
+            </div>
+            <!-- text area -->
+            <div class="form-group">
+              <label for="filling date" class="fontbold">Description</label>
+              <textarea rows="4"  cols="50" class="form-control textbox" formControlName="description"
+                name="description" [ngClass]="{'is-invalid':submitted && f.description.errors}"
+                maxlength="300" #description></textarea>
+              <div *ngIf="submitted && f.description.errors" class="invalid-feedback">
+                <div *ngIf="f.description.errors.required">description is required</div>
+              </div>
+              <div class="count-div">
+                <div class="count-text" *ngIf="f.description">{{description.value.length}}/300</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="tags" class="fontbold">Matter Tags</label>
+              <input type="text" class="form-control textbox" id="tags" name="tags" placeholder="Type to add"
+                formControlName="tags">
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <!-- ends here -->
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-6">
+      <!-- component right side -->
+
+      <div class="row containerbox formcontainer">
+        <div class="col-sm-12">
+          <div class="container">
+            <!-- input field  -->
+            <div class="form-group">
+              <label for="title" class="fontbold">Case Type </label>
+              <input type="text" class="form-control textbox" id="case_type" name="case_type"
+                formControlName="case_type" [ngClass]="{'is-invalid':submitted && f.case_type.errors}">
+              <div *ngIf="submitted && f.case_type.errors" class="invalid-feedback">
+                <div *ngIf="f.case_type.errors.required">CaseType is required</div>
+              </div>
+            </div>
+            <!-- input filled with icon -->
+            <div class="form-group">
+              <label for="court" class="fontbold">Court</label>
+              <div class="input-group court" id="court_name">
+                <input type="text" class="form-control textbox" name="court_name" formControlName="court_name"
+                  [ngClass]="{'is-invalid':submitted && f.court_name.errors}" />
+                <img src="assets/img/court.svg" class="calimg calitem input-group-append courtimg">
+                <div *ngIf="submitted && f.court_name.errors" class="invalid-feedback">
+                  <div *ngIf="f.court_name.errors.required">Court is required</div>
+                </div>
+              </div>
+            </div>
+            <!-- input filled with icon -->
+            <div class="form-group">
+              <label for="judges" class="fontbold">Judge(s)</label>
+              <div class="input-group judges" id="judges">
+                <input type="text" class="form-control textbox" name="judges" formControlName="judges"
+                  [ngClass]="{'is-invalid':submitted && f.judges.errors}" />
+                <img src="assets/img/judge.svg" class="calimg calitem input-group-append courtimg">
+                <div *ngIf="submitted && f.judges.errors" class="invalid-feedback">
+                  <div *ngIf="f.judges.errors.required">Judge is required</div>
+                </div>
+              </div>
+            </div>
+            <!-- input switch button -->
+            <div class="row">
+              <div class="col-sm-7">
+                <p class="prioritytxt fontbold pad">Priority</p>
+              </div>
+              <div class="col-sm-5">
+                <p class="prioritytxt fontbold pad">Status</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-7">
+                <!-- <div class="custom-control custom-radio">
+                  <input id="High" type="radio" class="custom-control-input" value="High" name="priority"
+                    formControlName="priority" [ngClass]="{'is-invalid':submitted && f.priority.errors}">
+                  <label class="custom-control-label" for="male">High</label>
+                </div> -->
+
+                <!-- <div class="custom-control custom-radio">
+                  <input id="Medium" type="radio" class="custom-control-input" value="Medium" name="priority"
+                    formControlName="priority">
+                  <label class="custom-control-label" for="female">Medium</label>
+                </div> -->
+                <!-- <div class="custom-control custom-radio">
+                  <input id="Low" type="radio" class="custom-control-input" value="Low" name="priority"
+                    formControlName="priority">
+                  <label class="custom-control-label" for="female">Low</label>
+                </div> -->
+
+                <!-- <div *ngIf="submitted && f.priority.errors" class="invalid-feedback">
+                  <div *ngIf="f.priority.errors.required">priority is required</div>
+                </div> -->
+                <ul class="nav nav-pills mb-3 btnaction" id="pills-tab" role="tablist">
+                  <li class="nav-item" (click)="getPriority('High')">
+                    <button  id="High"   name="priority"  [ngClass]="{'active': selectedPriority === 'High'}" class="selectprior optionhigh"
+                      id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab"
+                      aria-controls="pills-home" aria-selected="true">High</button>
+                  </li>
+                  <li class="nav-item" (click)="getPriority('Medium')">
+                    <button  id="Medium" [ngClass]="{'active': selectedPriority === 'Medium'}" name="priority"  class="selectprior optionaling"
+                      id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button"
+                      role="tab" aria-controls="pills-profile" aria-selected="false">Medium</button>
+                  </li>
+                  <li class="nav-item" (click)="getPriority('Low')">
+                    <button id="Low"  [ngClass]="{'active': selectedPriority === 'Low'}" name="priority"  class=" selectprior optionlow"
+                      id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button"
+                      role="tab" aria-controls="pills-contact" aria-selected="false">Low</button>
+                  </li>
+                </ul>
+              </div>
+              <div class="col-sm-5">
+                <ul class="nav nav-pills mb-3 btnaction" id="pills-tab" role="tablist">
+                  <li class="nav-item" (click)="getStatus('Active')">
+                    <button class="selectprior optionhigh" [ngClass]="{'active': selectedStatus === 'Active'}" id="pills-home-tab" data-bs-toggle="pill"
+                      data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home"
+                      aria-selected="true">Active</button>
+                  </li>
+                  <li class="nav-item" (click)="getStatus('Pending')">
+                    <button class="selectprior optionaling" [ngClass]="{'active': selectedStatus === 'Pending'}" id="pills-profile-tab" data-bs-toggle="pill"
+                      data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile"
+                      aria-selected="false">Pending</button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <!-- advoate file  -->
+            <!-- add file -->
+            <!-- <div class="form-group addfile">
+              <div class="input-group court" id="judge">
+                <input type="file" name="file" id="file" class="file">
+                <input type="text" name="file-name " placeholder="apponente advicates" id="file-name" class="textbox form-control"
+                  readonly="readonly">
+                <input type="button" class="btnfile" value="ADD">
+              </div>
+            </div>
+
+            <div formGroupName="memberDetail">
+              <div class="form-group">
+                <label for="title" class="fontbold">Name 
+                </label>
+                <input type="text" class="form-control textbox" id="member_name" name="member_name" placeholder="harvin name"
+                  formControlName="member_name" [ngClass]="{'is-invalid':submitted && f.member_name.errors}">
+                <div *ngIf="submitted && f.member_name.errors" class="invalid-feedback">
+                  <div *ngIf="f.member_name.errors.required">Name is required</div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="title" class="fontbold">Email Address
+                </label>
+                <input type="email" class="form-control textbox" id="email" name="email" placeholder="harvin name @123"
+                  formControlName="name" [ngClass]="{'is-invalid':submitted && f.email.errors}">
+                <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                  <div *ngIf="f.email.errors.required">Email is required</div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="title" class="fontbold">Number
+                </label>
+                <input type="number" class="form-control textbox" id="phoneNumber" name="phoneNumber" placeholder="harvin name @123"
+                  formControlName="phoneNumber" [ngClass]="{'is-invalid':submitted && f.phoneNumber.errors}">
+                <div *ngIf="submitted && f.phoneNumber.errors" class="invalid-feedback">
+                  <div *ngIf="f.phoneNumber.errors.required">phoneNumber is required</div>
+                </div>
+              </div>
+              <div class="btnbox">
+                
+                <button type="submit" class="btn btn-default btnsave savecls" (click)="addOpponenteAdvicate()">Save</button>
+          
+              </div>
+            </div> -->
+            <add-adivicate [editAdvocatesList]="data?.opponent_advocates||editeMatterInfo?.opponentAdvocates" (childButtonEvent)="receiveAutoMsgHandler($event)" ></add-adivicate>
+            <!-- end advocate -->
+            <!-- pagination -->
+
+          </div>
+          <!-- ends here -->
+        </div>
+      </div>
+
+    </div>
+    <div class="btnbox">
+      <button type="reset" class="btn btn-default btncancel btnrightitem" (click)="OnCancel()">Cancel</button>
+      <button type="submit" class="btn btn-primary btnsave savecls" [disabled]="isAddDisable"><span *ngIf="!isEdit">Next</span><span *ngIf="isEdit">Save</span></button>
+
+    </div>
+  </div>
+  <!-- grid ends here -->
+</form>

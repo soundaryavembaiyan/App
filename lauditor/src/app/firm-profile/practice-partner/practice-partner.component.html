@@ -1,0 +1,418 @@
+<!-- Practice Partner Table -->
+
+<div *ngIf="!isEdit && !isAdd">
+<div class="container-fluid">
+    <div class="row">
+  
+      <div class="row" [ngStyle]="{'display':isDisplay?'block':'none'}">
+        <div class="col-sm-12 compswitch ">
+          <!--Basic & Partner-->
+          <div class="switch  cswitch">
+            <a href="javascript:void(0);" class="optionone compone" [routerLink]="['/profile']" [ngClass]="{'active': selectedMatter === 'basicprofile'}" (click)="onClick('basicprofile')">Basic Profile</a>
+            <a href="javascript:void(0);" class="optiontwo comptwo" [routerLink]="['/partner']" [ngClass]="{'active': selectedMatter === 'practicepartner'}" (click)="onClick('practicepartner')">Practice Partner</a>
+            
+          </div><br>
+        </div>
+      </div>
+  
+    </div>
+</div>
+  <!-- Practice Partner Headers Buttons ends here!! -->
+
+  <!--Search input box-->
+  <div class="container-fluid col-6">
+    <div class="input-group court" id="search">
+      <input type="text" class="form-control textbox seogroup" placeholder="Search" required="" [(ngModel)]="searchText" (keydown)="onKeydown($event)">
+      <img style="top: 20px;" src="assets/img/search.svg" class="calimg calitem input-group-append searchimg" (click)="onKeydown($event)">
+    </div>
+  </div>
+  <!--Search input box ends here-->
+
+<!--Button for Add Practice Partner-->
+<!--<div class="float-right" style="margin-top: -62px; margin-right: 12px;">
+  <button class="optionone compone btnAdd" [routerLink]="['/add-partner']" aria-hidden="true"> + Add Practice Partner</button>
+</div>-->
+
+<div class="float-right" style="margin-top: -125px; margin-right: 5px;">
+  <div class="row">
+    <div class="col-sm-12 compswitch ">
+
+      <div class="switch  cswitch cswitchtwo">
+        <a href="javascript:void(0);" class="optionone compone btnAdd" (click)="addMember()">+ Add Practice Partner</a>  
+      </div>
+
+    </div>
+  </div>
+</div>
+<!--Button for Add Practice Partner ends here-->
+
+
+<div class="row width-alignment">
+  <div class="col-12">
+    <div class="row">
+      <div class="col-12 ">
+        <div class="pplist margin-div">Practice Partners List</div>
+        <div class="row  margin-div">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!--Get Table for Practice Partner-->
+<div class="col-sm-12 gridtable  width-alignment">
+    <table class="table table-borderless tblgrid">
+      <thead>
+        <tr class="theader">
+          <th>
+            <p class="thheadname"> First Name</p>
+            <img src="assets/img/SORT.PNG" class="sortico" (click)="sortingFile('first_name')">
+          </th>
+          <th >
+            <p class="thheadname"> Last Name</p>
+            <img src="assets/img/SORT.PNG" class="sortico" (click)="sortingFile('last_name')">
+          </th>
+          <th>
+            <p class="thheadname"> Email</p>
+            <img src="assets/img/SORT.PNG" class="sortico" (click)="sortingFile('email')">
+          </th>
+          <th>
+            <p class="thheadname"> Phone </p>
+            <img src="assets/img/SORT.PNG" class="sortico" (click)="sortingFile('phone')">
+          </th>
+          <th>
+            <p class="thheadname"> Designation</p>
+            <img src="assets/img/SORT.PNG" class="sortico" (click)="sortingFile('designation')">
+          </th>
+          <th>
+            <p class="thheadname"> Specialist</p>
+            <img src="assets/img/SORT.PNG" class="sortico" (click)="sortingFile('practice')">
+          </th>
+
+          <th>
+            <p class="thheadname"> Actions</p>
+            <img src="assets/img/SORT.PNG" class="sortico">
+          </th>          
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr class="rone veiw-items" *ngFor="let member of members | filter:searchText">
+          <td>{{ member.first_name }}</td>
+          <td>{{ member.last_name }}</td>
+          <td>{{ member.email }}</td> <!--&nbsp;-->
+          <td>{{ member.phone }}</td>
+          <td>{{ member.designation }}</td>
+          <td>{{ member.practice }}</td>
+         
+          <td>
+            <div class="actionIcon">
+                <i id="del" class="fa-regular fa-pen-to-square" aria-hidden="true" (click)="editMember(member)"></i> <!--[routerLink]="['/editpartner']"  ||  routerLink="/editpartner"-->  <!--(click)="editMember(member)"-->
+                <i id="del" class="fa-regular fa-trash-can" aria-hidden="true" (click)="deletePartner(member)"></i>
+            </div>
+           </td>
+        </tr>
+
+      </tbody>
+    </table>
+</div>
+
+<!--Get Table for Practice Partner ends here-->
+
+<!--<app-partner-edit *ngIf="isEdit"></app-partner-edit>-->
+
+</div>
+
+<!-- Practice Partner Table ends here -->
+
+
+<!-- Edit Partner Data -->
+<div *ngIf="isEdit">
+  <div class="container-fluid">
+      <div class="row">
+    
+        <div class="row" [ngStyle]="{'display':isDisplay?'block':'none'}">
+          <div class="col-sm-12 compswitch ">
+            <!--Basic & Partner-->
+            <div class="switch  cswitch">
+              <a href="javascript:void(0);" class="optionone compone"  [routerLink]="['/profile']" [ngClass]="{'active': selectedMatter === 'basicprofile'}" (click)="onClick('basicprofile')">Basic Profile</a>
+              <a href="javascript:void(0);" class="optiontwo comptwo" [ngClass]="{'active': selectedMatter === 'practicepartner'}" (click)="onClick('practicepartner')">Practice Partner</a>
+            </div>
+          </div>
+        </div>
+    
+      </div>
+  </div>
+    <!-- partner Header ends here!! -->
+  
+  
+  <!-- Add Practice Partner Profile -->
+  <form [formGroup]="myForm">
+      <div class="container main width-alignment">
+          <div class="firm-head">Edit Practice Partner</div>
+      </div>
+  
+      <div class="row main main-width stepitem topup">
+          <div class="col-xs-12 col-sm-12 col-md-6">
+              <!-- Form Component -->
+              <!-- left row card 1 layout -->
+  
+              <div class="row containerbox containerboxone ">
+                  <div class="col-sm-12">
+                      <div class="container">
+  
+                          <!-- First name -->
+                          <div class="form-group">
+                              <label for="firstname" class="fontbold">First Name <span class="mandate">*</span></label>
+                              <div class="input-group">
+                                  <input type="text" formControlName="first_name"  [ngModel]="selectedMember?.first_name" class="form-control textbox" name="firstname" />
+                              </div>
+                              <div *ngIf="myForm.get('first_name').errors && submitted" class="errorStyle">
+                                  <div *ngIf="myForm.get('first_name').errors.required">This field is required</div>
+                                  <!-- <div *ngIf="myForm.get('first_name').errors.pattern">Name should start with an Uppercase letter or contain only Uppercase letters & spaces.</div> -->
+                              </div>
+                          </div>
+  
+                          <!-- Designation  -->
+                          <div class="form-group">
+                              <label for="designation" class="fontbold">Designation<span class="mandate">*</span></label>
+                              <div class="input-group">
+                                  <input type="text" class="form-control textbox" formControlName="designation" [ngModel]="selectedMember?.designation" name="designation" />
+                              </div>
+                              <div *ngIf="myForm.get('designation').errors && submitted" class="errorStyle">
+                                  <div *ngIf="myForm.get('designation').errors.required">This field is required</div>
+                              </div>
+  
+                          </div>
+  
+                          <!-- Email -->
+                          <div class="form-group">
+                              <label for="email" class="fontbold">Email Address <span class="mandate">*</span></label>
+                              <div class="input-group">
+                                  <input type="email" class="form-control textbox" formControlName="email" [ngModel]="selectedMember?.email"  name="email" />
+                              </div>
+                              <div *ngIf="myForm.get('email').errors && submitted" class="errorStyle">
+                                  <div *ngIf="myForm.get('email').errors.required">This field is required</div>
+                                  <div *ngIf="myForm.get('email').errors.pattern">Invalid Email Address</div> 
+                              </div>
+                          </div>
+  
+                      </div>
+                  </div>
+              </div>
+              <!-- Left ends here -->
+  
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-6">
+              <!-- component right side -->
+  
+              <div class="row containerbox formcontainer">
+                  <div class="col-sm-12">
+                      <div class="container">
+                          <!-- Last Name -->
+                          <div class="form-group">
+                              <label for="lastname" class="fontbold">Last Name <span class="mandate">*</span> </label>
+                              <div class="input-group court">
+                                  <input type="text" class="form-control textbox" formControlName="last_name" [ngModel]="selectedMember?.last_name" name="lastname" />
+                              </div>
+                              <div *ngIf="myForm.get('last_name').errors && submitted" class="errorStyle">
+                                  <div *ngIf="myForm.get('last_name').errors && submitted" class="errorStyle">
+                                      <div *ngIf="myForm.get('last_name').errors.required">This field is required</div>
+                                      <!-- <div *ngIf="myForm.get('last_name').errors.pattern">Name should start with an Uppercase letter or contain only Uppercase letters & spaces.</div> -->
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <!-- Specialist -->
+                      <div class="form-group">
+                          <label for="practice" class="fontbold">Specialist <span class="mandate">*</span> </label>
+                          <div class="input-group">
+                              <input type="text" class="form-control textbox" formControlName="practice" [ngModel]="selectedMember?.practice" name="practice" />
+                          </div>
+                          <div *ngIf="myForm.get('practice').errors && submitted" class="errorStyle">
+                              <div *ngIf="myForm.get('practice').errors.required">This field is required</div>
+                          </div>
+                      </div>
+                      <!-- Phone Numbe -->
+                      <div class="form-group">
+                          <label for="phone" class="fontbold">Phone Number <span class="mandate">*</span> </label>
+                          <div class="input-group">
+                              <input type="text" class="form-control textbox" formControlName="phone" [ngModel]="selectedMember?.phone" maxlength="10" name="phone" />
+                          </div>
+  
+                            <div *ngIf="myForm.get('phone').errors && submitted" class="errorStyle">
+                              <div *ngIf="myForm.get('phone').errors.required">This field is required</div>
+                              <div *ngIf="myForm.get('phone').errors.pattern">Enter Valid Number</div>
+                              <div *ngIf="myForm.get('phone').errors.minlength || myForm.get('phone').errors.maxlength">Mobile number should be 10 digits</div>
+                            </div>
+  
+                      </div>
+  
+                  </div>
+                  <!-- Right ends here -->
+              </div>
+          </div>
+  
+      </div>
+  
+  </form>
+  <!-- Add Practice Partner Profile ends here -->
+  
+  
+  <div class="btnboxAdd text-center">
+      <button type="reset" class="btn btn-default btncancel" (click)="onReset()">Cancel</button>
+      <button type="submit"  class="btn btn-primary btnsave savecls" (click)="editPartner(member)">Save</button>
+  </div>
+  
+</div>
+<!-- Edit Partner Data ends here -->
+
+
+
+<!-- Add Practice Partner -->  
+<!-- partner Header-->
+<div *ngIf="isAdd">
+  <div class="container-fluid">
+      <div class="row">
+    
+        <div class="row" [ngStyle]="{'display':isDisplay?'block':'none'}">
+          <div class="col-sm-12 compswitch ">
+            <!--Basic & Partner-->
+            <div class="switch  cswitch">
+              <a href="javascript:void(0);" class="optionone compone"  [routerLink]="['/profile']" [ngClass]="{'active': selectedMatter === 'basicprofile'}" (click)="onClick('basicprofile')">Basic Profile</a>
+              <a href="javascript:void(0);" class="optiontwo comptwo" [ngClass]="{'active': selectedMatter === 'practicepartner'}" (click)="onClick('practicepartner')">Practice Partner</a>
+            </div>
+          </div>
+        </div>
+    
+      </div>
+  </div>
+    <!-- partner Header ends here!! -->
+  
+  <!-- Add Practice Partner Profile -->
+  <form [formGroup]="myForm">
+      <div class="container main width-alignment">
+          <div class="firm-head">Add Practice Partner</div>
+      </div>
+  
+      <div class="row main main-width stepitem topup">
+          <div class="col-xs-12 col-sm-12 col-md-6">
+              <!-- Form Component -->
+              <!-- left row card 1 layout -->
+  
+              <div class="row containerbox containerboxone ">
+                  <div class="col-sm-12">
+                      <div class="container">
+  
+                          <!-- First name -->
+                          <div class="form-group">
+                              <label for="firstname" class="fontbold">First Name <span class="mandate">*</span></label>
+                              <div class="input-group">
+                                  <input type="text" formControlName="first_name" class="form-control textbox" name="firstname" />
+                              </div>
+                              <div *ngIf="myForm.get('first_name').errors && submitted" class="errorStyle">
+                                  <div *ngIf="myForm.get('first_name').errors.required">This field is required</div>
+                                  <!-- <div *ngIf="myForm.get('first_name').errors.pattern">Name should start with an Uppercase letter or contain only Uppercase letters & spaces.</div> -->
+                              </div>
+                          </div>
+  
+  
+                          <!-- Designation  -->
+                          <div class="form-group">
+                              <label for="designation" class="fontbold">Designation<span class="mandate">*</span></label>
+                              <div class="input-group">
+                                  <input type="text" class="form-control textbox" formControlName="designation" name="designation" />
+                              </div>
+                              <div *ngIf="myForm.get('designation').errors && submitted" class="errorStyle">
+                                  <div *ngIf="myForm.get('designation').errors.required">This field is required</div>
+                              </div>
+  
+                          </div>
+  
+                          <!-- Email -->
+                          <div class="form-group">
+                              <label for="email" class="fontbold">Email Address <span class="mandate">*</span></label>
+                              <div class="input-group">
+                                  <input type="email" class="form-control textbox" formControlName="email" name="email" />
+                              </div>
+                              <div *ngIf="myForm.get('email').errors && submitted" class="errorStyle">
+                                  <div *ngIf="myForm.get('email').errors.required">This field is required</div>
+                                  <div *ngIf="myForm.get('email').errors.pattern">Invalid Email Address</div> 
+                              </div>
+                          </div>
+  
+                      </div>
+                  </div>
+              </div>
+              <!-- Left ends here -->
+  
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-6">
+              <!-- component right side -->
+  
+              <div class="row containerbox formcontainer">
+                  <div class="col-sm-12">
+                      <div class="container">
+                          <!-- Last Name -->
+                          <div class="form-group">
+                              <label for="lastname" class="fontbold">Last Name <span class="mandate">*</span> </label>
+                              <div class="input-group court">
+                                  <input type="text" class="form-control textbox" formControlName="last_name" name="lastname" />
+                              </div>
+                              <div *ngIf="myForm.get('last_name').errors && submitted" class="errorStyle">
+                                  <div *ngIf="myForm.get('last_name').errors.required">This field is required</div>
+                                  <!-- <div *ngIf="myForm.get('last_name').errors.pattern">
+                                      Invalid name format. Last Name should be start with an Uppercase letter.
+                                    </div> -->
+                              </div>
+                          </div>
+                      </div>
+                      <!-- Specialist -->
+                      <div class="form-group">
+                          <label for="practice" class="fontbold">Specialist <span class="mandate">*</span> </label>
+                          <div class="input-group">
+                              <input type="text" class="form-control textbox" formControlName="practice" name="practice" />
+                          </div>
+                          <div *ngIf="myForm.get('practice').errors && submitted" class="errorStyle">
+                              <div *ngIf="myForm.get('practice').errors.required">This field is required</div>
+                          </div>
+                      </div>
+                      <!-- Phone Numbe -->
+                      <div class="form-group">
+                          <label for="phone" class="fontbold">Phone Number <span class="mandate">*</span> </label>
+                          <div class="input-group">
+                              <input type="text" class="form-control textbox" formControlName="phone" maxlength="10" name="phone" />
+                          </div>
+  
+                            <div *ngIf="myForm.get('phone').errors && submitted" class="errorStyle">
+                              <div *ngIf="myForm.get('phone').errors.required">This field is required</div>
+                              <div *ngIf="myForm.get('phone').errors.pattern">Enter Valid Number</div>
+                              <div *ngIf="myForm.get('phone').errors.minlength || myForm.get('phone').errors.maxlength">Mobile number should be 10 digits</div>
+                            </div>
+  
+                      </div>
+  
+                  </div>
+                  <!-- Right ends here -->
+              </div>
+          </div>
+  
+      </div>
+  
+  </form>
+  <!-- Add Practice Partner Profile ends here -->
+  
+  
+  <div class="btnboxAdd text-center spacebtn">
+      <button type="reset" class="btn btn-default btncancel" (click)="onReset()">Cancel</button>
+      <button type="submit"  class="btn btn-primary btnsave savecls" (click)="addPartner()">Save</button>
+  </div>
+</div>
+
+
+<router-outlet></router-outlet>
+
+
+

@@ -1,0 +1,270 @@
+.view-document {
+    width: 90%;
+    margin: 0 auto;
+
+
+}
+
+.form-group {
+    width: 90%;
+}
+
+label {
+    font-size: 14px;
+}
+
+.view-doc .modal-content,
+ngx-doc-viewer {
+    height: 500px
+}
+
+li {
+    border-bottom: 1px solid #e3e3e3;
+    background: #eeeeee;
+}
+
+a.dropdown-item {
+    text-align: end;
+
+    &:hover {
+        background: #00b3a7 !important;
+    }
+}
+
+// a.dropdown-item
+ul.dropdown-menu.custom-dropdown.show {
+    padding: unset;
+}
+
+button.btn.btn-secondary.dropdown-toggle {
+    width: 50%;
+    text-align: left;
+    background: #eee !important;
+    color: #111;
+    border: none;
+    margin-top: 20px;
+    float: right;
+}
+
+.dropdown {
+    text-align: right;
+}
+
+.active a {
+    color: #111;
+    background: #fff;
+}
+
+.ndfHFb-c4YZDc-Wrql6b {
+    display: none;
+}
+
+.custum-model {
+    width: 95%;
+    float: right;
+}
+
+.lable-size {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.editdoc {
+
+    input,
+    textarea {
+        background: #EEEEEE;
+        border: none;
+    }
+
+    textarea {
+        height: 150px;
+    }
+}
+
+.editInfoModal1 .modal-content {
+    position: relative;
+    display: block;
+    border: none;
+    padding-bottom: 30px;
+
+    .btn-close {
+        float: right;
+    }
+}
+
+.nameSet {
+    width: 90%;
+}
+
+.mat-form-field {
+    width: 90%;
+}
+
+.width-alignment {
+    max-width: 90%;
+    margin: 0 auto;
+
+    table {
+        display: table;
+        width: 100%;
+        text-align: center;
+
+        td:nth-child(1),
+        td:nth-child(2) {
+            text-align: left;
+            padding-left: 30px;
+        }
+    }
+
+    td.document {
+        display: table-cell;
+        max-width: 0px;
+        word-break: break-all;
+    }
+}
+
+input.larger {
+    transform: scale(2);
+}
+
+input[type='checkbox'] {
+    accent-color: #fff;
+    color: blue;
+}
+
+.active {
+    background: #00498E !important;
+    color: #fff;
+}
+
+
+.dropdown-select {
+    // width: 40%;
+    // float: right;
+
+    select {
+        width: 100%;
+        height: 40px;
+        background: #eeeeee;
+        border: none;
+        padding-left: 10px;
+        border-radius: 5px;
+    }
+}
+
+.safeurl {
+    height: 100%;
+    width: 100%;
+}
+
+.dropdown-list .textbox {
+    width: 100%;
+    border: none;
+}
+
+tr.active {
+    background: #00498E !important;
+}
+
+.active .btn-primary {
+    background: #fff !important;
+    color: #000;
+}
+
+input.middle:focus {
+    outline-width: 0;
+}
+
+select.textbox {
+    appearance: none;
+}
+
+.textbox i.fa {
+    font-size: 12px;
+    position: relative;
+    bottom: 25px;
+    float: right;
+    right: 15px;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}
+
+.documents-list {
+    background: #f8f8f8;
+    padding: 7px;
+    margin: 10px 0;
+    // width: 90%;
+}
+
+.selected-group {
+    .cod {
+        width: 48%;
+    }
+
+    .cod:nth-child(even) {
+        margin: 0 0 0 4%;
+    }
+
+    .documents-list {
+        background: #eee;
+    }
+}
+
+.dropdown-select.textbox {
+    width: 100%;
+    border: none;
+    // padding: 0 10px;
+    font-size: 14px;
+}
+
+.icon-list {
+    display: inline-flex;
+    float: right;
+
+    .icons {
+        padding: 0 5px;
+        cursor: pointer;
+    }
+}
+
+.codeAlign {
+    display: contents;
+}
+
+.custom-alert {
+    margin: 0 auto;
+    width: 50%;
+    height: 41px;
+    line-height: 40px;
+    border-radius: 5px;
+    opacity: 1;
+    text-align: center;
+    color: #ff0000;
+    font-size: 20px;
+}
+
+.view-document input::placeholder {
+    color: #111;
+    font-weight: 600;
+    font-size: 15px
+}
+
+.fa-exclamation-circle:before {
+    font-size: 35px
+}
+
+tr.rone.veiw-items.protected {
+    opacity: 0.3
+}
+.custusername {
+    font-weight: bold;
+}
+label{
+    margin: 10px 0;
+}

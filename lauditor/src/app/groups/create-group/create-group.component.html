@@ -1,0 +1,283 @@
+<div class="col-sm-12 compswitch ">
+  <div class="row">
+    <div class="col-sm-3 col-xs-1"></div>
+    <div class="col-sm-2 col-xs-3 round-icon">
+      <div class="steprow">
+        <a href="javascript: void(0)"
+           class="stepone"[ngClass]="{'green':isMembers || isGroupHead}" ><!-- isGroupHead = isGroupHead-->
+        </a>
+      </div>
+      <div>
+        <p class="" *ngIf="product != 'corporate'">Group Info</p>
+        <p class="" *ngIf="product == 'corporate'">Department Info</p>
+      </div>
+    </div>
+    <div class="col-sm-2 col-xs-3 round-icon">
+      <div class="steprow">
+        <a href="javascript: void(0)"
+           class="stepone"
+           [ngClass]="{'yallow':isMembers, 'green' :isGroupHead }">
+        </a>
+      </div>
+      <div>
+        <p class="" *ngIf="product != 'corporate'">Add Group Members</p>
+        <p class="" *ngIf="product == 'corporate'">Add Members</p>
+      </div>
+    </div>
+    <div class="col-sm-2 col-xs-3 round-icon">
+      <div class="steprow">
+        <a href="javascript: void(0)"
+           class="stepone"
+           [ngClass]="{'yallow':isGroupHead}">
+        </a>
+      </div>
+      <div>
+        <p class="" *ngIf="product != 'corporate'">Assign Group Head</p>
+        <p class="" *ngIf="product == 'corporate'">Add Department Head</p>
+      </div>
+    </div>
+    <div class="col-sm-3 col-xs-3">
+    </div>
+  </div>
+</div>
+<div *ngIf="isGroupInfo" class="container main width-alignment">
+  <div *ngIf="successMsg">
+    {{successMsg}}
+  </div>
+  <div class="col-12 Individual createGroup">
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit(false)">
+      <div class="row">
+        <div class="col-6">
+          <div class="form-group nameSet">
+            <label for="title" class="lable-size" *ngIf="product != 'corporate'">Group Name:</label>
+            <label for="title" class="lable-size" *ngIf="product == 'corporate'">Department Name:</label>
+            <input type="text"
+                   formControlName="name"
+                   class=" text-size form-control group-name-text"
+                   [ngClass]="{ 'is-invalid': submitted && f.name.errors }" id="caseTitle"
+                   name="name" (input)="onSearchChange()">
+              <div style="color: red;" *ngIf="error">{{error}}</div>
+            <div *ngIf="submitted && f.name.errors"
+                 class="invalid-feedback">
+              <div *ngIf="f.name.errors.required">Group name is required</div>
+              <div *ngIf="error">{{error}}</div>
+            </div>
+          </div>
+          <div class="form-group nameSet">
+            <div class="input-group court">
+              <div class="form-control textbox" *ngIf="product != 'corporate'">Add Group Members</div>
+              <div class="form-control textbox" *ngIf="product == 'corporate'">Add Members</div>
+              <i class="fa fa-solid fa-plus calimg calitem input-group-append sgroup"
+                 aria-hidden="true"
+                 (click)="onSubmit(true)"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group nameSet">
+            <label for="comment" class="lable-size">Description:</label>
+            <textarea formControlName="description"
+                      class="form-control text-size text-area-height"
+                      [ngClass]="{ 'is-invalid': submitted && f.description.errors }"
+                      name="description"></textarea>
+            <div *ngIf="submitted && f.description.errors"
+                 class="invalid-feedback">
+              <div *ngIf="f.description.errors.required">Description is required</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="btnbox">
+        <button type="reset"
+                class="btn btn-default btncancel"
+                data-bs-toggle="modal"
+                data-bs-target="#modalCancel">Cancel</button>
+        <button type="submit" class="btn btn-default btnsave">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- group members block -->
+<div *ngIf="isMembers" class="container main width-alignment">
+  <div class="col-12 Individual center createGroup">  
+    <label for="select" class="lable-size" *ngIf="product != 'corporate'">Add Members to Group</label>
+    <label for="select" class="lable-size" *ngIf="product == 'corporate'">Add Members to Department</label>
+    <div class="form-group" style="margin-bottom:10px;">
+      <div class="input-group group-custom-align court" id="search">
+        <input type="text"
+               class="form-control textbox"
+               placeholder="Search Members"
+               [(ngModel)]="searchText" />
+        <img src="assets/img/search.svg"
+             class="calimg calitem input-group-append searchimg">
+      </div>
+    </div>
+    <div class="switch cswitch">
+      <a class="groups optionone compone addGroup"
+         [class.active]="showMemList" *ngIf="product != 'corporate'"
+         (click)="switchToMlist();">Add Group Members</a>
+      <a class="groups optiontwo comptwo"
+         [class.active]="showSelMem" *ngIf="product != 'corporate'"
+         (click)="switchToSlist()">Selected Group Members</a>
+
+     <a class="groups optionone compone addGroup"
+         [class.active]="showMemList" *ngIf="product == 'corporate'"
+         (click)="switchToMlist();">Add Members</a>
+      <a class="groups optiontwo comptwo"
+         [class.active]="showSelMem" *ngIf="product == 'corporate'"
+         (click)="switchToSlist()">Selected Members</a>
+    </div>
+    <!-- append div on click -->
+    <div class="form-group " id="selectbx" *ngIf="showMemList">
+      <div class="input-group group-custom-align court" 
+          *ngFor="let member of membersList"
+          [ngClass]="{'hide': !member.name.toLowerCase().includes(searchText.toLowerCase())}">
+        <div class="multicheck form-control textbox"
+             [ngClass]="{'active': members.indexOf(member) > -1}">
+          <div class="callselect" [innerHtml]="member.name"></div>
+          <input class="form-check-inpu calimg calitem input-group-app end checkboxitem"
+                  type="checkbox"
+                  [checked]="members.indexOf(member) > -1"
+                  (change)="selectMember(member, $event)">
+          </div>
+      </div>
+    </div>
+    <!-- selected members -->
+    <div *ngIf="showSelMem">
+      <div class="form-group group-custom-align"
+           *ngFor="let member of members"
+           [ngClass]="{'hide': !member.name.toLowerCase().includes(searchText.toLowerCase())}">
+        <div class="input-group multicheck court" id="selectedgroup">
+          <div class="form-control textbox" [innerHtml]="member.name"></div>
+           <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup" aria-hidden="true"
+            (click)="removeMember(member)"></i>
+        </div>
+      </div>
+    </div>
+    <div class="btnbox row">
+      <div class="col-3"></div>
+      <div class="col-2">
+        <button type="button" class="btn btn-default btnsave btnback"
+              (click)="backToGroupInfo()">Back</button>
+      </div>
+      <div class="col-2">
+        <button type="button"
+                class="btn btn-default btncancel"
+                data-bs-toggle="modal"
+                data-bs-target="#modalCancel">Cancel</button>
+      </div>
+      <div class="col-1">
+        <button type="button"
+                class="btn btn-default btnsave btnNext pull-right"
+                [disabled]="members.length==0"
+                (click)="addMemberslist()">Next</button>
+        </div>
+    </div>
+  </div>
+</div>
+<!-- group head block  -->
+<div *ngIf="isGroupHead" class="container main width-alignment">
+  <div class="col-12 Individual center createGroup"> 
+    <label for="select" class="lable-size" *ngIf="product != 'corporate'">Assign Group Head</label>
+    <label for="select" class="lable-size" *ngIf="product == 'corporate'">Assign Department Head</label>
+    <div class="form-group">
+      <div class="input-group group-custom-align court" *ngIf="product != 'corporate'" id="search">
+        <input type="text" class="form-control textbox" placeholder="Search Members" [(ngModel)]="ghSearchText" />
+        <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
+      </div>
+      <div class="input-group group-custom-align court" *ngIf="product == 'corporate'" id="search">
+        <input type="text" class="form-control textbox" placeholder="Search Team Members" [(ngModel)]="ghSearchText" />
+        <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
+      </div>
+    </div>
+    <!-- append div on click -->
+    <div class="form-group " id="selectbx " >
+      <div class="input-group group-custom-align court" id="search"
+        *ngFor="let member of members | LockFilter: ghSearchText">
+        <div class="multicheck form-control textbox"
+             [class.active]='selectedGroupHead.indexOf(member) > -1'>
+          <div class="callselect" [innerHtml]="member.name"></div>
+          <input class="form-check-inpu calimg calitem input-group-app end checkboxitem"
+                 #inputEl 
+                 type="radio"
+                 name='member'
+                 value='{{member.id}}'
+                 [checked]='selectedGroupHead.indexOf(member) > -1'
+                 (change)="selectGpHead(member, inputEl)">
+        </div>
+      </div>
+    </div>
+    <!-- selected members -->
+    <div class="btnbox row">
+      <div class="col-3"></div>
+      <div class="col-2">
+        <button type="button"
+                class="btn btn-default btnsave"
+                (click)="backToMembers()">Back</button>
+      </div>
+      <div class="col-2">
+        <button type="button"
+                class="btn btn-default btncancel"
+                data-bs-toggle="modal"
+                data-bs-target="#modalCancel">Cancel</button>
+      </div>
+      <div class="col-2">
+        <button type="button"
+                class="btn btn-default btnsave"
+                [disabled]="selectedGroupHead.length==0"
+                (click)="onSubmit(false)">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade"
+     id="modalCancel"
+     tabindex="-1"
+     aria-labelledby="modalCancelLabel"
+     aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <div class="modal-body">
+              <div class="alertpara">
+                  <p class="alertparatxt"> Confirmation</p>
+                </div>
+          </div>
+          <div class="alertext">Changes you made will not be saved. Do you want to continue?</div>
+          <div class="alertbutton">
+              <button class="btn btn-default  alertbtn alertbtnno"
+                      data-bs-dismiss="modal"
+                      aria-label="Close">No</button>
+              <button class="btn btn-default alertbtn alertbtnyes"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                      (click)="closeClickMembers()" >Yes</button>
+          </div>
+      </div>
+  </div>
+</div>
+<div class="modal"
+     id="successModal"
+     tabindex="-1"
+     aria-labelledby="successModalLabel"
+     aria-hidden="true"
+     style="display:block;"
+     *ngIf='successModel'>
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-body">
+              <div class="alertpara">
+                <p class="alertparatxt"> Success</p>
+              </div>
+              <div class="alertext">Congratulations!! 
+                You have successfully created {{successGrpName}}.</div>
+              <div class="alertbutton">
+                <button class="btn btn-default alertbtn" (click)="successResp('add')">Add Groups</button>
+                <button class="btn btn-default alertbtn" (click)="successResp('view')">View Changes</button>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>

@@ -1,0 +1,270 @@
+<!--component html goes here -->
+<form class="example-form">
+    <div class="row">
+    <div class="form-group col-sm-5" style="margin:20px auto">
+      <div class="input-group court" id="search">
+        <input type="text" 
+               placeholder="Search by name" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@,.]|^ /g,'')"
+               matInput
+               class="form-control textbox" 
+               [formControl]="selectedEntity"
+               ng-pattern="/^[a-zA-Z]*$/"
+               [matAutocomplete]="auto"
+               >
+  
+            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="onOptSel($event)">
+              <mat-option *ngFor="let option of filteredEntities | async" [value]="option">
+                {{option.name}}
+              </mat-option>
+            </mat-autocomplete>
+  
+        <button id="btnadd" type="submit" class="input-group-append appendadd" (click)='searchEntity()'>Search</button>
+      </div>
+      <div class="invalid-feedback" style="display:block;" *ngIf='emptySearchError'>Please enter entity name to search.</div>
+    </div>
+  
+         <!--Shown Messages-->
+        <div class="text-center alertText">
+          <p class="textDanger" *ngIf="reqError.show">{{reqError.msg}}</p>
+          <!-- <p class="textGreen" *ngIf="formMode == 'request'">{{msg}}</p> -->
+          <p class="textDanger" *ngIf="formMode == 'invite'">{{msg}}</p>
+        </div>
+  
+         <!--Shown Messages ends here..-->
+  
+  </div>
+  </form>
+   <div class="row">
+  
+      <div class="col-12 Individual" [ngClass]="{'hide': !showForm }">
+        <!--<p class="text-danger" *ngIf="reqError.show">{{reqError.msg}}</p>
+        <p class="text-primary" *ngIf="formMode == 'request'">{{msg}}</p>
+        <p class="text-danger" *ngIf="formMode == 'invite'">{{msg}}</p>-->
+       
+        <form [formGroup]="createRelationform" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="col-5">
+              <div class="form-group nameSet">
+                <label for="title">Entity Name <span class="mandate">*</span>
+                </label>
+                <input type="text" 
+                       class="text-size form-control textbox"
+                       formControlName="entityName" 
+                       name="entityName"
+                       [ngClass]="{'is-invalid': submitted && f.entityName.errors }">
+                <div *ngIf="submitted && f.entityName.errors" class="invalid-feedback">
+                  <div *ngIf="f.entityName.errors.required">Entity Name is Required</div>
+                </div>
+              </div>
+              </div>
+              <div class="col-1"></div>
+              <div class="col-5">
+              <div class="form-group nameSet">
+                <label for="title">Contact Person <span class="mandate">*</span>
+                </label>
+                <input type="text"
+                       class="text-size form-control textbox"
+                       formControlName="contactPerson"
+                       name="contactPerson"
+                       [ngClass]="{'is-invalid':submitted && f.contactPerson.errors }">
+                <div *ngIf="submitted && f.contactPerson.errors" class=" invalid-feedback">
+                  <div *ngIf="f.contactPerson.errors.required">Contact Person is Required</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-5">
+              <div class="form-group nameSet">
+                <label for="title">Email <span class="mandate">*</span>
+                </label>
+                <input type="text"
+                       class="form-control textbox"
+                       name="email"
+                       formControlName="email"
+                  [ngClass]="{'is-invalid':submitted && f.email.errors}">
+                <div *ngIf="submitted && f.email.errors" class=" invalid-feedback">
+                  <div *ngIf="f.email.errors.required">Email is Required</div>
+                </div>
+              </div>
+              </div>
+              <div class="col-1"></div>
+              <div class="col-5">
+              <div class="form-group nameSet">
+                <label for="title">Contact Phone Number<span class="mandate">*</span>
+                </label>
+                <div class="input-group court" id="contactPhone">
+                  <input type="text"
+                         class="form-control textbox"
+                         formControlName="contactPhone"
+                         name="contactPhone" 
+                         [ngClass]="{'is-invalid':submitted && f.contactPhone.errors}"/>
+                  <div *ngIf="submitted &&  f.contactPhone.errors" class="invalid-feedback">
+                    <div *ngIf="submitted && f.contactPhone.errors.required">Contact Phone is Required</div>
+                    <div *ngIf="submitted && f.contactPhone.errors.pattern">Enter Valid number</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-5" *ngIf="formMode == 'invite'">
+                <div class="form-group nameSet">
+                  <label for="title">Confirm Email<span class="mandate">*</span>
+                  </label>
+                  <input type="text"
+                         class="form-control textbox"
+                         name="confirmEmail"
+                         formControlName="confirmEmail"
+                         [ngClass]="{'is-invalid':submitted && f.confirmEmail.errors}">
+                   <div *ngIf="submitted && f.confirmEmail.errors" class=" invalid-feedback">
+                    <div *ngIf="f.confirmEmail.errors.mismatch">Confirm email is mismatch.</div>
+                    <div *ngIf="f.confirmEmail.errors.required">Confirm email is Required</div>
+                  </div>
+                </div>
+            </div>
+            <div class="col-1" *ngIf="formMode == 'invite'"></div>
+            <div class="col-5">
+              <div class="form-group nameSet">
+                <label for="title">Country<span class="mandate">*</span>
+                </label>
+                <div class="input-group court" id="country">
+                  
+                  <select type="text"
+                         class="form-select member-name-text"
+                         formControlName="country"
+                         name="country" 
+                         [ngClass]="{'is-invalid':submitted && f.country.errors}">
+                         <option value="" disabled selected>Select Country</option>
+                         <option *ngFor="let c of countries" value="{{c[0]}}"> {{c[0]}} </option>
+                  </select>
+                  <div *ngIf="submitted &&  f.country.errors" class="invalid-feedback">
+                    <div *ngIf="submitted && f.country.errors.required">Country is Required</div>
+                  </div>
+  
+                 </div>
+  
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-5">
+              <div class="form-group nameSet">
+                <p *ngIf="product != 'corporate'"><label>Selected Group(s)</label></p>
+                <p *ngIf="product == 'corporate'"><label>Selected</label></p>
+               
+                <div class="input-group court"
+                     *ngFor="let sgrp of selectedGroups">
+  
+                    <input type="text" class="form-control textbox my-input" id="addedGrp"
+                           placeholder="{{sgrp.name}}" disabled>
+                    <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup my-icon" 
+                       (click)="restore(sgrp)" 
+                       aria-hidden="true"></i>
+                
+                </div>
+              </div>
+            </div>  
+  
+            <div class="col-1"></div>
+            <div class="col-5">
+              <div class="form-group nameSet">
+                    <label for="title" *ngIf ="product !='corporate'">Assign the Group(s) <span class="mandate">*</span> </label>
+                    <label for="title" *ngIf ="product =='corporate'">Assign the Department(s) <span class="mandate">*</span> </label>
+                  <!--<input type="text"
+                         class="form-control textbox"
+                         name="grpsearch"
+                         (keyup)="onGrpSearch($event)"
+                         autocomplete="off" 
+                         placeholder="Search group ...">-->
+                  <div class="input-group group-custom-align court" id="search" *ngIf ="product !='corporate'">
+                          <input type="text" class="form-control textbox" placeholder="Search Groups"  name="grpsearch" autocomplete="off"  formControlName='grpsearch' (keyup)="onGrpSearch($event)" />
+                          <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
+                  </div>
+                  <div class="input-group group-custom-align court" id="search" *ngIf ="product =='corporate'">
+                    <input type="text" class="form-control textbox" placeholder="Search Departments"  name="grpsearch" autocomplete="off"  formControlName='grpsearch' (keyup)="onGrpSearch($event)" />
+                    <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
+                  </div>
+                </div>
+                <div class="form-group nameSet">
+                <div class="form-group" *ngFor="let grp of groupList |filter:groupFilter">
+                    <div class="input-group court" id="search">
+                        <div class="multicheck form-control textbox">
+                          <div class="callselect">{{grp.name}}</div>
+                          <input class="form-check-inpu calimg calitem input-group-append checkboxitem"
+                                 (click)='selgrp(grp)'
+                                 type="checkbox" value="" id="flexCheckDefault">
+                        </div>
+                    </div>
+                 </div>
+              </div>
+            </div>
+          </div>
+          <div class="btnbox">
+            <button type="button"
+                    class="btn btn-default btncancel"
+                    (click)="onReset()">Cancel</button>
+            <button type="button" class="btn btn-default btnsave"
+                    (click)='getConfirmation()'
+                    [disabled]="selectedGroups.length == 0">Send Request</button>
+          </div>
+        </form>
+      </div>
+    </div>
+   <div class="modal"
+       *ngIf='showConfirm'
+       style="display:block;" 
+       tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal" (click)="showConfirm = false;" aria-label="Close"></button>
+            <div class="modal-body">
+                <div class="alertpara">
+                    <p class="alertparatxt">Confirm</p>
+                  </div>
+            </div>
+            <div class="alertext" style="height:130px;">
+              Are you sure you want to send relationship request to <strong>{{selname}}</strong>.
+            </div>
+            <div class="alertbutton">
+                <button class="btn btn-default  alertbtn alertbtnno"
+                        data-bs-dismiss="modal"
+                        (click)="showConfirm = false;"
+                        aria-label="Close">No</button>
+                <button class="btn btn-default alertbtn alertbtnyes"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                        (click)="sendReq()">Yes</button>
+            </div>
+        </div>
+    </div>
+  </div>
+  <div class="modal"
+       *ngIf='showSuccess'
+       style="display:block;" 
+       tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+  
+            <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="showSuccess = false;" aria-label="Close">
+            </button>
+  
+                <div class="alertpara">
+                  <p class="alertparatxt"> Success</p>
+                </div>
+                <div class="alertext">Congratulations!! 
+                  You have successfully sent the relationship request to {{selname}}.
+                </div>
+                <div class="alertbutton">
+                  <button class="btn btn-default alertbtn" (click)="successResp('add')" >Add Relationship</button><!--(click)="successResp('add')"-->
+                  <button class="btn btn-default alertbtn" (click)="successResp('view')">View Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  
+  

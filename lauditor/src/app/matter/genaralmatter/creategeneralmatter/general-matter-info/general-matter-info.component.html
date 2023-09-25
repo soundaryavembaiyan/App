@@ -1,0 +1,159 @@
+<form [formGroup]="generalForm" (ngSubmit)="onSubmit()">
+  <div class="row main main-width stepitem ">
+
+    <div class="col-xs-12 col-sm-12 col-md-6">
+      <!-- Form Component -->
+      <!-- left row card 1 layout -->
+
+      <div class="row containerbox containerboxone ">
+        <div class="col-sm-12">
+          <div class="container">
+
+            <!-- input field  -->
+            <div class="form-group">
+              <label for="title" class="fontbold">Case Title <span class="mandate">*</span>
+              </label>
+              <input formControlName="title" type="text" class="form-control textbox" id="title" name="title"
+                [ngClass]="{'is-invalid':submitted && f.title.errors}">
+              <div *ngIf="submitted && f.title.errors" class="invalid-feedback">
+                <div *ngIf="f.title.errors.required">Case Title is required</div>
+                <div *ngIf="f.title.errors.pattern"> Restricted Space at First Position </div>
+              </div>
+            </div>
+
+            <!-- input field  -->
+            <div class="form-group">
+              <label for="title" class="fontbold">Matter Number <span class="mandate">*</span>
+              </label>
+              <input type="text" class="form-control textbox" id="matterNumber" name="matterNumber"
+                formControlName="matterNumber" [ngClass]="{'is-invalid':submitted && f.matterNumber.errors}">
+              <div *ngIf="submitted && f.matterNumber.errors" class="invalid-feedback">
+                <div *ngIf="f.matterNumber.errors.required">MatterNumber is required</div>
+                <div *ngIf="f.matterNumber.errors.pattern"> Restricted Space at First Position </div>
+              </div>
+            </div>
+            <!-- calendor with icon -->
+            <div class="form-group">
+              <label for="filling date" class="fontbold">Start Date</label>
+              <div class="input-group date" id="datepicker">
+                <mat-form-field appearance="fill" class="form-group">
+                  <input matInput [matDatepicker]="picker" formControlName="startdate" name="startdate"
+                    class="form-control " (click)="picker.open()" (dateChange)="addEventStart('change', $event)">
+
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+                <!-- <img src="assets/img/calendor.svg" class="calimg calitem input-group-append calicon"> -->
+                <!-- <div *ngIf="submitted && f.startdate.errors" class="invalid-feedback">
+                  <div *ngIf="f.startdate.errors.required">Date is required</div>
+                </div> -->
+              </div>
+
+            </div>
+            <div class="form-group">
+              <label for="filling date" class="fontbold">Close Date </label>
+              <div class="input-group date" id="datepicker1">
+                <mat-form-field appearance="fill" class="form-group">
+                  <input matInput [matDatepicker]="picker1" formControlName="closedate" name="closedate"
+                    class="form-control " (click)="picker1.open()" [min]="minDateEnd" (dateChange)="addEvent('change', $event)">
+
+                  <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                  <mat-datepicker #picker1></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+            </div>
+            <!-- text area -->
+            <div class="form-group">
+              <label for="filling date" class="fontbold">Description</label>
+              <textarea rows="4"  cols="50" class="form-control textbox" formControlName="description"
+                name="description" [ngClass]="{'is-invalid':submitted && f.description.errors}"
+                maxlength="300"></textarea>
+              <!-- <div *ngIf="submitted && f.description.errors" class="invalid-feedback">
+                <div *ngIf="f.description.errors.required">Description is required</div>
+              </div> -->
+              <div class="count-div">
+                <div class="count-text" *ngIf="f.description">{{f.description.value.length}}/300</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ends here -->
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-6">
+      <!-- component right side -->
+
+      <div class="row containerbox formcontainer">
+        <div class="col-sm-12">
+          <div class="container">
+            <!-- input field  -->
+            <div class="form-group">
+              <label for="title" class="fontbold">Matter Type </label>
+              <input type="text" class="form-control textbox" id="matterType" name="matterType"
+                formControlName="matterType" [ngClass]="{'is-invalid':submitted && f.matterType.errors}">
+              <div *ngIf="submitted && f.matterType.errors" class="invalid-feedback">
+                <div *ngIf="f.matterType.errors.required">MatterType is required</div>
+              </div>
+            </div>
+            <!-- input switch button -->
+            <div class="row">
+              <div class="col-sm-7">
+                <p class="prioritytxt fontbold pad">Priority</p>
+              </div>
+              <div class="col-sm-5">
+                <p class="prioritytxt fontbold pad">Status</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-7">
+                <ul class="nav nav-pills mb-3 btnaction" id="pills-tab" role="tablist">
+                  <li class="nav-item" (click)="getPriority('High')">
+                    <button  id="High"   name="priority"  [ngClass]="{'active': selectedPriority === 'High'}" class="selectprior optionhigh"
+                      id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab"
+                      aria-controls="pills-home" aria-selected="true">High</button>
+                  </li>
+                  <li class="nav-item" (click)="getPriority('Medium')">
+                    <button  id="Medium" [ngClass]="{'active': selectedPriority === 'Medium'}" name="priority"  class="selectprior optionaling"
+                      id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button"
+                      role="tab" aria-controls="pills-profile" aria-selected="false">Medium</button>
+                  </li>
+                  <li class="nav-item" (click)="getPriority('Low')">
+                    <button id="Low"  [ngClass]="{'active': selectedPriority === 'Low'}" name="priority"  class=" selectprior optionlow"
+                      id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button"
+                      role="tab" aria-controls="pills-contact" aria-selected="false">Low</button>
+                  </li>
+                </ul>
+              </div>
+              <div class="col-sm-5">
+                <ul class="nav nav-pills mb-3 btnaction" id="pills-tab" role="tablist">
+                  <li class="nav-item" (click)="getStatus('Active')">
+                    <button class="selectprior optionhigh" [ngClass]="{'active': selectedStatus === 'Active'}" id="pills-home-tab" data-bs-toggle="pill"
+                      data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home"
+                      aria-selected="true">Active</button>
+                  </li>
+                  <li class="nav-item" (click)="getStatus('Pending')">
+                    <button class="selectprior optionaling" [ngClass]="{'active': selectedStatus === 'Pending'}" id="pills-profile-tab" data-bs-toggle="pill"
+                      data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile"
+                      aria-selected="false">Pending</button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <!-- end advocate -->
+            <!-- pagination -->
+
+          </div>
+          <!-- ends here -->
+        </div>
+      </div>
+
+    </div>
+    <div class="btnbox">
+      <button type="reset" class="btn btn-default btncancel btnrightitem" (click)="OnCancel()">Cancel</button>
+      <button type="submit" class="btn btn-default btnsave savecls">Next</button>
+
+    </div>
+  </div>
+  <!-- grid ends here -->
+</form>

@@ -1,0 +1,98 @@
+<!--component html goes here -->
+<div class="row view-document">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-6">
+                <div class="watermark">
+                    <div><label class="custusername tab-margin fontweight">Edit Metadata</label></div>
+                    <div class="form-group name-set">
+                        <label for="title" class="fontbold tab-margin">Document Name </label>
+                        <input type="text" [(ngModel)]="data.name" class="form-control textbox" id="caseType" name="caseno" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="watermark name-set">
+                    <div class="tags">
+                        <div class="tags-width"><label class="custusername tab-margin fontweight">Tags</label></div>
+                        <div class="tags-width"><button class="btn btn-primary" (click)="addvalue()">ADD</button></div>
+                    </div>
+                    
+                    <div *ngFor="let value of values; let i = index">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-5">
+                                    <div class="form-group name-set">
+                                        <label for="title" class="fontbold tab-margin">Tag Type </label>
+                                        <input type="text" [(ngModel)]="value.tagtype" #name="ngModel"
+                                            name="tags{{ i }}" class="form-control textbox" id="caseType"
+                                           >
+                                    </div>
+                                </div>
+                                <div class="col-5">
+                                    <div class="form-group name-set">
+                                        <label for="title" class="fontbold tab-margin">Tags </label>
+                                        <input type="text" [(ngModel)]="value.tag" #name="ngModel" name="tags{{ i }}"
+                                            class="form-control textbox" id="caseType" >
+                                    </div>
+                                </div>
+                                <div class="col-2">
+                                    <label for="title" class="fontbold tab-margin"> </label>
+                                    <div  (click)="removevalue(i)"><i class="fa fa-regular fa-circle-xmark" aria-hidden="true"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="btnbox">
+        <button type="reset" class="btn btn-default btncancel" (click)="cancel()">Cancel</button>
+        <button type="submit" class="btn btn-default btnsave" (click)="submit();addTags()">Save</button>
+
+    </div>
+</div>
+<jw-modal id="doc-edimeta-data" class="doc-edimeta-data alert-box">
+    <div class="alert-box ">
+        <div class="close-x float-right" (click)="closeModal('doc-edimeta-data');">X</div>
+        <div class="container">
+            <div class="row" *ngIf="data">
+                <div class="">
+                    <div class="alertpara">
+                        <p class="alertparatxt"> Conformation</p>
+                    </div>
+                    <div class="alertext">Are you sure you want to update metadata for approved {{data.name}} documents ?</div>
+                    <div class="alertbutton">
+                        <button class="btn btn-default  alertbtn alertbtnno" (click)="closeModal('doc-edimeta-data');">No</button>
+                        <button class="btn btn-default alertbtn alertbtnyes"(click)="addTags();closeModal('doc-edimeta-data');">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</jw-modal>
+<jw-modal id="doc-editmeta-success" class="doc-del-success  alert-box">
+    <div class="doc-iframe-scs-body ">
+       
+        <div class="container">
+            <div class="row" *ngIf="data">
+                <div class="alertbox">
+                    <div class="close-x float-right" (click)="closeModal('doc-editmeta-success');cancel()">X</div>
+                    <div class="alertpara">
+                        <p class="alertparatxt"> Success</p>
+                    </div>
+                    <div class="alertext">Congratulations!! You have successfully updated metadata for  {{data.name}} document.
+                    </div>   
+                    <div class="center">
+                        <button class="btn btn-primary  " (click)="closeModal('doc-editmeta-success');cancel()">OK</button>
+        
+                    </div>               
+                </div>
+            </div>
+        </div>
+    </div>
+</jw-modal>

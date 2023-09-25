@@ -1,0 +1,114 @@
+<div class="headers">
+	<div class="row">
+		<header class="header">
+			<!-- Logo -->
+			<div class="logo_ico"> <img class="logoicon" src="assets/img/logo.svg"> </div>
+			<div class="title"> <span class="headtitle">{{categoryName}}</span> </div>
+			<!-- Hamburger icon -->
+			<input class="side-menu" type="checkbox" id="side-menu" />
+			<label class="hamb" for="side-menu"><span class="hamb-line"></span></label>
+			<!-- Mobile Menu -->
+			<div class="dashboard_notification_mob">
+				<img src="assets/img/dashboard_ico.svg">
+			</div>
+			<nav class="nav mobilenav">
+				<ul class="menu mobile-menu">
+					<li>
+						<p class="custusername">{{name}}</p>
+						<p class="custusertype">{{role}}</p>
+						<p class=" custusertype custusertime">09:15:00 AM</p>
+					</li>
+					<li>
+						<p class="custusername">Dashboard</p>
+					</li>
+				</ul>
+			</nav>
+			<!-- Web Menu -->
+			<div class="nav webnav">
+				<div class="dashboard_notification" routerLink="/grid" id='dashboard-icon'
+					(click)="getCategory('Dashboard')">
+					<img src="/assets/img/dashboard_ico.svg">
+				</div>
+				<div class="userprofile">
+					<p class="username" data-bs-container="body" data-bs-toggle="popover" title="title"
+						data-bs-placement="bottom" data-bs-content="Right popover" (click)="logout()">{{name[0]}} </p>
+				</div>
+				<ul class="menu webmenu">
+					<li>
+						<p class="custusername">{{name}}</p>
+						<p class="custusertype">{{role}}</p>
+						<p class=" custusertype custusertime">&nbsp;</p>
+					</li>
+				</ul>
+			</div>
+		</header>
+	</div>
+	<div class="row side-nav-custom">
+		<div>
+			<div class="container-fluid d-inline">
+				<div class="row">
+					<!-- left menu for Lauditor-->
+					<div class="side-nav-back" *ngIf="product == 'lauditor'">
+						<div *ngFor="let item of navItem">
+							<div class="left-menu-icon" [ngClass]="item.id" (click)="getCategory(item.id)">
+								<a routerLink="{{item.link}}" class="iconlink" *ngIf="item.roles.indexOf(roleId) > -1">
+									<img class="mattersicon" src="{{item.image}}"> <span
+										class="icotxt">{{item.name}}</span>
+								</a>
+							</div>
+						</div>
+					</div>
+					<!-- left menu Lauditor ends here -->
+					
+					<!-- left menu for Lauditor-->
+					<div class="side-nav-back" *ngIf="product == 'corporate'">
+						<div *ngFor="let item of navCorporate">
+							<div class="left-menu-icon" [ngClass]="item.id" (click)="getCategory(item.id)">
+								<a routerLink="{{item.link}}" class="iconlink" *ngIf="item.roles.indexOf(roleId) > -1">
+									<img class="mattersicon" src="{{item.image}}"> <span class="icotxt">{{item.name}}</span>
+								</a>
+							</div>
+						</div>
+					</div>
+					<!-- left menu Lauditor ends here -->
+
+
+
+					<!-- left menu for Content-->
+					<div class="side-nav-back" *ngIf="product == 'content'">
+						<div *ngFor="let item of navContent">
+							<div class="left-menu-icon" [ngClass]="item.id" (click)="getCategory(item.id)">
+								<a routerLink="{{item.link}}" class="iconlink" *ngIf="item.roles.indexOf(roleId) > -1">
+									<img class="mattersicon" src="{{item.image}}"> <span
+										class="icotxt">{{item.name}}</span>
+								</a>
+							</div>
+						</div>
+					</div>
+					<!-- left menu Content ends here -->
+
+					<!-- left menu for Connect-->
+					<div class="side-nav-back" *ngIf="product == 'connect'">
+						<div *ngFor="let item of navConnect">
+							<div class="left-menu-icon" [ngClass]="item.id" (click)="getCategory(item.id)">
+								<a routerLink="{{item.link}}" class="iconlink" *ngIf="item.roles.indexOf(roleId) > -1">
+									<img class="mattersicon" src="{{item.image}}"> <span
+										class="icotxt">{{item.name}}</span>
+								</a>
+							</div>
+						</div>
+					</div>
+					<!-- left menu Connect ends here -->
+
+
+				</div>
+				<div class="content-box1 full-width">
+					<router-outlet></router-outlet>
+				</div>
+			</div>
+		</div>
+		<div>
+
+		</div>
+	</div>
+</div>

@@ -1,0 +1,40 @@
+<div class="loginform">
+  <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+    <div class="signin">Reset Password</div>
+    <div class="lblmsg">
+        <label id="id_alert" class="logininfo">{{msg}}</label>
+    </div>
+    <div class="form-floating mb-3 mt-3">
+        <input type="password"
+               class="form-control custominput"
+               id="password"
+               formControlName='password'
+               placeholder="Enter password"
+               [ngClass]="{ 'is-invalid': submitted && f.password.errors }"
+               name="password">
+         <label for="confirm-password" class="lblfocus">Password</label>
+         <div *ngIf="submitted && f['password'].errors" class="text-danger">
+            <div *ngIf="f['password'].errors">Password is required</div>
+        </div>
+        <label for="password" class="lblfocus">Password</label>
+    </div>
+   <div class="form-floating mt-3 mb-3">
+        <input type="password"
+               class="form-control custominput"
+               id="confirm-password"
+               formControlName='confirmPassword'
+               placeholder="Enter password"
+               [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }"
+               name="confirmPassword">
+        <label for="confirm-password" class="lblfocus">Confirm Password</label>
+        <div *ngIf="submitted && f['confirmPassword'].errors" class="text-danger">
+            <div *ngIf="f.confirmPassword.errors.required">Confirm Password is required</div>
+            <div *ngIf="f.confirmPassword.errors.mismatch">Confirm password mismatch.</div>
+        </div>
+    </div> 
+   <div class="btnlogin">
+      <button type="submit"
+              class="btn btn-primary btnloginsubmit btncomman">Reset Password</button>
+    </div> 
+  </form>
+</div>

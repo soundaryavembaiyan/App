@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="34" height="32" viewBox="0 0 34 32">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_2822" data-name="Rectangle 2822" width="34" height="32" transform="translate(0 0.489)" fill="none" stroke="#000" stroke-width="1.5"/>
+    </clipPath>
+  </defs>
+  <g id="Group_1450" data-name="Group 1450" transform="translate(0 -0.489)">
+    <g id="Group_1449" data-name="Group 1449" clip-path="url(#clip-path)">
+      <path id="Path_1586" data-name="Path 1586" d="M29.711,12.822V4.511A1.511,1.511,0,0,0,28.2,3H2.511A1.511,1.511,0,0,0,1,4.511v20.4a1.511,1.511,0,0,0,1.511,1.511h13.6" transform="translate(-0.244 -0.733)" fill="none" stroke="#000" stroke-width="1.5"/>
+      <line id="Line_715" data-name="Line 715" y2="4" transform="translate(24 0.489)" fill="none" stroke="#000" stroke-width="1.5"/>
+      <line id="Line_716" data-name="Line 716" y2="4" transform="translate(20 0.489)" fill="none" stroke="#000" stroke-width="1.5"/>
+      <line id="Line_717" data-name="Line 717" y2="4" transform="translate(15 0.489)" fill="none" stroke="#000" stroke-width="1.5"/>
+      <line id="Line_718" data-name="Line 718" y2="4" transform="translate(11 0.489)" fill="none" stroke="#000" stroke-width="1.5"/>
+      <line id="Line_719" data-name="Line 719" y2="4" transform="translate(6 0.489)" fill="none" stroke="#000" stroke-width="1.5"/>
+      <line id="Line_720" data-name="Line 720" x1="28" transform="translate(1 9.489)" fill="none" stroke="#000" stroke-width="1.5"/>
+      <path id="Path_1587" data-name="Path 1587" d="M35.533,40c0,.835-1.015,1.511-2.267,1.511S31,40.835,31,40" transform="translate(-7.578 -9.778)" fill="none" stroke="#000" stroke-width="1.5"/>
+      <path id="Path_1588" data-name="Path 1588" d="M31.556,33.111h7.556V30.844c-.583-.284-1.538-.334-1.867-1.436-.554-1.855-.4-3.139-.4-6.12a5.289,5.289,0,1,0-10.578,0c0,2.981.154,4.265-.4,6.12-.329,1.1-1.284,1.151-1.867,1.436v2.267Z" transform="translate(-5.867 -4.4)" fill="none" stroke="#000" stroke-linejoin="round" stroke-width="1.5"/>
+    </g>
+  </g>
+</svg>

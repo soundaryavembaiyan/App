@@ -1,0 +1,72 @@
+// component css goes here
+// component css goes here
+// component css goes here
+.watermark,
+.watermark-left {
+    margin: 40px;
+}
+
+.watermark {
+    border: 1px solid #eee;
+    min-height: 500px;
+}
+
+.tags {
+    display: inline-flex;
+    width: 90%;
+
+    .tags-width {
+        width: 50%;
+
+        .btn {
+            float: right;
+        }
+    }
+}
+
+.form-group.name-set {
+    margin: 0;
+}
+
+.btn-browse {
+    width: 150px;
+    background: #004D87
+}
+
+.fa-times-circle-o {
+    margin-top: 80%;
+
+    &:before {
+
+        font-size: 30px;
+        color: red;
+    }
+}
+
+hr {
+    border-bottom: dashed;
+    width: 90%;
+}
+
+.tags a {
+    width: 50%;
+}
+
+.add-pages .col-5 {
+    padding-right: 25px;
+}
+
+.fa-trash:before {
+    font-size: 25px;
+}
+
+.actions_style {
+    padding-top: 40px;
+}
+
+.input-group-addon {
+    width: 47px;
+    background: #D9D8D8;
+    text-align: center;
+    vertical-align: baseline;
+}

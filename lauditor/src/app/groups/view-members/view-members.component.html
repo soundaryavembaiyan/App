@@ -1,0 +1,183 @@
+<!--component html goes here -->
+ <!-- table grid -->
+ <div class="row main" *ngIf="!showGroupAccessForm && !showEditMemForm">
+  <div class="row main width-alignment">
+        <div class="col-4"> </div>
+        <div class="col-6">
+                <div class="form-group name-set">
+                  <div class="input-group group-custom-align court" id="search">
+                    <input type="text"
+                            class="form-control textbox"
+                            placeholder="Search Member"
+                            [(ngModel)]="searchText" />
+                    <img src="assets/img/search.svg"
+                    class="calimg calitem input-group-append searchimg">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 gridtable  width-alignment">
+
+      <div *ngIf="product == 'lauditor'">
+        <p style="float: right;font-size:18px;font-weight:900;margin-top:-25px;color:#004d87;">
+          <b>Number of Licenses:</b> {{memberCount.count}} out of {{memberCount.total}}
+        </p>
+      </div>
+
+      <table class="table table-borderless tblgrid">
+        <thead>
+          <tr class="theader">
+            <th>
+              <p class="thheadname">Name</p>
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('name')">
+            </th>
+            <th>
+              <p class="thheadname"> Designation</p>
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('designation')">
+            </th>
+            <th>
+              <p class="thheadname" *ngIf="product != 'corporate'"> Groups </p>
+              <p class="thheadname" *ngIf="product == 'corporate'"> Departments </p>
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('designation')">
+            </th>
+            <th>
+              <p class="thheadname"> Last Login</p>
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('lastLogin')">
+            </th>
+            <th>
+              <p class="thheadname"> Default Rate</p>
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('defaultRate')">
+            </th>
+            <th>&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="rone veiw-items" *ngFor="let team of viewMembers | filter:searchText">
+            <td>{{team.name}}<br>{{team.email}}</td>
+            <td>{{team.designation}}</td>
+            <td>
+                <span *ngFor="let g of team.groups">{{g.name}}<br/></span>
+            </td>
+            <td>{{team.lastLogin}}</td>
+            <td >{{team.defaultRate}}</td>
+            <td>
+              <div class="dropdown">
+                <button type="button"
+                        class="btn btn-primary  dropdown-toggle actionbtn"
+                        data-bs-toggle="dropdown"
+                        [ngClass]="{'disabled': team.isdisabled}"> Action </button>
+                <ul class="dropdown-menu custom-dropdown">
+                    <li> <a class="dropdown-item"
+                            (click)="editMem(team)"
+                            href="javascript:void(0);">Edit Member Info</a> </li>
+                    <li> <a class="dropdown-item"
+                            (click)="groupAccess(team)" *ngIf="product != 'corporate'"
+                            href="javascript:void(0);">Update Group Access</a>
+                            <a class="dropdown-item"
+                            (click)="groupAccess(team)" *ngIf="product == 'corporate'"
+                            href="javascript:void(0);">Update Department Access</a>
+                     </li>
+                    <li> <a class="dropdown-item" 
+                            data-bs-toggle="modal"
+                            data-bs-target="#exampleModalreset"
+                            (click)="del(team)"
+                            href="javascript:void(0);">Reset Password</a> </li>
+                    <li> <a href="javascript:void(0);"
+                            (click)="del(team)"
+                            data-bs-toggle="modal"
+                            data-bs-target="#exampleModaldelete"
+                            class="dropdown-item">Delete Member</a>
+                  </li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+<app-group-access *ngIf='showGroupAccessForm'
+                  [memData]="memData"
+                  (event)='onChildEvent($event)'></app-group-access>
+
+<app-member-edit *ngIf='showEditMemForm'
+                  [memData]="memData"
+                  (event)='onChildEvent($event)'></app-member-edit>
+<div class="modal fade"
+     id="exampleModaldelete"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <div class="modal-body">
+              <div class="alertpara">
+                  <p class="alertparatxt"> Confirm</p>
+                </div>
+          </div>
+          <div class="alertext">Are you sure you want to Remove access and Delete Team Member {{memData.name}}</div>
+          <div class="alertbutton">
+              <button class="btn btn-default  alertbtn alertbtnno"
+                      data-bs-dismiss="modal"
+                      aria-label="Close">No</button>
+              <button class="btn btn-default alertbtn alertbtnyes"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                      (click)="deleteMember()" >Yes</button>
+          </div>
+      </div>
+  </div>
+</div>
+<div class="modal fade"
+     id="exampleModalreset"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <div class="modal-body">
+              <div class="alertpara">
+                  <p class="alertparatxt"> Confirm</p>
+                </div>
+          </div>
+          <div class="alertext">Are you sure you want to reset the password for <b>{{memData.name}}</b></div>
+          <div class="alertbutton">
+              <button class="btn btn-default  alertbtn alertbtnno"
+                      data-bs-dismiss="modal"
+                      aria-label="Close">No</button>
+              <button class="btn btn-default alertbtn alertbtnyes"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                      (click)="resetPwd(memData)" >Yes</button>
+          </div>
+      </div>
+  </div>
+</div>
+<div class="modal"
+     id="modalSuccess"
+     tabindex="-1"
+     style="display:block;" 
+     *ngIf="showSuccessModal">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <button type="button"
+                  class="btn-close pull-right"
+                  data-bs-dismiss="modal" aria-label="Close"
+                  (click)='showSuccessModal = false;'>
+          </button>
+          <div class="modal-body">
+              <div class="alertpara">
+                  <p class="alertparatxt">Success</p>
+              </div>
+          </div>
+          <div class="alertext">
+            <p>Congratulations!!</p>
+            You have successfully updated Team Member info of 
+              <b><strong>{{memData.name}}</strong></b>
+          </div>
+      </div>
+  </div>
+</div>

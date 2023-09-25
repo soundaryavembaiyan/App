@@ -1,0 +1,35 @@
+<!-- right dashboard row starts here -->
+<div class="row main headertop headerrelationship" [ngStyle]="{'display':isDisplay?'block':'none'}">
+  <div class="col-sm-12 compswitch ">
+    <div class="switch  cswitch">
+      <a *ngIf="authUser" (click)="viewMode='aggregated'" class="  button-class optionone compone   aggregate-members aggregate-projects"  routerLink="/timesheets/aggregate-members">Aggregated Timesheets</a>
+      <a (click)="viewMode='mytimeSheets'" [ngClass]="{'one-btn':!authUser}" class="  button-class optiontwo comptwo non-submitted submitted active" routerLink="/timesheets/non-submitted">My Timesheets</a>
+    </div>
+    <div  [ngSwitch]="viewMode" class="switch   cswitch cswitchtwo switchrelation">
+      <div *ngSwitchCase="'mytimeSheets'">
+      <a  class=" button-class optionone compone oneswitch non-submitted active" routerLink="/timesheets/non-submitted">Not Submitted</a>
+      <a  class=" button-class optiontwo comptwo  oneswitch submitted " routerLink="/timesheets/submitted">Submitted</a>
+    </div>
+    <div *ngSwitchCase="'aggregated'">
+      <a  class=" button-class optionone compone oneswitch aggregate-members active" routerLink="/timesheets/aggregate-members">Team Members</a>
+      <a  class=" button-class optiontwo comptwo  oneswitch aggregate-projects " routerLink="/timesheets/aggregate-projects">Projects</a>
+    </div>
+    </div>
+    <!-- <div class="switch  cswitch">
+      <a class="  button-class optionone compone  aggregate-projects aggregate-members"
+        routerLink="/timesheet/aggregate-projects">Aggregated Timesheets</a>
+      <a class="  button-class optiontwo comptwo non-submitted submitted active"
+        routerLink="/timesheet/non-submitted">My Timesheets</a>
+    </div> -->
+  </div>
+</div>
+<!-- <div class="arrowitem">
+  <img src="assets/img/arrowdown.svg" class="slideico">
+</div> -->
+<div class="arrowitem" (click)="hideAndShow()">
+  <i *ngIf="isDisplay"class= "fa fa-light fa-chevron-up"></i>
+  <i *ngIf="!isDisplay" class=" fa fa-light fa-chevron-down"></i>
+  <!-- <img *ngIf="!isDisplay" src="assets/img/arrowdown.svg" class="slideico">
+  <img  *ngIf="isDisplay"src="assets/img/arrowup.svg" class="slideico"> -->
+</div>
+<router-outlet></router-outlet>

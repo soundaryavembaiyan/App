@@ -1,0 +1,106 @@
+<!--component html goes here -->
+<div class="row view-document">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-6">
+                <div class="watermark">
+                    <div *ngIf="urlSafe" class="safeurl">
+                        <iframe height="100%" width="100%" [src]="urlSafe"></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="watermark-left">
+                    <div class="custusername tab-margin fontweight">
+                        Delete Page(s)
+                    </div>
+                    <div class="form-group name-set">
+                        <label for="title" class="fontbold tab-margin">Enter page number(s) to delete (comma separated)
+                        </label>
+                        <div class="input-group court">
+                            <input type="text" class="myclass" [(ngModel)]="DocumentNumbers"
+                                class="form-control textbox" />
+
+                        </div>
+                        <div class="row tab-margin">
+                            <div class="col-sm-7">
+                                <div class=" tab-margin">Do you want replace original document</div>
+                            </div>
+                            <div class="col-sm-5">
+                                <div class="btnaction float-right">
+                                    <a class="selectprior optionhigh active"
+                                        [ngClass]="{'active': selectedStatus === true}" (click)="isOriginalDoc(true)">
+                                        Yes</a>
+                                    <a class="selectprior optionlow optionaling"
+                                        [ngClass]="{'active': selectedStatus === false}" (click)="isOriginalDoc(false)">
+                                        No</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="!selectedStatus" class="form-group name-set">
+                        <label for="title" class="fontbold tab-margin">New Document name</label>
+                        <div class="input-group court">
+                            <input type="text" class="myclass" [(ngModel)]="newDocumentName"
+                                class="form-control textbox" />
+                        </div>
+
+                    </div>
+                </div>
+                <div class="btnbox">
+                    <button type="reset" class="btn btn-default btncancel" (click)="cancel()">Cancel</button>
+                    <button type="submit" class="btn btn-default btnsave"
+                        (click)="conform('doc-del-pages')">Submit</button>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<jw-modal id="doc-del-pages" class="doc-del-pages alert-box">
+    <div class="alert-box ">
+        <div class="close-x float-right" (click)="closeModal('doc-del-pages');">X</div>
+        <div class="container">
+            <div class="row" *ngIf="data">
+                <div class="">
+                    <div class="alertpara">
+                        <p class="alertparatxt"> Alert</p>
+                    </div>
+                    <div class="alertext">Are you sure you want to delete {{data.name}} document pages <b>{{DocumentNumbers}}</b></div>
+                    <div class="alertbutton">
+                        <button class="btn btn-default  alertbtn alertbtnno"
+                            (click)="closeModal('doc-del-pages');cancel();">No</button>
+                        <button class="btn btn-default alertbtn alertbtnyes"
+                            (click)="delPages();closeModal('doc-del-pages');">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</jw-modal>
+<jw-modal id="doc-del-success" class="doc-del-success  alert-box">
+    <div class="doc-iframe-scs-body ">
+
+        <div class="container">
+            <div class="row" *ngIf="data">
+                <div class="alertbox">
+                    <div class="close-x float-right" (click)="closeModal('doc-del-success');">X</div>
+                    <div class="alertpara">
+                        <p class="alertparatxt"> Success</p>
+                    </div>
+                    <div class="alertext">Congratulations!! You have successfully deleted {{data.name}} document pages.
+                    </div>
+                    <div class="center">
+                        <button class="btn btn-primary  " (click)="closeModal('doc-del-pages');cancel()">OK</button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</jw-modal>

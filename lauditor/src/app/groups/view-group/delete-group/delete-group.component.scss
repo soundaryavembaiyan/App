@@ -1,0 +1,50 @@
+// component css goes here
+
+    .nameSet {
+        width: 90%;
+    }
+
+   
+
+        input,
+        textarea {
+            background: #EEEEEE;
+            border: none;
+        }
+
+        .group-custom-align {
+            width: 41%;
+            margin: 0 auto;
+            margin-top: 5px;
+        }
+
+        .multicheck {
+            text-align: left;
+        }
+    
+
+    /*
+    .lable-title-size{
+        font-size: 32px;
+        font-weight: bold;
+        color: #437CA7;
+    }
+    */
+    .lable-size{
+        font-size: 20px;
+        font-weight: bold;
+        color: #437CA7;
+    }
+    .update-group {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+.multicheck{
+    cursor: pointer;
+}
+
+.update{
+    color: #004d87;
+    font-weight: 800;
+    font-size: 1.4rem;
+  }

@@ -1,0 +1,164 @@
+/* body {font-family: 'Roboto', sans-serif; font-weight:400; font-size:13px; line-height:20px;} */
+a:focus { outline:none; text-decoration:none; }
+a:hover, a:focus { text-decoration:none }
+.navbar-default { background:none; border:none;}
+/* .navbar-right i{color:#e8c10e;} */
+.navbar-nav>li>a{ padding:0; color:#fff; }
+.navbar-right li i{ margin-right:5px;}
+.navbar-default .navbar-nav>li>a{color:#fff;}
+.navbar-default .navbar-nav>li>a:hover{color:#e8c10e;}
+.navbar-nav>li{color:#fff; font-size:14px; margin-left:25px;}
+.navbar-default .navbar-nav>li.signInBtn a{ border:solid 1px #e9c109; color:#e9c109;border-radius: 2px; padding: 3px 10px;}
+.navbar-default .navbar-nav>li.signInBtn{ margin-top:-5px;}
+.navbar-right {margin-right:0px; margin-top:40px;}
+.banner{ float:left; width:100%; background:url(../images/home-banner.jpg) no-repeat center top;  min-height:400px; height:100vh; position:relative;}
+.hCaption{ max-width:960px; margin:auto; position:absolute; top:40%; left:0; right:0;text-align: center; padding:0 15px; }
+.hTitle-sm{font-size: 15px; color:#fff;font-weight: 300; margin-bottom:10px;}
+.hTitle-big{font-size: 38px;font-family: 'Roboto Slab';font-weight: 300;line-height: 50px;padding: 0px 0px 50px;text-align: center; color:#ffc711;}
+.freeTrial-btn a{ width:180px; border-radius:50px; background:#e8bf0b; text-align:center; line-height:20px; margin:0 auto; color:#42350b; font-weight:500; padding:10px 15px; font-size:16px;}
+.freeTrial-btn a:hover{ background:#cca708; color:#fff; font-weight:500;}
+.digiRow{ float:left; width:100%; padding:60px 0;}
+.digiBox{ border:solid 1px #979797; border-radius:3px; padding:15px 20px; width:100%; float:left; text-align:center;min-height:450px;}
+.digiBox .digiSer-icon{width:100%; float:left; padding:10px 0;}
+.digiBox .digiSer-title{font-size: 20px;color: #333;font-family: 'Roboto Slab', serif;font-weight: 700;line-height: 27px;margin-top: 10px; float:left; width:100%;}
+.digiBox .digiSer-info{color: #333; margin-top:10px;float:left; width:100%;}
+.digiRow-bigTitle {font-family: 'Roboto Slab', serif;font-weight: 700;color: #333;font-size: 30px;text-align: center;position: relative;margin-bottom: 15px;
+padding-top: 30px; text-align:center;}
+.digiRow-smTitle{text-align: center;font-size: 16px;font-family: 'Roboto Slab', serif;padding-bottom: 50px; /*max-width:800px;*/ margin:0 auto; font-weight:300; line-height:34px;}
+.sticky .navbar-default{ background:#fff;box-shadow: 0 1px 5px 0 #aaa}
+.navbar-brand{ height:auto;}
+.sticky .navbar-brand{padding: 5px 15px;}
+.sticky .navbar-right{ margin-top:20px;}
+.sticky .navbar-nav>li, .sticky .navbar-default .navbar-nav>li>a{ color:#333;}
+img.digi-logo{ display:block;}
+img.digiStick-logo{ display:none;}
+.sticky img.digi-logo{ display:none;}
+.sticky img.digiStick-logo{ display:block;}
+
+.digiShareDoc{ float:left; width:100%; max-height:400px; overflow:hidden; margin:40px 0 0; background:#673ab7 url(../images/lapWithMan.jpg) no-repeat right top; padding:70px 0;}
+.shareDoc-bigTitle{font-family: 'Roboto Slab', serif;font-weight: 300;color: #fff;font-size: 30px;position: relative;margin-bottom: 15px;
+padding: 0px;line-height: 40px;}
+.shareDoc-smTitle{font-size: 16px;font-family: 'Roboto Slab', serif;padding-bottom: 50px; color:#6ca7d3; font-weight:300; line-height:34px;}
+.digiVideo{ float:left;color:#fff;}
+.digiVideo i{ color:#fff;font-size: 24px;float: left;margin-right: 8px;margin-top: -3px;}
+.digiVideo a{ color:#fff;}
+
+.listingBlock{ float:left; width:100%; background:#ececec; padding:60px 0 40px;}
+.digiList-info{ }
+.digiList-info h4{ color:#673ab7; font-size:24px;font-family: 'Roboto Slab', serif; margin-top:0;}
+.digiList-info p{ color:#333;}
+.digiList-icon{ border-radius:3px; border:solid 1px #0067e7; width:70px; height:70px; text-align:center; line-height:66px; margin-bottom:10px;}
+.iconLeft, .iconRight{ margin:20px 0;}
+.iconLeft .digiList-icon{ float:left; margin-right:30px; }
+.iconRight .digiList-icon{ float:right; margin-left:30px;}
+.iconLeft .digiList-info{ text-align:left; float:left; max-width:400px;}
+.iconRight .digiList-info{ text-align:right;float:right; max-width:400px;}
+
+.bigTitle-1{font-size: 28px;font-family: 'Roboto Slab';padding: 0px 0px 10px;color:#000; font-weight:600;}
+
+.digiLi{ margin:0px; padding:0; margin-top:20px;}
+.digiLi li{ list-style-type:none; position:relative; padding-left:25px; margin:15px 0;}
+.digiLi li:before{ content:">"; position:absolute; border-radius:50px; border:solid 1px #fb8a22; width:18px; height:18px; left:-1px; color:#fb8a22; text-align:center; display:block; line-height:14px;}
+.digiLi-block{ padding-left:50px;}
+.digiFlex{ display:flex;}
+.city-block{ background:url(../images/city.jpg) no-repeat; background-size:cover; min-height:594px; padding-right:0; position:relative; flex:1;}
+.city-block-2{ padding-left:0; padding-right:0;flex:1;}
+.cityBrow{ float:left; width:100%; display:flex;}
+.gear-block{ background:#673ab7; color:#fff; text-align:center; flex:1; padding:60px 15px; font-size:14px;}
+.edu-block{ background:#dbdbdb; color:#054159; text-align:center; flex:1;padding:60px 20px;}
+.digiTitle-3{ font-size:18px;font-family: 'Roboto Slab'; padding:40px 0 10px; font-weight:600;}
+.city-block-3{ background:url(../images/lapWithMan2.jpg) no-repeat; min-height:297px; background-size:cover;}
+.digiCityInfo{ position:absolute; padding:40px; top:30%;}
+.digiWel-title{font-size:24px;font-family: 'Roboto Slab'; padding:40px 0 10px; font-weight:600; color:#fff;line-height: 34px;}
+.digiWel-info{color:#fff; font-size:14px;}
+.digiClients{ margin:0; padding:0; text-align:center;}
+.digiClients li{ list-style-type:none; display:inline-block; margin:20px 0; text-align:center;}
+.digiClientTitle{font-size:30px;font-family: 'Roboto Slab'; padding:0px 0 20px; font-weight:300; color:#b2b2b2; text-align:center;line-height: 40px;}
+
+/*Sign In css*/
+.signBlock{ float:left; width:100%; background:url(../images/signin/signinbg.jpg) no-repeat center center; background-size:cover; min-height:350px; height:100vh;}
+.formBlock{ float:right; width:100%; background:#fff; padding:30px; max-width:400px; height:100vh; position:relative; min-height:500px; overflow:hidden;}
+.signlogo{ float:left; width:100%;}
+.signTitle{ font-size:20px;font-family: 'Roboto Slab'; color:#000; margin-top:80px; float:left; width:100%;font-weight:700; margin-bottom:10px;}
+.signForm-row{ float:left; width:100%; margin-top:10px; position:relative;}
+.signForm-row input.formInput{ border:none;border-bottom:solid 1px #f2f2f2; width:100%; padding:6px 0;}
+.fa-eye{color:#00b9f5; position:absolute;top: 16px;right: 5px;font-size: 12px;}
+.remCheck{ float:left; margin-right:10px; color:#666;}
+.remCheck label{ font-weight:400; margin-top:5px;}
+.remCheck input{float: left;margin-right: 5px;}
+.signForm-row input:focus{ outline:none;}
+.forgot{ float:right; color:#00b9f5;}
+.signBtn{ border:none; background:#00b9f5; text-transform:uppercase; text-align:center; color:#fff; width:100%; padding:10px 5px; font-weight:700; border-radius:3px; font-size:14px; margin:15px 0 15px;}
+.termsPolicy{ color:#666; font-size:12px; text-align:center; line-height:26px;}
+.signUpT{ text-align:left;color:#666; font-size:12px; line-height:26px; margin-top:20px;}
+.signUpBtn{ margin:0px 0;}
+.copyR{ position:absolute; bottom:25px; text-align:center; width:100%; left:0; right:0; color:#666; font-size:12px; margin:0 auto; max-width:340px; border-top:solid 1px #f2f2f2; padding-top:15px;}
+.signUpBlock{ float:left; width:100%; background:url(../images/signin/signupbg.jpg) no-repeat left -50px; background-size:82%; min-height:350px; height:100vh;}
+.signUpBlock .signTitle{ margin-top:40px;}
+.gCaptcha{ float:left; width:100%;}
+
+.footer{ float:left; width:100%; background:#673ab7; padding-top:40px;}
+.footer-1{ text-transform:uppercase; font-size:16px; color:#fff;}
+.flagIcon{ padding:15px 0;}
+.digiAdd{ color:#c5a4ff; font-size:12px;}
+.digiAdd span{ display:block; color:#fff; font-size:14px;}
+.sales-support{ float:left; width:100%; padding:30px 0;}
+.sales-support ul{ margin:0; padding:0;}
+.sales-support li{ float:left; color:#cfe3fb;  list-style-type:none; margin-right:20px;}
+.sales-support li:first-child{ text-transform:uppercase;color:#fff;}
+.sales-support li a{ color:#cfe3fb;}
+.sales-support li i{ color:#fff; margin-right:5px;}
+.digiAbout{ border-left:solid 1px #8c61da; min-height:150px; float:left; padding-left:50px; color:#c5a4ff; padding-bottom:10px;}
+.digiAbout .footer-1{ margin-bottom:15px;}
+.socialMedia{ float:left; margin-top:25px;}
+.social-icon{ float:left; margin-left:10px; margin-top:-5px;}
+.social-icon a{font-size: 24px;margin: 0 3px; color:#ae87f3;}
+.copyRight-block {border-top: 1px solid #8c61da;}
+.copy-rights {text-align: left;color:#cfe3fb;padding: 20px 0;font-size: 13px;}
+.fot-secu-links {color:#cfe3fb;text-align: right;float: right;} 
+.fot-secu-links a{color:#cfe3fb; margin:0 0 0 20px;}
+
+
+@media (min-width:768px) and (max-width:1199px){
+	.digiCityInfo{top:0%;padding: 20px;}
+	.container { width:96%;}
+	.iconRight .digiList-info{ width:60%;}
+	.iconLeft .digiList-info{width:60%;}
+	.digiLi-block{ margin-top:30px;}
+	
+}
+
+
+
+
+
+@media (max-width:767px){
+	.banner{min-height: 500px;}
+	.iconLeft, .iconRight{margin: 8px 0; float:left;}
+	.digiBox{ margin:10px 0;}
+	.iconRight .digiList-icon{ float:left; margin-left:0; margin-right:30px;}
+	.iconLeft .digiList-icon{ float:left; margin-left:0; margin-right:30px;}
+	.iconRight .digiList-info{ max-width: inherit;float: none; text-align:left;}
+	.iconLeft .digiList-info{ max-width: inherit;float: none; text-align:left;}
+	.digiAbout{ border:none; padding:0px; margin-left:-15px;}
+	.copyRight-block .col-md-6.col-sm-6{ float:left; width:50%;}
+	.navbar-nav > li{ padding:5px 0;}
+	#navbar{ background:#fff; padding-bottom:10px;}
+	.navbar-nav > li, .navbar-default .navbar-nav > li > a{ color:#666;}
+	.navbar-right{ margin-top:15px; margin-bottom:10px;}
+	.navbar-default .navbar-nav > li.signInBtn a{ float:left;}
+	.digiLi-block{ margin-top:30px;}
+} 
+@media (max-width:620px){
+	.fot-secu-links{ padding-top:0px;}
+	.fot-secu-links a{margin: 0 20px 0 0;}
+	.copyRight-block .col-md-6.col-sm-6{ float:left; width:100%;}
+	.fot-secu-links{ float:left;}
+	.banner{min-height: 750px;}
+	.digiRow-bigTitle{line-height: 40px;}
+	.shareDoc-bigTitle{line-height:36px;font-size: 28px;}
+	.shareDoc-smTitle{padding-bottom:30px;}
+	.shareDoc-smTitle{line-height: 30px;}
+	.hCaption{padding: 0 20px;top: 26%;}
+	.hTitle-big{font-size: 30px;}
+}

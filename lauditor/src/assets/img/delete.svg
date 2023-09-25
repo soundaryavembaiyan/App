@@ -1,0 +1,15 @@
+<svg id="Group_3394" data-name="Group 3394" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="25.3" height="25" viewBox="0 0 25.3 25">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_6020" data-name="Rectangle 6020" width="25.3" height="25" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="Group_2580" data-name="Group 2580" clip-path="url(#clip-path)">
+    <path id="Path_1745" data-name="Path 1745" d="M36.662,53.346H19.88a2.489,2.489,0,0,1-2.486-2.486V31.937H39.148V50.86a2.489,2.489,0,0,1-2.486,2.486m-17.2-19.337V50.86a.415.415,0,0,0,.414.414H36.662a.415.415,0,0,0,.414-.414V34.009Z" transform="translate(-15.438 -28.346)"/>
+    <path id="Path_1746" data-name="Path 1746" d="M72.948,5.662H61V2.451A2.454,2.454,0,0,1,63.452,0h7.015A2.483,2.483,0,0,1,72.948,2.48ZM63.072,3.59h7.8V2.48a.414.414,0,0,0-.409-.409H63.452a.38.38,0,0,0-.38.38Z" transform="translate(-54.141 0.001)"/>
+    <rect id="Rectangle_6016" data-name="Rectangle 6016" width="25.3" height="1.574" transform="translate(0 3.928)"/>
+    <rect id="Rectangle_6017" data-name="Rectangle 6017" width="1.574" height="9.895" transform="translate(12.706 9.438)"/>
+    <rect id="Rectangle_6018" data-name="Rectangle 6018" width="2.249" height="7.084" transform="translate(6.634 10.562)"/>
+    <rect id="Rectangle_6019" data-name="Rectangle 6019" width="2.136" height="7.084" transform="translate(16.53 10.562)"/>
+  </g>
+</svg>

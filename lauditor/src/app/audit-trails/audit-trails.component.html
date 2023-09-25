@@ -1,0 +1,199 @@
+<!--component html goes here -->
+<!--component html goes here -->
+<div class="container main width-alignment">
+    <div class="col-12 Individual createGroup">
+        <div class="audit-head">History of Actions</div>
+        <!-- <label for="select" class="lable-size">Audit Trails</label> -->
+        <div class="row">
+            <div class="col-6">
+                
+                 <!-- For Lauditor, Content, Connect product - except GH-role-->
+                <div class="form-group" *ngIf="product != 'corporate' && roleId != 'GH'">
+                    <label for="title" class="lable-size"> Category <span class="mandate">*</span> </label>
+                    <!--Category for Groups-->
+                    <select class="form-select form-control textbox calendofont nameSet" (change)="getCategory($event.target)" placeholder="Choose">
+                            <option hidden value="">Select</option>
+                            <option class="textbox" *ngFor="let i of categoryList" value="{{i.value}}"> {{i.name}} </option>
+                    </select>
+                 </div>
+
+                 <!-- Lauditor product - only GH-role-->
+                 <div class="form-group" *ngIf="product == 'lauditor' && roleId == 'GH'">
+                    <label for="title" class="lable-size"> Category <span class="mandate">*</span> </label>
+                    <select class="form-select form-control textbox calendofont nameSet" (change)="getCategory($event.target)" placeholder="Choose">
+                            <option hidden value="">Select</option>
+                            <option class="textbox" *ngFor="let i of categoryList" value="{{i.value}}">{{i.name}}</option>
+                    </select>
+                 </div>
+
+
+                 <!-- Content product - only GH-role-->
+                 <div class="form-group" *ngIf="product == 'content' && roleId == 'GH'">
+                    <label for="title" class="lable-size"> Category <span class="mandate">*</span> </label>
+                    <select class="form-select form-control textbox calendofont nameSet" (change)="getCategory($event.target)" placeholder="Choose">
+                            <option hidden value="">Select</option>
+                            <option class="textbox" *ngFor="let i of categoryContGH" value="{{i.value}}"> {{i.name}} </option>
+                    </select>
+                 </div>
+
+                 <!-- Connect product - only GH-role-->
+                 <div class="form-group" *ngIf="product == 'connect' && roleId == 'GH'">
+                    <label for="title" class="lable-size"> Category <span class="mandate">*</span> </label> 
+                    <select class="form-select form-control textbox calendofont nameSet" (change)="getCategory($event.target)" placeholder="Choose">
+                            <option hidden value="">Select</option>
+                            <option class="textbox" *ngFor="let i of categoryConnectGH" value="{{i.value}}"> {{i.name}} </option>
+                    </select>
+                 </div>
+
+                 <!-- Only for Corporate product -->
+                 <div class="form-group" *ngIf="product == 'corporate'">
+                    <label for="title" class="lable-size"> Category <span class="mandate">*</span></label>
+                    <select class="form-select form-control textbox calendofont nameSet" (change)="getCategory($event.target)" placeholder="Choose">
+                        <option hidden value="">Select</option>
+                        <option class="textbox" *ngFor="let i of categoryCorp" value="{{i.value}}"> {{i.name}} </option>
+                    </select>
+                 </div>
+
+                <!-- <div class="form-group nameSet">
+						<label for="title" class="lable-size">Client</label>
+						<input type="text"
+							   formControlName="client"
+							   class=" text-size form-control group-name-text"
+							   [ngClass]="{ 'is-invalid': submitted && f.client.errors }">
+					</div>
+					<div class="form-group nameSet">
+						<label for="title" class="lable-size">Team Member</label>
+						<input type="text"
+							   formControlName="tm"
+							   class=" text-size form-control group-name-text"
+							   [ngClass]="{ 'is-invalid': submitted && f.tm.errors }">
+					</div>
+					<div class="form-group nameSet">
+						<label for="title" class="lable-size">Tags</label>
+						<input type="text"
+							   formControlName="tm"
+							   class=" text-size form-control group-name-text"
+							   [ngClass]="{ 'is-invalid': submitted && f.tm.errors }">
+					</div> -->
+            </div>
+            
+            <div class="col-6">
+                <div class="form-group nameSet">
+                    <div class="input-group court" id="search">
+                        <label for="title" class="lable-size"></label>
+                        <input type="text" class="form-control textbox seogroup"
+                            placeholder="Search" [(ngModel)]="term">
+                        <img style="top: 20px;" src="assets/img/search.svg"
+                            class="calimg calitem input-group-append searchimg">
+                    </div>
+                </div>
+                <div class="checkbox">
+                    <label class="lable-size">Advanced search</label> <input
+                        type="checkbox" #inputEl class="larger" name="checkBox2"
+                        (change)="isCheckBox(inputEl.checked)">
+                </div>
+                <div class="form-group nameSet " *ngIf="isChecked">
+
+                    <!-- <label for="comment" class="lable-size advance">Advance Search</label> -->
+                    <form [formGroup]="logForm" (ngSubmit)="onSubmit()">
+                        <div class="row">
+                            <div class="col-5">
+                                <label class="lable-size">From</label><br>
+                                <input class="form-control formcalinput
+                                    calendofont caldate caldatename "
+                                    bsDatepicker id="drp" #dp1="bsDatepicker"
+                                    [bsValue]="frombsValue"
+                                    (bsValueChange)='selectFromDuration($event)'
+                                    [bsConfig]="{ dateInputFormat: 'MMM DD,YYYY', containerClass:'theme-dark-blue',showWeekNumbers:false, customTodayClass:'custom-today-class' }"
+                                    readonly>
+
+                                <span _ngcontent-syx-c6=""
+                                    class="input-group-btn">
+
+                                    <i class="fa fa-light fa-calendar-days"
+                                        (click)="dp1.show()"></i>
+
+                                </span>
+                            </div>
+
+                            <div class="col-2"></div>
+                            <div class="col-5">
+                                <label class="lable-size">To</label><br>
+                                <input class="form-control formcalinput
+                                    calendofont caldate caldatename "
+                                    bsDatepicker id="drp" #dp2="bsDatepicker"
+                                    [bsValue]="tobsValue"
+                                    (bsValueChange)='selectToDuration($event)'
+                                    [bsConfig]="{ dateInputFormat: 'MMM DD,YYYY', containerClass:'theme-dark-blue',
+                                    showWeekNumbers:false, customTodayClass:'custom-today-class' }"
+                                    readonly>
+                                    <span _ngcontent-syx-c6=""
+                                    class="input-group-btn">
+
+                                    <i class="fa fa-light fa-calendar-days"
+                                        (click)="dp2.show()"></i>
+
+                                </span>
+                             
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+
+                <!-- <div class="form-group nameSet">
+						<label class="lable-size">&nbsp;</label>
+						<button type="submit"
+                			    class="btn btn-default btnsave">Search</button>
+					</div> -->
+            </div>
+        </div>
+
+    </div>
+    <div *ngIf="filterByCategory.length==0" class="noData"> Data Not Available
+    </div>
+    <div *ngIf="filterByCategory.length>0" class="col-12 Individual gridtable"
+        style="margin-top:20px;">
+        <table class="table table-borderless tblgrid">
+            <thead>
+                <tr class="theader">
+                    <th>
+                        <p class="thheadname"> Category</p>
+                        <img src="/assets/img/SORT.PNG" class="sortico"
+                            (click)="sortDocuments('name')">
+                    </th>
+                    <th>
+                        <p class="thheadname"> Date & Time</p>
+                        <img src="/assets/img/SORT.PNG" class="sortico"
+                            (click)="sortDocuments('timestamp')">
+                    </th>
+                    <th>
+                        <p class="thheadname"> Activity Log</p>
+                        <img src="/assets/img/SORT.PNG" class="sortico"
+                            (click)="sortDocuments('message')">
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="rone" *ngFor="let log of
+                    filterByCategory|filter:term| paginate: { itemsPerPage: 10,
+                    currentPage: p }">
+                    <td *ngIf="log.name=='AUTH'">AUTHENTICATION</td>
+                    <td *ngIf="log.name!='AUTH'">{{log.name}}</td>
+                    <td>{{log.timestamp}}</td>
+                    <td>{{log.message}}</td>
+                </tr>
+            </tbody>
+
+        </table>
+        <div class="row">
+            <div class="col-6"> <label for="">Showing <span>{{fromCount}}</span>to <span>{{toCount}}</span> of <span *ngIf="filterByCategory">{{filterByCategory.length}}</span> entries</label></div>
+            <div class="col-6">
+                <pagination-controls (pageChange)="p= $event"
+                    [maxSize]="7"
+                    [responsive]="true" (pageChange)="pageChanged($event)" >
+                </pagination-controls></div>
+        </div>
+
+    </div>
+</div>

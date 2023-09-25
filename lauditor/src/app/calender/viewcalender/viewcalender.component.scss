@@ -1,0 +1,453 @@
+.compswitch {
+    padding-top: 0;
+}
+
+.widthlign {
+    margin-left: 70px;
+}
+
+.mainmargin {
+    padding: 0px 70px;
+}
+
+// .lbltime{
+//     white-space: nowrap;
+//     width: 70%;
+//     overflow: hidden;
+//     text-overflow: ellipsis;
+// }
+.gridcalendor {
+
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 20px;
+}
+
+td.claw {
+    max-width: 106px;
+}
+
+.tblcalendor {
+    background: #F0F0F0;
+    border: 0px solid #fff;
+}
+
+.tblcalendor,
+.tblcalendor th,
+.tblcalendor td,
+.tblcalendor tr {
+    border: 2px solid #fff !important;
+    color: #000000;
+    min-width: 65px;
+}
+
+table.table.table-bordered.tblcalendor.tbltimesheet td {
+    min-width: 94px;
+}
+
+.calendorselect {
+    width: 18.9%;
+    display: inline-block;
+    height: 39px;
+    background-color: #EEEEEE;
+    border: 1px solid #E2E2E2;
+    border-radius: 5px;
+    font-weight: 600;
+    background-size: 20px 18px !important;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.tblcalendor>tr> :nth-child(2) {
+    padding-left: 15px !important;
+}
+
+td.cfile {
+    padding-left: 11px;
+}
+
+.calendorfcontainer {
+    padding-right: 95px;
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+    padding-left: 155px !important;
+}
+
+.calnext {
+    float: right;
+    width: 109px;
+    height: 39px;
+    /* UI Properties */
+    background: #EEEEEE 0% 0% no-repeat padding-box;
+    border-radius: 5px 0px 0px 5px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    margin-left: 3px;
+    margin-top: 10px;
+}
+
+.calpre {
+    float: right;
+    width: 109px;
+    height: 39px;
+    /* UI Properties */
+    background: #EEEEEE 0% 0% no-repeat padding-box;
+    border-radius: 5px 0px 0px 5px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    margin-top: 10px;
+}
+
+.calendordate {
+    font-weight: 600;
+    padding-top: 10px;
+}
+
+.calendordate:nth-child(2) {
+    font-weight: 600;
+    padding-left: 50px;
+}
+
+.calnext:hover,
+.calpre:hover,
+.calnext:focus,
+.calpre:focus {
+    background: #eee;
+    border: none;
+}
+
+.calendorselect:nth-child(2),
+.calendorselect:nth-child(3),
+.calendorselect:nth-child(4),
+.calendorselect:nth-child(5) {
+    margin-left: 10px;
+}
+
+.formcalico {
+    width: 25px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.calselectitem {
+    max-width: 219px;
+    text-overflow: ellipsis;
+}
+
+.calendofont {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.caseselect {
+    font-size: 14px;
+    max-width: 140px;
+    text-overflow: ellipsis;
+}
+
+.formcalinput {
+    width: 80%;
+    display: inline-block;
+}
+
+.numbercls {
+    display: inline-block;
+    width: 58px
+}
+
+.thheadnameone {
+    display: inline-block;
+    padding-right: 5px;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+}
+
+table.table.table-bordered.tblcalendor.tbltimesheet th {
+    background: white !important;
+}
+
+span.ctime {
+    padding-right: 6px;
+}
+
+.actionbico {
+    padding-left: 5px;
+    cursor: pointer;
+}
+
+.fgroupone {
+    display: inline-block;
+    margin-top: -22px;
+}
+
+.gridbox {
+    padding-right: 92px !important;
+}
+
+.tbltimesheet td:nth-child(3),
+.columncolor,
+.tbltimesheet td:nth-child(7) {
+    background: #FEFFEB !important;
+
+}
+
+.tbltimesheet td.colnormal {
+    background: #f0f0f0 !important;
+}
+
+.timesheetsection {
+    margin-top: 20px;
+}
+
+td.wcolr,
+td.colnormal.wcolr {
+    background: #fff !important;
+}
+
+.tbltotal {
+    background: #F0F0F0;
+    padding: 8px 0px 0px 15px;
+    height: 43px;
+    font-size: 16px;
+}
+
+.totalbtnsub {
+    text-align: right;
+    margin-top: 25px;
+}
+
+.timesheetitle {
+    color: #004D87;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+
+.tableplan>:not(caption)>* {
+    border: 1px dashed #707070;
+}
+
+.tableplan>:not(caption)>*>* {
+    border: 1px dashed #707070;
+}
+
+img.lefticon {
+    padding-left: 20px;
+}
+
+.tdate {
+    padding-left: 21px;
+    font-weight: 600;
+    color: #00498E;
+}
+
+.tlabel {
+    font-weight: 600;
+    color: #00498E;
+}
+
+
+.caldate {
+    font-weight: 600;
+}
+
+.tbldash td,
+.tbldash th,
+.tbldash tr {
+    border: 1px dashed #707070;
+    border-top: none;
+    border-right: none;
+    position: relative;
+}
+
+.timeselect {
+    font-weight: 600;
+}
+
+.tbldash td:nth-child(1),
+.tbldash th:nth-child(1),
+tr.timerow {
+    border-left: none;
+}
+
+.tbldash td,
+tr.lstrow {
+
+    border-bottom: none;
+}
+
+.calcircle.calcircletwo {
+    margin-bottom: -22px;
+}
+
+p.timetask {
+    background: #004C87;
+    color: #fff;
+    padding: 4px;
+    position: absolute;
+    margin-top: 14px;
+    max-width: 133px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-left: -8px;
+    width: 100%;
+}
+
+p.ttask {
+    margin-top: -4px;
+}
+
+.expandone {
+    width: 100px;
+}
+
+.expandpara {
+    max-width: 50% !important;
+}
+
+p.calcircle.calcirclethree {
+    font-size: 53px;
+    padding-top: 0px;
+}
+
+
+/* .tbldash tr:last-child { background:#ff0000; } */
+.itemlist {
+    padding-top: 28px;
+}
+
+tr.tblheaderrow {
+    border: none;
+}
+
+.btncalednor {
+    text-align: center;
+    padding-top: 10px;
+}
+
+.settingicon {
+    padding-left: 25px;
+    text-align: right;
+    float: right;
+    padding-top: 19px;
+    cursor: pointer;
+}
+
+/* .lbltime{
+  max-width: 75px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 12px;
+} */
+.calcircle {
+    width: 76px;
+    height: 76px;
+    background: #00B3A7 0% 0% no-repeat padding-box;
+    color: #fff;
+    font-size: 34px;
+    text-align: center;
+    border-radius: 100%;
+    padding-top: 12px;
+    margin: auto;
+    margin-bottom: 20px;
+}
+
+.caliconfile td {
+    width: 50px;
+    height: 100px;
+    position: relative;
+}
+
+.lblitem {
+    text-align: center;
+    font-size: 20px;
+    margin: 0px;
+
+}
+
+.tblheaderrow,
+tr.tblheaderrow th {
+    border: none;
+}
+
+.cdate {
+    font-size: 12px;
+    font-weight: 600;
+    display: block;
+}
+
+.commontd {
+    max-width: 121px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 12px;
+    padding: 2.5rem 0.5rem;
+    font-weight: bold;
+}
+
+label.lbltime {
+
+    display: inline-block;
+    position: absolute;
+    width: auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 14px;
+    padding-left: 2px;
+
+}
+
+.custleftmenu {
+
+    height: calc(100vh - -750vh);
+
+}
+
+.btnaddevent {
+    min-width: 67px;
+}
+
+.btncustcal {
+    margin-bottom: 11px;
+    margin-top: 0px;
+}
+
+img.lefticon,
+.righticon {
+    cursor: pointer;
+}
+
+.lastitemlist {
+    padding-top: 0px !important;
+}
+
+.bullet {
+    filter: invert(0.5) sepia(1) saturate(5) hue-rotate(175deg);
+    margin-top: 3px;
+}
+
+.cal-day-number{
+    font-size: 1.2em;
+    font-weight: bold;
+    opacity: 0.5;
+    margin-top: -25px;
+    margin-right: 17px;
+    float: right;
+    color: black;
+}
+.scroll-container {
+    height: calc(100vh - 320px);
+    overflow-y: auto;
+  }
+
+.itemFlex{
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    overflow-wrap: break-word;
+}

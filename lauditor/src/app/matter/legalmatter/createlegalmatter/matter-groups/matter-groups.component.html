@@ -1,0 +1,76 @@
+<!--component html goes here -->
+<div class="col-sm-12 compswitch ">
+  <div class="row">
+    <div class="col-sm-3 col-xs-1"></div>
+    <div class="col-sm-2 col-xs-3 round-icon">
+      <div>
+        <p class="selectprior optionhigh2">{{data.Title}}</p><!--selectprior-->
+        <p class="">{{data.Type}}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 Individual createGroup">
+    <div class="row">
+      <div class="col-6 matterpadding">
+        <h5 class="float-left grpFont" *ngIf ="product !='corporate'">Selected Group(s)</h5>
+        <h5 class="float-left grpFont" *ngIf ="product =='corporate'">Selected Department(s)</h5>
+        <div>
+          <div class="form-group group-custom-align" *ngFor="let group of selectedGroups">
+            <div class="input-group multicheck court" id="selectedgroup">
+              <div class="form-control textbox" [innerHtml]="group.name"></div>
+              <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup" aria-hidden="true"
+                (click)="removeGroup(group)"></i>
+          </div>
+        </div>
+        </div>
+      </div>
+      <div class="col-6 matterpadding">
+       <!----<div class="col-3">
+          <h5>Assign to Group(s)</h5>
+        </div>-->
+        <h5 class="float-left grpFont" *ngIf ="product !='corporate'">Assign to Group(s)<span class="mandate">*</span></h5> 
+        <h5 class="float-left grpFont" *ngIf ="product =='corporate'">Assign to Department(s)<span class="mandate">*</span></h5> 
+        <div class="col-3" *ngIf="!isEdit">
+          <div class="form-group" id="selectbx">
+            <div class="input-group court" id="search">
+              <div class="multicheck form-control textbox">
+                <label class="callselect">Select All</label>
+                <input class="form-check-inpu calimg calitem input-group-append checkboxitem" type="checkbox" value=""
+                  id="selectAll" (change)="selectAll($event)">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group ">
+
+          <div class="input-group group-custom-align court" id="search" *ngIf ="product !='corporate'">
+            <input type="text" class="form-control textbox" placeholder="Search Group" [(ngModel)]="searchText" (keyup)="keyup()" />
+            <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
+          </div>
+          <div class="input-group group-custom-align court" id="search" *ngIf ="product =='corporate'">
+            <input type="text" class="form-control textbox" placeholder="Search Department" [(ngModel)]="searchText" (keyup)="keyup()" />
+            <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
+          </div>
+        </div>
+        <div class="form-group " id="selectbx ">
+          <div class="input-group group-custom-align court matterpadding" id="search"
+            *ngFor="let group of groupsList |filter:searchText">
+            <div class="multicheck form-control textbox">
+              <div class="callselect" [innerHtml]="group.name"></div>
+              <input class="form-check-inpu calimg calitem input-group-app
+                                      end checkboxitem" #inputEl type="checkbox" id="flexCheckDefault"
+                (change)="selectGroup(group, inputEl.checked)">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="btnbox">
+      <button type="reset" class="btn btn-default btncancel btnrightitem" (click)="OnCancel()">Cancel</button>
+      <button type="submit" class="btn btn-primary btnsave savecls "
+        [disabled]="!(selectedGroups.length > 0 && isSaveEnable)" (click)="saveGroups()">Next</button>
+
+    </div>
+  </div>
+
+</div>

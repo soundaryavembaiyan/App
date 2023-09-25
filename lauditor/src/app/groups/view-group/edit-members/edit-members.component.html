@@ -1,0 +1,96 @@
+<div class="container update-members main width-alignment">
+    <div class="col-12 Individual createGroup">
+        <label for="select" class="lable-size update" *ngIf="product != 'corporate'">Update Group Members</label>
+        <label for="select" class="lable-size update" *ngIf="product == 'corporate'">Update Department Members</label>
+        <div class="row">
+            <div class="col-6 ">
+                <div class=" col-12 padding-unset">
+                    <div class="form-group nameSet">
+                    <div class="row">
+                        <div class="col-6 ">
+                            <label for="select" class="sub-lable-size" *ngIf="product != 'corporate'">Group members</label>
+                            <label for="select" class="sub-lable-size" *ngIf="product == 'corporate'">Department members</label>
+                        </div>
+                        <div class="col-6 ">
+                            <button for="title"
+                                    class="removebtn float-right"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalCancel">Remove All</button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="form-group nameSet">
+                    <div class="input-group court" id="selectedgroup">
+                        <i class="fa fa-users" aria-hidden="true"></i>
+                      <input type="text" class="form-control textbox"
+                            *ngIf="product != 'corporate'" placeholder="{{ghname}} - Group Head" disabled />
+                      <input type="text" class="form-control textbox"
+                            *ngIf="product == 'corporate'" placeholder="{{ghname}} - Department Head" disabled />
+                    </div>
+                  </div>
+                  <div class="form-group nameSet" *ngFor="let member of members; index as i">
+                    <div class="input-group court" id="selectedgroup">
+                    <div class="form-control textbox"
+                         [innerHtml]="member.name" ></div>
+                    <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup"
+                       aria-hidden="true"
+                       (click)="removeMember(member, i)"></i>
+                    </div>
+                  </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group nameSet">
+                    <div class="input-group court">
+                      <input type="text"
+                             id="search"
+                             class="form-control textbox"
+                             placeholder="Search Member"
+                             [(ngModel)]="searchText" />
+                      <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
+                    </div>
+                  </div>
+                  <!-- | LockFilter: searchText -->
+                  <div class="form-group nameSet"
+                        *ngFor="let member of membersList; index as i"
+                        [ngClass]="{'hide': !member.name.toLowerCase().includes(searchText.toLowerCase())}">
+                    <div class="input-group court" id="selectedgroup">
+                    <div class="form-control textbox" [innerHtml]="member.name" ></div>
+                    <i class="fa a-solid fa-minus calimg calitem input-group-append sgroup"
+                       aria-hidden="true" (click)="addMember(member, i)"></i>
+                    </div>
+                  </div>
+            </div>
+        </div>
+        <div class="btnbox">
+            <button type="button" class="btn btn-default btncancel" (click)= "closeClickMembers()">Cancel</button>
+            <button type="button" class="btn btn-default btnsave" (click)="saveMembers()">Save</button>
+        </div>
+</div>
+<div class="modal fade"
+     id="modalCancel"
+     tabindex="-1"
+     aria-labelledby="modalCancelLabel"
+     aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <div class="modal-body">
+              <div class="alertpara">
+                  <p class="alertparatxt">Alert</p>
+                </div>
+          </div>
+          <div class="alertext" *ngIf="product != 'corporate'">Are you sure you want to remove?. All the members from {{gname}} Group?</div>
+          <div class="alertext" *ngIf="product == 'corporate'">Are you sure you want to remove?. All the members from {{gname}} Department?</div>
+          <div class="alertbutton">
+              <button class="btn btn-default  alertbtn alertbtnno"
+                      data-bs-dismiss="modal"
+                      aria-label="Close">No</button>
+              <button class="btn btn-default alertbtn alertbtnyes"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                      (click)="removeAllMembers()">Yes</button>
+          </div>
+      </div>
+  </div>
+</div>

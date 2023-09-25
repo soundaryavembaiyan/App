@@ -1,0 +1,89 @@
+.matter {
+
+    .text-center {
+        text-align: center;
+    }
+
+    .btn-top {
+        padding: 10px 30px;
+        background: #f5f5f5;
+        border-color: #f5f5f5;
+        color: #111;
+        font-weight: 700;
+        font-size: 20px
+    }
+
+    .btn-top:hover,
+    .btn-top.active {
+        background: #00B3A7;
+        color: #fff;
+        font-size: 100;
+    }
+
+    .border-styles {
+        border: 1px solid #e8e8e8;
+        -webkit-box-shadow: 0 0 10px #fff;
+        box-shadow: 0 0 10px #e8e8e8;
+        border-radius: 5px;
+        width:45%;
+        margin: 20px;
+    }
+
+    .btn-bottom {
+        background: #f5f5f5;
+        color: #111;
+        border-color: #f5f5f5;
+        font-weight: 700;
+        font-size: 20px
+    }
+
+    .btn-bottom:hover,
+    .btn-bottom.active {
+        background: #00B3A7;
+        color: #fff;
+        font-size: 100;
+
+    }
+
+    .ms-4 {
+        margin-left: 10.5rem !important;
+    }
+
+    // .lable-size{
+    //     font-size: 19px;
+    // }
+    div.text-bottom,
+    .lable-size {
+        font-size: 19px;
+        font-weight: bold;
+        color: #437CA7;
+    }
+
+    input {
+        background-color: #e8e8e8;
+        margin-top: 20px;
+    }
+
+    .Advocate {
+        font-size: 25px;
+        color: #437CA7;
+        font-weight: 100;
+        .btn{
+            float: right;
+        }
+    }
+
+    .button-left {
+        background: #f5f5f5;
+        color: #111;
+        border-color: #f5f5f5;
+    }
+
+    .btn-align {
+        text-align: center;
+
+        .btn-lg {
+            width: 20%;
+        }
+    }
+}

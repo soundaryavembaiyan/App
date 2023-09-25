@@ -1,0 +1,399 @@
+.calpre {
+    border-radius: 0;
+    float:left !important;
+    width:100%;
+    display:inline-flex;
+}
+.atchmain{
+    display: flex;
+    height: 30px;
+    margin-bottom: 3px;
+    margin-left: 85px;
+    margin-top: 7px;
+    -webkit-box-ordinal-group: 1;
+    -webkit-order: 1;
+    order: 1;
+}
+.atch{
+    // display: inline-block;
+    // padding-left: 39px;
+    display: flex;
+    height: 30px;
+    margin-bottom: 3px;
+    margin-left: 2px;
+    margin-top: 2px;
+    -webkit-box-ordinal-group: 1;
+    -webkit-order: 1;
+    order: 1;
+}
+.mail-count {
+    width: 100%;
+    text-align: right;
+}
+.let{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    -webkit-font-smoothing: antialiased;
+    font-family: "Google Sans",Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
+    font-size: .875rem;
+    letter-spacing: normal;
+}
+.mail-count span {
+    padding: 5px 10px;
+    background: #004d87;
+    border-radius: 50%;
+    color:#fff;
+}
+
+.icon{
+    padding:0 5px;
+}
+.fromId {
+    margin-left: 25px;
+    font-size: 19px;
+    font-weight: bold;
+}
+
+.subject {
+    font-size: 16px;
+    padding-top: 5px;
+    font-weight: 600;
+}
+.mail-list{
+    margin-top:20px;
+}
+.p-bottom{
+padding-bottom:5px;
+}
+.attachement{
+    // border: 1px solid grey;
+    // padding: 2px 12px 2px 12px;
+    // border-radius: 21px 21px 21px 21px;
+    // background: white;
+    align-items: center;
+    border-radius: 15px;
+    box-shadow:  inset 0 0 0 1px rgb(100 121 143 / 30%);
+    box-sizing: border-box;
+    color: #5f6368;
+    display: flex;
+    height: 30px;
+    padding: 0 12px;
+    margin-right: 8px;
+    max-width: 160px;
+    min-width: 64px;
+    background: white;
+}
+.disable{
+    opacity: .2;
+    pointer-events: none;
+}
+.pdf-data {
+    display: inline-flex;
+    border: 1px solid #DEE2E6;
+    padding: 2px 10px;
+    border-radius: 5px;
+    background: #F2F5FA;
+    margin-right: 10px;
+}
+.pdf-list {
+    padding-left: 5%;
+}
+.pdf-list-inbox{
+    padding-left: 5%;
+    cursor: pointer;
+    padding-top: 5px;
+}
+i.fa-regular.fa-file-pdf {
+    padding: 0 10px;
+    color: red;
+}
+.optionone {
+    font-size: 16px;
+    display: inline-block;
+    font-weight: 600;
+    vertical-align: middle;
+    padding: 7px 22px 7px 22px;
+    color: #000;
+    cursor: pointer;
+    background: #eeeeee;
+    text-align: center;
+    width: auto;
+    border-radius: none;
+}
+.doc-option{
+    height: 43px;
+    line-height: 30px;
+    font-size: 16px;
+    display: inline-block;
+    font-weight: 600;
+    vertical-align: middle;
+    padding: 7px 22px 7px 22px;
+    color: #000;
+    cursor: pointer;
+    background: #eeeeee;
+    text-align: center;
+    width: auto;
+    /* border-radius: 5px; */
+    border-right: 1px solid #111;
+    &.view,&.client {
+        border-top-left-radius: 5px ;
+      border-bottom-left-radius: 5px ;
+    }
+    &.mergepdf,&.firm {
+        border-top-right-radius: 5px ;
+      border-bottom-right-radius: 5px ;
+    }
+ 
+}
+.arrowitem{
+  background:#f8f8f8 ;
+}
+.arrowitem .fa {
+  background: #00498e;
+  color: #fff;
+  padding: 10px;
+
+}
+.doc-option.active{
+  background: #00b3a7 !important;
+  color: #fff;
+}
+// component css goes here
+.form-group {
+    width: 90%;
+}
+
+.modal-header {
+    border-bottom: none;
+}
+
+.modal-body {
+    text-align: center;
+}
+
+.modal-footer {
+    border-top: none;
+}
+
+label {
+    font-size: 14px;
+}
+
+.documents-list {
+    background: #f8f8f8;
+    padding: 7px;
+    margin: 10px 0;
+    // width: 90%;
+}
+
+.selected-group {
+    .cod {
+        width: 48%;
+    }
+
+    .cod:nth-child(even) {
+        margin: 0 0 0 4%;
+    }
+
+    .documents-list {
+        background: #eee;
+    }
+}
+
+.icon-list {
+    display: inline-flex;
+    float: right;
+
+    .icons {
+        padding: 0 5px;
+        cursor: pointer;
+    }
+}
+
+.btn-outline-primary {
+    background: #f8f8f8;
+    border: none;
+    color: #111;
+    text-decoration: none;
+}
+
+.btn:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.cod,
+.width-align-upload {
+    width: 40%;
+}
+
+.codeAlign {
+    display: contents;
+}
+
+.cod:nth-child(even) {
+    margin-left: 10%
+}
+
+.disable .fa-download {
+    opacity: .2;
+}
+
+hr.new3 {
+    border-top: 2px dotted #969696;
+}
+
+.upload-document .mat-form-field {
+    width: 100%;
+}
+
+.mat-form-field.mat-form-field-invalid .mat-form-field-ripple,
+.mat-form-field.mat-form-field-invalid .mat-form-field-ripple.mat-accent {
+    border: none !important;
+}
+
+.disabled {
+    background: #004d87;
+    color: #fff;
+}
+
+.inputEl {
+    margin: 0 10px;
+}
+
+.multicheck.form-control.textbox {
+    width: 100%;
+}
+
+.index {
+    z-index: 99;
+}
+
+.metadata i.fa.fa-times-circle {
+    margin-top: 25px;
+    color: red;
+
+    &:before {
+        font-size: 30px;
+    }
+
+}
+
+.dropdown-select .textbox {
+    width: 100%;
+    border: none;
+    padding: 0 10px;
+    font-size: 14px;
+}
+.form-control[readonly] {
+    background-color: unset !important; 
+   opacity: 1;
+}
+input.middle:focus {
+    outline-width: 0;
+}
+select.textbox {    
+    appearance: none;
+}
+.textbox i.fa.fa-chevron-down {
+    font-size: 12px;
+    position: relative;
+    bottom: 25px;
+    float: right;
+    right: 15px;
+}
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}
+.mat-mdc-form-field{
+    width:100%;
+}
+.mouseAction{
+    pointer-events: none;
+    .btn-outline-primary{
+        background: #f8f8f8;
+        color: #111;
+    }
+    
+}
+.email-compose{
+    height: 100%;
+    input.form-control.textbox {
+        padding-left: 25px;
+    }
+    input[type="text"] {
+        width: 100%;
+        border: none;
+    }
+    
+  
+    
+    table {
+        width: 100%;
+        td.text-field {
+            width: 100%;
+        }
+        
+        tr.form-control.email-to {
+            width: 100%;
+        }
+    }
+    tbody>tr> :nth-child(1) {
+       
+        word-break:unset !important;
+       
+      }
+    .col-12,textarea{
+        height: 100%;
+    }
+
+    .email-body {
+        height: 70%;
+    }
+    input.form-control.textbox {
+        background: #eee;
+    }
+i.fa-solid.fa-minus {
+    margin: 16px 25px 0 0px;
+}
+
+ i.fa.fa-times.calimg {
+    margin: 11px 11px 0 0;
+    font-size: 14px;
+}
+input.form-control.textbox,.email-to,.email-subject{
+    border-radius: unset !important;
+}
+textarea {
+    width: 100%;
+    border: 1px solid #eee;
+}
+i.fa.fa-paperclip{
+    padding-top: 10px;
+    padding-left: 12px;
+    font-size: 14px;
+}
+.bootom.submit {
+    position: absolute;
+    bottom: 0;
+    background: #eeeeee;
+    width: 100%;
+    padding: 10px;
+    input.btn.btn-primary {
+        float:right;
+        font-size: 14px;
+        background: #0d6efd;
+    }
+}
+
+
+}
+.crosscss{
+    color: #ff0000;
+    padding-top: 6px;
+    padding-left: 5px;
+}

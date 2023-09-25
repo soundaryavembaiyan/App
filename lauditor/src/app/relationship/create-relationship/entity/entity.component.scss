@@ -1,0 +1,58 @@
+.btnsave {
+  width: 150px;
+}
+
+.hide {
+  opacity: 0.2
+}
+
+.nameSet {
+  width: 96%;
+  padding-bottom: 10px;
+  color: #0B5A9A;
+  //font: normal normal 400 15px Gill Sans;
+  font-size: 18px;
+  font-weight: bolder;
+}
+
+#addedGrp:hover {
+  color: #fff;
+  background-color: #00b3a7;
+}
+
+.alertText {
+  //font: normal normal 400 18px Gill Sans;
+  letter-spacing: 0px;
+  opacity: 1;
+  padding-top: 10px;
+  font-size: 18px;
+  font-weight: bolder;
+}
+
+.textGreen {
+  color: #359A00;
+}
+
+.textDanger {
+  color: #FF0000;
+}
+
+.btnsave:disabled,
+.btnsave[disabled] {
+  background: #004d87 0% 0% no-repeat padding-box;
+  border-radius: 5px;
+  color: #fff;
+  border: none !important;
+}
+
+.btn-close {
+  //top: 362px;
+  width: 38px;
+  height: 38px;
+  opacity: 1;
+  margin-left: 450px;
+}
+
+.alertbutton {
+  padding-bottom: 22px;
+}

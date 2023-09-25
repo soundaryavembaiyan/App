@@ -1,0 +1,208 @@
+.calendorselect {
+    height: 39px;
+    background-color: #EEEEEE;
+    border: 1px solid #E2E2E2;
+    border-radius: 5px;
+    font-weight: 600;
+    background-size: 20px 18px !important;
+    cursor: pointer;
+    margin-top: 10px;
+	margin-left: 0;
+	width: 100%;
+}
+
+.fontbold {
+    color: #004d87;
+}
+
+.dateClass {
+    display: initial;
+    width: 30%;
+}
+
+.timeClass {
+    display: initial;
+    width: 15%;
+	background-color: #e9ecef;
+    opacity: 1;
+}
+
+.formcalico {
+    margin: 0 7px 3px;
+	height: 32px;
+	width: unset;
+}
+.invalid-feedback{
+    display: block;
+}
+
+.form-group {
+    margin-top: 30px;
+}
+
+.dashborder {
+    border-top: 1px dashed black;
+    margin-top: 20px;
+}
+
+.tagsclass {
+    display: contents;
+}
+
+.tags {
+    width: auto;
+}
+.modal {
+	padding-right: 15px;
+	display: block;
+	overflow-y: auto;
+}
+
+.modal-lg {
+	width: 98%;
+}
+
+.modal-body {
+	/* background-color: #f5f5f5; */
+	background-color: #e9e9e94a;
+}
+
+.search_field {
+	width: 30%;
+	margin-right: 15px;
+}
+
+.user_header {
+	margin-bottom: 5px;
+}
+
+textarea {
+	height: 100px;
+}
+
+#text-title, #file-list {
+	position: absolute;
+	width: 50%;
+	left: 25%;
+	padding: 10px;
+	margin-top: 2%;
+	z-index: 999999;
+	background-color: #fff;
+	border: 1px solid rgba(0, 0, 0, .2);
+	border-radius: 6px;
+	box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
+}
+
+#save-fs, #close-fs {
+	margin-bottom: 10px;
+	margin-left: 1px;
+}
+
+.divider {
+	background-color: #ababab;
+	height: 1px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.clientListItem {
+	width: 49%;
+	float: left;
+	background-color: #e5e5e5;
+	margin: 1px;
+}
+
+.list-group>p {
+	margin-bottom: 0px;
+}
+
+.notificationClose {
+	margin-top: 9px;
+	margin-left: 5px;
+	float: left;
+}
+
+.notificationRow {
+	margin-top: 0px;
+}
+
+.rowItem {
+	margin: 3px;
+	width: 30%;
+	float: left;
+}
+
+.listItem {
+	width: 90%;
+	text-overflow: ellipsis;
+	display: inline-block;
+	white-space: nowrap;
+	overflow: hidden !important;
+}
+
+.button_style {
+	border: 1px solid #ababab;
+}
+
+.radio-group {
+	display: flex;
+	flex-direction: column;
+	margin: 15px 0;
+}
+
+.radio-button {
+	margin: 5px;
+	font-weight: 500;
+	font-style: normal;
+	font-size: 18px;
+}
+
+.nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover {
+	color: white;
+}
+
+.nav-pills>li>a {
+	color: #ababab;
+}
+
+.nav-pills>li>a:hover {
+	color: #337ab7;
+}
+
+.close_alert {
+	cursor: pointer;
+	position: absolute;
+	top: 50%;
+	right: 0%;
+	padding: 12px 16px;
+	transform: translate(0%, -50%);
+}
+.notificationTime, .notificationRow{
+    width: 100%;
+}
+.bs-datepicker-head{
+	background-color:#004d87 !important;
+}
+.marginright{
+margin-right: 10px;
+}
+.marginright1{
+	margin-right:5px;
+}
+.marginrleft{
+	margin-left:5px;
+}
+.test{
+	padding-top: 6px;
+	width: unset;
+}
+.boxSize{
+	height: 35px;
+    line-height: 1.5;
+    width: auto;
+	//margin: unset;
+	background-color: #e9ecef;
+	background-image:none;
+	padding-left:16px ;
+	padding-right: 2px;
+}

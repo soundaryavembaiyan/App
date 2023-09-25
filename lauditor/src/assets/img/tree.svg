@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="27" height="25.235" viewBox="0 0 27 25.235">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_6145" data-name="Rectangle 6145" width="27" height="25.235" transform="translate(0 0)" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="Group_3393" data-name="Group 3393" transform="translate(0 0)">
+    <g id="Group_3215" data-name="Group 3215" clip-path="url(#clip-path)">
+      <path id="Path_1974" data-name="Path 1974" d="M11.315,2.928A2.455,2.455,0,0,0,13.5,5.5a2.455,2.455,0,0,0,2.185-2.573A2.316,2.316,0,0,0,13.5.5,2.316,2.316,0,0,0,11.315,2.928Z" fill="none" stroke="#505050" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      <path id="Path_1975" data-name="Path 1975" d="M9.733,12.7h7.535a.665.665,0,0,0,.665-.665v-.907A4.321,4.321,0,0,0,13.611,6.8H13.39a4.321,4.321,0,0,0-4.322,4.321v.907A.665.665,0,0,0,9.733,12.7Z" fill="none" stroke="#505050" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      <line id="Line_1154" data-name="Line 1154" y2="1.797" transform="translate(15.869 10.901)" fill="none" stroke="#505050" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      <line id="Line_1155" data-name="Line 1155" y2="1.797" transform="translate(11.131 10.901)" fill="none" stroke="#505050" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      <rect id="Rectangle_6142" data-name="Rectangle 6142" width="6.099" height="4.494" rx="1.485" transform="translate(10.451 20.241)" fill="none" stroke="#505050" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      <path id="Rectangle_6143" data-name="Rectangle 6143" d="M1.485,0h3.13A1.484,1.484,0,0,1,6.1,1.484V3.01A1.484,1.484,0,0,1,4.615,4.494H1.485A1.485,1.485,0,0,1,0,3.009V1.485A1.485,1.485,0,0,1,1.485,0Z" transform="translate(0.5 20.241)" fill="none" stroke="#505050" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      <rect id="Rectangle_6144" data-name="Rectangle 6144" width="6.099" height="4.494" rx="1.485" transform="translate(20.401 20.241)" fill="none" stroke="#505050" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      <path id="Path_1976" data-name="Path 1976" d="M3.549,18.636v-.99a1.257,1.257,0,0,1,1.257-1.257H22.183a1.257,1.257,0,0,1,1.257,1.257v.99" fill="none" stroke="#505050" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      <line id="Line_1156" data-name="Line 1156" y1="4.334" transform="translate(13.495 14.302)" fill="none" stroke="#505050" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+    </g>
+  </g>
+</svg>

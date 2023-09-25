@@ -1,0 +1,189 @@
+<div *ngIf="eventInfo">
+    <div class="row main custmain stepitem custodycontainer">
+        <div class="row">
+            <div class="custodyrow1 row">
+                <div class="col-6">
+                    <p class="casestudy1">{{eventInfo.title}}</p>
+                </div>
+                <div class="col-5 invite">
+
+                    <div class="row" *ngIf="!eventInfo.owner">
+                        <!--<div class="col-3"></div>-->
+                        <div class="attnd col-3">Attending</div>
+                        <div class="col-9 sflex">
+                        <div class="float-left" >
+                            <a href="javascript:void(0);" class="optionone
+                                compone"
+                                [class.active]="selectedValue === 'Yes'"
+                                (click)="onClickAttending('Yes')">Yes</a>
+                            <a href="javascript:void(0);" class="optiontwo
+                                comptwo"
+                                [class.active]="selectedValue === 'No'"
+                                (click)="onClickAttending('No')">No</a>
+                            <a href="javascript:void(0);" class="optiontwo
+                                comptwo
+                                compthree"
+                                [class.active]="selectedValue === 'Maybe'"
+                                (click)="onClickAttending('Maybe')">Maybe</a>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+                <div class="col-1">
+                    <div class="d-inline float-right">
+                        <img src="assets/img/editicon.JPG"
+                            *ngIf="eventInfo.owner"
+                            class="icocontext " (click)="onEdit()">
+                        <img src="assets/img/deleteico.jpg"
+                            class="icocontext"
+                            (click)="onDelete()">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- first para container ends here -->
+    <div class="row main custmain custlist stepitem custodycontainer">
+        <div class="col-xs-12 col-sm-12 col-md-7">
+            <!-- Form Component -->
+            <!-- left row card 1 layout -->
+            <div class="row containerbox containerboxone ">
+                <div class="col-sm-12">
+                    <div class="connectinfo">
+                        <p class="monthtitle">{{scheduledDate}}</p>
+                        <label class="timezone">{{eventInfo.timezone_location}}</label>
+                    </div>
+                </div>
+            </div>
+            <!-- interanl containr box -->
+            <div class="row containerbox formcontainer">
+                <div class="col-sm-7">
+                    <p class="meetingitem itemFlex read-more-content" *ngIf="eventInfo.description" [ngClass]="{ 'expanded': expanded }"> {{eventInfo.description}}</p>
+                    <!--<u (click)="toggleContent()" class="underline"> {{ expanded ? 'Read Less' : 'Read More' }} </u>-->
+                    <p class="teamclient bellinfo"
+                        *ngIf="eventInfo.notifications?.length>0">
+                        <img src="assets/img/bellico.JPG" class="bellico">
+                        {{firstNotification}} before
+                    </p>
+                    <p class="teamclient bellinfo subnotification"
+                        *ngFor="let
+                        notification of remainingNotications">
+                        {{notification}} before
+                    </p>
+
+
+                </div>
+                <div class="col-sm-5">
+                    <p class="teamclient">Join with Google Meet</p>
+                    <p class="meetingitem itemFlex"> {{eventInfo.meeting_link}}</p>
+                    <p class="teamclient">Join by Phone</p>
+                    <p class="meetingitem itemFlex"> {{eventInfo.dialin}}</p>
+                </div>
+            </div>
+            <!-- ends here -->
+            <!-- container for docuemnts -->
+            <div class="row containerbox formcontainer">
+                <p class="teamclient" *ngIf="viewDoc">Documents</p>
+
+                <div class="col-sm-6" *ngFor="let doc of eventInfo.attachments">
+                    <div class="documentbox">
+                        <p class="meetingitem itemFlex">{{doc.name}}</p>
+                    </div>
+                </div>
+                <!-- <div class="col-sm-6">
+                    <p class="meetingitem affitem">Affidavits Acknowledging Paternity_RRE</p>
+                </div> -->
+            </div>
+
+
+
+            <!-- documments ends here  -->
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-5">
+            <!-- component right side -->
+            <div class="row containerbox formcontainer">
+                <div class="col-sm-12">
+                    <div class="membersitem">
+                        <p class="teamclient">{{teamMembers.length +1 }}
+                            Team
+                            Members / {{clients.length}} Clients</p>
+                    </div>
+                    <!-- ends here -->
+                </div>
+            </div>
+            <!-- internal column partiion -->
+            <div class="row containerbox formcontainer">
+                <div class="col-xs-12 col-sm-6">
+                    <div>
+                        <label class="namecircle">{{OrganizerFirstLetter}}</label>
+                        <label class="usernamelist">{{eventInfo.owner_name}}</label>
+                        <p class="lblorg">(organizer)</p>
+                    </div>
+                    <div class="emptyrow" *ngFor="let tm of teamMembers">
+                        <label class="namecircle namecirclesub">{{tm.firstChar}}</label>
+                        <label class="usernamelist">{{tm.name}}
+                            <img *ngIf="tm.rsvp==='Yes'"
+                                src="assets/img/tick.JPG" class="tickico">
+                            <img *ngIf="tm.rsvp==='No'"
+                                src="assets/img/cross.JPG" class="tickico">
+                            <img *ngIf="tm.rsvp==='Maybe'"
+                                src="assets/img/timer.JPG" class="tickico">
+                        </label>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6" *ngIf="clients.length>0">
+                    <div class="horzline"></div>
+                    <div *ngFor="let client of clients">
+                        <div class="timsheetsubitem" *ngIf="client.entName">
+                            <label class="namecircle namecirclesubtwo">{{client.firstCharEntity}}</label>
+                            <label class="usernamelist" style="font-weight:
+                                bold;">{{client.entName}}
+                                <img *ngIf="client.rsvp==='Yes'"
+                                    src="assets/img/tick.JPG"
+                                    class="tickico">
+                                <img *ngIf="client.rsvp==='No'"
+                                    src="assets/img/cross.JPG"
+                                    class="tickico">
+                                <img *ngIf="client.rsvp==='Maybe'"
+                                    src="assets/img/timer.JPG"
+                                    class="tickico">
+                            </label>
+                        </div>
+                        <div class="timsheetsubitem"  *ngIf="client.tmId!='consumer'">
+                            <label class="namecircle namecirclesubtwo">{{client.firstChar}}</label>
+                            <label class="usernamelist" >{{client.name}}
+                                <img *ngIf="client.rsvp==='Yes'"
+                                    src="assets/img/tick.JPG"
+                                    class="tickico">
+                                <img *ngIf="client.rsvp==='No'"
+                                    src="assets/img/cross.JPG"
+                                    class="tickico">
+                                <img *ngIf="client.rsvp==='Maybe'"
+                                    src="assets/img/timer.JPG"
+                                    class="tickico">
+                            </label>
+                        </div>
+                        <div class="timsheetsubitem" *ngIf="client.tmId=='consumer'">
+                            <label class="namecircle namecirclesubtwo">{{client.firstChar}}</label>
+                            <label class="usernamelist" style="font-weight:
+                                bold;">{{client.name}}  
+                                <img *ngIf="client.rsvp==='Yes'"
+                                    src="assets/img/tick.JPG"
+                                    class="tickico">
+                                <img *ngIf="client.rsvp==='No'"
+                                    src="assets/img/cross.JPG"
+                                    class="tickico">
+                                <img *ngIf="client.rsvp==='Maybe'"
+                                    src="assets/img/timer.JPG"
+                                    class="tickico">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- internal couln partition -->
+        </div>
+    </div>
+</div>

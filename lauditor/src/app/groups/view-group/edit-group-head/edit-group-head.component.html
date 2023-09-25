@@ -1,0 +1,94 @@
+<!--component html goes here -->
+<div class="container main width-alignment">
+    <div class="col-12 Individual createGroup">
+        <label for="select" class="lable-size update" *ngIf="product != 'corporate'">Update Group Head</label>
+        <label for="select" class="lable-size update" *ngIf="product == 'corporate'">Update Department Head</label>
+         <div class="form-group ">
+            <div class="input-group group-custom-align court" id="search">
+                <input type="text"
+                       class="form-control textbox"
+                       placeholder="Search Member"
+                       [(ngModel)]="searchText" />
+                <img src="assets/img/search.svg"
+                     class="calimg calitem input-group-append searchimg">
+            </div>
+        </div>
+        <!-- append div on click -->
+        <div class="form-group " id="selectbx">
+            <div class="input-group group-custom-align" 
+                *ngFor="let member of membersList | LockFilter: searchText">
+                <div class="multicheck form-control textbox  selmember"
+                     [class.active]="selectedMem.id == member.id"
+                     (click)="sel(member)">
+                    <label class="callselect float-left" [innerHtml]="member.name"></label>
+                </div>
+            </div>
+        </div>
+        <div class="btnbox">
+            <button type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalCancel"
+                    class="btn btn-default btncancel">Cancel</button>
+            <button type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal"
+                    class="btn btn-primary btnsave">Save</button>
+        </div>
+    </div>
+</div>
+<div class="modal fade"
+     id="modalCancel"
+     tabindex="-1"
+     aria-labelledby="modalCancelLabel"
+     aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <div class="modal-body">
+              <div class="alertpara">
+                  <p class="alertparatxt"> Confirmation</p>
+                </div>
+          </div>
+          <div class="alertext">Changes you made will not be saved. Do you want to continue?</div>
+          <div class="alertbutton">
+              <button class="btn btn-default  alertbtn alertbtnno"
+                      data-bs-dismiss="modal"
+                      aria-label="Close">No</button>
+              <button class="btn btn-default alertbtn alertbtnyes"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                      (click)="cancel()">Yes</button>
+          </div>
+      </div>
+  </div>
+</div>
+<!-- Modal -->
+<div class="modal fade"
+     id="exampleModal"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-body">
+                <div class="alertpara">
+                    <p class="alertparatxt">Confirmation</p>
+                  </div>
+            </div>
+            <div class="alertext" *ngIf="product != 'corporate'">Are you sure you want to Update Group Head?</div>
+            <div class="alertext" *ngIf="product == 'corporate'">Are you sure you want to Update Department Head?</div>
+            <div class="alertbutton">
+                <button class="btn btn-default alertbtn alertbtnno"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">No</button>
+                <button class="btn btn-default alertbtn alertbtnyes"
+                        aria-label="Close"
+                        (click)="save()"
+                        data-bs-dismiss="modal">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,95 @@
+.paymenttitle {
+    text-align: left;
+    letter-spacing: 0.5px;
+    color: #004d87;
+    padding-top: 10px;
+    font-weight: 900;
+    font-size: 25px;
+}
+// component css goes here
+.nameSet {
+    width: 90%;
+}
+
+.plan-head{
+    text-align: left;
+    letter-spacing: 0.5px;
+    color: #004d87;
+    font-weight: bolder;
+    font-size: 20px;
+}
+.topup{
+    padding-top: 0px;
+}
+
+.labelText{
+    text-align: center;
+    letter-spacing: 0.5px;
+    color: #004d87;
+    padding-top: 10px;
+    font-weight: 200;
+    font-size: 22px;
+}
+
+.createGroup {
+    select,
+    input,
+    textarea {
+        background: #EEEEEE;
+        border: none;
+        margin-right: 10px;
+    }
+
+    .group-custom-align {
+        width: 41%;
+        margin: 0 auto;
+        margin-top: 5px;
+    }
+
+    .multicheck {
+        text-align: left;
+    }
+}
+
+.Individual {
+    width: unset;
+}
+
+.audit-head {
+    color: #004d87;
+    font-size: 25px;
+    font-weight: bold;
+    text-align: center;
+}
+
+label.lable-size {
+    color: #004d87;
+    font-size: 15px;
+    font-weight: 700;
+    padding-bottom: 5px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label.lable-size.advance {
+    font-size: 20px;
+    margin-top: 10px;
+}
+
+input.larger {
+    margin: 0 10px;
+    height: 23px;
+}
+.cen{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.dInvoice{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 13px;
+}

@@ -1,0 +1,211 @@
+// component css goes here
+.fa-icon,
+.btnaction {
+    padding: 25px 0 0 0;
+
+    .fa {
+        // padding: 0 9px;
+        cursor: pointer;
+        color: #707070;
+
+        &:before {
+            font-size: 30px;
+        }
+    }
+}
+
+.fa-calendar-days:before {
+    font-size: 35px;
+    padding: 0 0 0 5px;
+    color: #787878;
+}
+
+.cdate {
+    text-align: left;
+}
+
+.row.hours-text .row {
+    margin-top: -22px;
+
+    .form-group {
+        padding-right: 10px;
+        padding-top: 5px;
+    }
+}
+
+td.center .btn-primary {
+    margin-top: 10px
+}
+
+.margin-div {
+    margin-bottom: 30px;
+}
+
+// input:focus,
+// select:focus,
+// textarea:focus,
+// button:focus {
+//     outline: none;
+// }
+
+select.textbox {
+    border: none;
+    background: #fff;
+    border-radius: 5px;
+    width: 200px;
+}
+
+.col-2 .input-group {
+    width: 90%;
+}
+
+.timesheettitle {
+    text-align: left;
+    letter-spacing: 0.5px;
+    color: #004d87;
+    padding-top: 10px;
+    font-weight: 900;
+    font-size: 25px;
+}
+
+.thheadname {
+    color: #fff;
+}
+
+.bcolor {
+    background-color: #004d87;
+}
+
+.trcolor {
+    background-color: #eeeeee;
+}
+
+.fa-sort:before {
+    color: #fff;
+}
+
+.number {
+    width: 60px;
+    // margin-left: 25px;
+}
+
+.table-total {
+    width: 100%;
+}
+
+tr.total-hours {
+    height: 40px;
+    background: #AAA8A8;
+}
+
+h1 {
+    padding: 20px 0;
+
+    border-bottom: 1px dashed #acacac;
+}
+.btn-primary {
+    background: #004D87;
+}
+table.tsheet-table {
+    // margin-top: 2%;
+    // table-layout: fixed;
+    word-wrap: break-word;
+    text-align: center;
+    width: 100%;
+
+    th {
+        font-size: 14px
+    }
+
+    i.fa {
+        padding: 0 5px;
+
+        &.fa-circle-xmark {
+            color: #FA3A3A;
+        }
+    }
+
+    // span {
+    //     float: right;
+    // }
+   
+
+    th.projectName {
+        width: 250px
+    }
+
+    th.taskname {
+        width: 200px;
+    }
+
+    th.date {
+        width: 100px;
+        text-align: left;
+        padding-left: 10px;
+    }
+    
+
+    td {
+        height: 40px;
+        background: #eeeeee;
+        border: 2px solid #fff;
+    }
+
+    .invalid-feedback {
+        display: block;
+    }
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+input.disable {
+    height: 39px;
+    padding: 8px 20px 10px 20px;
+    color: #000;
+    font-size: 16px;
+    display: inline-block;
+    margin-top: 10px;
+    width: 100%;
+    border-radius: 5px;
+}
+
+input#drp {
+    background: #ffff;
+    border-radius: 5px;
+}
+
+.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.input-group.dates {
+    border: 1px solid #EEEEEE;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    background: #EEEEEE;
+    height:35px;
+}

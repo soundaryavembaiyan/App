@@ -1,0 +1,46 @@
+.nameSet {
+    width: 90%;
+}
+
+.createGroup {
+
+    input,
+    textarea {
+        background: #EEEEEE;
+        border: none;
+    }
+
+    .group-custom-align {
+        width: 41%;
+        margin: 0 auto;
+        margin-top:5px;
+    }
+    .multicheck{
+        text-align: left;
+    }
+}
+.round-icon {
+    text-align:center;
+}
+.stepone{
+text-align: center;
+    margin: 0 auto;
+    padding-bottom: 0px;
+    //background-color: aqua;
+}
+.steprow{
+    margin-bottom: 10px;
+}
+.btncancel, .btnsave{
+    margin-left: 20px;
+}
+
+.hide{
+    display: none;
+}
+
+label {
+    display: inline-block;
+    color: #004d87;
+    font-weight: 800;
+}

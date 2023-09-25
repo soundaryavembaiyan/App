@@ -1,0 +1,172 @@
+// component css goes here
+.form-group {
+    width: 100%;
+}
+
+.modal-header {
+    border-bottom: none;
+}
+
+.modal-body {
+    text-align: center;
+}
+
+.modal-footer {
+    border-top: none;
+}
+
+label {
+    font-size: 14px;
+    display: flex;
+}
+
+.documents-list {
+    background: #f8f8f8;
+    padding: 7px;
+    margin: 10px 0;
+    // width: 90%;
+}
+
+.selected-group {
+
+    .cod:nth-child(even) {
+        margin: 0 0 0 4%;
+    }
+
+    .documents-list {
+        background: #eee;
+    }
+}
+
+.icon-list {
+    display: inline-flex;
+    float: right;
+
+    .icons {
+        padding: 0 5px;
+        cursor: pointer;
+    }
+}
+
+.btn-outline-primary {
+    background: #f8f8f8;
+    border: none;
+    color: #111;
+    text-decoration: none;
+}
+
+.btn:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.disable .fa-download {
+    opacity: .2;
+}
+
+hr.new3 {
+    border-top: 2px dotted #969696;
+}
+
+.upload-document .mat-form-field {
+    width: 100%;
+}
+
+.mat-form-field.mat-form-field-invalid .mat-form-field-ripple,
+.mat-form-field.mat-form-field-invalid .mat-form-field-ripple.mat-accent {
+    border: none !important;
+}
+
+.disabled {
+    background: #004d87;
+    color: #fff;
+}
+
+.inputEl {
+    margin: 0 10px;
+}
+
+.multicheck.form-control.textbox {
+    width: 100%;
+}
+
+.index {
+    z-index: 99;
+}
+
+.metadata i.fa.fa-times-circle {
+    margin-top: 25px;
+    color: red;
+
+    &:before {
+        font-size: 30px;
+    }
+
+}
+
+.dropdown-select .textbox {
+    width: 100%;
+    border: none;
+    padding: 0 10px;
+    font-size: 14px;
+}
+.form-control[readonly] {
+    background-color: unset !important; 
+   opacity: 1;
+}
+input.middle:focus {
+    outline-width: 0;
+}
+select.textbox {    
+    appearance: none;
+}
+.textbox i.fa.fa-chevron-down {
+    font-size: 12px;
+    position: relative;
+    bottom: 25px;
+    float: right;
+    right: 15px;
+}
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}
+#search .appendadd {
+   width: 150px;
+  background: #004D87;
+  }
+  .tagsave{
+    background: #00b3a7 !important;
+    width: 68px;
+    height: 43px;
+  }
+  .editbtn{
+    margin-left: 70%;
+  }
+  .editcancel{
+    width: 75px;
+  }
+  .grpFont{
+    font-size: 20px;
+    font-weight: 900;
+    font-variant: normal;
+    color: #004d87;
+    display: inline-block;
+}
+.cswitch{
+    padding-top: 0px;
+    //padding-bottom: 10px;
+}
+
+.matterpadding{
+    padding-top: 20px;
+}
+.optionhigh2{
+    border-radius: 5px 5px 5px 5px;
+ }
+
+
+
+

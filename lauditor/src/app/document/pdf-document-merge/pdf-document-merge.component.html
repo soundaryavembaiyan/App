@@ -1,0 +1,314 @@
+<div class="col-12 width-alignment  margin-top">
+    <form [formGroup]="mergeDetail" (ngSubmit)="onSubmit()">
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group name-set">
+                    <label for="documentName" class="fontbold"> Name of Merged Document<span class="mandate">*</span>
+                    </label>
+                    <input type="text" formControlName="name" class="form-control textbox " [(ngModel)]="docModelData.name" 
+                        [ngClass]="{ 'is-invalid': submitted && f.name.errors }" />
+                    <div *ngIf="submitted && f.name.errors" class="invalid-feedback">Name is required
+                        <!-- <div *ngIf="f.name.errors.required">Name is required</div> -->
+                    </div>
+                </div>
+
+                <!-- <div class="form-group">
+                    <label>Email</label>
+                    <input type="text" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+                    <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                        <div *ngIf="f.email.errors.required">Email is required</div>
+                    </div>
+                </div> -->
+
+                <div class="form-group name-set">
+                    <label for="title" class="fontbold">Title of Preamble (Optional)
+                    </label>
+                    <input type="text" formControlName="title" class="form-control textbox"   id="title"
+                        name="title" [ngClass]="{ 'is-invalid': submitted && f.title.errors }"  [(ngModel)]="docModelData.title"/>
+
+                        <div *ngIf="submitted && f.title.errors" class="invalid-feedback">
+                           title is required
+                        </div>
+                </div>
+
+                <div class="form-group name-set align-top">
+                    <label #inputE2 for="content" class="fontbold">Preamble to Merged Document (Optional)</label>
+                    <textarea rows="4" cols="50" class="form-control textbox" name="content" 
+                    [(ngModel)]="docModelData.content"></textarea>
+
+
+                </div>
+                <div class=" form-check mx-md-n5 mt-n1  form-group name-set ">
+                    <input class="form-check-input titleChecks" type="checkbox" value="" #inputE1 id="flexCheckDefault"
+                        (change)="showBookmark(inputE1.checked)" >
+                    <label class="form-check-label label-name" for="flexCheckDefault">
+                        Show Bookmark
+                    </label>
+                </div>
+                <div class="form-check mt-n1 form-group name-set">
+                    <input class="form-check-input titleChecks" type="checkbox" value="" #inputE5 id="flexCheckChecked"
+                        (change)="customPage(inputE5.checked)" >
+                    <label class="form-check-label label-name" for="flexCheckChecked">Custom Page Numbers
+                    </label>
+                </div>
+
+                <div *ngIf="iscustomPage">
+                    You can add custom page numbers after the merge process is completed
+                </div>
+                <div *ngIf="!iscustomPage">
+                    <div class="  mt-n1 form-check form-group name-set">
+                        <input class="form-check-input titleChecks" #inputEl type="checkbox" value=""
+                            id="flexCheckChecked" (change)="addPageNumber(inputEl.checked)" >
+                        <label class="form-check-label label-name" for="flexCheckChecked">
+                            Add Page Number
+                        </label>
+                    </div>
+
+                    <div class=" page-container form-group name-set" *ngIf="isAddpageNumber ">
+                        <div>
+                            <label class="form-check-label " for="flexCheckChecked">
+                                Page size </label>
+                            <div>
+                                <ul class="nav nav-pills mb-3 btnaction" id="pills-tab" role="tablist">
+                                    <li class="nav-item" (click)="selectFont('small')">
+                                        <button id="small" name="priority"
+                                            [ngClass]="{'active': selectFontName === 'small'}"
+                                            class="selectprior optionhigh" id="pills-home-tab" data-bs-toggle="pill"
+                                            data-bs-target="#pills-home" type="button" role="tab"
+                                            aria-controls="pills-home" aria-selected="true">S <br>12PX</button>
+                                    </li>
+                                    <li class="nav-item" (click)="selectFont('Medium')">
+                                        <button id="Medium" [ngClass]="{'active': selectFontName === 'Medium'}"
+                                            name="priority" class="selectprior optionaling" id="pills-profile-tab"
+                                            data-bs-toggle="pill" data-bs-target="#pills-profile" type="button"
+                                            role="tab" aria-controls="pills-profile"
+                                            aria-selected="false">M<br>18PX</button>
+                                    </li>
+                                    <li class="nav-item" (click)="selectFont('Large')">
+                                        <button id="Large" [ngClass]="{'active': selectFontName === 'Large'}"
+                                            name="priority" class=" selectprior optionlow" id="pills-contact-tab"
+                                            data-bs-toggle="pill" data-bs-target="#pills-contact" type="button"
+                                            role="tab" aria-controls="pills-contact" aria-selected="false">L <br>
+                                            24PX</button>
+                                    </li>
+                                    <li class="nav-item" (click)="selectFont('XLarge')">
+                                        <button id="XLarge" [ngClass]="{'active': selectFontName === 'XLarge'}"
+                                            name="priority" class=" selectprior optionlow" id="pills-contact-tab"
+                                            data-bs-toggle="pill" data-bs-target="#pills-contact" type="button"
+                                            role="tab" aria-controls="pills-contact" aria-selected="false">XL <br>
+                                            30PX</button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="form-check-label " for="flexCheckChecked">
+                                Page Number Format
+                            </label>
+                            <div class="page-number">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="pagenumberformatradio"
+                                        id="inlineRadio1" value="#PAGENUM#" (change)="numberFormat($event.target)">
+                                    <label class="form-check-label" for="inlineRadio1">1,2,3</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="pagenumberformatradio"
+                                        id="inlineRadio2" value="Page(#PAGENUM#)"
+                                        (change)="numberFormat($event.target)">
+                                    <label class="form-check-label" for="inlineRadio2">Page(1 of 2)</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="pagenumberformatradio"
+                                        id="inlineRadio3" value="Page(#PAGENUM# of #TOTALPAGES#)"
+                                        (change)="numberFormat($event.target)">
+                                    <label class="form-check-label" for="inlineRadio3">Page I</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="pagenumberformatradio"
+                                        id="inlineRadio3" value="Page (#ROM-PAGENUM# of #ROM-TOTALPAGES#)"
+                                        (change)="numberFormat($event.target)">
+                                    <label class="form-check-label" for="inlineRadio3">Page I of II</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <label class="form-check-label " for="flexCheckChecked">
+                            Page Number Position
+                        </label>
+                        <div class="blank_page">
+                            <div class="check-box-position page-position">
+                                <div class="top-align">
+                                    <div class="form-check form-check-inline">
+                                        <label class="form-check-label" for="inlineRadio1">Top Left</label>
+                                        <input class="form-check-input" type="radio" name="inlineRadioOptions"
+                                            id="inlineRadio1" value="topleft"
+                                            (change)="numberPositionChange($event.target)">
+
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <label class="form-check-label" for="inlineRadio2">Top Center</label>
+                                        <input class="form-check-input" type="radio" name="inlineRadioOptions"
+                                            id="inlineRadio2" value="topcenter"
+                                            (change)="numberPositionChange($event.target)">
+
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <label class="form-check-label" for="inlineRadio3">Top right</label>
+                                        <input class="form-check-input" type="radio" name="inlineRadioOptions"
+                                            id="inlineRadio3" value="topright"
+                                            (change)="numberPositionChange($event.target)">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="blank">
+
+                                <div class="white">
+
+                                </div>
+                            </div>
+                            <div class="check-box-position page-position">
+                                <div class="bottom-align">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="inlineRadioOptions"
+                                            id="inlineRadio1" value="left"
+                                            (change)="numberPositionChange($event.target)">
+                                        <label class="form-check-label" for="inlineRadio1">Bottom Left</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="inlineRadioOptions"
+                                            id="inlineRadio2" value="center"
+                                            (change)="numberPositionChange($event.target)">
+                                        <label class="form-check-label" for="inlineRadio2">Bottom Center</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="inlineRadioOptions"
+                                            id="inlineRadio3" value="right"
+                                            (change)="numberPositionChange($event.target)">
+                                        <label class="form-check-label" for="inlineRadio3">Bottom right</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-6">
+                <div class="form-group name-set float-right">
+                    <div class="input-group court" id="search">
+                        <input type="text" class="form-control textbox" formControlName="search" placeholder="Search "
+                            [(ngModel)]="query" />
+                        <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
+                    </div>
+                </div>
+                <div class="form-group name-set d-inline float-right tab-margin margin-top">
+                    <div class="input-group d-inline" id="btn">
+                        <div *ngIf="CollectedDocs?.length" class="doc-number d-inline">
+                            <div class="doc-number "> {{CollectedDocs.length}} &nbsp;&nbsp; </div> Documents to
+                            Merge<span>(Drag to reorder)</span>
+                        </div>
+                        <div class="badge" > Minimum of 2 PDFs  required to merge
+                        </div>
+                    </div>
+                    <input class="btn btn-primary  add_pdf" type="button" value="Add" (click)="addDocument()" />
+                </div>
+
+                <div *ngIf="CollectedDocs" cdkDropList class="example-list name-set float-right margin-top"
+                    (cdkDropListDropped)="drop($event)">
+                    <!-- | LockFilter:query -->
+
+                    <div class="example-box" *ngFor="let doc of CollectedDocs|filter:query " cdkDrag>
+                        <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+                        <div class="" style="width: 60%;">{{doc.name}}</div>
+                        <div class="" (click)="openModal('custom-modal-1');addDocDetails(doc)"> <input type="button"
+                                class=" btn btn-primary" value="Add title and text"></div>
+                        <div class=""> <i class="fa fa-regular fa-circle-xmark calimg  input-group-append sgroup"
+                                aria-hidden="true" (click)="removeDocument(doc)"></i></div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="btnbox">
+            <button type="reset" class="btn btn-default btncancel" (click)="cancel()">Cancel</button>
+            <button type="submit" class="btn btn-default btnsave savecls">Merge</button>
+        </div>
+    </form>
+</div>
+
+<jw-modal id="custom-modal-1" class="doc-merge-model">
+    <div class="doc-merge-model-body">
+        <div class="close-x float-right" (click)="closeModal('custom-modal-1');">X</div>
+        <div class="col-12 width-alignment" *ngIf="docDetailsData">
+
+            <form [formGroup]="docDetails" (ngSubmit)="onDcSubmit()">
+
+                <div class="row">
+                    <div class="col-6">
+                        <label for="docDetails" class="doc-number"> Add title and text
+                        </label>
+                        <div>
+                            <label for="docDetails" class="fontbold"> Document Name </label>
+                        </div>
+                        <div>
+                            <label for="docDetails" class="fontbold"> {{docDetailsData.name}} </label>
+                        </div>
+                        <div class="form-group name-set">
+                            <label for="docDetails" class="fontbold"> Bookmark Title
+                            </label>
+                            <input type="text" class="form-control textbox" id="docDetails" name="docDetails"
+                                formControlName="bookmark" [(ngModel)]="docDetailsData.name"
+                                [ngClass]="{'is-invalid':dcSubmitted && dc.bookmark.errors}">
+                            <div *ngIf="dcSubmitted && dc.bookmark.errors" class="invalid-feedback">
+                                <div *ngIf="dc.bookmark.errors.required"> bookmark is required</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group name-set">
+                            <label for="header" class="fontbold"> Name
+                            </label>
+                            <input type="text" class="form-control textbox" id="header" name="header"
+                                formControlName="header"  [(ngModel)]="docDetailsData.header">
+                            <div *ngIf="dcSubmitted && dc.header.errors" class="invalid-feedback">
+                                <div *ngIf="dc.header.errors.required"> Name is required</div>
+                            </div>
+                        </div>
+                        <div class="form-group name-set align-top">
+                            <label for="body" class="fontbold">Text</label>
+                            <textarea rows="4" cols="50" class="form-control textbox" name="body" 
+                                formControlName="body" [(ngModel)]="docDetailsData.body"></textarea>
+                            <div *ngIf="dcSubmitted && dc.body.errors" class="invalid-feedback">
+                                <div *ngIf="dc.body.errors.required"> text is required</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="btnbox">
+                    <button type="button" class="btn btn-default btncancel"
+                        (click)="closeModal('custom-modal-1');clearTest()" >Cancel</button>
+                    <button type="submit" class="btn btn-default btnsave savecls"
+                       >Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</jw-modal>
+<jw-modal id="custom-modal-2" class="doc-merge-success">
+    <div class="doc-merge-model-body">
+        <div class="close-x float-right" (click)="closeModal('custom-modal-2');cancel()">X</div>
+        <div class="alertpara">
+            <p class="alertparatxt"> Alert!</p>
+        </div>
+        <div class="alertext" *ngIf="successMsg">
+            {{successMsg.msg}}
+        </div>
+
+        <div class="center">
+            <button class="btn btn-primary  " (click)="closeModal('custom-modal-2');cancel()">OK</button>
+        </div>
+    </div>
+</jw-modal>

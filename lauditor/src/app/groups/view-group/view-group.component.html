@@ -1,0 +1,264 @@
+<!--component html goes here -->
+ <!-- table grid -->
+ <div class="row main " 
+      *ngIf="!editMember&& !editGroupHead && !DeleteGroup && !editGroupShow && !showActivityLog">
+    <div class="row main width-alignment">
+        <div class="col-4"> </div>
+        <div class="col-6">
+                <div class="form-group name-set">
+                  <div class="input-group group-custom-align court" id="search">
+                    <input type="text" *ngIf="product != 'corporate'"
+                            class="form-control textbox"
+                            placeholder="Search Group"
+                            [(ngModel)]="searchText" />
+
+                    <input type="text" *ngIf="product == 'corporate'"
+                            class="form-control textbox"
+                            placeholder="Search Departments"
+                            [(ngModel)]="searchText" />
+                            
+                    <img src="assets/img/search.svg"
+                    class="calimg calitem input-group-append searchimg">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 gridtable width-alignment">
+      <table class="table table-borderless tblgrid">
+        <thead>
+          <tr class="theader">
+            <th>
+              <p class="thheadname" *ngIf="product != 'corporate'"> Group Name</p>
+              <p class="thheadname" *ngIf="product == 'corporate'"> Department Name</p>
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('name')">
+            </th>
+            <th>
+              <p class="thheadname"> Description</p>
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('description')">
+            </th>
+            <th>
+              <p class="thheadname" *ngIf="product != 'corporate'"> Group Head</p>
+              <p class="thheadname" *ngIf="product == 'corporate'"> Department Head</p>
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('name')">
+            </th>
+            <th>
+              <p class="thheadname"> Created</p>
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('timestamp')">
+            </th>
+            <th>
+              <p class="thheadname"> Number of Members</p>
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('memberCount')">
+            </th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="rone veiw-items"
+              *ngFor="let team of viewItems | filter:searchText"
+              [ngClass]="{'rtwo': team.name == highlight }">
+            <td>{{team.name}}</td>
+            <td>{{team.description}}</td>
+            <td>&nbsp;{{team.groupHead.name}}</td>
+            <td>&nbsp;{{team.created}}</td>
+            <td>&nbsp;{{team.memberCount}}</td>
+            <td>
+              <div class="dropdown" *ngIf="product != 'connect' || roleId == 'GH'">
+                <button type="button"
+                        class="btn btn-primary  dropdown-toggle actionbtn"
+                        data-bs-toggle="dropdown" [ngClass]="{'disabled': team.isdisabled}"> Action </button>
+                <ul class="dropdown-menu custom-dropdown">
+                    <li *ngIf="team.name != 'AAM' && team.name != 'SuperUser'">
+                        <a class="dropdown-item" (click)="editGroup(team)" *ngIf="product != 'corporate'">Edit Group Info</a>
+                        <a class="dropdown-item" (click)="editGroup(team)" *ngIf="product == 'corporate'">Edit Department Info</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" (click)="editGroupMembers(team)" *ngIf="product != 'corporate'">Update Group Members List</a>
+                        <a class="dropdown-item" (click)="editGroupMembers(team)" *ngIf="product == 'corporate'">Update Team Members List</a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item" (click)="changePracticeHead(team)" *ngIf="product != 'corporate'">Update Group Head</a>
+                        <a class="dropdown-item" (click)="changePracticeHead(team)" *ngIf="product == 'corporate'">Update Department Head</a>
+                      </li>
+                  <li *ngIf="team.name != 'AAM' && team.name != 'SuperUser'">
+                    <a class="dropdown-item" (click)="deleteGroup(team)" *ngIf="product != 'corporate'">Delete Group</a>
+                    <a class="dropdown-item" (click)="deleteGroup(team)" *ngIf="product == 'corporate'">Delete Department</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" (click)="activityLog(team)" *ngIf="product != 'corporate'">Group Activity Log</a>
+                    <a class="dropdown-item" (click)="activityLog(team)" *ngIf="product == 'corporate'">Department Activity Log</a>
+                  </li>
+                </ul>
+              </div>
+
+
+              <div class="dropdown" *ngIf="product == 'connect'">
+                <button type="button" *ngIf="roleId != 'GH'" class="btn btn-primary  dropdown-toggle actionbtn"
+                  data-bs-toggle="dropdown"> Action </button>
+                <ul class="dropdown-menu custom-dropdown">
+                  <li>
+                    <a class="dropdown-item" (click)="editGroupMembers(team)">Update Group Members List</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" (click)="changePracticeHead(team)">Update Group Head</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" (click)="activityLog(team)">Group Activity Log</a>
+                  </li>
+                </ul>
+              </div>
+
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- grid ends here -->
+
+  <div *ngIf="editGroupShow" class="container main width-alignment">
+    <!-- <div *ngIf="successMsg">
+        {{successMsg}}
+    </div> -->
+    <div class="col-12 Individual createGroup">
+        <form [formGroup]="editGroupform" (ngSubmit)="onSubmit()">
+            <div class="row"> <!--*ngIf="product != 'corporate'"-->
+                <div class="col-6" *ngIf="product != 'corporate'">
+                    <div class="form-group nameSet">
+                        <label for="title" class="lable-size">Group Name:</label>
+                        <input type="text"
+                               formControlName="name"
+                               class="text-size form-control group-name-text"
+                               [(ngModel)]="editGroupView.name"
+                               [ngClass]="{ 'is-invalid': submitted && f.name.errors }" id="caseTitle"
+                               placeholder="Group Name" name="name">
+                        <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+                            <div *ngIf="f.name.errors.required">Group Name is required</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-6" *ngIf="product == 'corporate'">
+                  <div class="form-group nameSet">
+                      <label for="title" class="lable-size">Department Name:</label>
+                      <input type="text"
+                             formControlName="name"
+                             class="text-size form-control group-name-text"
+                             [(ngModel)]="editGroupView.name"
+                             [ngClass]="{ 'is-invalid': submitted && f.name.errors }" id="caseTitle"
+                             placeholder="Department Name" name="name">
+                      <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+                          <div *ngIf="f.name.errors.required">Department Name is required</div>
+                      </div>
+                  </div>
+              </div>
+
+                <div class="col-6">
+                    <div class="form-group nameSet">
+                        <label for="comment" class="lable-size">Description:</label>
+                        <textarea formControlName="description"
+                                  class="form-control text-size text-area-height"
+                                  [(ngModel)]="editGroupView.description"
+                                  [ngClass]="{ 'is-invalid': submitted && f.description.errors }"
+                                  placeholder="Description"
+                                  name="description"></textarea>
+                        <div *ngIf="submitted && f.description.errors" class="invalid-feedback">
+                            <div *ngIf="f.description.errors.required">Description is required</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="btnbox">
+                <button type="reset" class="btn btn-default btncancel" (click)="onReset()">Cancel</button>
+                <button type="submit" class="btn btn-default btnsave">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div *ngIf="editMember">
+  <edit-members (event)='onChildEvent($event)' [editMember]="editData"></edit-members>
+</div>
+<div *ngIf="editGroupHead">
+  <edit-group-head (event)='onChildEvent($event)' [groupData]="editData" ></edit-group-head>
+</div>
+<div *ngIf="DeleteGroup">
+  <delete-group (event)='onChildEvent($event)' [data]="editData"></delete-group>
+</div>
+<group-activity-log *ngIf="showActivityLog"
+                    (event)='onChildEvent($event)'
+                    [data]="editData"></group-activity-log>
+<jw-modal id="group-del-success" class="grp-del-success  alert-box">
+    <div class="doc-iframe-scs-body ">
+        <div class="container">
+            <div class="row">
+                <div class="alertbox">
+                    <div class="close-x float-right" (click)="closeModal('group-del-success');">X</div>
+                    <div class="alertpara">
+                        <p class="alertparatxt"> Success</p>
+                    </div>
+                    <div class="alertext">Congratulations!! You have successfully deleted  {{selectedGrpName}}.
+                    </div>   
+                    <div class="center">
+                      <button class="btn btn-primary  " (click)="closeModal('group-del-success')">OK</button>
+                  </div>                
+                </div>
+            </div>
+        </div>
+    </div>
+</jw-modal>
+<jw-modal id="group-gh-success" class="grp-gh-success  alert-box">
+    <div class="doc-iframe-scs-body ">
+        <div class="container">
+            <div class="row">
+                <div class="alertbox">
+                    <div class="close-x float-right" (click)="closeModal('group-gh-success');">X</div>
+                    <div class="alertpara">
+                        <p class="alertparatxt"> Success</p>
+                    </div>
+                    <div class="alertext" *ngIf="product != 'corporate'">Congratulations!! You have Successfully Updated the Group Head of  {{selectedGrpName}} Group.</div> 
+                    <div class="alertext" *ngIf="product == 'corporate'">Congratulations!! You have Successfully Updated the Department Head of  {{selectedGrpName}} Department.</div>   
+                    <div class="center">
+                      <button class="btn btn-primary  " (click)="closeModal('group-gh-success')">OK</button>
+                  </div>                  
+                </div>
+            </div>
+        </div>
+    </div>
+</jw-modal>
+<jw-modal id="group-upmem-success" class="grp-upmem-success  alert-box">
+    <div class="doc-iframe-scs-body ">
+        <div class="container">
+            <div class="row">
+                <div class="alertbox">
+                    <div class="close-x float-right" (click)="closeModal('group-upmem-success');">X</div>
+                    <div class="alertpara">
+                        <p class="alertparatxt"> Success</p>
+                    </div>
+                    <div class="alertext">Congratulations!! You have successfully updated group members lift of {{selectedGrpName}} group.
+                    </div>   
+                    <div class="center">
+                      <button class="btn btn-primary  " (click)="closeModal('group-upmem-success')">OK</button>
+                  </div>                 
+                </div>
+            </div>
+        </div>
+    </div>
+</jw-modal>
+<jw-modal id="group-update-success" class="grp-update-success  alert-box">
+    <div class="doc-iframe-scs-body ">
+        <div class="container">
+            <div class="row">
+                <div class="alertbox">
+                    <div class="close-x float-right" (click)="closeModal('group-update-success');">X</div>
+                    <div class="alertpara">
+                        <p class="alertparatxt"> Success</p>
+                    </div>
+                    <div class="alertext" *ngIf="product != 'corporate'">Congratulations!! You have successfully Updated Group information.</div> 
+                    <div class="alertext" *ngIf="product == 'corporate'">Congratulations!! You have successfully Updated Department information.</div>  
+                    <div class="center">
+                      <button class="btn btn-primary  " (click)="closeModal('group-update-success')">OK</button>
+                  </div>                 
+                </div>
+            </div>
+        </div>
+    </div>
+</jw-modal>

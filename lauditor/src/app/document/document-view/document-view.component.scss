@@ -1,0 +1,225 @@
+// component css goes here
+.view-document {
+    width: 90%;
+    margin: 0 auto;
+
+    .form-group {
+        width: 90%;
+    }
+}
+
+label {
+    font-size: 14px;
+}
+label{
+    margin: 10px 0;
+}
+.view-doc .modal-content,
+ngx-doc-viewer {
+    height: 500px
+}
+
+li {
+    border-bottom: 1px solid #e3e3e3;
+    background: #eeeeee;
+}
+
+a.dropdown-item {
+    text-align: end;
+    cursor: pointer;
+
+    &:hover {
+        background: #00b3a7 !important;
+    }
+}
+
+// a.dropdown-item
+ul.dropdown-menu.custom-dropdown.show {
+    padding: unset;
+}
+
+button.btn.btn-secondary.dropdown-toggle {
+    width: 50%;
+    text-align: left;
+    background: #eee !important;
+    color: #111;
+    border: none;
+    margin-top: 20px;
+    float: right;
+}
+
+.active a {
+    color: #111;
+    background: #fff;
+}
+
+.ndfHFb-c4YZDc-Wrql6b {
+    display: none;
+}
+
+.custum-model {
+    width: 95%;
+    float: right;
+}
+
+.lable-size {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.editdoc {
+
+    input,
+    textarea {
+        background: #EEEEEE;
+        border: none;
+    }
+
+    textarea {
+        height: 150px;
+    }
+}
+
+.editInfoModal1 .modal-content {
+    position: relative;
+    display: block;
+    border: none;
+    padding-bottom: 30px;
+
+    .btn-close {
+        float: right;
+    }
+}
+
+.nameSet {
+    width: 90%;
+}
+
+.mat-form-field {
+    width: 90%;
+}
+
+.width-alignment {
+    max-width: 90%;
+    margin: 0 auto;
+}
+
+.dropdown-select.filter {
+    width: 40%;
+    float: right;
+}
+
+.dropdown-select {
+
+
+    select {
+        width: 100%;
+        height: 40px;
+        background: #eeeeee;
+        border: none;
+        padding-left: 10px;
+        border-radius: 5px;
+    }
+}
+
+.safeurl {
+    height: 100%;
+    width: 100%;
+}
+.chevron1{
+    font-size: 15px !important;
+}
+
+.dropdown-list .textbox {
+    width: 100%;
+    border: none;
+}
+
+tr.active {
+    background: #00498E !important;
+}
+
+.active .btn-primary {
+    background: #fff !important;
+    color: #000;
+}
+
+input.middle:focus {
+    outline-width: 0;
+}
+
+select.textbox {
+    appearance: none;
+}
+
+.textbox i.fa.fa-chevron-down {
+    font-size: 12px;
+    position: relative;
+    bottom: 25px;
+    float: right;
+    right: 15px;
+    background-color: none !important;
+}
+.documents-list {
+    background: #f8f8f8;
+    padding: 7px;
+    margin: 10px 0;
+    // width: 90%;
+}
+.icon-list {
+    display: inline-flex;
+    float: right;
+
+    .icons {
+        padding: 0 5px;
+        cursor: pointer;
+    }
+}
+.codeAlign {
+    display: contents;
+}
+.selected-group {
+    .cod {
+        width: 48%;
+    }
+
+    .cod:nth-child(even) {
+        margin: 0 0 0 4%;
+    }
+
+    .documents-list {
+        background: #eee;
+    }
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}
+
+tr.rone.veiw-items.processing {
+    background: #FFFBDD;
+}
+
+i.fa.fa-arrow-down.fa-lg.disable {
+    opacity: .5;
+    cursor: pointer;
+}
+
+.disable {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+.veiw-items td{
+    font-weight: 900;
+}
+// .textbox i.fa.fa-chevron-down {
+//     font-size: 12px;
+//     position: relative;
+//     bottom: 25px;
+//     float: right;
+//     right: 15px;
+// }
+

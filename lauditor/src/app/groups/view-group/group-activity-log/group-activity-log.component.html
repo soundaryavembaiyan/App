@@ -1,0 +1,109 @@
+<!--component html goes here -->
+<div class="container main width-alignment">
+	<div class="col-12 Individual createGroup">
+		<label for="select" class="lable-size-title update" *ngIf="product != 'corporate'">Groups Activity Log</label>
+		<label for="select" class="lable-size-title update" *ngIf="product == 'corporate'">Department Activity Log</label>
+		<form [formGroup]="logForm" (ngSubmit)="onSubmit()">
+			<div class="row">
+				<div class="col-6">
+					<div class="form-group nameSet">
+						<label for="title" class="lable-size">Category:</label>
+						<select formControlName='category'
+                               class="form-select member-name-text nameSet">
+							<option *ngFor='let cat of categoryList'>
+								{{cat}}
+							</option>
+						</select>
+					</div>
+					<div class="form-group nameSet">
+						<label for="title" class="lable-size">Client</label>
+						<input type="text"
+							   formControlName="client"
+							   class=" text-size form-control group-name-text"
+							   [ngClass]="{ 'is-invalid': submitted && f.client.errors }">
+					</div>
+					<div class="form-group nameSet">
+						<label for="title" class="lable-size">Team Member</label>
+						<input type="text"
+							   formControlName="tm"
+							   class=" text-size form-control group-name-text"
+							   [ngClass]="{ 'is-invalid': submitted && f.tm.errors }">
+					</div>
+				</div>
+				<div class="col-6">
+					<div class="form-group nameSet">
+						<label for="comment" class="lable-size">Search</label>
+						<input type="text"
+							   formControlName="search"
+							   class=" text-size form-control group-name-text"
+							   [ngClass]="{ 'is-invalid': submitted && f.tm.errors }">
+					</div>
+					<div class="form-group nameSet row">
+						<label for="comment" class="lable-size">Advance Search</label>
+						<div class="col-5">
+							 <mat-form-field appearance="fill" class="form-group">
+			                  <input matInput
+			                         [matDatepicker]="fromdt"
+			                         formControlName="fromDate"
+			                         name="date_of_filling"
+			                         class="form-control"
+			                         (click)="fromdt.open()"
+			                         readonly>
+			                  <mat-datepicker-toggle matSuffix [for]="fromdt"></mat-datepicker-toggle>
+			                  <mat-datepicker #fromdt></mat-datepicker>
+			                  <div *ngIf="submitted && f.date_of_filling.errors" class="invalid-feedback">
+			                    <div *ngIf="f.date_of_filling.errors.required">Date is required</div>
+			                  </div>
+			                </mat-form-field>               
+						</div>
+
+						<div class="col-2"></div>
+						<div class="col-5">
+							 <mat-form-field appearance="fill" class="form-group">
+			                  <input matInput
+			                         [matDatepicker]="todt"
+			                         formControlName="toDate"
+			                         name="date_of_filling"
+			                         class="form-control"
+			                         (click)="todt.open()"
+			                         readonly>
+			                  <mat-datepicker-toggle matSuffix [for]="todt"></mat-datepicker-toggle>
+			                  <mat-datepicker #todt></mat-datepicker>
+			                  <div *ngIf="submitted && f.date_of_filling.errors" class="invalid-feedback">
+			                    <div *ngIf="f.date_of_filling.errors.required">Date is required</div>
+			                  </div>
+			                </mat-form-field> 
+						</div>
+					</div>
+					<div class="form-group nameSet">
+						<label class="lable-size">&nbsp;</label>
+						<button type="submit"
+                			    class="btn btn-default btnsave">Search</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+    <div class="col-12 Individual gridtable" style="margin-top:20px;">
+        <table class="table table-borderless tblgrid">
+          <thead>
+            <tr class="theader">
+              <th>
+                <p class="thheadname update"> Date & Time</p>
+                <img src="/assets/img/SORT.PNG" class="sortico">
+              </th>
+              <th>
+                <p class="thheadname update"> Activity Log</p>
+                <img src="/assets/img/SORT.PNG" class="sortico">
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="rone" *ngFor="let log of loglist">
+              <td>{{log.timestamp}}</td>
+              <td>{{log.msg}}</td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+</div>

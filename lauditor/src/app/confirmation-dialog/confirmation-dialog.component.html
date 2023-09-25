@@ -1,0 +1,34 @@
+<div  *ngIf="message?.isIframe">
+<div class="modal-header">
+    <h4 class="modal-title">{{ title }}</h4>
+      <button type="button" class="close" aria-label="Close" (click)="dismiss()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body" >
+      <div class="watermark">
+        <div  class="safeurl">
+            <iframe height="500px" width="100%" [src]="message.url"></iframe>
+        </div>
+    </div>
+    </div>
+    <div class="modal-footer" *ngIf="isButtons">
+      <button type="button" class="btn btn-danger" (click)="decline()" >{{ btnCancelText }}</button>
+      <button type="button" class="btn btn-primary" (click)="accept()" *ngIf="!message?.isIframe">{{ btnOkText }}</button>
+    </div>
+  </div>
+    <div class="container" *ngIf="!message?.isIframe">
+      <div class="row">
+        <div class="alertbox">
+          <div class="iconclose" aria-label="Close" (click)="dismiss()">X</div>
+          <div class="alertpara">
+            <p class="alertparatxt"> {{ title }}</p>
+          </div>
+          <div class="alertext" > {{ message }}</div>
+          <div class="alertbutton" *ngIf="isButtons">
+            <button class="btn btn-default  alertbtn" *ngIf="displayCancelButton" [ngClass]="isSuccess ? 'alertbtn' : 'alertbtnno'" (click)="decline()">{{ btnCancelText }}</button>
+            <button class="btn btn-default alertbtn" [ngClass]="isSuccess ? 'alertbtn' : 'alertbtnyes'" (click)="accept()">{{ btnOkText }}</button>
+          </div>
+        </div>
+      </div>
+    </div>

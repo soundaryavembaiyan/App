@@ -1,0 +1,248 @@
+<!--component html goes here -->
+<!--component html goes here -->
+<div class="row view-document">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-7">
+                <div class="watermark">
+                    <div *ngIf="urlSafe" class="safeurl">
+                        <iframe height="100%" width="100%" [src]="urlSafe"></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="col-5">
+
+
+
+                <div class="watermark-left name-set ">
+                    <div class="row tab-margin tags">
+                        <div class="btnaction name-set tab-margin">
+                            <a href="javascript:void(0)" class="selectprior optionhigh active"> Standand Page
+                                Numbers</a>
+                            <a href="javascript:void(0)" class="selectprior optionlow optionaling"> Custom Page
+                                Numbers</a>
+                        </div>
+
+                    </div>
+
+                    <form [formGroup]="customPage" (ngSubmit)="onSubmit()">
+                        <div class="row name-set">
+                            <div class="col-6">
+                                <div class="form-group  name-set">
+                                    <label>Page Number Position <span class="mandate">*</span></label>
+                                    <select class="form-control textbox" (change)="changePagenumalign($event)"
+                                        formControlName="pagenumalign">
+                                        <option value="">Choose Position</option>
+                                        <option *ngFor="let position of positions" [ngValue]="position.value">
+                                            {{ position.name }}
+                                        </option>
+                                    </select>
+
+                                </div>
+                                <!-- error block -->
+                                <div class="" *ngIf="isSubmitted && pagenumalign?.invalid">
+                                    position is required
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group  name-set">
+                                    <label>Font Size <span class="mandate">*</span></label>
+                                    <select class="form-control textbox" (change)="changeFontSize($event)"
+                                        formControlName="pagenumfontsize">
+                                        <option value="">Choose Font</option>
+                                        <option *ngFor="let font of fonts" [ngValue]="font.value">
+                                            {{ font.name }}
+                                        </option>
+                                    </select>
+
+                                </div>
+                                <!-- error block -->
+                                <div class="" *ngIf="isSubmitted && pagenumfontsize?.invalid">
+                                    Font is required
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="tags tab-margin">
+                        <div class="tags-width"><label class="custusername tab-margin fontweight">Custom
+                                Pagination</label></div>
+                        <div class="tab-margin"><button class="btn btn-primary" (click)="addTemplate()">ADD</button>
+                        </div>
+                    </div>
+                    <form [formGroup]="myForm" (ngSubmit)="onPagesSubmit()">
+
+
+
+
+                        <div>
+
+                            <div>
+                                <div class="">
+                                    <div class="">
+                                        <div class="add-pages" *ngFor="let item of paginationData let i = index">
+                                            <hr>
+                                            <!-- <div class="row"> -->
+
+                                            <div class="row">
+                                                <div class="col-5">
+                                                    <div class="form-group">
+                                                        <div>
+                                                            <label>Starting Page <span class="mandate">*</span></label>
+                                                            <input type='tel'
+                                                                (input)="onKey($event, i, 'page_range_starts')"
+                                                                value="{{item.page_range_starts}}" min="1"
+                                                                class="form-control textbox" />
+                                                            <p class="text-danger" [id]="i+'_page_range_starts'">
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-5">
+                                                    <div class="form-group">
+                                                        <div>
+                                                            <label>Ending Page <span class="mandate">*</span></label>
+                                                            <input type='tel'
+                                                                (keyup)="onKey($event, i, 'page_range_ends')"
+                                                                value="{{item.page_range_ends}}"
+                                                                class="form-control textbox" min="1" />
+                                                            <p class="text-danger" [id]="i+'_page_range_ends'"></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="row">
+                                                    <div class="col-5">
+                                                        <div class="form-group">
+                                                            <div>
+                                                                <label> Numbering Format<span
+                                                                        class="mandate">*</span></label>
+                                                                <select class="form-control page_template textbox"
+                                                                    (change)="onChangeTemplate($event, i)">
+                                                                    <option value="select">Choose</option>
+                                                                    <option value="#PAGENUM#">1, 2, 3</option>
+                                                                    <option value="Page (#PAGENUM#)">Page (1)</option>
+                                                                    <option value="A #PAGENUM#">A 1</option>
+                                                                    <option value="B #PAGENUM#">B 1</option>
+                                                                    <option value="C #PAGENUM#">C 1</option>
+                                                                    <option value="D #PAGENUM#">D 1</option>
+                                                                    <option value="E #PAGENUM#">E 1</option>
+                                                                    <option value="F #PAGENUM#">F 1</option>
+                                                                    <option value="G #PAGENUM#">G 1</option>
+                                                                    <option value="H #PAGENUM#">H 1</option>
+                                                                    <option value="I #PAGENUM#">I 1</option>
+                                                                    <option value="J #PAGENUM#">J 1</option>
+                                                                    <option value="K #PAGENUM#">K 1</option>
+                                                                    <option value="L #PAGENUM#">L 1</option>
+                                                                    <option value="M #PAGENUM#">M 1</option>
+                                                                    <option value="N #PAGENUM#">N 1</option>
+                                                                    <option value="O #PAGENUM#">O 1</option>
+                                                                    <option value="P #PAGENUM#">P 1</option>
+                                                                    <option value="Q #PAGENUM#">Q 1</option>
+                                                                    <option value="R #PAGENUM#">R 1</option>
+                                                                    <option value="S #PAGENUM#">S 1</option>
+                                                                    <option value="T #PAGENUM#">T 1</option>
+                                                                    <option value="U #PAGENUM#">U 1</option>
+                                                                    <option value="V #PAGENUM#">V 1</option>
+                                                                    <option value="W #PAGENUM#">W 1</option>
+                                                                    <option value="X #PAGENUM#">X 1</option>
+                                                                    <option value="Y #PAGENUM#">Y 1</option>
+                                                                    <option value="Z #PAGENUM#">Z 1</option>
+                                                                </select>
+                                                                <p class="text-danger" [id]="i+'_page_template'"></p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-5">
+                                                        <div class="form-group">
+                                                            <div>
+                                                                <label>Starting Number <span
+                                                                        class="mandate">*</span></label>
+                                                                <div class="input-group">
+                                                                    <span class="input-group-addon"
+                                                                        [id]="i+'_format_name'"
+                                                                        style="float: none;"></span>
+                                                                    <input type="number" min="0"
+                                                                        (input)="onKey($event, i, 'page_starts_from')"
+                                                                        value="{{item.page_starts_from}}"
+                                                                        class="form-control textbox" />
+                                                                </div>
+                                                                <p class="text-danger" [id]="i+'_page_starts_from'"></p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <div class="actions_style">
+                                                            <a class="icon_action" data-toggle='tooltip' title='Remove'
+                                                                (click)="removeRow(i)"><i class='fa fa-trash'></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- </div> -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <p class="text-danger" id="id_customPage"></p>
+                            </div>
+
+                        </div>
+
+                        <div class="btnbox">
+                            <button type="reset" class="btn btn-default btncancel" (click)="cancel()">Cancel</button>
+                            <button type="submit" class="btn test btn-default btnsave" >Save</button>
+
+                        </div>
+
+
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <jw-modal id="doc-del-pages" class="doc-del-pages alert-box">
+        <div class="alert-box ">
+            <div class="close-x float-right" (click)="closeModal('doc-del-pages');">X</div>
+            <div class="container">
+                <div class="row" *ngIf="data">
+                    <div class="">
+                        <div class="alertpara">
+                            <p class="alertparatxt"> Alert</p>
+                        </div>
+                        <div class="alertext">Are you sure you want add  Custumpage Numbers to Approved   {{data.name}} document ?</div>
+                        <div class="alertbutton">
+                            <button class="btn btn-default  alertbtn alertbtnno"
+                                (click)="closeModal('doc-del-pages');">No</button>
+                            <button class="btn btn-default alertbtn alertbtnyes"
+                                (click)="postAddPages();closeModal('doc-del-pages');">Yes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </jw-modal>
+    <jw-modal id="doc-del-success" class="doc-del-success  alert-box">
+        <div class="doc-iframe-scs-body">
+
+            <div class="container">
+                <div class="row" *ngIf="data">
+                    <div class="alertbox">
+                        <div class="close-x float-right" (click)="closeModal('doc-del-success');">X</div>
+                        <div class="alertpara">
+                            <p class="alertparatxt"> Success</p>
+                        </div>
+                        <div class="alertext">Congratulations!! You have successfully  add {{data.name}} document
+                            page numbers.
+                        </div>
+                        <div class="center">
+                            <button class="btn btn-primary" (click)="closeModal('doc-del-success');cancel()">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </jw-modal>

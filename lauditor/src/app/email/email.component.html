@@ -1,0 +1,310 @@
+<div *ngIf="product != 'connect'">
+    <div class="container-fluid width-alignment" *ngIf="!isDocument">
+        <div class="row">
+            <div class="col-2">
+                <div class="input-group court seogroup" id="search">
+                    <button type="button" class="btn btn-primary actionbtn
+                        btnaddevent" (click)="onCompose()" [ngClass]="isAuthenticated? '' :
+                        'disable' "><b>+</b> Compose
+                    </button>
+                </div>
+            </div>
+            <div class="col-10">
+                <div class="input-group court" id="search">
+                    <input type="text" class="form-control textbox seogroup"
+                        placeholder="Search" required=""
+                        [(ngModel)]="searchText" (keydown)="onKeydown($event)">
+                    <img style="top: 20px;" src="assets/img/search.svg"
+                        class="calimg calitem input-group-append searchimg"
+                        (click)="onKeydown($event)">
+                </div>
+            </div>
+        </div>
+        <div class="row" >
+            <div class="col-2 ">
+                <div class="btn calpre"
+                    (click)="getMessageCount();">
+                    <div class="icon"> <i class="fa fa-envelope"
+                            style="font-size:24px;color:grey;padding-right:10px;"></i>
+                    </div>
+                    <div class="inbox">Inbox</div>
+                    <div class="mail-count"><span>{{count}}</span></div>
+                </div>
+            </div>
+            <div class="col-10">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="float-right">
+                            <a href="javascript:void(0)" class="selectprior
+                                optionhigh" (click)="getMessages()"
+                                [ngClass]="{'active':isFirstPage}"> First</a>
+                            <a href="javascript:void(0)" class="selectprior
+                                optionaling" [ngClass]="isFirstPage? 'disable' :
+                                '' "
+                                (click)="!isFirstPage?onPrevious():null"> <i
+                                    class="fa fa-thin fa-chevron-left
+                                    icon" aria-hidden="true"></i> Previous</a>
+                            <a href="javascript:void(0)" class="selectprior
+                                optionlow optionaling"
+                                [ngClass]="nextToken==''?'disable':''"
+                                (click)="getNextPageMessages()"> Next<i
+                                    class="fa fa-thin
+                                    fa-chevron-right icon" aria-hidden="true"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="mail-list">
+            <div class="input-group court p-bottom" *ngFor="let message of
+                messages">
+                <div class="form-control textbox ">
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="fromId">{{message.fromName}}</div>
+                        </div>
+                        <div class="col-9">
+                            <div class="subject"> {{message.subject}} </div>
+                        </div>
+                    </div>
+                    <!-- <div class="atchmain" *ngIf="message.attachments.length>0">
+                    <div class="atch" *ngFor="let attachment of message.attachments">
+                        <div *ngIf="attachment.filename !==''" class="attachement"><span
+                                class="let">{{attachment.filename}}</span></div>
+                    </div>
+                </div> -->
+                    <div class="pdf-list-inbox"
+                        *ngIf="message.attachments.length>0">
+                        <div
+                            (click)="documentClick(message.msgId,attachment.partId)"
+                            [hidden]="attachment.filename ===''"
+                            class="pdf-data"
+                            *ngFor="let attachment of message.attachments">
+                            <div><i class="fa-regular fa-file-pdf"></i></div>
+                            <div>{{attachment.filename}}</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <jw-modal id="compose-email" class="doc-iframe-scs">
+            <form [formGroup]="composeForm" (ngSubmit)="onSubmit()">
+            <div class="email-compose">
+                <div class="col-12">
+                    <div class="input-group court" id="search">
+                        <input type="text" class="form-control textbox "
+                            disabled placeholder="New Message" style="font-size: 14px;font-family: sans-serif;">
+                        <!-- <img style="top: 20px;" src="assets/img/search.svg"
+                            class="calimg calitem input-group-append searchimg" (click)="onKeydown($event)"> -->
+                        <i class="fa fa-times calimg calitem input-group-append
+                            searchimg" aria-hidden="true" (click)="close()"></i>
+                    </div>
+                    <table><tbody>
+                        <tr class="form-control email-to "><td style="font-size: 14px;font-family: sans-serif;">To: </td><td class="text-field"><input style="margin-left: 10px;font-size: 14px;font-family: sans-serif;" type="text" 
+                            formControlName="toEmail"></td></tr>
+                    </tbody></table>
+                    
+                    <table><tbody>
+                        <tr  class="form-control email-subject"><td style="font-size: 14px;font-family: sans-serif;">Subject: </td>
+                            <td class="text-field"><input  style="margin-left: 10px;font-size: 14px;font-family: sans-serif;" type="text" formControlName="subject"><td></tr>
+                    </tbody></table>
+                    <div class="email-body">
+                        <textarea style="font-size: 14px;font-family: sans-serif;padding-left: 26px;" name="" id="" cols="30" rows="10" formControlName="body" ></textarea>
+                    </div>
+                    <div class="pdf-list" style="cursor: pointer;"
+                    *ngIf="selectedAttachments?.length>0">
+                    <div
+                        class="pdf-data"
+                        *ngFor="let attachment of selectedAttachments">
+                        <div><i class="fa-regular fa-file-pdf"></i></div>
+                        <div>{{attachment.filename}}</div>
+                        <span (click)="onRemoveAttachment(attachment)"><i  aria-hidden="true" class="fa fa-regular fa-circle-xmark crosscss"></i></span>
+                    </div>
+                </div>
+                    <div class="bootom submit">
+                        <div>
+                            <i class="fa fa-paperclip" aria-hidden="true" (click)="onAttach()"></i>
+                            <input type="submit" class="btn btn-primary" value="Send" [disabled]="!composeForm.valid">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </form>
+        </jw-modal>
+    </div>
+
+    <div *ngIf="isDocument" class="container-fluid">
+        <div class="row">
+            <div class="row main headertop" id="blueFlag">
+                <div class="col-sm-12 compswitch ">
+                    <div class="switch cswitch cswitchtwo">
+                        <!-- Product condition for label-->
+                        <a href="javascript:void(0);" class="details doc-option
+                            client " [ngClass]="{ 'active': filter=='client'}"
+                            *ngIf="product != 'content'"
+                            (click)="filter='client';">Client</a>
+                        <a href="javascript:void(0);" class="details doc-option
+                            client " [ngClass]="{ 'active': filter=='client'}"
+                            *ngIf="product == 'content'"
+                            (click)="filter='client';">Customer</a>
+                        <a href="javascript:void(0);" class=" details doc-option
+                            firm"
+                            [ngClass]="{ 'active': filter=='firm'}"
+                            (click)="filter='firm';">Firm</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row upload-document ">
+            <div style="background:#f8f8f8;height:auto;">
+                <div class="col-12 main-width">
+                    <div class="row">
+                        <div class="col-6" *ngIf="filter==='client'">
+                            <div class="form-group">
+
+                                <label for="title" class="fontbold"
+                                    *ngIf="product != 'content'">Client Name
+                                    <span
+                                        class="mandate">*</span></label>
+                                <label for="title" class="fontbold"
+                                    *ngIf="product == 'content'">Customer Name
+                                    <span
+                                        class="mandate">*</span></label>
+                                <div class="ng-autocomplete textbox">
+                                    <!-- Product != Content -->
+                                    <ng-autocomplete [data]="data"
+                                        [searchKeyword]="keyword"
+                                        placeholder="select client"
+                                        *ngIf="product != 'content'"
+                                        (selected)='selectEvent($event)'
+                                        [itemTemplate]="itemTemplate"
+                                        [notFoundTemplate]="notFoundTemplate">
+                                        <i class="fa fa-chevron-down"
+                                            aria-hidden="true"></i>
+                                    </ng-autocomplete>
+                                    <!-- Product == Content -->
+                                    <ng-autocomplete [data]="data"
+                                        [searchKeyword]="keyword"
+                                        placeholder="select customer"
+                                        *ngIf="product == 'content'"
+                                        (selected)='selectEvent($event)'
+                                        [itemTemplate]="itemTemplate"
+                                        [notFoundTemplate]="notFoundTemplate">
+                                        <i class="fa fa-chevron-down"
+                                            aria-hidden="true"></i>
+                                    </ng-autocomplete>
+
+                                    <ng-template #itemTemplate let-item>
+                                        <a [innerHTML]="item.name"></a>
+                                    </ng-template>
+
+                                    <ng-template #notFoundTemplate let-notFound>
+                                        <div [innerHTML]="notFound"></div>
+                                    </ng-template>
+
+                                    <ng-template #notFoundTemplate let-notFound>
+                                        <div [innerHTML]="notFound"></div>
+                                    </ng-template>
+                                    <i class="fa fa-chevron-down"></i>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-6" *ngIf="filter==='firm'">
+                            <div class="form-group " id="selectbx">
+                                <div class="input-group court" id="search">
+                                    <div class="multicheck form-control
+                                        textbox">
+                                        <label class="callselect">Select
+                                            Group(s) <span class="mandate">*</span></label>
+                                        <i *ngIf="!isSelectGroup"
+                                            class=" fa fa-plus form-check-inpu
+                                            calimg calitem input-group-append
+                                            checkboxitem"
+                                            aria-hidden="true"
+                                            (click)="selectGroup(true)"></i>
+                                        <i *ngIf="isSelectGroup"
+                                            class=" fa fa-minus form-check-inpu
+                                            calimg calitem input-group-append
+                                            checkboxitem"
+                                            aria-hidden="true"
+                                            (click)="selectGroup(false)"></i>
+                                    </div>
+                                </div>
+                                <div class="" *ngIf="isSelectGroup">
+                                    <div class="input-group index court"
+                                        id="search">
+                                        <div class="multicheck form-control
+                                            textbox" *ngFor="let item of
+                                            groupViewItems">
+                                            <label class="callselect">{{item.name}}</label>
+                                            <input class="form-check-input
+                                                calimg calitem
+                                                input-group-append checkboxitem"
+                                                type="checkbox"
+                                                value="" id="flexCheckDefault"
+                                                [checked]="item.isChecked"
+                                                #inputEl
+                                                (change)="selectGroupItem(item,inputEl.checked)">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div *ngIf="!isSelectGroup" class="codeAlign
+                                        selected-group">
+                                        <div class="cod" *ngFor="let item of
+                                            selectedGroupItems;let i= index">
+                                            <div class="documents-list ng-item">
+                                                {{item.name}}
+                                                <div class="icon-list">
+                                                    <div class="icons"><i
+                                                            class="fa fa
+                                                            fa-regular
+                                                            fa-circle-xmark"
+                                                            style="color:red;font-size:
+                                                            24px;"
+                                                            (click)="removeGroup(item)"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=" row main stepitem ">
+                        <div class="col-sm-12">
+                            <!-- button cancel and save -->
+                            <div class="btnbox">
+                                <button type="reset" class="btn btn-default
+                                    btncancel" (click)="isDocument=false">Cancel</button>
+                                <button *ngIf="filter==='client'" type="submit"
+                                    class="btn btn-default btnsave savecls"
+                                    [ngClass]="{'disabled':!(clients.length>0)
+                                    }"
+                                    (click)="saveFiles()">Upload</button>
+                                <button *ngIf="filter==='firm'" type="submit"
+                                    class="btn btn-default btnsave savecls"
+                                    [ngClass]="{'disabled':!(selectedGroupItems.length>0
+                                    )}"
+                                    (click)="saveFiles()">Upload</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <ngx-spinner size="medium" [type]="'ball-fall'"></ngx-spinner>
+    </div>
+    <!-- Email for Connect -->
+
+    <div class="center" *ngIf="product == 'connect'">
+        <p> You Need Subscription to Access the Email Integration !</p>
+    </div>

@@ -1,0 +1,100 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-7 loginbglauditor"  *ngIf="product == 'lauditor'|| product === 'corporate'"></div>
+    <div class="col-sm-7 loginbgcontent" *ngIf="product == 'content'"></div>
+    <div class="col-sm-7 loginbgconnect" *ngIf="product == 'connect'"></div>
+    <div class="col-sm-5">
+      <div class="row">
+
+        <div class="col-sm-12">
+          <div class="logomain" *ngIf="product === 'lauditor'">
+            <img src="/assets/site/images/widgetlogo.jpg" class="loginlogo">
+            <div class="logotxt">{{ product === 'lauditor' ? 'Lauditor' : ' ' }}</div>
+            <!--<div class="logotxt">{{ product === 'lauditor' ? 'Lauditor' : 'Corporate Lauditor' }}</div>-->
+          </div>
+
+          <div class="logomain" *ngIf="product === 'corporate'">
+            <img src="/assets/site/images/corp3.png" style="width:70%; height:auto">
+          </div>
+
+          <div class="logomain" *ngIf="product == 'content'">
+            <img src="/assets/site/images/content_logo.jpg" class="loginlogocontent">
+            <!--<div class="logotxt">Content Coffer</div>-->
+          </div>
+
+          <div class="logomainconnect" *ngIf="product == 'connect'">
+            <img src="/assets/site/images/cofferconnect-logo.png" class="loginlogoconnect">
+             <!--<img src="/assets/site/images/CC_img.png" class="loginlogoconnect">-->
+            <div class="logotxtconnect">Coffer Connect</div>
+          </div>
+
+        </div>
+
+        <div class="col-sm-12">
+          <div class="loginform" *ngIf="showLoginForm">
+            <div class="lblmsg">
+              <label id="id_alert" class="logininfo">{{msg}}</label>
+            </div>
+            <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+              <div class="signin">Login</div>
+              <div class="form-floating mb-3 mt-3">
+                <input formControlName='email'
+                      class="form-control custominput"
+                      id='id_email'
+                      type="text"
+                      placeholder="Email"/>
+                <label for="email" class="lblfocus">Email</label>
+                <div *ngIf="submitted && f['email'].errors" class="text-danger">
+                  <div *ngIf="f.email.errors.required">Email is required</div>
+                  <div *ngIf="f.email.errors.pattern">Email must be a valid email address.</div>
+                </div>
+              </div>
+              <div class="form-floating mb-3 mt-3">
+                <input formControlName="password"
+                      class="form-control custominput"
+                      [type]="showPassword?'text':'password'"
+                      inputmode="passsword"
+                      id="id_password"
+                      placeholder="Password"/>
+                <label for="password" class="lblfocus">Password</label>
+                <img src="/assets/img/eye_open.svg"
+                     class="input-group-append viewpass"
+                     *ngIf='showPassword'
+                     (click)="showPassword = false">
+                <img src="/assets/img/eye_close.svg"
+                     *ngIf='!showPassword'
+                     class="input-group-append viewpass"
+                     (click)="showPassword = true">
+                <div *ngIf="submitted && f['password'].errors" class="text-danger">
+                  <div *ngIf="f['password'].errors">Password is required</div>
+                  <div *ngIf="f['password'].errors">{{f['password'].errors['msg']}}</div>
+                </div>
+                <div class="fpassword">
+                  <a href="javascript:void(0);"
+                     class="fpass" 
+                     (click)="forgotPwd()">Forgot Password</a>
+                </div>
+              </div>
+              <div class="signForm-row">
+                <div class="remCheck" hidden>
+                  <label><input type="checkbox"/>Remember me</label></div>
+                </div>
+                <div class="btnlogin">
+                  <button type="submit"
+                  class="btn btn-primary btnloginsubmit btncomman">Login</button>
+                </div>
+              </form>
+            </div>
+            <app-firmname-login *ngIf="showMultiLogin"
+                                [parentData]="firmsData"
+                                (event)="onChildEvent($event)"></app-firmname-login>
+            <app-resetpwd *ngIf="showResetForm"
+                                [parentData]="resetData"
+                                (event)="onChildEvent($event)"></app-resetpwd>
+            <app-forgotpwd *ngIf='showForgotForm'
+                           (event)="onChildEvent($event)"></app-forgotpwd>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

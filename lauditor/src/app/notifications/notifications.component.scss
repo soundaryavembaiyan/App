@@ -1,0 +1,76 @@
+.noti-head {
+    font-weight: 700;
+
+
+}
+
+.total {
+    color: #F69B6B;
+    font-weight: 700;
+}
+
+.main {
+    padding-right: 0px;
+    padding-top: 60px;
+}
+
+i.fa-solid.fa-check,
+i.fa.fa-trash {
+    font-size: 30px;
+    padding: 0 10px;
+}
+
+.icon-align {
+    text-align: end;
+}
+
+input[type="checkbox"]::before {
+    /* ...existing styles */
+
+    transform-origin: bottom left;
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+input[type=checkbox] {
+    accent-color: #fff;
+    color: blue;
+}
+
+input.larger {
+    transform: scale(2);
+    height: 18px;
+    position: relative;
+    top: 40%;
+}
+
+.check {
+    display: flex;
+    justify-content: center;
+}
+
+i.fa-regular.fa-calendar-days {
+    font-size: 25px;
+    padding: 9px 10px 0 0;
+}
+
+.note {
+    font-size: 15px;
+    // font-weight: 700;
+}
+
+.col-11 {
+    padding: 15px 10px 10px 30px;
+}
+.col-12.row.createGroup.rone {
+    margin-bottom: 10px;
+}
+.bold{
+    font-weight: bold;
+}
+i.fa-solid.fa-check:hover,.fa.fa-trash:hover {
+    color:#3FC6BD;
+    cursor:pointer;
+}
+.rone {
+    height: auto !important;
+}

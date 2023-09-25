@@ -1,0 +1,276 @@
+.fa-eye {
+    position: absolute;
+}
+
+.signlogo{
+    margin-top: 50px;
+}
+
+.signlogo img {
+    width: 250px;
+    /*height: 150px;*/
+    /* float: left; */
+}
+
+.signlogo p {
+    /* float: left; */
+    margin-top: 50px;
+    /* padding-top: 50px; */
+    font-size: 40px;
+    color: white;
+    font-family: 'Roboto Slab', serif;
+}
+
+.signlogo {
+    text-align: center;
+}
+
+.formBlock {
+    min-height: 600px;
+}
+
+/* Theming */
+/* @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap"); */
+
+:root {
+    --white: #ffffff;
+    --black: #36383f;
+    --grey: #00000033;
+}
+
+@font-face {
+    font-family: "gill";
+/*    src: url(font/Gill\ Sans\ Light.otf);*/
+}
+
+@font-face {
+    font-family: "gillbold";
+/*    src: url(font/Gill\ Sans\ Bold.otf);*/
+}
+
+@font-face {
+    font-family: "gillone";
+/*    src: url(font/Gill\ Sans\ Heavy.otf);*/
+}
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--white);
+    font-family: "gill";
+}
+
+/* a {
+    text-decoration: none;
+  }
+  
+  ul {
+    list-style: none;
+  } */
+
+.loginbg {
+    background-image: url("/assets/site/images/loginbg.webp");
+    height: 100vh;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 63% 88%;
+    /* background-position: bottom 0px right 0px; */
+}
+
+.logotxt {
+    display: inline-block;
+    font-size: 50px;
+    font-weight: 900;
+    color: #05438C;
+}
+
+.loginlogo {
+    width: 39px;
+    margin-top: -18px;
+}
+
+.logomain {
+    padding-top: 52px;
+
+    padding-left: 40px;
+    padding-bottom: 50px;
+
+
+}
+
+.loginform {
+    margin-left: -70px;
+    min-height: 200px;
+    box-shadow: 0px 14px 12px -18px #111;
+    box-shadow: 0px 15px 10px -15px #111;
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    padding: 50px;
+    width: 95%;
+    padding-bottom: 34px;
+    min-height: 343px;
+}
+
+.Forgotmsginfo {
+    padding-top: 20px;
+}
+
+
+.custominput,
+.custominput:focus {
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    box-shadow: 0px 3px 6px #00000029;
+    border: 1px solid #CECECE;
+    border-radius: 5px;
+    opacity: 1;
+}
+
+.fpass {
+    color: #000000;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.signin {
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.btnlogin {
+    padding-top: 15px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btnlogincancel,
+.btnlogincancel:focus {
+    width: 135px;
+    height: 43px;
+    /* UI Properties */
+    background: #EEEEEE 0% 0% no-repeat padding-box;
+    border-radius: 5px;
+    opacity: 1;
+    color: #000000;
+    font-weight: 600;
+    border: none;
+    box-shadow: none;
+    outline: none;
+}
+
+.btnlogincancel:hover {
+    background: #e7e7e7ea 0% 0% no-repeat padding-box;
+    color: #000000;
+    border: none;
+
+}
+
+.btnloginsubmit,
+.btnloginsubmit:focus,
+.btnloginsubmit:active {
+    height: 43px;
+    /* UI Properties */
+    background: #004D87 0% 0% no-repeat padding-box;
+    border-radius: 5px;
+    opacity: 1;
+    width: 135px;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    margin-left: 27px;
+}
+
+.btnloginsubmit:hover {
+    background: #004d87e0 0% 0% no-repeat padding-box;
+    border: none;
+}
+
+.viewpass {
+    margin-top: -44px;
+    position: absolute;
+    cursor: pointer;
+    right: 0px;
+    z-index: 9;
+    width: 25px;
+    margin-right: 15px;
+}
+
+.custselect {
+    background-size: 42px 21px !important;
+    box-shadow: 0px 3px 6px #00000029;
+    border: 1px solid #CECECE;
+    border-radius: 5px;
+    opacity: 1;
+    cursor: pointer;
+    padding:1.375rem 2.25rem .375rem .75rem;
+}
+
+.lblfocus {
+    opacity: 1 !important;
+    transform: scale(.85) translateY(-0.5rem) translateX(0.15rem);
+}
+
+.lblfocus:focus,
+.lblfocus:active {
+    opacity: 0.75;
+}
+
+.logininfo {
+    color: #FF5722;
+    font-size: 14px;
+    font-weight: 600;
+    display: block;
+}
+
+.lblmsg {
+    padding-bottom: 10px;
+}
+
+.msghidden {
+    display: none;
+}
+
+.multiform {
+    padding-top: 30px;
+    padding-bottom: 34px;
+}
+
+@media (max-width: 860px) {
+
+
+    .btncomman {
+        width: 100px;
+    }
+
+    .loginform {
+        padding: 44px;
+        padding-right: 0px;
+        width: 100%;
+    }
+}
+
+
+@media (max-width: 577px) {
+
+    .loginbg {
+        display: none;
+    }
+
+
+    .loginform {
+        margin-left: 4px;
+        width: 100%;
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .logomain {
+        padding-bottom: 10px;
+        text-align: center;
+        padding-left: 0px;
+    }
+}
+

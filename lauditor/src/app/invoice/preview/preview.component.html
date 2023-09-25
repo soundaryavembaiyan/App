@@ -1,0 +1,330 @@
+<div [ngClass]="{'blur': successModel}">
+  <div class="container-fluid">
+    <div class="row">
+
+      <!-- right dashboard row starts here -->
+      <div class="row main headertop" [ngStyle]="{'display':isDisplay?'block':'none'}">
+        <div class="col-sm-12 compswitch ">
+          <!--<div class="switch  cswitch">
+            <a href="javascript:void(0);" class="optionone compone" [ngClass]="{'active': selectedMatter === 'legalmatter'}" (click)="onClick('legalmatter')">Legal Matters</a>
+            <a href="javascript:void(0);" class="optiontwo comptwo" [ngClass]="{'active': selectedMatter === 'generalmatter'}" (click)="onClick('generalmatter')">General Matters</a>
+          </div>-->
+          <div class="switch  cswitch cswitchtwo">
+            <a href="javascript:void(0);" class="optionone compone" [ngClass]="{'active': selectedValue === 'create'}"
+              (click)="isActive('create')">Create</a>
+            <a href="javascript:void(0);" class="optiontwo comptwo" [ngClass]="{ 'active' : selectedValue === 'view' }"
+              (click)="isActive('view')">View</a>
+          </div>
+        </div>
+      </div>
+      <div class="arrowitem" (click)="hideAndShow()">
+        <!-- <img src="assets/img/arrowdown.svg" class="slideico"> -->
+        <i *ngIf="isDisplay" class="fa fa-light fa-chevron-up"></i>
+        <i *ngIf="!isDisplay" class=" fa fa-light fa-chevron-down"></i>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div *ngIf="isCreate">
+    <form [formGroup]="createinvoiceForm">
+      <!-- Invoice form -->
+      <div class="container main width-alignmentz">
+        <div class="firm-head"></div>
+      </div>
+
+      <div class="row main main-width stepitem topup">
+        <!-- Left side component layout-->
+        <div class="col-xs-12 col-sm-12 col-md-6">
+          <div class="row containerbox containerboxone">
+            <div class="col-sm-12">
+              <div class="container">
+
+                <div class="form-group topped">
+                  <!-- <label for="logo" class="fontbold pad">LOGO</label> -->
+
+                  <img [src]="imageToShow" style="width: 150px; height: 150px;">
+
+
+                  <div class="form-group duedatepaded">
+                    <!-- <input  name="sender_address" disabled> -->
+                    <div class="form-control textbox logo">
+                      {{invoice?.from_address?.house_flat_no}} <br>
+                      {{invoice?.from_address?.street}} <br>
+                      {{invoice?.from_address?.city_town}} <br>
+                      {{invoice?.from_address?.state}} <br>
+                      {{invoice?.from_address?.country}} <br>
+                      {{invoice?.from_address?.zipcode}}</div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Left side component layout ends here -->
+
+        <!-- Right side component layout-->
+        <div class="col-xs-12 col-sm-12 col-md-6 ">
+          <div class="row containerbox formcontainer">
+            <div class="col-sm-12">
+              <div class="container">
+                <!-- Invoice Date  -->
+                <div class="form-group">
+                  <label for="country" class="fontbold firm-head">Invoice Date </label>
+                  <div class="input-group court form-control textbox invoiceCls">
+                    {{invoice?.date}}
+                  </div>
+                  <!-- <img src="assets/img/formcalendor.svg" class="" id="datepicker">  -->
+                </div>
+
+                <!-- Invoice Date  -->
+
+                <!-- Invoice -->
+                <div class="form-group">
+                  <label for="contactname" class="fontbold firm-head">Client Name</label>
+                  <div class="input-group form-control textbox invoiceCls"> {{invoice?.name}}
+                  </div>
+                </div>
+                <!-- Invoice -->
+
+                <!-- Client -->
+                <div class="form-group">
+                  <label for="websites" class="fontbold firm-head">Client Address </label>
+                  <div class="input-group form-control textbox invoiceCls"> {{invoice?.billto}}
+                  </div>
+                </div>
+                <!-- Client -->
+
+                <!-- Phone Number -->
+                <!-- <div class="form-group">
+                        <label for="websites" class="fontbold firm-head">Phone Number</label>
+                        <div class="input-group">
+                          <input type="text"  class="form-control textbox invoiceCls" name="websites" />
+                        </div>
+                      </div> -->
+                <!-- Phone Number -->
+
+                <!-- Attention -->
+                <!--<div class="form-group">
+                        <label for="websites" class="fontbold firm-head">Attention</label>
+                        <div class="input-group">
+                          <input type="text"  class="form-control textbox" name="websites" />
+                        </div>
+                      </div>-->
+                <!-- Attention -->
+
+                <!-- Due Date -->
+                <div class="form-group">
+                  <label for="websites" class="fontbold firm-head">Due Date</label>
+                  <div class="input-group form-control textbox invoiceCls"> {{invoice?.duedate}}
+                  </div>
+                </div>
+                <!-- Due Date --><!--class="form-select calendorselect"-->
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row main">
+          <div class="col-sm-12 gridtable width-alignmentz">
+            <div>
+              <section class="row">
+                <div formArrayName="invoice_items">
+                  <table class="table table-borderless tblgrid myTableBg1">
+                    <thead style="background-color: #004D87;">
+                      <tr class="theader">
+                        <th>
+                          <p class="thheadnames"> SI.No. </p>
+                        </th>
+                        <th>
+                          <p class="thheadnames"> Description </p>
+                        </th>
+                        <th>
+                          <p class="thheadnames"> Rate </p>
+                        </th>
+                        <th>
+                          <p class="thheadnames"> Quantity </p>
+                        </th>
+                        <th>
+                          <p class="thheadnames"> Amount </p>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="rone veiw-items" *ngFor="let item of inItems; let i = index" style="height: 30px;">
+                        <td class="tableView">{{ i + 1 }}</td>
+                        <td>
+                          <div class="trSpc texted">{{item.name}}</div>
+                        </td>
+                        <td>
+                          <div class="trSpc">{{item.unit_price}}</div>
+                        </td>
+                        <td>
+                          <div class="trSpc">{{item.no_of_units}}</div>
+                        </td>
+                        <td>
+                          &dollar;{{calculateAmount(item)}}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+      <!-- Right side component layout ends here -->
+
+
+      <!-- Last two left & right -->
+      <div class="row main main-width stepitem topup">
+
+        <!-- Adding notes/desc -->
+
+        <div class="col-xs-12 col-sm-12 col-md-6">
+          <div class="form-group duedatepaded">
+            <textarea rows="5" class="form-control textbox txttxt" readonly> {{invoice?.notes}} </textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="name" class="fontbold firm-head firmey"> THANK YOU FOR YOUR BUSINESS! </label>
+          </div>
+        </div>
+
+        <!-- Adding notes/desc ends here-->
+
+        <!-- Total details -->
+        <div class="col-xs-12 col-sm-12 col-md-6 form-group subtotal">
+          <div>
+            <table class="myTableBg2">
+              <tr>
+                <th class="mainBold">Sub Total</th>
+                <th class="mainBold">{{ calculateTotalAmount() }}</th>
+              </tr>
+
+              <tr *ngIf="inDis">
+                <th>
+                  <div class="form-group input-group form-controle ">{{inDis?.discount_type || defaultDis}}</div>
+                </th>
+                <th>
+                  <div class="form-group input-group form-controle ">{{inDis?.discount}}</div>
+                </th>
+              </tr>
+
+              <tr *ngIf="inTax">
+                <th>
+                  <div class="form-group input-group form-controlf">{{inTax?.tax_type || defaultTax}}</div>
+                </th>
+                <th>
+                  <div class="form-group input-group form-controlf">{{inTax?.tax}}</div>
+                </th>
+              </tr>
+
+              <tr>
+                <th class="mainBold">Total</th>
+                <th class="mainBold">{{ calculateTotalAmountWithOthers() | number: '1.2-2' }}</th>
+              </tr>
+
+            </table>
+
+
+          </div>
+        </div>
+        <!-- Total details ends here-->
+
+
+
+        <div class="btnbox">
+          <button [routerLink]="['/invoice']" class="btn btn-default btncancel btnrightitem">Cancel</button>
+           <button type="submit" (click)="downloadDoc(invoice?.docid)" class="btn btn-primary btnsave savecls">Download</button>
+          <!--<button type="submit" class="btn btn-primary btnsave savecls" (click)="onSub()">Save & Share</button>  -->
+        </div>
+
+        <!-- footer for Preview page -->
+        <div class="padded"></div>
+        <footer>
+          <div class="bgPad">
+            <div class="row main main-width">
+              <div class="col-xs-12 col-sm-12 col-md-6">
+                <p class="text-white" style="text-align: left;">Website: {{profile?.website}}</p>
+              </div>
+              <div class="col-xs-12 col-sm-12 col-md-6">
+                <p class="text-white" style="text-align: right;">Email: {{profile?.email}}</p>
+              </div>
+            </div>
+          </div>
+        </footer>
+        <div class="padded"></div>
+        <!-- footer for Preview page ends here!! -->
+
+      </div>
+      <!-- Last two left & right -->
+    </form>
+  </div>
+
+</div>
+<!-- Firm profile ends here!! -->
+
+
+<!--Dialog for sharing the Invoices-->
+<div class="modal" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" 
+  aria-hidden="true" style="display:block;" *ngIf='successModel'>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+
+        <button type="button" class="btn-close pull-right" (click)="btnclose()" style="float: right; padding:10px;"
+          aria-label="Close"></button>
+
+        <div class="alertpara alertparatxt sharewith"> Share With: {{invoice?.name}} </div>
+
+        <div class="alertexted via spaceBlock"> Via
+          <mat-checkbox color="primary"> <p class="chcktxt">Lauditor(Secure)</p> </mat-checkbox>
+          <mat-checkbox color="primary"> <p class="chcktxt">Email</p> </mat-checkbox>
+        </div>
+
+        <div class="container message"> Message (optional) 
+          <textarea rows="4" class="form-control textboxed txttxt spaceBlock"> </textarea>
+        </div>
+
+        <div class="alertbutton diaPad">
+          <button class="btn btn-default btncancel btnrightitem" (click)="btnclose()">Cancel</button>
+          <button class="btn btn-primary btnsave bbtn savecls">Send</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<!--Dialog for sharing the Invoices ends here!!-->
+
+
+<jw-modal id="doc-download-success" class="doc-del-success  alert-box">
+  <div class="doc-iframe-scs-body ">
+
+    <div class="container">
+      <div class="row">
+        <div class="alertbox">
+          <div class="close-x float-right" (click)="closeModal('doc-download-success');">X</div>
+          <div class="alertpara">
+            <p class="alertparatxt"> Success</p>
+          </div>
+          <div class="alertext">Congratulations!! You have successfully downloaded the document.
+          </div>
+          <div class="center">
+            <button class="btn btn-primary" (click)="closeModal('doc-download-success')">OK</button>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</jw-modal>

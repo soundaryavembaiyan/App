@@ -1,0 +1,557 @@
+<div class="container update-members main width-alignment">
+    <!-- <div class="col-12 Individual createGroup">
+        <div class="update-group">
+        <label for="select" class="lable-size">Exchange Information - {{relname}}</label>
+    </div> -->
+    <div *ngIf="urlSafe" class="modal fade" id="viewWithmeModal" tabindex="-1" role="dialog"
+        aria-labelledby="viewWithmeModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">View</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="watermark">
+                        <div class="safeurl">
+                            <iframe height="250px" width="auto" [src]="urlSafe"></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <div class="update-group">
+                <label for="select" class="lable-size">
+                    <h1 class="excahnge">Exchange Information</h1>
+                </label>
+            </div>
+        </div>
+        <div class="col-6" *ngIf="currentTab!='documents'">
+            <div class="switch relationship-tabs cswitch">
+                <span class="relSubTab individuals" (click)="currentTab='profile';isConformation=false;">
+                    <a href="javascript: void(0)" [ngClass]="{'active' : currentTab=='profile'}"
+                        class="optionone compone relation-sub-tabs">Profile</a>
+                </span>
+                <span class="relSubTab business"
+                    (click)="documentsClick();currentTab='documents';isConformation=false;">
+                    <a href="javascript: void(0)" [ngClass]="{'active' : currentTab=='documents'}"
+                        class="optiontwo relation-sub-tabs compotwoo comptwo">Documents</a>
+                </span>
+            </div>
+        </div>
+        <div class="col-6" *ngIf="currentTab=='documents'">
+        </div>
+    </div>
+    <div class="row">
+        <div style="height:50px;">
+        </div>
+    </div>
+    <div class="row" *ngIf=" profileInfo && currentTab=='profile'">
+        <div class="col-6" *ngIf="reldata.clientType == 'Entity'">
+            <h3>Profile - {{profileInfo.fullname}}</h3>
+        </div>
+        <div class="col-6" *ngIf="reldata.clientType == 'Consumer'">
+            <h3>Profile - {{profileInfo.first_name}} {{profileInfo.last_name}}</h3>
+        </div>
+        <div class="col-6" *ngIf="reldata.clientType == 'Consumer'">
+            <h3>Citizenship</h3>
+        </div>
+    </div>
+    <div class="row" *ngIf="currentTab=='profile' && profileInfo && isEntityProfile">
+        <div class="col-4">
+            <div class="form-group nameSet">
+                <label for="name" class="lable-size">Name</label>
+                <input type="text" [(ngModel)]="profileInfo.fullname" class="text-size form-control group-name-text"
+                    disabled name="name">
+            </div>
+            <div class="form-group nameSet">
+                <label for="email" class="lable-size">Email</label>
+                <input type="text" [(ngModel)]="profileInfo.email" class="text-size form-control group-name-text"
+                    disabled name="email">
+            </div>
+            <div class="form-group nameSet">
+                <label for="phonenumber" class="lable-size">Phone Number</label>
+                <input type="text" [(ngModel)]="profileInfo.contact_phone"
+                    class="text-size form-control group-name-text" disabled name="phonenumber">
+            </div>
+        </div>
+        <div class="col-2"></div>
+        <div class="col-4">
+            <div class="form-group nameSet">
+                <label for="country" class="lable-size">Country</label>
+                <input type="text" [(ngModel)]="profileInfo.country" class="text-size form-control group-name-text"
+                    disabled name="country">
+            </div>
+            <div class="form-group nameSet">
+                <label for="phonenumber" class="lable-size">Phone Number</label>
+                <input type="text" [(ngModel)]="profileInfo.contact_phone"
+                    class="text-size form-control group-name-text" disabled name="phonenumber">
+            </div>
+        </div>
+        <div class="col-2"></div>
+    </div>
+    <div class="row" 
+         *ngIf="currentTab=='profile' && profileInfo && !isEntityProfile">
+        <div class="col-4">
+            <div class="form-group nameSet">
+                <label for="name" class="lable-size">Name</label>
+                <input type="text" [(ngModel)]="profileInfo.first_name" class="text-size form-control group-name-text"
+                    disabled name="name">
+            </div>
+            <div class="form-group nameSet">
+                <label for="email" class="lable-size">Email</label>
+                <input type="text" [(ngModel)]="profileInfo.email" class="text-size form-control group-name-text"
+                    disabled name="email">
+            </div>
+            <div class="form-group nameSet">
+                <label for="phonenumber" class="lable-size">Phone Number</label>
+                <input type="text" [(ngModel)]="profileInfo.mobile"
+                    class="text-size form-control group-name-text" disabled name="phonenumber">
+            </div>
+            
+            <div class="form-group nameSet">
+                <label for="dob" class="lable-size">DOB</label>
+                <input type="text" [(ngModel)]="profileInfo.dob"
+                    class="text-size form-control group-name-text" disabled name="dob">
+            </div>
+        </div>
+        <div class="col-2"></div>
+        <div class="col-4">
+            <div class="form-group nameSet">
+                <label for="country" class="lable-size">Country</label>
+                <input type="text" [(ngModel)]="profileInfo.citizen[0].country" class="text-size form-control group-name-text"
+                    disabled name="country">
+            </div>
+            <div class="form-group nameSet">
+                <label for="phonenumber" class="lable-size">Phone Number</label>
+                <input type="text" [(ngModel)]="profileInfo.mobile"
+                    class="text-size form-control group-name-text" disabled name="phonenumber">
+            </div>
+        </div>
+        
+        <div class="col-2"></div>
+    </div>
+    <div class="row" *ngIf="currentTab!='profile' && profileInfo">
+        <div class="col-3">
+            <div class="switch relationship-tabs">
+                <span class="relSubTab individuals" (click)="currentTab='profile';isConformation=false;">
+                    <a href="javascript: void(0)" [ngClass]="{'active' : currentTab=='profile'}"
+                        class="optionone compone relation-sub-tabs">Profile</a>
+                </span>
+                <span class="relSubTab business" (click)="currentTab='documents';isConformation=false;">
+                    <a href="javascript: void(0)"
+                       [ngClass]="{'active' : currentTab=='documents'}"
+                       class="optiontwo relation-sub-tabs compotwoo comptwo">Documents</a>
+                </span>
+            </div>
+        </div>
+        <div class="col-6"></div>
+        <div class="col-3">
+            <div class="switch relationship-tabs cswitch">
+                <span class="relSubTab individuals"
+                      (click)="currentInnerTab='sharedwithus';isConformation=false;">
+                    <a href="javascript: void(0)"
+                       [ngClass]="{'active' : currentInnerTab=='sharedwithus'}"
+                       class="optionone compone relation-sub-tabs">Shared with us</a>
+                </span>
+                <span class="relSubTab business"
+                    (click)="docssharedbyus();currentInnerTab='sharedbyus';isConformation=false;">
+                    <a href="javascript: void(0)"
+                       [ngClass]="{'active' : currentInnerTab=='sharedbyus'}"
+                       class="optiontwo relation-sub-tabs compotwoo comptwo">Shared by us</a>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="!isConformation">
+        <div *ngIf="profileInfo && currentTab!='profile'">
+            <div *ngIf="currentInnerTab=='sharedwithus'">
+                <div class="row">
+                    <div class="col-6"></div>
+                    <div class="col-6">
+                        <div class="form-group name-set float-right">
+                            <div class="input-group group-custom-align court" id="search">
+                                <input type="text"
+                                       class="form-control textbox"
+                                       placeholder="Search "
+                                       [(ngModel)]="searchText"/>
+                                <img src="assets/img/search.svg"
+                                     class="calimg calitem input-group-append searchimg">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6" *ngIf="reldata.clientType == 'Entity'">
+                        <h3 class="docName">Documents shared with us - {{profileInfo.fullname}}</h3>
+                    </div>
+                    <div class="col-6" *ngIf="reldata.clientType == 'Consumer'">
+                        <h3 class="docName" >Documents shared with us - {{profileInfo.first_name}} {{profileInfo.last_name}}</h3>
+                    </div>
+                    <div class="col-6"></div>
+                </div>
+                <table class="table table-borderless tblgrid"
+                       *ngIf="docsSharedwithus && docsSharedwithus.length>0">
+                    <thead>
+                        <tr class="theader">
+                            <th>
+                                <p class="thheadname">Document Name</p>
+                                <img src="assets/img/SORT.PNG" class="sortico"
+                                    (click)="sort('docname',docsSharedwithus)">
+                            </th>
+                            <th>
+                                <p class="thheadname">Shared On</p>
+                                <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('created', docsSharedwithus)">
+                            </th>
+                            <th>
+                                <p class="thheadname">Description</p>
+                                <img src="assets/img/SORT.PNG" class="sortico"
+                                    (click)="sort('description',docsSharedwithus)">
+                            </th>
+                            <th style="width:25%;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="rone veiw-items" *ngFor="let doc of docsSharedwithus |filter:searchText">
+                            <td>{{doc.name}}</td>
+                            <td>{{doc.sharedOn}}</td>
+                            <td>{{doc.description}}</td>
+                            <td *ngIf="activeTab != 'corporate'">
+                                <button type="button" class="btn btn-default btnsave savecls actionbtn"
+                                    (click)="copyWithmeDoc(doc)">Copy</button>
+                                <button type="button" class="btn btn-default btnsave savecls actionbtn"
+                                        (click)="viewDoc(doc.id)">View</button>
+                            </td>
+                            <td *ngIf="activeTab == 'corporate'">
+                                <button type="button" class="btn btn-default btnsave savecls actionbtn"
+                                        (click)="viewDoc(doc.id)">View</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div *ngIf="currentInnerTab=='sharedbyus'">
+                <div class="row">
+                    <div class="col-6"></div>
+                    <div class="col-6">
+                        <div class="form-group name-set float-right">
+                            <div class="input-group group-custom-align court" id="search">
+                                <input type="text"
+                                       class="form-control textbox"
+                                       placeholder="Search"
+                                       [(ngModel)]="searchText" />
+                                <img src="assets/img/search.svg"
+                                     class="calimg calitem input-group-append searchimg">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6" *ngIf="reldata.clientType == 'Entity'">
+                        <h3 class="docName">Documents shared by us - {{profileInfo.fullname}}</h3>
+                    </div>
+                    <div class="col-6" *ngIf="reldata.clientType == 'Consumer'">
+                        <h3 class="docName">Documents shared by us - {{profileInfo.first_name}} {{profileInfo.last_name}}</h3>
+                    </div>
+                    <div class="col-6"></div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="sharedblock">
+                          <label for="court">Shared Documents</label>
+                            <div class="tog"
+                                 (click)="viewSharedDoc=!viewSharedDoc">
+                            <span class="fa fa-plus "
+                                  *ngIf="!viewSharedDoc"></span>
+                            <span class="fa fa-minus "
+                                  *ngIf="viewSharedDoc"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id='no-shared-msg' *ngIf="viewSharedDoc && docsSharedbyus.length == 0">
+                    <h5>No documents shared!</h5>
+                </div>
+                <table class="table table-borderless tblgrid"
+                       *ngIf="viewSharedDoc && docsSharedbyus && docsSharedbyus.length>0">
+                    <thead>
+                        <tr class="theader">
+                            <th>
+                                <p class="thheadname">Document Name</p>
+                                <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('docname',docsSharedbyus)">
+                            </th>
+                            <th>
+                                <p class="thheadname">Shared On</p>
+                                <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('created', docsSharedbyus)">
+                            </th>
+                            <th>
+                                <p class="thheadname">Description</p>
+                                <img src="assets/img/SORT.PNG" class="sortico"
+                                    (click)="sort('description',docsSharedbyus)">
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="rone veiw-items"
+                            *ngFor="let doc of docsSharedbyus |filter:searchText"
+                            [class.active]="doc.highlight">
+                            <td>{{doc.name}}</td>
+                            <td>{{doc.sharedOn}}</td>
+                            <td>{{doc.description}}</td>
+                            <td style="width:25%;">
+                                <button type="button" class="btn btn-default btnsave savecls actionbtn" 
+                                        (click)="unShare(doc)">Unshare</button>
+                                <button type="button" class="btn btn-default btnsave savecls actionbtn"
+                                        data-toggle="modal"
+                                        data-target="#viewWithmeModal"
+                                        (click)="viewGenDoc(doc.id)">View</button>
+                                
+                                        
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="row" *ngIf="currentInnerTab!='sharedwithus'" style="margin-top:10px;">
+                <div class="col-6">
+                    <div class="sharedblock">
+                      <label for="court">Share Documents</label>
+                        <div class="tog" (click)="clientandfirmviewexpanded=!clientandfirmviewexpanded">
+                        <span class="fa fa-plus"
+                              *ngIf="!clientandfirmviewexpanded"></span>
+                        <span class="fa fa-minus"
+                              *ngIf="clientandfirmviewexpanded"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6"></div>
+            </div>
+            <div *ngIf="currentInnerTab!='sharedwithus' && clientandfirmviewexpanded==true">
+                <div class="row">
+                    <div class="col-6"></div>
+                    <div class="col-6">
+                        <div class="form-group name-set float-right">
+                            <div class="input-group group-custom-align court" id="search">
+                                <input type="text" class="form-control textbox" placeholder="Search "
+                                    [(ngModel)]="searchDocText" />
+                                <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+
+                        <div class="switch relationship-tabs cswitch" *ngIf="product != 'corporate'">
+                            <span class="relSubTab individuals"
+                                (click)="viewClientDocuments=true;viewFirmDocuments=false;">
+                                <a href="javascript: void(0)" [ngClass]="{'active' : viewClientDocuments==true}"
+                                   class="optionone compone relation-sub-tabs">Client Documents</a>
+                            </span>
+
+                            <span class="relSubTab business"
+                                (click)="viewFirmDocuments=true;viewClientDocuments=false;">
+                                <a href="javascript: void(0)" [ngClass]="{'active' : viewFirmDocuments==true}"
+                                    class="optiontwo relation-sub-tabs compotwoo comptwo">Firm Documents</a>
+                            </span>
+                        </div>
+
+                        <div class="switch relationship-tabs cswitch" *ngIf="product == 'corporate'">
+                            <span class="relSubTab business" (click)="viewFirmDocuments=true">
+                            <a href="javascript: void(0)" [ngClass]="{'active' : viewFirmDocuments==true}"
+                                class="optiontwo relation-sub-tabs compotwoo comptwo firms">Internal Documents</a>
+                            </span>
+                        </div>
+
+                    </div>
+                    <div class="col-6"></div>
+                </div>
+                <table class="table table-borderless tblgrid" *ngIf="viewClientDocuments && clientDocuments.length>0">
+                    <thead>
+                        <tr class="theader">
+                            <th>
+                                <p class="thheadname">Document Name</p>
+                                <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('name',clientDocuments)">
+                            </th>
+                            <th>
+                                <p class="thheadname">Created On</p>
+                                <img src="assets/img/SORT.PNG" class="sortico"
+                                    (click)="sort('created',clientDocuments)">
+                            </th>
+                            <th>
+                                <p class="thheadname">Description</p>
+                                <img src="assets/img/SORT.PNG" class="sortico"
+                                    (click)="sort('description',clientDocuments)">
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="rone veiw-items" 
+                            *ngFor="let doc of clientDocuments |filter:searchDocText"
+                            [class.active]="doc.highlight">
+                            <td>{{doc.name}}</td>
+                            <td>{{doc.created}}</td>
+                            <td>{{doc.description}}</td>
+                            <td style="width:25%;">
+                                <button type="button" class="btn btn-default btnsave savecls actionbtn"
+                                    (click)="share(doc,'client')">Share</button>
+                                <button type="button" class="btn btn-default btnsave savecls actionbtn" data-toggle="modal"
+                                    data-target="#viewWithmeModal" (click)="viewGenDoc(doc.id)">View</button>
+                              
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table table-borderless tblgrid" *ngIf="viewFirmDocuments && firmDocuments.length>0 || product == 'corporate'">
+                    <thead>
+                        <tr class="theader">
+                            <th>
+                                <p class="thheadname">Document Name</p>
+                                <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('name',firmDocuments)">
+                            </th>
+
+                            <th>
+                                <p class="thheadname">Created On</p>
+                                <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('created',firmDocuments)">
+                            </th>
+                            <th>
+                                <p class="thheadname">Description</p>
+                                <img src="assets/img/SORT.PNG" class="sortico"
+                                    (click)="sort('description',firmDocuments)">
+                            </th>
+
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="rone veiw-items"
+                            *ngFor="let doc of firmDocuments |filter:searchDocText"
+                            [class.active]="doc.highlight">
+                            <td>{{doc.name}}</td>
+                            <td>{{doc.created}}</td>
+                            <td>{{doc.description}}</td>
+                            <td style="width:25%;">
+                                <button type="button" class="btn btn-default btnsave savecls actionbtn"
+                                    (click)="share(doc,'firm')">Share</button>
+                                <button type="button" class="btn btn-default btnsave savecls actionbtn" data-toggle="modal"
+                                    data-target="#viewWithmeModal" (click)="viewGenDoc(doc.id)">View</button>
+                                
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="btnbox" *ngIf="currentTab!='profile' && currentInnerTab!='sharedwithus' && !isConformation">
+        <button type="reset" class="btn btn-default btncancel" (click)="cancel()">Cancel</button>
+        <button type="submit"
+                [disabled]="!(sharedandUnsharedData.add.length>0||sharedandUnsharedData.remove.length>0)"
+            class="btn btn-default btnsave savecls" (click)="shareClick()">Share</button>
+
+    </div>
+    <div class="col-2"></div>
+    <div *ngIf="isConformation">
+        <div class="row main  stepitem ">
+          <div class="col-xs-12 col-sm-12 col-md-6">
+            <!-- Form Component -->
+            <!-- left row card 1 layout -->
+            <div class="row containerbox containerboxone containerboxformfile relshare gridfbox">
+              <div class="col-sm-12">
+                <div class="container">
+                  
+                    <div class="sharedblock sharedblue">
+                      <label for="court ">Shared Documents</label>
+                      <div class="tog">
+                        <span class="fa fa-plus" *ngIf="!viewSharedDoc" ></span>
+                        <span class="fa fa-minus" *ngIf="viewSharedDoc" style="display: none;"></span>
+
+
+                       
+
+
+                      </div>
+                    </div>
+                    <div *ngIf="openconfirmationunmodifiedDoc && unchangedDocs?.length>0"
+                        class="sharedgird shared bluetxt">
+                        <p *ngFor="let doc of unchangedDocs">
+                            {{doc.name}}
+                        </p>
+                    </div>
+                </div>
+              </div>
+            </div>
+            <!-- ends here -->
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-6">
+            <!-- component right side -->
+            <div class="row containerbox containerboxformfile sharedboxitem">
+              <div class="col-sm-12">
+                <div class="container">
+                  <!-- search by name -->
+                  <div class="sharedblock sharedgreen ">
+                    <label for="court"
+                        (click)="openconfirmationAddedDoc=!openconfirmationAddedDoc">
+                            Newly Shared Documents
+                    </label>
+                    <div class="tog">
+                      <span class="fa fa-plus  sharedgreenminus " style=""></span>
+                      <span class="fa fa-minus sharedgreenplus" style="display: none;"></span>
+                    </div>
+                  </div>
+                  <div class="sharedgird shared greentxt" class="col-6">
+                    <div *ngIf="openconfirmationAddedDoc && sharedandUnsharedData?.add?.length>0">
+                        <p class="immigrationtxt" *ngFor="let doc of sharedandUnsharedData.add">
+                            {{doc.name}}
+                        </p>
+                    </div>
+                </div>
+                  <!-- input filled with search icon -->
+                  <div class="sharedblock sharedred">
+                    <label for="court ">Unshared Documents</label>
+                    <div class="tog">
+                      <span class="fa fa-minus sharedredminus " style=""></span>
+                      <span class="fa fa-plus sharedredplus" style="display: none;"></span>
+                    </div>
+                  </div>
+                  <div *ngIf="openconfirmationRemovedDoc && sharedandUnsharedData?.remove?.length>0"
+                    class="sharedgird shared redtxt">
+                        <p class="immigrationtxt"
+                           *ngFor="let doc of sharedandUnsharedData.remove">
+                            {{doc.name}}
+                        </p>
+                    </div>
+                </div>
+                <!-- ends here -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row main stepitem">
+          <!-- grid 2 -->
+          <div class="col-sm-12 gridtable gridtablecls gridmsg ">
+            <div class="form-group">
+              <label for="comment" class="msgoption">Message (Optional)</label>
+              <textarea class="form-control" rows="5" id="comment"
+                        placeholder="Please review before sharing"></textarea>
+            </div>
+            <div class="btnbox btndocshare">
+              <button type="reset" class="btn btn-default btncancel" (click)="onReset()">Cancel</button>
+              <button type="submit" (click)="updateShareandUnshareDoc()"
+                      class="btn btn-default btnsave btnshared">Share</button>
+              
+          </div>
+          <!-- ends here -->
+        </div>
+    </div>
+</div>

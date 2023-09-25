@@ -1,0 +1,142 @@
+
+
+.form-control {
+    font-size: 20px;
+}
+
+
+.firm-head {
+    color: #004d87;
+    //font: normal normal 400 1.2rem Gill sans;
+    text-align: left;
+    margin-top: 20px;
+    font-weight: 900;
+    font-size: 1.4rem;
+    //font-family: 'Gill Sans';
+}
+
+.datatext{
+  color: #004D87;
+  padding-bottom: 10px;
+  font-size: 1rem;
+  font-weight: 800;
+
+}
+
+.boderPix{
+    border-radius: 8px;
+}
+
+.topup{
+    margin-top: -25px;
+}
+
+.errorStyle{
+    color: red;
+}
+
+.arrowitem .fa {
+    background: #00498e;
+    color: #fff;
+    padding: 10px;
+}
+
+
+.lable-size {
+    font-size: 19px;
+    font-weight: bold;
+    color: #437CA7;
+  }
+  .createGroup{
+    input,textarea{
+        background: #EEEEEE;
+        border: none;
+    }
+  }
+  .nameSet{
+    width:90%;
+  }
+
+
+.width-alignment {
+    max-width: 90%;
+    margin: 0 auto;
+}
+ tr.veiw-items:hover {
+    background:#003A5C;
+    color:#fff;
+    .actionbtn {
+        background: #fff !important;
+        color:#111;
+        border: none;
+        &:hover,:focus ,.show{
+            background: #00B3A7 !important;
+        }
+    }
+    .actionbtn.show{
+        background: #00B3A7 !important;
+    }
+}
+tr.veiw-items {
+
+    li{
+        height: 30px;
+        line-height: 30px;
+        a{
+            height: 30px;
+            line-height: 20px;
+            &:hover{
+                background: #00B3A7 !important;
+            }
+        }
+    }
+    .custom-dropdown{
+        inset: 0px auto auto -119px !important;
+        background: #F0F0F0;
+        padding: unset;
+    }
+}
+
+.pplist {
+    text-align: left;
+    letter-spacing: 0.5px;
+    color: #004d87;
+    padding-top: 10px;
+    font-weight: 900;
+    font-size: 25px;
+}
+
+.margin-div {
+    margin-bottom: 5px;
+}
+
+  .btnAdd {
+    background: #004d87;
+    border-radius: 5px;
+    color: #fff;
+  }
+
+  .spacebtn{
+    padding: 10px;
+  }
+
+  .actionIcon{
+    display:inline-block;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+
+    display: flex;
+    align-items: center;
+  }
+
+  .actionIcon i {
+    margin-right: 10px;
+    padding: 10px;
+    font-size: 20px;
+    font-weight: 800; 
+  }
+

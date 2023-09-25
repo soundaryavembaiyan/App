@@ -1,0 +1,54 @@
+<div class="container mt-3 pt-2">
+    <div class="row">
+        <div class="col-sm-12 text-center">
+            <div #btnClass class="btn-group">
+                <!--Create Group & Dept.-->
+                <div class="button-class create-group">
+                    <button type="button" class="btn btn-top" *ngIf="product == 'lauditor' && roleId != 'GH'" routerLink="/groups/create-group">Create Group</button>
+                </div>
+                <div class="button-class create-group">
+                    <button type="button" class="btn btn-top" *ngIf="product == 'content'" routerLink="/groups/create-group">Create Group</button>
+                </div>
+                <div class="button-class create-group">
+                    <button type="button" class="btn btn-top" *ngIf="product == 'connect' && roleId == 'GH'" routerLink="/groups/create-group">Create Group</button>
+                </div>
+                <div class="button-class create-group">
+                    <button type="button" class="btn btn-top" *ngIf="product == 'corporate'" routerLink="/groups/create-group">Add Department</button>
+                </div>
+                <!--Create Group & Dept. ends here!!-->
+                
+                <!--View Group & Dept.-->
+                <div class="button-class view-group">
+                    <button type="button" class="btn btn-top" *ngIf="product != 'corporate'" routerLink="/groups/view-group">View Group</button>
+                </div>
+                <div class="button-class view-group">
+                    <button type="button" class="btn btn-top" *ngIf="product == 'corporate'" routerLink="/groups/view-group">View Departments</button>
+                </div>
+                <!--View Group & Dept. ends here!!-->
+
+                <!--Create Members & TM.-->
+                <div class="button-class create-member">
+                    <button type="button" class="btn btn-top" *ngIf="product != 'corporate' && roleId != 'GH'" routerLink="/groups/create-member">Create Members</button>
+                </div>
+                <div class="button-class create-member">
+                    <button type="button" class="btn btn-top" *ngIf="product == 'corporate'" routerLink="/groups/create-member">Add Team Members</button>
+                </div>
+                <!--Create Members & TM ends here!!-->
+
+                <!--View Members & TM-->
+                <div class="button-class view-member">
+                    <button type="button" class="btn btn-top" *ngIf="product != 'corporate' && roleId != 'GH'" routerLink="/groups/view-member">View Members</button>
+                </div>
+                <div class="button-class view-member">
+                    <button type="button" class="btn btn-top" *ngIf="product == 'corporate'" routerLink="/groups/view-member">View Team Members</button>
+                </div>
+                <!--View Members & TM ends here!!-->
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+
+
+
+<router-outlet></router-outlet>

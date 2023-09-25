@@ -1,0 +1,38 @@
+<div class="loginform">
+  <form [formGroup]="emailForm" (ngSubmit)="onSubmit()">
+    <div class="signin">Forgot Password</div>
+    <div class="lblmsg">
+        <label id="id_alert" class="logininfo">{{msg}}</label>
+    </div>
+    <div class="form-floating mb-3 mt-3">
+        <div class="form-floating mb-3 mt-3">
+            <input formControlName='email'
+                   class="form-control custominput"
+                   id='id_email'
+                   type="text"
+                   [attr.disabled]="showFirms"
+                   placeholder="Email"/>
+            <label for="email" class="lblfocus">Email</label>
+        <div *ngIf="submitted && f['email'].errors" class="text-danger">
+          <div *ngIf="f.email.errors.required">Email is required</div>
+          <div *ngIf="f.email.errors.pattern">Email must be a valid email address.</div>
+        </div>
+        </div>
+    </div>
+    <div class="form-floating mb-3 mt-3" *ngIf='showFirms'>
+        <select class="form-select custselect"
+                formControlName="firm">
+          <option *ngFor="let item of firms; let i = index"
+                  [ngValue]="item.id">{{ item.firmName }}</option>
+        </select>
+        <label for="firmname" class="lblfocus">Select Firm</label>
+    </div>
+   <div class="btnlogin">
+       <button type="button"
+              (click)="cancelml()"
+              class="btn btn-secondary btnlogincancel btncomman">Cancel</button>
+      <button type="submit"
+              class="btn btn-primary btnloginsubmit btncomman">Submit</button>
+    </div> 
+  </form>
+</div>

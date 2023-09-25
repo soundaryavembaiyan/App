@@ -1,0 +1,23 @@
+<svg id="Group_2355" data-name="Group 2355" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="25.783" height="31" viewBox="0 0 25.783 31">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_5345" data-name="Rectangle 5345" width="25.783" height="31" fill="none" stroke="#000" stroke-width="1"/>
+    </clipPath>
+  </defs>
+  <g id="Group_2352" data-name="Group 2352">
+    <g id="Group_2351" data-name="Group 2351" clip-path="url(#clip-path)">
+      <path id="Path_1690" data-name="Path 1690" d="M15.5,30.5H.5V12.891l2.609-2.608H15.5Z" fill="none" stroke="#000" stroke-linejoin="round" stroke-width="1"/>
+    </g>
+  </g>
+  <path id="Path_1691" data-name="Path 1691" d="M6.37,7.022H18.761V27.239" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+  <path id="Path_1692" data-name="Path 1692" d="M9.63,3.761H22.021V23.978" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+  <g id="Group_2354" data-name="Group 2354">
+    <g id="Group_2353" data-name="Group 2353" clip-path="url(#clip-path)">
+      <path id="Path_1693" data-name="Path 1693" d="M12.891.5H25.282V20.717" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+    </g>
+  </g>
+  <path id="Path_1694" data-name="Path 1694" d="M4.413,12.239V14.2H2.456" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+  <line id="Line_738" data-name="Line 738" x2="7.174" transform="translate(4.413 18.109)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+  <line id="Line_739" data-name="Line 739" x2="7.174" transform="translate(4.413 20.717)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+  <line id="Line_740" data-name="Line 740" x2="4.565" transform="translate(4.413 23.326)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+</svg>

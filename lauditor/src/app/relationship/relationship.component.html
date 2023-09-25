@@ -1,0 +1,28 @@
+<div class="row ">
+  <div class="col-sm-12 compswitch ">
+    <div class="switch relationship-tabs cswitch">
+      <span class="relActive add">        
+        <a  class="optionone compone  relation-tabs add" *ngIf="product == 'content' || product == 'lauditor'" routerLink="/relationship/add/entity">Add Relationship</a>
+
+        <a  class="optionone compone  relation-tabs add" *ngIf="product == 'corporate'" routerLink="/relationship/add/corporate">Add Relationship</a>
+      </span>
+      <span  class="relActive view" >
+        <a  class="optiontwo comptwo  relation-tabs view" *ngIf="product == 'content' || product == 'lauditor'"  routerLink="/relationship/view/individuals">View Relationships</a>
+        <a  class="optiontwo comptwo  relation-tabs view borderView" *ngIf=" product == 'connect'"  routerLink="/relationship/view/business">View Relationships</a>
+        
+        <a  class="optiontwo comptwo  relation-tabs view" *ngIf="product == 'corporate'"  routerLink="/relationship/view/corporate">View Relationships</a>
+       </span>
+    </div>
+  </div>
+</div>
+
+
+<!--<div class="row ">
+  <div class="col-sm-12 compswitch ">
+    <div class="switch relationship-tabs cswitch">
+<span  class="relActive rel view" *ngIf="product == 'connect'">
+  <a  class="optiontwo comptwo  relation-tabs view"  routerLink="/relationship/view/business">View Relationships</a>
+</span>
+</div></div></div>-->
+
+<router-outlet></router-outlet>

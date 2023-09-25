@@ -1,0 +1,36 @@
+---
+- name: Deploy profui on dev.
+  hosts: "{{env}}"
+  remote_user: ubuntu
+  tasks:
+    - name: remove existing folder
+      shell: rm -rf corporatev3
+      args:
+        chdir: /home/ubuntu/portals/
+    - name: pull the code from s3 bucket
+      shell: aws s3 cp s3://cyberitus-builds/corporate-staging-{{tag}}.tar.gz project.tar.gz
+      args: 
+        creates: project.tar.gz
+        chdir: /home/ubuntu/portals/
+    - name: unzip the tar file
+      shell: tar -xvf project.tar.gz
+      args:             
+        chdir: /home/ubuntu/portals/
+    - name: remove the tar files
+      shell: rm *.tar.gz 
+      args:               
+        chdir: /home/ubuntu/portals/
+    - name: Rename of the project file
+      shell: mv client-app corporatev3
+      args:               
+        chdir: /home/ubuntu/portals/
+    - name: restarting nginx
+      become: true
+      become_method: sudo
+      become_user: root
+      command: service nginx restart
+    - name: status of  nginx
+      become: true
+      become_method: sudo
+      become_user: root
+      command: service nginx status

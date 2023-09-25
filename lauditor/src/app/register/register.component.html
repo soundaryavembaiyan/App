@@ -1,0 +1,65 @@
+<div class="signBlock">
+    <div class="formBlock" style="overflow-y: auto; -ms-overflow-style: -ms-autohiding-scrollbar;">
+        <div id="id_alert"></div>
+        <!-- <form  method='POST'> -->
+        <div class="signlogo">
+            <a routerLink="/"><img src="/assets/site/images/lauditor_logo_blue_font.png" alt="DigiCoffer" /></a>
+			<!-- <p class="text-left" style="color:gray;">Lauditor</p> -->
+        </div>
+        <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+            <div class="signTitle">Registration Request</div>
+            <div class="signForm-row">
+                <input class="form-control" id='id_firmname' type="text" placeholder="Firm Name"
+                    formControlName="fullname" />
+                <!-- <div *ngIf="submitted && f['fullname'].errors" class="text-danger">
+                    <div *ngIf="f['fullname'].errors.required">Firm Name is
+                        required</div>
+                    <div *ngIf="f['fullname'].errors.msg">{{f['fullname'].errors.msg}}</div>
+                </div> -->
+                <p class='text-danger' id='error-fullname'></p>
+            </div>
+            <div class="signForm-row">
+                <input class="form-control" type="email" id="id_email" placeholder="Email" formControlName="email" />
+                <!-- <div *ngIf="submitted && f['email'].errors" class="text-danger">
+                    <div *ngIf="f['email'].errors.required">Email is
+                        required</div>
+                    <div *ngIf="f['email'].errors.email">Invalid Email</div>
+                    <div *ngIf="f['email'].errors.msg">{{f['email'].errors.msg}}</div>
+                </div> -->
+                <p class='text-danger' id='error-email'></p>
+            </div>
+            <div class="signForm-row">
+                <input class="form-control" type="text" id="id_contact_person" placeholder="Contact Person"
+                    formControlName="contact_person" />
+                <!-- <div *ngIf="submitted && f['contact_person'].errors" class="text-danger">
+                    <div *ngIf="f['contact_person'].errors.required">Contact Person is
+                        required</div>
+                    <div *ngIf="f['contact_person'].errors.msg">{{f['contact_person'].errors.msg}}</div>
+                </div> -->
+                <p class='text-danger' id='error-contact_person'></p>
+            </div>
+            <div class="signForm-row">
+                <input class="form-control" type="text" id="id_contact_phone" placeholder="Contact Phone"
+                    formControlName="contact_phone" />
+                <!-- <div *ngIf="submitted && f['contact_phone'].errors" class="text-danger">
+                    <div *ngIf="f['contact_phone'].errors.required">Contact Phone is
+                        required</div>
+                    <div *ngIf="f['contact_phone'].errors.msg">{{f['contact_phone'].errors.msg}}</div>
+                </div> -->
+                <p class='text-danger' id='error-contact_phone'></p>
+            </div>
+            <div class="signForm-row signUpT">
+                Read our <a href="https://digicoffer.com/digicoffer_terms.pdf">Terms</a> & <a href="https://digicoffer.com/privacy.html">Privacy Policy</a>
+            </div>
+            <div class="signForm-row">
+                <button class="signBtn">Submit</button>
+            </div>
+        </form>
+        <div class="signForm-row termsPolicy">
+            Already have an account? <a routerLink="/login">Sign In</a>
+        </div>
+
+        <div class="signForm-row" style="text-align:center">© 2020 DigiCoffer Inc</div>
+        <!-- </form> -->
+    </div>
+</div>

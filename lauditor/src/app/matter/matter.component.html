@@ -1,0 +1,47 @@
+<div class="container-fluid">
+  <div class="row">
+
+    <!-- Headers of matters, not corporate! -->
+    <div class="row main headertop" [ngStyle]="{'display':isDisplay?'block':'none'}" *ngIf="product != 'corporate'">
+      <div class="col-sm-12 compswitch ">
+        <div class="switch cswitch">
+          <a href="javascript:void(0);" class="optionone compone" [ngClass]="{'active': selectedMatter === 'legalmatter'}" (click)="onClick('legalmatter')">Legal Matters</a>
+          <a href="javascript:void(0);" class="optiontwo comptwo" [ngClass]="{'active': selectedMatter === 'generalmatter'}" (click)="onClick('generalmatter')">General Matters</a>
+        </div>
+        <div class="switch cswitch cswitchtwo">
+          <a href="javascript:void(0);" class="optionone compone" [ngClass]="{'active': selectedValue === 'create'}" (click)="isActive('create')">Create</a>
+          <a href="javascript:void(0);" class="optiontwo comptwo" [ngClass]="{ 'active' : selectedValue === 'view' }" (click)="isActive('view')">View</a>
+        </div>
+      </div>
+    </div>
+     <!-- Headers of matters, not corporate! -->
+
+     <!-- Headers of matters, corporate! -->
+    <div class="row main headertop" [ngStyle]="{'display':isDisplay?'block':'none'}" *ngIf="product == 'corporate'">
+      <div class="col-sm-12 compswitch ">
+        <div class="switch cswitch">
+          <a href="javascript:void(0);" class="optionone compone" [ngClass]="{'active': selectedMatter === 'legalmatter'}" (click)="onClick('legalmatter')">Legal Matters</a>
+          <a href="javascript:void(0);" class="optiontwo comptwo" [ngClass]="{'active': selectedMatter === 'generalmatter'}" (click)="onClick('generalmatter')">General Matters</a>
+        </div>
+        <div class="switch cswitch cswitchtwo">
+          <a href="javascript:void(0);" class="optionone compone" [ngClass]="{'active': selectedValue === 'create'}" (click)="isActive('create')">Create</a>
+          <a href="javascript:void(0);" class="optiontwo comptwo" [ngClass]="{'active' : selectedValue === 'view'}" (click)="isActive('view')">View</a>
+        </div>
+        <!-- <div class="switch cswitch">
+          <a href="javascript:void(0);" class="optionone compone" [ngClass]="{'active': selectedMat === 'internal'}" [routerLink]="['/internal']" (click)="isActived('internal')">Internal Matters</a>
+          <a href="javascript:void(0);" class="optiontwo comptwo" [ngClass]="{'active' : selectedMat === 'external'}" [routerLink]="['/external']" (click)="isActived('external')">External Matters</a>
+        </div> -->
+      </div>
+    </div>
+     <!-- Headers of matters, corporate! -->
+
+    <div class="arrowitem" (click)="hideAndShow()">
+      <!-- <img src="assets/img/arrowdown.svg" class="slideico"> -->
+      <i *ngIf="isDisplay"class= "fa fa-light fa-chevron-up"></i>
+      <i *ngIf="!isDisplay" class=" fa fa-light fa-chevron-down"></i>
+    </div>
+
+  </div>
+</div>
+
+<router-outlet></router-outlet>

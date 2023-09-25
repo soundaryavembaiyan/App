@@ -1,0 +1,92 @@
+// component css goes here
+// component css goes here
+.msg-padding .msgiconlist {
+    padding: unset !important;
+}
+
+.msgcontainer {
+    height: 65px;
+}
+
+.profile {
+    margin-top: 5px;
+}
+
+// component css goes here
+i.fa.fa-paper-plane {
+    font-size: 40px;
+    margin-top: 15px;
+    margin-left: 15px;
+    color: #004d87;
+}
+
+.row.meetingcontainer.legalboxleft.container.msgcontainerchat {
+    height: 70px;
+}
+
+div#toast-container,
+.toast-container {
+    position: absolute !important;
+    bottom: 0%;
+}
+
+input.form-control.textbox {
+    margin-bottom: 8px;
+}
+
+.circlemsg {
+    text-align: right;
+    margin-top: 14px;
+}
+
+.fa-plus-circle:before,
+.fa-minus-circle::before {
+    font-size: 30px;
+}
+
+.coffer-time-me {
+    font-size: 15px;
+}
+
+.col-sm-10.mobcolumntwo {
+    width: 70%;
+}
+
+.textareatwo .profile {
+    margin-left: 26px;
+}
+
+.userprofile {
+    margin-right: 10px;
+}
+
+.coffer-you .mobcolumntwo .chatpara {
+    background: #ced4da;
+}
+
+.disabled {
+    display: none;
+}
+
+.msgcontainerchat .mobilepadding .userprofile {
+    background: #56009e;
+}
+
+.coffer-you,
+.messagecontainer {
+    .userprofile {
+        background: #56009e;
+    }
+}
+.msgcontainer.active {
+    color: #fff;
+    background: #00b3a7  !important;
+  }
+  .disable {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.msglabel{
+    color:#004d87;
+}

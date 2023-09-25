@@ -1,0 +1,161 @@
+<!--component html goes here -->
+<!--component html goes here -->
+<div class="row view-document">
+  <div class="col-12">
+    <div class="row">
+      <!-- client code  -->
+      <!-- <div class="col-6"> -->
+      <div class="col-6" *ngIf="filter==='client'">
+        <div class="form-group" *ngIf="product != 'corporate'">
+          <label for="title" class="fontbold">Client Name <span class="mandate">*</span></label>
+          <div class="ng-autocomplete textbox">
+            <ng-autocomplete [data]="data" [searchKeyword]="keyword"  placeholder="Type to select"
+              (selected)='selectEvent($event)' (inputChanged)='onChangeSearch($event)'[initialValue]="selectedClient"
+              (inputFocused)='onFocused($event)' [itemTemplate]="itemTemplate" [notFoundTemplate]="notFoundTemplate">
+              <!-- <i class="fa fa-chevron-down" aria-hidden="true"></i> -->
+            </ng-autocomplete>
+
+            <ng-template #itemTemplate let-item>
+              <a [innerHTML]="item.name"></a>
+            </ng-template>
+
+            <ng-template #notFoundTemplate let-notFound>
+              <div [innerHTML]="notFound"></div>
+            </ng-template>
+            <!-- <i class="fa fa-chevron-down" 
+                          ></i> -->
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="title" class="fontbold" *ngIf="product != 'corporate'">Matter </label>
+          <label for="title" class="fontbold" *ngIf="product == 'corporate'">Matter <span class="mandate">*</span></label>
+          <div class="dropdown-select textbox">
+            <select (change)="onChange($event.target)">
+              <option hidden value="">Type to select</option>
+              <option *ngFor="let i of matterList " value="{{i.id}}">{{i.title}}</option>
+            </select>
+            <!-- <i class="fa fa-chevron-down" 
+                          ></i> -->
+          </div>
+        </div>
+      </div>
+      <!-- firm code -->
+      <div class="col-6" *ngIf="filter==='firm'">
+        <div class="form-group " id="selectbx">
+          <div class="input-group court" id="search">
+            <div class="multicheck form-control textbox-bg ">
+              <label class="callselect" *ngIf="product != 'corporate'">Select Group(s) <span class="mandate">*</span></label>
+              <label class="callselect" *ngIf="product == 'corporate'">Select Department(s) <span class="mandate">*</span></label>
+              <i *ngIf="!isSelectGroup"
+                class=" fa fa-plus form-check-inpu calimg calitem input-group-append checkboxitem" aria-hidden="true"
+                (click)="selectGroup(true)"></i>
+              <i *ngIf="isSelectGroup"
+                class=" fa fa-minus form-check-inpu calimg calitem input-group-append checkboxitem" aria-hidden="true"
+                (click)="selectGroup(false)"></i>
+            </div>
+          </div>
+          <div class="" *ngIf="isSelectGroup">
+            <div class="input-group index court" id="search">
+              <div class="multicheck form-control textbox" *ngFor="let item of groupViewItems">
+                <label class="callselect">{{item.name}}</label>
+                <input type="checkbox" class="calimg calitem
+                input-group-append checkboxitem " 
+                value=""  id="flexCheckDefault"  #inputEl  [checked]="item.isChecked" (change)="selectGroupItem(item,inputEl.checked)">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div *ngIf="!isSelectGroup" class="codeAlign selected-group">
+              <div class="cod" *ngFor="let item of selectedGroupItems;let i = index">
+                <div class="documents-list ng-item"> {{item.name}}
+                  <div class="icon-list">
+                    <div class="icons"><i class="fa fa fa-regular fa-circle-xmark" style="color:red;font-size: 24px;"
+                        (click)="removeGroup(item)"></i>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="title" class="fontbold">Categories </label>
+          <input type="text" class="form-control textbox" id="caseType" name="caseno">
+        </div>
+        <!-- <div  class="invalid-feedback" *ngIf="clientErr"> Please select client</div> -->
+      </div>
+      <div class="col-6">
+        <div class="form-group float-right">
+          <div class="input-group court" id="search">
+            <input type="text" class="form-control textbox" placeholder="Search "  [(ngModel)]="term"/>
+            <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
+          </div>
+        </div>
+        <!-- <div class="form-group float-right">
+          <div class="input-group court" id="search">
+            <input type="text" class="form-control textbox" disabled placeholder="Advanced Search " />
+          <img src="assets/img/plus.svg" class="calimg calitem input-group-append searchimg">
+          </div>
+        </div> -->
+   
+      </div>
+
+    </div>
+
+  </div>
+</div>
+<div *ngIf="!errorMsg" class="margin-top">
+  <!-- <div  *ngIf="filter=='client'" class="custom-alert">Please select client name </div>
+  <div *ngIf="filter=='firm'"class="custom-alert">Please select group name </div> -->
+  <div *ngIf="filter=='client' && documents && documents?.length==0" class="custom-alert">Please Select Client name </div>
+
+  <div *ngIf="filter=='firm' && selectedGroupItems && selectedGroupItems.length==0 && product != 'corporate'" class="custom-alert">Please Select Group name </div>
+  <div *ngIf="filter=='firm' && selectedGroupItems && selectedGroupItems.length==0 && product == 'corporate'" class="custom-alert">Please Select Department name </div>
+</div>
+<div   class="col-sm-12 gridtable  width-alignment ">
+  <h1  *ngIf="filter=='client'" class="custusername margin-top">List of Client Documents</h1>
+
+  <h1  *ngIf="filter=='firm' && product != 'corporate'" class="custusername margin-top">List of Firm Documents</h1>
+  <h1  *ngIf="filter=='firm' && product == 'corporate'" class="custusername margin-top">List of Internal Documents</h1>
+
+  <div *ngIf="documents && documents?.length==0 && errorMsg " class="custom-alert">List of Documents not available!!</div>
+  
+  <table class="table table-borderless tblgrid">
+    <tbody>
+      <tr class="rone veiw-items"  [class.protected] = "document.is_encrypted" [ngClass]="{'active': document.isChecked}"
+        *ngFor="let document of documents| filter:term; let i = index">
+        <td style="text-decoration: underline;" class="document">{{document.name}}</td>
+        <td class="document">{{document.filename}}</td>        
+        <td class="document">{{document.created | date:'MMM d, y'}}</td>
+        <td class="document">{{document.uploaded_by}}</td>
+        <td class="document">
+         <div *ngIf="document?.tags!=0" [innerHTML]="document.tags"></div>   
+        </td>
+        <td class="document"><i class="fa fa-download" aria-hidden="true"></i></td>
+        <td class="document " *ngIf="document.is_encrypted">
+
+          <i class="fa fa-exclamation-circle" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="This document connot be merged"></i>
+
+        </td>
+        <td class="document "  *ngIf="!document.is_encrypted">
+          <input type="checkbox" class="form-check-input custcheck cusCheckbox" id="check3" name="option1" value="something">
+          <input type="checkbox" #inputEl class="larger " name="checkBox2" (change)="checkItem(inputEl.checked,document)"
+            [checked]="document.isChecked">
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div *ngIf="errorMsg" class=" row main stepitem  ">
+    <div class="col-sm-12">
+      <!-- button cancel and save -->
+      <div class="btnbox">
+        <button type="reset" class="btn btn-default btncancel">Cancel</button>
+        <button type="submit" class="btn btn-default btnsave savecls" [disabled]="selectedDoc && selectedDoc.length<2" (click)="mergeDoc()">Merge</button>
+
+      </div>
+    </div>
+  </div>
+</div>

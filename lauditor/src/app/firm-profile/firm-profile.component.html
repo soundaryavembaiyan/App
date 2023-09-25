@@ -1,0 +1,683 @@
+<!-- Firm profile Button of basic & partner -->
+<div *ngIf="!isEdit">
+<div class="container-fluid">
+  <div class="row">
+
+    <div class="row" [ngStyle]="{'display':isDisplay?'block':'none'}">
+      <div class="col-sm-12 compswitch ">
+        <!--Basic & Partner-->
+        <div class="switch  cswitch">
+          <a href="javascript:void(0);" class="optionone compone"  [ngClass]="{'active': selectedMatter === 'basicprofile'}" (click)="onClick('basicprofile')">Basic Profile</a>
+          <a href="javascript:void(0);" class="optiontwo comptwo" [ngClass]="{'active': selectedMatter === 'practicepartner'}" [routerLink]="['/partner']" (click)="onClick('practicepartner')">Practice Partner</a>
+        </div>
+        <!--view & edit-->
+        <div class="switch  cswitch cswitchtwo">
+          <a href="javascript:void(0);"  class="optionone compone" [ngClass]="{'active': selectedValue === 'edit'}" (click)="editMember()">Edit</a> <!--(click)="isActive('edit')"-->
+          <a href="javascript:void(0);" class="optiontwo comptwo" [ngClass]="{'active' : selectedValue === 'view' }" (click)="isActive('view')">View</a>  
+        </div>
+      </div>
+    </div>
+
+  </div></div>
+
+<!-- Firm profile Button of basic & partner ends here!! -->
+
+
+<!--!!!!!-->
+  <div class="row main width-alignment">
+    <div class="col-sm-12 gridtable">
+
+<!--Firm Profile details..-->
+
+  <!-- Basic Profile -->
+  <div class="container  width-alignment">
+    <div class="firm-head"> Basic Profile </div>
+  </div>
+
+  <div class="row main-width stepitem topup">
+    <div class="col-xs-12 col-sm-12 col-md-6">
+      <!-- Left side -->
+
+      <div class="row containerbox containerboxone ">
+        <div class="col-sm-12">
+          <div class="container">
+
+            <!-- Firm name -->
+            <div class="form-group">
+              <label for="name" class="fontbold">Firm Name </label>
+              <!--<input formControlName="fullname" [ngModel]="basic_profile?.fullname" class="form-control textbox" id="name" name="name">-->
+              <div class="datatext">{{basic_profile?.fullname}}</div>
+            </div>
+
+            <!-- Email  -->
+            <div class="form-group">
+              <label for="email" class="fontbold">Email Address </label>
+              <div class="datatext">{{basic_profile?.email}}</div>
+            </div>
+
+            <!-- Contact -->
+            <div class="form-group">
+              <label for="number" class="fontbold">Contact Number</label>
+              <div class="datatext">{{basic_profile?.contact_phone}}</div>
+            </div>
+
+
+            <!-- Default Currency -->
+            <div class="form-group">
+              <label for="select" class="fontbold">Billing Currency </label>
+              <div class="datatext">{{basic_profile?.billing_currency}}</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <!-- Left side ends here -->
+
+    </div>
+
+    <div class="col-xs-12 col-sm-12 col-md-6">
+      <!-- Right side -->
+
+      <div class="row containerbox formcontainer">
+        <div class="col-sm-12">
+          <div class="container">
+            <!-- Country  -->
+            <div class="form-group">
+              <label for="select" class="fontbold">Country </label>
+              <div class="datatext">{{basic_profile?.country}}</div>
+            </div>
+            <!-- Contact Name -->
+            <div class="form-group">
+              <label for="contactname" class="fontbold">Contact Name </label>
+                <div class="datatext">{{basic_profile?.contact_person}}</div>
+            </div>
+            <!-- Websites -->
+            <div class="form-group">
+              <label for="websites" class="fontbold">Websites</label>
+                <div class="datatext">{{basic_profile?.website}}</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+          <!-- Right side ends here -->
+    </div>
+  </div>
+
+  <!-- Basic Profile ends here -->
+
+  <!-- Registered Address -->
+  <div class="container  width-alignment">
+    <div class="firm-head"> Registered Address </div>
+  </div>
+
+  <div class="row main-width stepitem topup">
+    <div class="col-xs-12 col-sm-12 col-md-6">
+
+      <!-- Left side -->
+      <div class="row containerbox containerboxone ">
+        <div class="col-sm-12">
+          <div class="container">
+
+            <!-- Building No -->
+            <div class="form-group">
+              <label for="name" class="fontbold">Building No </label>
+              <div class="datatext">{{reg_address?.house_flat_no}}</div>
+            </div>
+
+            <!-- City  -->
+            <div class="form-group">
+              <label for="select" class="fontbold">City </label>
+              <div class="datatext">{{reg_address?.city_town}}</div>
+            </div>
+
+
+            <!-- Country -->
+            <div class="form-group">
+              <label for="select" class="fontbold">Country </label>
+              <div class="datatext">{{reg_address?.country}}</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <!-- Left side ends here -->
+
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-6">
+      <!-- Right side -->
+
+      <div class="row containerbox formcontainer">
+        <div class="col-sm-12">
+          <div class="container">
+            <!-- Street -->
+            <div class="form-group">
+              <label for="contactname" class="fontbold">Street </label>
+                <div class="datatext">{{reg_address?.street}}</div>
+            </div>
+
+            <!-- State -->
+            <div class="form-group">
+              <label for="select" class="fontbold">State </label>
+              <div class="datatext">{{reg_address?.state}}</div>
+            </div>
+
+            <!-- Zip -->
+            <div class="form-group">
+              <label for="websites" class="fontbold">Zip </label>
+                <div class="datatext">{{reg_address?.zipcode}}</div>
+            </div>
+
+
+
+          </div>
+          <!-- Right side ends here -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <!-- Registered Address ends here -->
+
+
+  <!-- Mailing Address -->
+  <div class="container main width-alignment">
+    <div class="firm-head">  Mailing Address </div>
+  </div>
+
+
+  <div class="row main-width stepitem topup">
+    <div class="col-xs-12 col-sm-12 col-md-6">
+      <!-- Left side -->
+
+      <div class="row containerbox containerboxone ">
+        <div class="col-sm-12">
+          <div class="container">
+
+            <!--Building No -->
+            <div class="form-group">
+              <label for="name" class="fontbold">Building No </label>
+              <div class="datatext">{{mailing_address?.house_flat_no}}</div>
+            </div>
+
+            <!-- City  -->
+            <div class="form-group">
+              <label for="select" class="fontbold">City </label>
+              <div class="datatext">{{mailing_address?.city_town}}</div>
+            </div>
+
+
+            <!-- Country -->
+            <div class="form-group">
+              <label for="select" class="fontbold">Country </label>
+              <div class="datatext">{{mailing_address?.country}}</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <!-- Left side ends here -->
+
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-6">
+      <!-- Right side -->
+
+      <div class="row containerbox formcontainer">
+        <div class="col-sm-12">
+          <div class="container">
+            <!-- Street -->
+            <div class="form-group">
+              <label for="contactname" class="fontbold">Street </label>
+                <div class="datatext">{{mailing_address?.street}}</div>
+            </div>
+
+            <!-- State  -->
+            <div class="form-group">
+              <label for="select" class="fontbold">State </label>
+              <div class="datatext">{{mailing_address?.state}}</div>
+            </div>
+
+            <!-- Zip -->
+            <div class="form-group">
+              <label for="websites" class="fontbold">Zip </label>
+                <div class="datatext">{{mailing_address?.zipcode}}</div>
+            </div>
+          </div>
+          <!-- Right side ends here -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <!-- Mailing Address ends here -->
+
+</div></div><!--!!!!!-->
+</div>
+
+
+<div *ngIf="isEdit">
+<!-- Firm profile Button of basic & partner -->
+<div class="container-fluid">
+  <div class="row">
+
+    <div class="row" [ngStyle]="{'display':isDisplay?'block':'none'}">
+      <div class="col-sm-12 compswitch ">
+        <!--Basic & Partner-->
+        <div class="switch  cswitch">
+          <a href="javascript:void(0);" class="optionone compone borderPix"  [ngClass]="{'active': selectedMatter === 'basicprofile'}" (click)="onClick('basicprofile')">Basic Profile</a>
+          <a href="javascript:void(0);" class="optiontwo comptwo " [routerLink]="['/partner']" [ngClass]="{'active': selectedMatter === 'practicepartner'}" (click)="onClick('practicepartner')">Practice Partner</a>
+          
+        </div>
+        <!--view & edit-->
+        <div class="switch  cswitch cswitchtwo">
+          <a href="javascript:void(0);" class="optionone compone" [ngClass]="{'active': selectedValue_ === 'edit'}" (click)="isActive('edit');">Edit</a>
+          <a href="javascript:void(0);" class="optiontwo comptwo" [ngClass]="{'active' : selectedValue_ === 'view' }"  (click)="viewMember()">View</a><!--(click)="isActive('view')"  (click)="viewMember()"-->
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- Firm profile Button of basic & partner ends here!! -->
+
+
+<form [formGroup]="basicProfileDetails"> 
+    <!-- Basic Profile -->
+        <div class="container main width-alignment">
+            <div class="firm-head">Basic Profile</div>
+        </div>
+    
+        <div class="row main main-width stepitem topup">
+          <div class="col-xs-12 col-sm-12 col-md-6">
+            <!-- Form Component -->
+            <!-- left row card 1 layout -->
+      
+            <div class="row containerbox containerboxone ">
+              <div class="col-sm-12">
+                <div class="container">
+      
+                  <!-- Firm name -->
+                  <div class="form-group">
+                    <label for="name" class="fontbold">Firm Name <span class="mandate">*</span></label>
+                    <div class="input-group">
+                      <input type="text" formControlName="fullname" [ngModel]="basic_profile?.fullname" class="form-control textbox" name="name" />
+                    </div>
+                    <div *ngIf="basicProfileDetails.get('fullname').errors && submitted" class="errorStyle">
+                      <div *ngIf="basicProfileDetails.get('fullname').errors.required">This field is required</div>
+                      <!-- <div *ngIf="basicProfileDetails.get('fullname').errors.pattern">Enter Valid Name</div>
+                      <div *ngIf="basicProfileDetails.get('fullname').errors.msg">{{basicProfileDetails.get('fullname').errors.msg}}</div> -->
+                    </div>
+                  </div>
+      
+                  <!-- Email  -->
+                  <div class="form-group">
+                    <label for="email" class="fontbold">Email Address <span class="mandate">*</span></label>
+                    <div class="input-group">
+                      <input type="email" formControlName="email" [ngModel]="basic_profile?.email" class="form-control textbox" name="email" />
+                    </div>
+                    <div *ngIf="basicProfileDetails.get('email').errors && submitted" class="errorStyle">
+                      <div *ngIf="basicProfileDetails.get('email').errors.required">This field is required</div>
+                      <div *ngIf="basicProfileDetails.get('email').errors.pattern">Invalid Email Address</div> 
+                    </div>
+                  </div>
+    
+                  <!-- Contact -->
+                  <div class="form-group">
+                    <label for="number" class="fontbold">Contact Number <span class="mandate">*</span></label>
+                    <div class="input-group">
+                      <input type="text" formControlName="contact_phone" maxlength="10" [ngModel]="basic_profile?.contact_phone" class="form-control textbox" name="contact_phone" />
+                    </div>
+                    <div *ngIf="basicProfileDetails.get('contact_phone').errors && submitted" class="errorStyle">
+                      <div *ngIf="basicProfileDetails.get('contact_phone').errors.required">This field is required</div>
+                      <div *ngIf="basicProfileDetails.get('contact_phone').errors.pattern">Enter Valid Number</div>
+                      <div *ngIf="basicProfileDetails.get('contact_phone').errors.minlength || basicProfileDetails.get('contact_phone').errors.maxlength">Mobile number should be 10 digits</div>
+                    </div>
+
+                  </div>
+    
+                   <!-- Default Currency -->
+                   <div class="form-group">
+                    <label for="select" class="fontbold">Billing Currency <span class="mandate">*</span></label>
+                    <div class="input-group">
+
+                      <select formControlName="billing_currency" class="form-control textbox" [ngModel]="basic_profile?.billing_currency" required>
+                        <option *ngFor="let c of currencyList" [value]="c.name">
+                          {{ c.name }}
+                        </option>
+                      </select>
+ 
+                   </div>
+                   <div *ngIf="basicProfileDetails.get('billing_currency').errors && submitted" class="errorStyle">
+                    <div *ngIf="basicProfileDetails.get('billing_currency').errors.required">This field is required</div>
+                   </div>
+                    </div>
+    
+                </div>
+               </div>
+            </div>
+            <!-- ends here -->
+    
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-6">
+            <!-- component right side -->
+      
+            <div class="row containerbox formcontainer">
+              <div class="col-sm-12">
+                <div class="container">
+                  <!-- input field  -->
+                  <div class="form-group">
+                  <label for="country" class="fontbold">Country  <span class="mandate">*</span> </label>
+                  <div class="input-group court">
+                    <!--<input type="text" formControlName="country" [ngModel]="basic_profile?.country" class="form-control textbox" name="country" />-->
+                    <select required placeholder="Country" formControlName="country" [ngModel]="basic_profile?.country" class="form-control textbox" name="country" aria-describedby="add-con">
+                      <option value="" disabled selected>Select Country</option>
+                      <option *ngFor="let country of countries" value="{{country[0]}}">{{country[0]}}</option>
+                    </select>
+                  </div>
+
+                  <div *ngIf="basicProfileDetails.get('country').errors && submitted" class="errorStyle">
+                    <div *ngIf="basicProfileDetails.get('country').errors.required">This field is required</div>
+                   </div>
+                  </div>
+                  </div>
+                  <!-- input filled with icon -->
+                  <div class="form-group">
+                    <label for="contactname" class="fontbold">Contact Name <span class="mandate">*</span> </label>
+                    <div class="input-group">
+                      <input type="text" formControlName="contact_person" [ngModel]="basic_profile?.contact_person" class="form-control textbox" name="contact_person" />
+                    </div>
+
+                    <div *ngIf="basicProfileDetails.get('contact_person').errors && submitted" class="errorStyle">
+                      <div *ngIf="basicProfileDetails.get('contact_person').errors.required">This field is required</div>
+                      <!-- <div *ngIf="basicProfileDetails.get('contact_person').errors.pattern">Name should start with an Uppercase letter or contain only Uppercase letters & spaces.</div> -->
+                    </div>
+                  </div>
+                  <!-- input filled with icon -->
+                  <div class="form-group">
+                    <label for="websites" class="fontbold">Websites</label>
+                    <div class="input-group">
+                      <input type="text" formControlName="website" [ngModel]="basic_profile?.website" class="form-control textbox" name="websites" />
+                    </div>
+                  </div>
+      
+                </div>
+                <!-- ends here -->
+              </div>
+            </div>
+      
+          </div>
+    
+    
+      
+        <!-- grid ends here1 -->
+    <!-- Basic Profile ends here -->
+    
+<!-- Registered Address -->
+        <div class="container main width-alignment">
+             <div class="firm-head">Registered Address</div>
+        </div>
+    
+        <div class="row main main-width stepitem topup">
+            <div class="col-xs-12 col-sm-12 col-md-6">
+              <!-- Form Component -->
+              <!-- left row card 1 layout -->
+        
+              <div class="row containerbox containerboxone ">
+                <div class="col-sm-12">
+                  <div class="container">
+        
+                    <!-- Firm name -->
+                    <div class="form-group">
+                      <label for="name" class="fontbold">Building No <span class="mandate">*</span></label>
+                      <div class="input-group">
+                        <input type="text" formControlName="house_flat_no"  [(ngModel)]="registeredAddress.house_flat_no" class="form-control textbox" name="house_flat_no" />
+                      </div>
+
+                      <div *ngIf="basicProfileDetails.get('house_flat_no').errors && submitted" class="errorStyle">
+                        <div *ngIf="basicProfileDetails.get('house_flat_no').errors.required">This field is required</div>
+                      </div>
+                    </div>
+        
+                    <!-- Email  -->
+                    <div class="form-group">
+                      <label for="select" class="fontbold">City <span class="mandate">*</span> </label>
+                      <div class="input-group">
+                        <input type="text" formControlName="city_town" [(ngModel)]="registeredAddress.city_town" class="form-control textbox" name="city_town" />
+                      </div>
+                      <div *ngIf="basicProfileDetails.get('city_town').errors && submitted" class="errorStyle">
+                        <div *ngIf="basicProfileDetails.get('city_town').errors.required">This field is required</div>
+                       </div>
+                    </div>
+      
+      
+                     <!-- Default Currency -->
+                    <div class="form-group">
+                      <label for="country" class="fontbold">Country <span class="mandate">*</span> </label>
+                      <div class="input-group court">
+                        <select required placeholder="Country" formControlName="country" [ngModel]="registeredAddress.country"  class="form-control textbox" name="country" aria-describedby="add-con">
+                          <option value="" disabled selected>Select Country</option>
+                          <option *ngFor="let country of countries" value="{{country[0]}}">{{country[0]}}</option>
+                        </select>
+                       </div>
+                       <div *ngIf="basicProfileDetails.get('country').errors && submitted" class="errorStyle">
+                        <div *ngIf="basicProfileDetails.get('country').errors.required">This field is required</div>
+                       </div>
+                    </div>
+      
+                  </div>
+                </div>
+              </div>
+              <!-- ends here -->
+      
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-6">
+              <!-- component right side -->
+        
+              <div class="row containerbox formcontainer">
+                <div class="col-sm-12">
+                  <div class="container">
+                    <!-- input filled with icon -->
+                    <div class="form-group">
+                      <label for="contactname" class="fontbold">Street </label>
+                      <div class="input-group">
+                        <input type="text" formControlName="street" [(ngModel)]="registeredAddress.street" class="form-control textbox" name="street" />
+                      </div>
+                    </div>
+    
+                    <!-- input field  -->
+                    <div class="form-group">
+                    <label for="select" class="fontbold">State  <span class="mandate">*</span> </label>
+                    <div class="input-group">
+                      <input type="text" formControlName="state"  [(ngModel)]="registeredAddress.state" class="form-control textbox" name="state" />
+                    </div>
+                    <div *ngIf="basicProfileDetails.get('state').errors && submitted" class="errorStyle">
+                      <div *ngIf="basicProfileDetails.get('state').errors.required">This field is required</div>
+                     </div>
+                    </div>
+    
+                    <!-- input filled with icon -->
+                    <div class="form-group">
+                      <label for="websites" class="fontbold">Zip <span class="mandate">*</span> </label>
+                      <div class="input-group">
+                        <input type="text" formControlName="zipcode" maxlength="6" minlength="5" [(ngModel)]="registeredAddress.zipcode" class="form-control textbox" name="zipcode" />
+                      </div>
+                      <div *ngIf="basicProfileDetails.get('zipcode').errors && submitted" class="errorStyle">
+                        <div *ngIf="basicProfileDetails.get('zipcode').errors.required">This field is required</div>
+                        <div *ngIf="basicProfileDetails.get('zipcode').errors.pattern">Invalid zip code format (should be 5 & 6 digit numbers)</div>
+                      </div>
+                    </div>
+      
+
+            <!-- Mailing Address button of same Registered address-->
+                    <div class="form-group">
+                      <label class="float-right firm-head ">Mailing Address is same as Registered Address </label>
+                    </div>
+
+                    <div class=" float-right" style="margin-top: -40px;">
+                      <div class="row" [ngStyle]="{'display':isDisplay?'block':'none'}">
+                        <div class="col-sm-12 compswitch ">
+                          <div class="switch  cswitch cswitchtwo">
+                            <a href="javascript:void(0);" class="optionone compone" [ngClass]="{'active': selectedValueButton === 'yes'}" (click)="sameAddress(); isActived('yes')" >Yes</a> <!--(click)="isActive('yes')"-->
+                            <a href="javascript:void(0);" class="optiontwo comptwo" [ngClass]="{'active' : selectedValueButton === 'no' }" (click)="isActived('no')" >No</a>
+                          </div>
+
+                        </div> </div> </div>
+
+                        
+           <!--Mailing Address button of same Registered address ends here -->
+        
+                  </div>
+                  <!-- ends here -->
+                </div>
+              </div>
+
+
+            </div>
+      
+      
+    
+        </div>
+          <!-- grid ends here2 -->
+<!-- Registered Address ends here -->
+</form>
+
+<!-- Mailing Address form -->
+
+<form [formGroup]="basicMailingProfile">
+
+
+    <div class="container main width-alignment">
+      <div class="firm-head"> Mailing Address </div>
+    </div>
+
+    <div class="row main main-width stepitem topup">
+      <div class="col-xs-12 col-sm-12 col-md-6">
+
+
+        <!-- Form Component -->
+        <!-- left row card 1 layout -->
+    
+        <div class="row containerbox containerboxone ">
+          <div class="col-sm-12">
+            <div class="container">
+    
+              <!-- Firm name -->
+              <div class="form-group">
+                <label for="name" class="fontbold">Building No <span class="mandate">*</span> </label>
+                <div class="input-group">
+                  <input type="text" formControlName="house_flat_no"  [(ngModel)]="mailingAddress.house_flat_no" class="form-control textbox" name="house_flat_no" />
+                </div>
+
+                <div *ngIf="basicMailingProfile.get('house_flat_no').errors && submitted" class="errorStyle">
+                  <div *ngIf="basicMailingProfile.get('house_flat_no').errors.required">This field is required</div>
+                 </div>
+              </div>
+    
+              <!-- Email  -->
+              <div class="form-group">
+                <label for="select" class="fontbold">City <span class="mandate">*</span> </label>
+                <div class="input-group">
+                  <input type="text" formControlName="city_town" [(ngModel)]="mailingAddress.city_town" class="form-control textbox" name="city_town" />
+                </div>
+
+                <div *ngIf="basicMailingProfile.get('city_town').errors && submitted" class="errorStyle">
+                  <div *ngIf="basicMailingProfile.get('city_town').errors.required">This field is required</div>
+                 </div>
+              </div>
+    
+    
+               <!-- Default Currency -->
+              <div class="form-group">
+              <label for="select" class="fontbold">Country <span class="mandate">*</span></label>
+              <div class="input-group">
+                    <select required placeholder="Country" formControlName="country" [ngModel]="mailingAddress.country" class="form-control textbox" name="country" aria-describedby="add-con">
+                      <option value="" disabled selected>Select Country</option>
+                      <option *ngFor="let country of countries" value="{{country[0]}}">{{country[0]}}</option>
+                    </select>
+                   </div>
+
+                   <div *ngIf="basicMailingProfile.get('country').errors && submitted" class="errorStyle">
+                    <div *ngIf="basicMailingProfile.get('country').errors.required">This field is required</div>
+                   </div>
+              </div>
+    
+            </div>
+          </div>
+        </div>
+        <!-- ends here -->
+    
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-6">
+        <!-- component right side -->
+    
+        <div class="row containerbox formcontainer">
+          <div class="col-sm-12">
+            <div class="container">
+              <!-- input filled with icon -->
+              <div class="form-group">
+                <label for="contactname" class="fontbold">Street </label>
+                <div class="input-group">
+                  <input type="text" formControlName="street" [(ngModel)]="mailingAddress.street" class="form-control textbox" name="street" />
+                </div>
+              </div> 
+    
+              <!-- input field  -->
+              <div class="form-group">
+              <label for="select" class="fontbold">State  <span class="mandate">*</span> </label>
+              <div class="input-group">
+                <input type="text" formControlName="state" [(ngModel)]="mailingAddress.state" class="form-control textbox" name="state" />
+              </div>
+
+              <div *ngIf="basicMailingProfile.get('state').errors && submitted" class="errorStyle">
+                <div *ngIf="basicMailingProfile.get('state').errors.required">This field is required</div>
+               </div>
+              </div>
+    
+              <!-- input filled with icon -->
+              <div class="form-group">
+                <label for="websites" class="fontbold">Zip <span class="mandate">*</span> </label>
+                <div class="input-group">
+                  <input type="text" formControlName="zipcode" maxlength="6" minlength="5" [(ngModel)]="mailingAddress.zipcode" class="form-control textbox" name="zipcode" />
+                </div>
+
+                <div *ngIf="basicMailingProfile.get('zipcode').errors && submitted" class="errorStyle">
+                  <div *ngIf="basicMailingProfile.get('zipcode').errors.required">This field is required</div>
+                  <div *ngIf="basicMailingProfile.get('zipcode').errors.pattern">Invalid zip code format (should be 5 & 6 digit numbers)</div>
+                </div>
+              </div>
+
+
+    
+    
+    
+            </div>
+            <!-- ends here -->
+          </div>
+        </div>
+    
+      </div>
+    
+    
+    
+    </div>
+
+    <!-- Mailing Address ends here-->
+
+
+</form>
+
+
+<div class="btnbox">
+<button type="reset" class="btn btn-default btncancel btnrightitem" (click)="onReset()">Cancel</button>
+<button type="submit"  class="btn btn-primary btnsave savecls" (click)="editProfile()">Save</button>
+</div>
+<!-- Firm profile Edit ends here!! -->
+    
+
+</div>
+
+
+
+
+
+<router-outlet></router-outlet>

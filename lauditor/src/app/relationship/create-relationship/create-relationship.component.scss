@@ -1,0 +1,51 @@
+// component css goes here
+
+.nameSet{
+    width: 96%;
+}
+.textbox{
+    margin-bottom: 0px;
+}
+.comptwo1{
+    border-left: unset;
+    margin-left: 1px;
+}
+.compthree1{
+    margin-left: 2px;
+    border-left: unset;
+}
+.setWidth {
+    width: 96%;
+    height: 40px;
+    margin-top: 2px;
+    border-radius: 8px;
+    text-align: left;
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.text-size {
+    font-size: 17px !important;
+    // border: none;
+    background-color: #e8e8e8;
+    // margin-bottom: 40px;
+}
+.lawSet{
+    margin-top: 20px;
+}
+.fa-times-circle-o:before {
+
+    content: "\f05c";
+}
+.no-radius{
+    border-radius: 0px;
+}
+
+.borderPix{
+    border-radius: 8px;
+}
+.cls{
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    border-left: 0px;
+}

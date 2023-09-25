@@ -1,0 +1,144 @@
+.watermark,.watermark-left{
+    margin: 40px;
+}
+
+.watermark{
+    border: 1px solid #eee;
+    min-height: 500px; 
+}
+.optiontwo{
+    padding: 8px 17px 8px 17px;
+}
+.sharedblock {
+    background: #00b3a7;
+    color: #fff;
+    font-size: 20px;
+    padding: 11px;
+    font-weight: 600;
+    padding-left: 26px;
+}
+.shardminus, .shardplus, .tog {
+    padding-right: 8px;
+    padding-top: 4px;
+    font-weight: 100 !important;
+    float: right;
+    cursor: pointer;
+}
+.dopara {
+    color: #00b3a7;
+    font-size: 20px;
+    font-weight: 600;
+    padding-bottom: 28px;
+}
+#no-shared-msg{
+    margin-top: 25px;
+}
+.sharedgreen {
+    background: #057700;
+    margin-bottom: 20px;
+}
+.sharedred {
+    background: #b31c00;
+    margin-bottom: 20px;
+}
+textarea#comment{
+    background: #eeeeee;
+}
+.cswitch{
+    float: right;
+}
+
+
+tr.veiw-items:hover {
+    background:#003A5C;
+    color:#fff;
+    .actionbtn {
+        background: #fff !important;
+        color:#111;
+        border: none;
+        &:hover,:focus ,.show{
+            //background: #00B3A7 !important;
+        }
+    }
+    .actionbtn.show{
+        //background: #00B3A7 !important;
+    }
+}
+tr.veiw-items {
+
+    li{
+        height: 30px;
+        line-height: 30px;
+        a{
+            height: 30px;
+            line-height: 20px;
+            &:hover{
+                background: #01476f !important;
+            }
+        }
+    }
+    .custom-dropdown{
+        inset: 0px auto auto -119px !important;
+        background: #F0F0F0;
+        padding: unset;
+    }
+}
+
+.savecls:hover{
+    background: #F0F0F0;
+    color: #01476f !important;
+}
+
+/*
+.excahnge{
+text-align: left;
+font: normal normal normal 32px/50px Gill Sans;
+letter-spacing: 0px;
+color: #00498E;
+opacity: 1;
+}
+
+.docName{
+top: 508px;
+left: 135px;
+width: 531px;
+height: 36px;
+text-align: left;
+font: normal normal normal 32px/50px Gill Sans;
+letter-spacing: 0px;
+color: #00B3A7;
+opacity: 1;
+}
+*/
+
+.btnsave:disabled,
+.btnsave[disabled] {
+    background: #004d87 0% 0% no-repeat padding-box;
+    border-radius: 5px;
+    color: #fff;
+    border: none !important;
+}
+
+.btn-close {
+    //top: 362px;
+    width: 38px;
+    height: 38px;
+    opacity: 1;
+    margin-left: 450px;
+}
+
+.alertbutton {
+    padding-bottom: 22px;
+}
+
+.closeBtn {
+    background-color: #fff;
+}
+.firms{
+    border-top-left-radius: 5px ;
+    border-bottom-left-radius: 5px ;
+    border-top-right-radius: 5px ;
+    border-bottom-right-radius: 5px ;
+    background: #00b3a7 !important;
+    color: #fff;
+  }

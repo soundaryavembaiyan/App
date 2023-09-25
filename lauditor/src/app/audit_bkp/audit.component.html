@@ -1,0 +1,160 @@
+<!--component html goes here -->
+<div class="container main width-alignment">
+	<div class="col-12 Individual createGroup">
+		<div class="audit-head">History of Actions</div>
+		<!-- <label for="select" class="lable-size">Audit Trails</label> -->
+		<form [formGroup]="logForm" (ngSubmit)="onSubmit()">
+			<div class="row">
+				<div class="col-6">
+					<div class="form-group ">
+<!-- <<<<<<< HEAD -->
+						<label for="title" class="lable-size">Category:</label>
+						<select formControlName='category' class="form-select member-name-text nameSet" *ngIf="product == 'lauditor'">
+							<option *ngFor='let cat of categoryList'> {{cat}} </option>
+						</select>
+					
+						<select formControlName='category' class="form-select member-name-text nameSet" *ngIf="product == 'content'">
+							<option *ngFor='let cat of categoryListContent'> {{cat}} </option>
+						</select>
+					
+						<select formControlName='category' class="form-select member-name-text nameSet" *ngIf="product == 'connect' && roleId != 'GH'">
+							<option *ngFor='let cat of categoryListConnect'> {{cat}} </option>
+						</select>
+						<select formControlName='category' class="form-select member-name-text nameSet" *ngIf="product == 'connect' && roleId == 'GH'">
+							<option *ngFor='let cat of categoryList'> {{cat}} </option>
+						</select>
+
+
+						<!--<select [ngClass]="{'class1': product == 'connect', 'class2': roleId != 'GH'}">
+						</select>-->
+
+
+					</div>
+
+					<div class="form-group nameSet">
+						<!--<label for="title" class="lable-size">Client</label>-->
+						<label for="title" class="lable-size" *ngIf="product != 'content'">Client</label>
+                        <label for="title" class="lable-size" *ngIf="product == 'content'">Customer</label>
+<!-- ======= -->
+						<label for="title" class="lable-size">Category:</label>				
+						<select class="form-select form-control calendofont nameSet" 
+						(change)="getCategory($event.target)"   placeholder="Choose"  >
+						<option hidden value="">Select</option>
+						<option class="textbox" *ngFor="let i of categoryList " value="{{i.value}}">
+							{{i.name}}
+						</option>
+					</select>
+					</div>
+					<label class="lable-size">Advanced search</label> <input type="checkbox" #inputEl class="larger" name="checkBox2" (change)="isCheckBox(inputEl.checked)">
+
+					<!-- <div class="form-group nameSet">
+						<label for="title" class="lable-size">Client</label>
+>>>>>>> edcf0ea9e0ec0584efd316b70ea2bd944dc70470
+						<input type="text"
+							   formControlName="client"
+							   class=" text-size form-control group-name-text"
+							   [ngClass]="{ 'is-invalid': submitted && f.client.errors }">
+					</div>
+					<div class="form-group nameSet">
+						<label for="title" class="lable-size">Team Member</label>
+						<input type="text"
+							   formControlName="tm"
+							   class=" text-size form-control group-name-text"
+							   [ngClass]="{ 'is-invalid': submitted && f.tm.errors }">
+					</div>
+					<div class="form-group nameSet">
+						<label for="title" class="lable-size">Tags</label>
+						<input type="text"
+							   formControlName="tm"
+							   class=" text-size form-control group-name-text"
+							   [ngClass]="{ 'is-invalid': submitted && f.tm.errors }">
+					</div> -->
+				</div>
+				<div class="col-6">
+					<div class="form-group nameSet">
+						<div class="input-group court" id="search">
+							<input type="text" class="form-control textbox seogroup"
+								placeholder="Search" required="" [(ngModel)]="auditSarch">
+							<img style="top: 20px;" src="assets/img/search.svg"
+								class="calimg calitem input-group-append searchimg">
+						</div>
+					</div>
+					<div class="form-group nameSet row"  *ngIf="isChecked">
+						<!-- <label for="comment" class="lable-size advance">Advance Search</label> -->
+						<div class="col-5">
+							<label  class="lable-size">From</label>
+							 <mat-form-field appearance="fill" class="form-group">
+			                  <input matInput
+			                         [matDatepicker]="fromdt"
+			                         formControlName="fromDate"
+			                         name="date_of_filling"
+			                         class="form-control"
+			                         (click)="fromdt.open()"
+			                         readonly>
+			                  <mat-datepicker-toggle matSuffix [for]="fromdt"></mat-datepicker-toggle>
+			                  <mat-datepicker #fromdt></mat-datepicker>
+			                  <div *ngIf="submitted && f.date_of_filling.errors" class="invalid-feedback">
+			                    <div *ngIf="f.date_of_filling.errors.required">Date is required</div>
+			                  </div>
+			                </mat-form-field>               
+						</div>
+
+						<div class="col-2"></div>
+						<div class="col-5">
+							<label  class="lable-size">To</label>
+							 <mat-form-field appearance="fill" class="form-group">
+			                  <input matInput
+			                         [matDatepicker]="todt"
+			                         formControlName="toDate"
+			                         name="date_of_filling"
+			                         class="form-control"
+			                         (click)="todt.open()"
+			                         readonly>
+			                  <mat-datepicker-toggle matSuffix [for]="todt"></mat-datepicker-toggle>
+			                  <mat-datepicker #todt></mat-datepicker>
+			                  <div *ngIf="submitted && f.date_of_filling.errors" class="invalid-feedback">
+			                    <div *ngIf="f.date_of_filling.errors.required">Date is required</div>
+			                  </div>
+			                </mat-form-field> 
+						</div>
+					</div>
+					<!-- <div class="form-group nameSet">
+						<label class="lable-size">&nbsp;</label>
+						<button type="submit"
+                			    class="btn btn-default btnsave">Search</button>
+					</div> -->
+				</div>
+			</div>
+		</form>
+	</div>
+    <div class="col-12 Individual gridtable" style="margin-top:20px;">
+        <table class="table table-borderless tblgrid">
+          <thead>
+            <tr class="theader">
+				<th>
+					<p class="thheadname"> Name</p>
+					<img src="/assets/img/SORT.PNG" class="sortico">
+				  </th>
+              <th>
+                <p class="thheadname"> Date & Time</p>
+                <img src="/assets/img/SORT.PNG" class="sortico">
+              </th>
+              <th>
+                <p class="thheadname"> Activity Log</p>
+                <img src="/assets/img/SORT.PNG" class="sortico">
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="rone" *ngFor="let log of filterByCategory |filter:auditSarch | paginate: { itemsPerPage: 10, currentPage: p }">
+				<td>{{log.name}}</td>
+              <td>{{log.timestamp}}</td>
+              <td>{{log.message}}</td>
+            </tr>
+          </tbody>
+	
+        </table>
+		<pagination-controls (pageChange)="p = $event"     [maxSize]="7"         [responsive]="true"
+		nextLabel="Next" ></pagination-controls>
+    </div>
+</div>

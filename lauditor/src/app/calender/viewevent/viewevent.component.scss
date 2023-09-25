@@ -1,0 +1,228 @@
+.main {
+    padding-left: 178px;
+    padding-right: 0px;
+    padding-top: 20px;
+}
+
+.custmain {
+    padding-left: 160px;
+}
+
+.custodyrow1 {
+    background-color: #004D87;
+    height: fit-content;
+    overflow: hidden;
+    width: 92%;
+    box-shadow: 0px 3px 3px #00000033;
+    color: #fff;
+    border-radius: 5px;
+
+}
+
+.casestudy1 {
+    display: inline-block;
+    font-size: 20px;
+    font-weight: 800;
+    padding: 10px 10px 0px 8px;
+
+    display: flex;
+    flex-flow: wrap;
+    width: auto;
+    justify-content: space-between;
+    overflow: hidden !important;
+    text-overflow: ellipsis; 
+    overflow-wrap: break-word;
+    
+
+}
+
+.custlist {
+    padding-top: 0px;
+}
+
+.icocontext {
+    float: right;
+    padding-top: 13px;
+    padding-left: 1px;
+    padding-right: 16px;
+    cursor: pointer;
+
+}
+
+.teamclient {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 0px;
+    color: #004d87;
+}
+
+.timezone {
+    color: #898686;
+    font-size: 14px;
+}
+
+.monthtitle {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 0px;
+    color: #000;
+}
+
+.meetingitem {
+    font-size: 15px;
+    font-weight: 600;
+    color: #000;
+}
+
+.itemFlex{
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    overflow-wrap: break-word;
+}
+
+.bellinfo {
+    font-size: 16px;
+
+    margin-bottom: 0px;
+    color: #000;
+
+}
+
+.subnotification {
+    margin-left: 35px;
+}
+
+.bellico {
+    padding-top: 5px;
+    padding-right: 5px;
+}
+
+.belldate {
+    font-size: 14px;
+    padding-left: 34px;
+    margin: 0px;
+    margin-top: -6px;
+    font-weight: 600;
+}
+
+.affitem {
+    padding-top: 29px;
+}
+
+.namecircle {
+    background: #057700;
+    color: #fff;
+    border-radius: 100px;
+    height: 25px;
+    width: 25px;
+    text-align: center;
+    font-size: 14px;
+    padding: 2px;
+}
+
+.namecirclesub {
+    background: #004d87;
+}
+
+.namecirclesubone {
+    background: #ba3a00;
+}
+
+.emptyrow {
+    padding-top: 15px;
+}
+
+.namecirclesubtwo {
+    background: #940561;
+}
+
+.tickico {
+    margin-top: -5px;
+}
+
+.lblorg {
+    padding-left: 27px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: -5px;
+    margin-bottom: -4px;
+}
+
+.horzline {
+    border-right: 1px dashed #ccc;
+    height: 71px;
+    position: absolute;
+    display: block;
+    margin-left: -40px;
+}
+
+.timsheetsubitem {
+    padding-top: 15px;
+}
+
+.usernamelist {
+    padding-left: 3px;
+}
+
+.editicon {
+    margin-right: 48px;
+    margin-top: -115px;
+}
+
+.compone,
+.comptwo {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.comptwo {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.compthree {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.attnd {
+    font-weight: bold;
+    font-size: 20px;
+    padding-right: 8px;
+}
+.invite span{
+float:right;
+}
+.invite{
+    padding: 10px;
+}
+
+.sflex{
+    flex: 0 0 auto;
+    width: auto;
+}
+
+.read-more-content {
+    max-height: 200px; /* Adjust as needed */
+    overflow: hidden;
+    max-width: auto;
+  }
+  
+  .expanded {
+    max-height: none;
+  }
+  .underline{
+    color: #004D87;
+    font-weight: 900;
+  }
+
+  .containercont {
+    font-size: 16px;
+    line-height: 16px;
+    height: 32px;
+    overflow: hidden;
+}
+.show {
+    overflow: visible;
+    height: auto;
+}

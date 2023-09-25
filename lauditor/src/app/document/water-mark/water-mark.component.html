@@ -1,0 +1,82 @@
+<div class="row view-document">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-6">
+                <div class="watermark">
+                    <div *ngIf="imageUrl">
+                        <img width="100%" [src]="imageUrl" class="image">
+                        <!-- <ngx-doc-viewer [url]="imageUrl" viewer="google" style="width:100%;height:80vh;"></ngx-doc-viewer> -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="watermark-left">
+                    <div class="custusername tab-margin fontweight">
+                        Add Watermark
+                    </div>
+                    <div class="form-group name-set">
+                        <label for="title" class="fontbold tab-margin">Select Watermark file <span
+                                class="mandate">*</span></label>              
+                     
+                        <div class="input-group court">
+                            <input type="file" id="file" class="myclass" class="form-control textbox"
+                                placeholder="Search by name" (change)="onFileSelected($event);onSelectFile($event)" />
+                            <button id="fileUpload" for="file" class="input-group-append appendadd btn-browse
+                            ">Browse </button>
+                        </div>
+                        <h6 class="mandate tab-margin">add a single page pdf file</h6>
+                    </div>
+                </div>
+                <div class="btnbox">
+                    <button type="reset" class="btn btn-default btncancel" (click)="cancel()">Cancel</button>
+                    <button type="submit" class="btn btn-default btnsave" (click)="save()">Save</button>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<jw-modal id="add-watermark" class="doc-del-pages alert-box">
+    <div class="alert-box ">
+        <div class="close-x float-right" (click)="closeModal('add-watermark');">X</div>
+        <div class="container">
+            <div class="row" *ngIf="data">
+                <div class="">
+                    <div class="alertpara">
+                        <p class="alertparatxt"> Alert</p>
+                    </div>
+                    <div class="alertext">Are you sure you want to add watermark {{data.name}} document</div>
+                    <div class="alertbutton">
+                        <button class="btn btn-default  alertbtn alertbtnno"
+                            (click)="closeModal('add-watermark');">No</button>
+                        <button class="btn btn-default alertbtn alertbtnyes"
+                            (click)="postWatermark();closeModal('add-watermark');">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</jw-modal>
+<jw-modal id="doc-watermark-success" class="doc-watermark-succes  alert-box">
+    <div class="doc-iframe-scs-body ">
+
+        <div class="container">
+            <div class="row" *ngIf="data">
+                <div class="alertbox">
+                    <div class="close-x float-right" (click)="closeModal('doc-watermark-success');">X</div>
+                    <div class="alertpara">
+                        <p class="alertparatxt"> Success</p>
+                    </div>
+                    <div class="alertext">Congratulations!! You have successfully added watermark to {{data.name}}
+                        document.
+                    </div>
+                    <div class="center">
+                        <button class="btn btn-primary  " (click)="closeModal('doc-watermark-success');cancel()">OK</button>
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+</jw-modal>

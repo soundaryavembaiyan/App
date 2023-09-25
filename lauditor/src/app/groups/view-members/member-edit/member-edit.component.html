@@ -1,0 +1,104 @@
+<div class="container main test width-alignment">
+    	<div class="col-12 Individual createGroup">
+    		<form [formGroup]="createMemberForm" (ngSubmit)="onSubmit()">
+    			<div class="row">
+    				<div class="col-6">
+    					<div class="form-group errorMsg nameSet ">
+    						<label for="title" class="lable-size">Name:</label>
+    						<input type="text"
+    						formControlName="name"
+    						class=" text-size form-control member-name-text"
+    						[ngClass]="{ 'is-invalid': submitted && f.name.errors }" id="caseTitle"
+    						name="name">
+    						<div *ngIf="submitted && f.name.errors" class="invalid-feedback ">
+    							<div *ngIf="f.name.errors.required">
+    								Name is required
+    							</div>
+    						</div>
+    					</div>
+    					<div class="form-group errorMsg nameSet">
+    						<label for="comment" class="lable-size">Designation:</label>
+    						<input type="text" formControlName="designation"
+    						class=" text-size form-control member-name-text"
+    						[ngClass]="{ 'is-invalid': submitted && f.designation.errors }" id="caseTitle"
+    						name="designation">
+    						<div *ngIf="submitted && f.designation.errors" class="invalid-feedback">
+    							<div *ngIf="f.designation.errors.required">
+    								Designation is required
+    							</div>
+    						</div>
+    					</div>
+    					<div class="form-group errorMsg nameSet">
+    						<div class="row">
+    							<div class="col-6 ">
+    								<label for="select" class="lable-size">Default Currency</label>
+    								<select formControlName="currency" class="form-select member-name-text nameSet"
+    								aria-label="Default select example"
+    								[ngClass]="{ 'is-invalid':submitted && f.currency.errors }" name="currency">
+                                    <option *ngFor="let c of currencyList" value="{{c}}">{{c}}</option>
+                                </select>
+                                <div *ngIf="submitted && f.currency.errors" class="invalid-feedback">
+                                    <div *ngIf="f.currency.errors.required">
+                                        Currency is required
+                                    </div>
+                                </div>
+    						</div>
+    						<div class="col-6 ">
+    							<label for="title" class="lable-size">Default Rate:</label>
+    							<input type="text"
+            						   formControlName="defaultRate"
+            						class="nameSet text-size form-control member-name-text"
+            							[ngClass]="{ 'is-invalid': submitted && f.defaultRate.errors }"
+            							id="caseTitle"
+            							name="defaultRate">
+    							<div *ngIf="submitted && f.defaultRate.errors" class="invalid-feedback ">
+    								<div *ngIf="f.defaultRate.errors.required">
+    									Hourly rate is required
+    								</div>
+    							</div>
+    						</div>
+    					</div>
+    				</div>
+    			</div>
+    			<div class="col-6">
+    				<div class=" form-group errorMsg  nameSet">
+    					<label for="exampleInputEmail1" class="form-label lable-size">Email</label>
+    					<input type="email"
+                               formControlName="email"
+                               class="form-control member-name-text"
+    					       id="exampleInputEmail1"
+                               aria-describedby="emailHelp"
+                               (keyup)="resetEmailConf()"
+    					       [ngClass]="{ 'is-invalid': submitted && f.email.errors }"
+                               name="email">
+    					<div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+    						<div *ngIf="f.email.errors.required">Email is required</div>
+                            <div *ngIf="f.email.errors.pattern">Email must be a valid email address.</div>
+    					</div>
+    				</div>
+
+    				<div class=" form-group errorMsg nameSet">
+    					<label for="exampleInputEmail2" class="form-label lable-size"> Confirm Email</label>
+    					<input type="email"
+                               formControlName="emailConfirm"
+                               placeholder=""
+    					       class="form-control member-name-text"
+                               id="exampleInputEmail2"
+                               aria-describedby="emailHelp"
+                               (keyup)="resetEmailConf()"
+    					       [ngClass]="{ 'is-invalid': submitted && f.emailConfirm.errors}" name="emailConfirm">
+    					<div *ngIf="submitted && f.emailConfirm.errors" class="invalid-feedback">
+    						<div *ngIf="f.emailConfirm.errors.required">Confirm Email is required</div>
+                            <div *ngIf="f.emailConfirm.errors.pattern">Email must be a valid email address.</div>
+                            <div *ngIf="f.emailConfirm.errors.mismatch">Confirm email does not match</div>
+    					</div>
+    				</div>
+    			</div>
+    		</div>
+    		<div class="btnbox">
+    			<button type="reset" class="btn btn-default btncancel" (click)="cancel()">Cancel</button>
+    			<button type="submit" class="btn btn-default btnsave">Save</button>
+    		</div>
+    	</form>
+    </div>
+</div>

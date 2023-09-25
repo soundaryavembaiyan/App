@@ -1,0 +1,59 @@
+<div class="row main width-alignment  stepitem ">
+  <div class="col-xs-12 col-sm-12 col-md-6">
+    <!-- Form Component -->
+    <!-- left row card 1 layout -->
+    <div class="row containerbox containerboxone messagecontainer ">
+      <div class="col-sm-12">
+        <div class="container seobox">
+          <form>
+            <!-- input filled with search icon -->
+            <!--<label for="title" class="msglabel">List of Clients </label>-->
+            <label for="title" class="msglabel" *ngIf="product != 'content' && product != 'corporate'">List of Clients</label>
+            <label for="title" class="msglabel" *ngIf="product == 'content'">List of Customers</label>
+            <label for="title" class="msglabel" *ngIf="product == 'corporate'">List of External Counsels</label>
+
+            <div class="form-group">
+              <div class="input-group court" id="search">
+                <input type="text" class="form-control textbox" placeholder="Search">
+                <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg"
+                  style="margin-top:12px">
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- container for msg notifcation -->
+      <!-- message notifcation box one -->
+      <div class="col-sm-12 messagecont msg-padding" *ngFor="let client of data">
+        <div class="row meetingcontainer legalboxleft container msgcontainer" (click)="getClientInfo(client)">
+          <div class="col-sm-8 col-xs-8">
+            <div class="row">
+              <div class="col-sm-3 col-xs-3">
+                <!-- <img src="assets/img/lisa.png" alt="Meeting" class="icongroup icomeeting msgiconlist msglisa"> -->
+                <div class=" userprofile profile">
+                  <div class="username icongroup icomeeting msgiconlist msglisa">{{client.name[0]}}</div>
+                </div>
+              </div>
+              <div class="col-sm-8 col-xs-9 msgalign">
+                <p class="mname toalhours approxmeet meetone mlname"> {{client.name}} </p>
+                <!-- <p class="mtime mmessage meetime mchildtime">Meeting @ 10:30am</p> -->
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4 msgmobile">
+            <div class="msgtime">
+              <!-- <label class="mtime mchildtime">09:30am</label> -->
+            </div>
+            <div class="circlecontainer">
+              <!-- <span class="rightsubitem bonetwo msgcircle notemsgcircle">2</span> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ends here -->
+  </div>
+  <div class="col-xs-12 col-sm-12 col-md-6">
+    <chat></chat>
+  </div>
+</div>

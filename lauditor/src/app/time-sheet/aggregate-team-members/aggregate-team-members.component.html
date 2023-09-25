@@ -1,0 +1,167 @@
+<div class="row width-alignment">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-12 ">
+                <div class="timesheettitle margin-div">Timesheet Entry :</div>
+                <div class="row  margin-div">
+
+                    <div class="col-10">
+                        <a [class.active]="viewMode=='week'" (click)="viewMode='week';weekView()"
+                            class="selectprior optionhigh active"> Week</a>
+                        <a [class.active]="viewMode=='month'" (click)="viewMode='month';monthView()"
+                            class="selectprior optionlow optionaling"> Month</a>
+                    </div>
+                    <div class="col-2 csv-download">
+                        <input type="button" class="btn btn-primary float-right" value="Download as CSV" (click)="downloadCSV()">
+                    </div>
+
+
+                </div>
+                <div class="row  margin-div">
+                    <div class="col-2">
+                        <label for="title" class="fontbold"> From</label>
+                        <div class="input-group dates">
+                            <span *ngIf="viewMode=='week'">{{teamMemberData?.dates?.start}}</span>
+                            <span *ngIf="viewMode=='month'">{{teamMonthView?.dates?.start}}</span>
+                        </div>
+
+                    </div>
+                    <div class="col-2">
+                        <label for="title" class="fontbold"> To</label>
+                        <div class="input-group dates">
+                            <span *ngIf="viewMode=='week'"> {{teamMemberData?.dates?.end}}</span>
+                            <span *ngIf="viewMode=='month'"> {{teamMonthView?.dates?.end}}</span>
+                        </div>
+
+                    </div>
+                    <div class="col-1 fa-icon">
+                        <div *ngIf="viewMode=='week'" class="itemlist">
+                            <!-- <img src="assets/img/right.PNG" (click)="preAndNextWeek(teamMemberData?.dates?.prev)"
+                                class="lefticon">
+                            <img src="assets/img/left.PNG" (click)="preAndNextWeek(teamMemberData?.dates?.next)"
+                                class="righticon"> -->
+                                <i class="fa fa-thin fa-chevron-left" aria-hidden="true"  (click)="preAndNextWeek(teamMemberData?.dates?.prev)"></i> 
+                                <i class="fa fa-thin fa-chevron-right" aria-hidden="true" (click)="preAndNextWeek(teamMemberData?.dates?.next)"></i>
+                        </div>
+                        <div *ngIf="viewMode=='month'" class="itemlist">
+                            <!-- <img src="assets/img/right.PNG" (click)="preAndNextMonth(teamMonthView?.dates?.prev)"
+                                class="lefticon">
+                            <img src="assets/img/left.PNG" (click)="preAndNextMonth(teamMonthView?.dates?.next)"
+                                class="righticon"> -->
+                                <i class="fa fa-thin fa-chevron-left" aria-hidden="true"  (click)="preAndNextMonth(teamMonthView?.dates?.prev)"></i> 
+                                <i class="fa fa-thin fa-chevron-right" aria-hidden="true" (click)="preAndNextMonth(teamMonthView?.dates?.next)"></i>
+                        </div>
+                    </div>
+                    <div class="col-7  csv-download">
+                        <div class="col-sm-6">
+                            <div class="form-group name-set float-right">
+                              <div class="input-group group-custom-align court" id="search">
+                                <input type="text"
+                                       class="form-control textbox"
+                                       placeholder="Search.."
+                                       [(ngModel)]="searchTeam" id="space" (keypress)="removeSpace()" />
+                                <img src="assets/img/search.svg"
+                                     class="calimg calitem input-group-append searchimg">
+                              </div>
+                            </div>
+                          </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div [ngSwitch]="viewMode">
+        <div *ngSwitchCase="'week'">
+            <!-- calendor select dropdown 2 row ends -->
+            <div class="row ">
+                <div class="table-responsive-sm  gridcalendor">
+                    <table class="table table-bordered tblcalendor">
+                        <thead>
+                            <tr>
+
+                                <th>
+                                    <p class="thheadname">Team-Member </p>
+                                    <!-- <img src="assets/img/SORT.PNG" class="sortico" (click)="teamMemberWeekSort('name')"> -->
+                                </th>
+                                <th>
+                                    <p class="thheadname"> Billable(hours)</p>
+                                    <!-- <img src="assets/img/SORT.PNG" class="sortico" (click)="teamMemberWeekSort('tb')"> -->
+                                </th>
+                                <th>
+                                    <p class="thheadname"> Non-Billable(hours) </p>
+                                    <!-- <img src="assets/img/SORT.PNG" class="sortico" (click)="teamMemberWeekSort('tnb')"> -->
+
+                                <th>
+                                    <p class="thheadname"> Total <br> hours </p>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let team of teamMemberData?.timesheets|filter:searchTeam">
+                                <td>{{team.name}}</td>
+                                <td>{{team.tb}}</td>
+                                <td>{{team.tnb}}</td>
+                                <td>{{team.total}}</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div *ngSwitchCase="'month'">
+            <div class="table-responsive-sm  gridcalendor">
+                <table class="table table-bordered tblcalendor">
+                    <thead>
+                        <tr style="border-top: 1px solid #0000003d;">
+                            <th rowspan="2" class="th_tmMonthName">Name</th>
+                            <th colspan="5">Billable</th>
+                            <th rowspan="2">Billable<br>Total</th>
+                            <th colspan="5">Non Billable</th>
+                            <th rowspan="2">Non Billable<br>Total</th>
+                            <th rowspan="2">Total</th>
+                        </tr>
+                        <tr>
+                            <th>{{teamMonthView?.weekNames?.week1}}</th>
+                            <th>{{teamMonthView?.weekNames?.week2}}</th>
+                            <th>{{teamMonthView?.weekNames?.week3}}</th>
+                            <th>{{teamMonthView?.weekNames?.week4}}</th>
+                            <th>{{teamMonthView?.weekNames?.week5}}</th>
+                            <th>{{teamMonthView?.weekNames?.week1}}</th>
+                            <th>{{teamMonthView?.weekNames?.week2}}</th>
+                            <th>{{teamMonthView?.weekNames?.week3}}</th>
+                            <th>{{teamMonthView?.weekNames?.week4}}</th>
+                            <th>{{teamMonthView?.weekNames?.week5}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of teamMonthView?.timesheets|filter:searchTeam">
+                            <td>
+                                {{item.name}}
+                                <!-- <a *ngIf="item.name != 'Grand Total'"
+                                    [routerLink]="['/aggregatedtimesheet', 'tm-'+item.id]">{{item.name}}</a> -->
+                                <ng-container *ngIf="item.name == 'Grand Total'"></ng-container>
+                            </td>
+                            <td>{{item.bw1}}</td>
+                            <td>{{item.bw2}}</td>
+                            <td>{{item.bw3}}</td>
+                            <td>{{item.bw4}}</td>
+                            <td>{{item.bw5}}</td>
+                            <td>{{item.tb}}</td>
+                            <td>{{item.nbw1}}</td>
+                            <td>{{item.nbw2}}</td>
+                            <td>{{item.nbw3}}</td>
+                            <td>{{item.nbw4}}</td>
+                            <td>{{item.nbw5}}</td>
+                            <td>{{item.tnb}}</td>
+                            <td>{{item.total}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

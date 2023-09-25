@@ -1,0 +1,146 @@
+<!--component html goes here -->
+<div class="row view-document">
+  <div class="col-12">
+    <div class="row">
+      <div class="col-7">
+        <div class="watermark">
+          <div *ngIf="urlSafe">
+            <iframe width="100%" [src]="urlSafe" class="image"></iframe>
+          </div>
+        </div>
+      </div>
+      <div class="col-5">
+        <div class="">
+          <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+            <div class="tags tab-margin form-group">
+              <div class="tags-width"><label class="custusername tab-margin fontweight">Short Text</label></div>
+              <div class="tab-margin tags-width"><button  type="button" class="btn btn-primary float-right" (click)="addTemplate(true)">ADD</button>
+              </div>
+          </div>
+            <!-- <div class="form-group">
+              <label>Short Text</label>
+              <button type="button" class="but-style" (click)="addTemplate(true)">Add</button>
+            </div>-->
+           
+            <div class="row" style="padding: 1px 15px;" *ngFor="let item of shortTextData let i = index">
+              <hr> 
+              <div class="col-5">
+                <div class="rowItem form-group name-set">
+                  <label>Text <span class="mandate">*</span></label>
+                  <input class="form-control smalltext_content textbox" type="text" maxlength="30"
+                    (input)="onKey($event, i, 'smalltext_content')" value="{{item.smalltext_content}}" min="0" />
+                  <!-- <p class="text-danger" [id]="i+'_smalltext_content_length'" style="margin-bottom: 0px;">Max
+                    characters: 30</p> -->
+                  <p class="text-danger" [id]="i+'_smalltext_content'"></p>
+                </div>
+                <div class="form-group name-set">
+                <label>Text Position <span class="mandate">*</span></label>
+                <div class="rowItem">
+                  <select class="form-control smalltext_align textbox" (change)="onChangeSmallTextAllign($event, i)">
+                    <option value="select">Choose</option>
+                    <option value="left">Bottom Left</option>
+                    <option value="right">Bottom Right</option>
+                    <option value="center">Bottom Center</option>
+                    <option value="topleft">Top Left</option>
+                    <option value="topright">Top Right</option>
+                    <option value="topcenter">Top Center</option>
+                  </select>
+                  <p class="text-danger" [id]="i+'_smalltext_align'"></p>
+                </div>
+
+              </div>
+              </div>
+              <div class="col-5">
+                <div class="rowItem orm-group name-set">
+                  <label>Page Number <span class="mandate">*</span></label>
+                  <input class="form-control smalltext_page textbox" type="number" value="{{item.smalltext_page}}" min="0"
+                    (input)="onKey($event, i, 'smalltext_page')" />
+                  <p class="text-danger" [id]="i+'_smalltext_page'"></p>
+                </div>
+                <div class="orm-group name-set">
+                  <label>Font Size <span class="mandate">*</span></label>
+                  <select class="form-control smalltext_fontsize textbox" (change)="onChangeSmallTextFontSize($event, i)">
+                    <option value="select">Choose</option>
+                    <option value="small">Small</option>
+                    <option value="medium">Medium</option>
+                    <option value="large">Large</option>
+                    <option value="xlarge">XLarge</option>
+                  </select>
+                  <p class="text-danger" [id]="i+'_smalltext_fontsize'"></p>
+                </div>
+              </div>
+              <div class="col-2">
+                <a  type='button' class="close cross-close"
+                  (click)="removeRow(i)" aria-label="Close"
+                 >
+                 <i class="fa fa-times" aria-hidden="true"></i>
+                </a>
+                
+              </div>
+            </div>
+            <hr>
+            <div class="form-group container" id="content_template"></div>
+
+
+
+            <p class="text-danger" id="id_customPage"></p>
+            <!-- <div class="modal-footer">
+              <button type="button" class="btn btn-danger modal-close">Cancel</button>
+              <button class="btn btn-primary">Done</button>
+            </div> -->
+            <div class="btnbox">
+              <button type="reset" class="btn btn-default btncancel" (click)="cancel()">Cancel</button>
+              <button type="submit" class="btn  btnsave">Save</button>
+
+          </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<jw-modal id="doc-shirt-text" class="doc-del-pages alert-box">
+  <div class="alert-box ">
+    <div class="close-x float-right" (click)="closeModal('doc-shirt-text');">X</div>
+    <div class="container">
+      <div class="row" *ngIf="data">
+        <div class="">
+          <div class="alertpara">
+            <p class="alertparatxt"> Alert</p>
+          </div>
+          <div class="alertext">Are you sure you want to add short text to approved {{data.name}} document
+          </div>
+          <div class="alertbutton">
+            <button class="btn btn-default  alertbtn alertbtnno" (click)="closeModal('doc-shirt-text');">No</button>
+            <button class="btn btn-default alertbtn alertbtnyes"
+              (click)="addText();closeModal('doc-shirt-text');">Yes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</jw-modal>
+<jw-modal id="doc-del-success" class="doc-del-success  alert-box">
+  <div class="doc-iframe-scs-body ">
+
+    <div class="container">
+      <div class="row" *ngIf="data">
+        <div class="alertbox">
+          <div class="close-x float-right" (click)="closeModal('doc-del-success'); cancel()">X</div>
+          <div class="alertpara">
+            <p class="alertparatxt"> Success</p>
+          </div>
+          <div class="alertext">Congratulations!! You have successfully added short text to {{data.name}}
+            document .
+          </div>
+          <div class="center">
+            <button class="btn btn-primary" (click)="closeModal('doc-del-success'); cancel()">OK</button>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</jw-modal>

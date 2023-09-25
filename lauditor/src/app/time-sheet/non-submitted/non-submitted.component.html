@@ -1,0 +1,554 @@
+<!--component html goes here -->
+<div class="row width-alignment">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-12 width-alignment">
+                <div class="timesheettitle margin-div">Timesheet Entry :</div>
+                <div class="row  margin-div">
+                    <div class="col-2">
+                        <label for="title" class="fontbold"> From</label>
+                        <div class="input-group dates">
+                            <!-- <input type="text" class="disable calendorselect" [(ngModel)]="minDate" disabled="true"> -->
+                           
+                            {{timeSheetData?.headers?.Mon}}
+                            <!-- <input class="form-control" bsDatepicker id="drp" #dp="bsDatepicker" [(ngModel)]="minDate"
+                                [bsValue]="minDate" (bsValueChange)='selectFromDuration($event)'
+                                [bsConfig]="{ dateInputFormat: 'MMM DD, YYYY', containerClass:'theme-dark-blue', showWeekNumbers:false, customTodayClass: 'custom-today-class' }"
+                                readonly disabled="true"> -->
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <label for="title" class="fontbold"> To</label>
+                        <div class="input-group dates">
+                            {{timeSheetData?.headers?.Sun}}
+                            <!-- <input type="text" class="disable calendorselect" [(ngModel)]="maxDate" disabled="true"> -->
+                            <!-- <input class="form-control" bsDatepicker id="drp" #dp="bsDatepicker" [(ngModel)]="maxDate"
+                                [bsValue]="maxDate" (bsValueChange)='selectToDuration($event)'
+                                [bsConfig]="{ dateInputFormat: 'MMM DD, YYYY', containerClass:'theme-dark-blue', showWeekNumbers:false, customTodayClass: 'custom-today-class' }"
+                                readonly disabled="true"> -->
+                        </div>
+                    </div>
+                    <!-- <div class="col-1 fa-icon">
+                        <i class="fa fa-chevron-left" aria-hidden="true" (click)="preAndNextWeek('pre')"></i>
+                        <i class="fa fa-chevron-right" aria-hidden="true" (click)="preAndNextWeek('next')"></i>
+
+                    </div> -->
+                    <div class="col-1 fa-icon">
+                        <div class="itemlist">
+                            <i class="fa fa-thin fa-chevron-left" aria-hidden="true"  (click)="preAndNextWeek('pre')"></i> 
+                            <i class="fa fa-thin fa-chevron-right" aria-hidden="true" (click)="preAndNextWeek('next')"></i>
+                            <!-- <img src="assets/img/right.PNG" (click)="preAndNextWeek('pre')" class="lefticon">
+                            <img src="assets/img/left.PNG" (click)="preAndNextWeek('next')" class="righticon"> -->
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="btn-align form-group">
+                            <a href="javascript:void(0);" class="selectprior optionhigh active"> Week</a>
+                            <a href="javascript:void(0);" class="selectprior optionlow optionaling"> Month</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="bcolor width-alignment b-radius row main ">
+
+    <form [formGroup]="hoursform">
+        <table class="table table-borderless tblgrid width-alignment bcolor">
+            <thead>
+                <tr class="theader">
+                    <th>
+                        <p class="thheadname"> Project</p>
+
+                    </th>
+                    <th>
+                        <p class="thheadname"> Task</p>
+
+                    </th>
+                    <th>
+                        <p class="thheadname"> Status</p>
+
+                    </th>
+                    <th>
+                        <p class="thheadname"> Date</p>
+
+                    </th>
+                    <th>
+                        <p class="thheadname"> Hours</p>
+
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr class="trcolor b-radius rone" style="vertical-align: middle;">
+                    <td >
+                        <div class="form-group">
+                            <div >
+                                <select class="form-select  calselectitem calendofont form-control" formControlName="matter_type"
+                                    [(ngModel)]="hoursModel.matter_type"  (change)="onChange($event.target)"
+                                    placeholder="Select"    [ngClass]="{'disabled':isFrozen || btnText == 'Update' || addEmptyTask}">
+                                    <option hidden value="">Select</option>
+                                    <option class="textbox" *ngFor="let i of project " value="{{i.matterName}}">
+                                        {{i.matterName}}
+                                    </option>
+                                </select>
+                                <!-- <div *ngIf="submitted && f.matter_type.errors" class="invalid-feedback">
+                                    <div *ngIf="f.matter_type.errors.required">Project is required</div>
+                                </div> -->
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <div>
+                                <select class="form-select calendofont caseselect form-control" formControlName="title"
+                                    [(ngModel)]="hoursModel.title" (change)="onChangetask($event.target)"
+                                    placeholder="Select"   [ngClass]="{'disabled':isFrozen || btnText == 'Update' ||addEmptyTask }">
+                                    <option hidden value="">Select</option>
+                                    <option class="textbox" *ngFor="let i of tasks" value="{{i.displayValue}}">
+                                        {{i.displayValue}}</option>
+                                </select>
+                                <!-- <div *ngIf="submitted && f.title.errors" class="invalid-feedback">
+                                    <div *ngIf="f.title.errors.required">Task is required</div>
+                                </div> -->
+                            </div>
+                        </div>
+                    </td>
+                    <td style="width: 200px">
+                        <div class="form-group">
+                            <div class="">
+                                <select class="form-select form-control calendofont " formControlName="billing"
+                                    (change)="onChangeHours($event.target)"   placeholder="Choose"  [(ngModel)]="hoursModel.billing"   [ngClass]="{'disabled':isFrozen || btnText == 'Update' ||addEmptyTask }" >
+                                    <option hidden value="">Select</option>
+                                    <option class="textbox" *ngFor="let i of hours " value="{{i.returnValue}}">
+                                        {{i.name}}
+                                    </option>
+                                </select>
+                                <!-- <div *ngIf="submitted && f.billing.errors" class="invalid-feedback">
+                                    <div *ngIf="f.billing.errors.required">Billing is required</div>
+                                </div> -->
+                            </div>
+                        </div>
+                    </td>
+                    <td class="time-stamp" >
+                        <div class="form-group">
+                            <div class="input-group">
+                                <!-- [minDate]="minDate"
+                                [maxDate]="maxDate"  -->
+                                <select class="form-select form-control calendofont " #selectedDate formControlName="date" [ngClass]="{'disabled':isFrozen || addEmptyTask}"
+                                (change)="selectDuration($event.target)"   placeholder="Choose"  [(ngModel)]="hoursModel.date"  >
+                                <option class="textbox" *ngFor="let i of dates "value="{{i}}">
+                                    {{i| date}}
+                                </option>
+                            </select>
+                                <!-- <input class="form-control formcalinput calendofont caldate caldatename "
+                                    formControlName="date" bsDatepicker id="drp" #dp1="bsDatepicker"                                   
+                                    [(ngModel)]="hoursModel.date" [bsValue]="bsValue"
+                                    (bsValueChange)='selectDuration($event)'    
+                                    [minDate]="minDate"
+                                    [maxDate]="maxDate"                                
+                                    [bsConfig]="{ dateInputFormat: 'MMM DD, YYYY', containerClass:'theme-dark-blue', showWeekNumbers:false, customTodayClass: 'custom-today-class' }"
+                                    readonly  [ngClass]="{'disabled':isFrozen}">
+
+                                <span *ngIf="!isFrozen" _ngcontent-syx-c6="" class="input-group-btn">
+                                  
+                                        <i class="fa fa-light fa-calendar-days" (click)="dp1.show()"></i>
+                                 
+                                </span> -->
+                                <!-- <div *ngIf="submitted && f.date.errors" class="invalid-feedback">
+                                    <div *ngIf="f.date.errors.required">Date is required</div>
+                                </div> -->
+                            </div>
+                        </div>
+                    </td>
+                    <td style="width:200px" class="center">
+                        <div class="row hours-text">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="title" class="fontbold cdate"> Hours</label>
+                                        <div class="input-group">
+                                            <input type="number" formControlName="duration_hours" 
+                                                class="number form-control" [(ngModel)]="hoursModel.duration_hours" 
+                                                 min="0" max="24"  (change)="onKey($event)" [ngClass]="{'disabled':isFrozen}">
+                                            <!-- <div *ngIf="submitted && f.duration_hours.errors" class="invalid-feedback"  >
+                                                <div *ngIf="f.duration_hours.errors.required">Hours are required</div>
+                                            </div> -->
+                                            <!-- <div class="invalid-feedback"
+                                                *ngIf="hoursform.controls['duration_hours'].hasError('max')">
+                                                Must be between 0 to 24 Hours
+
+                                            </div> -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+
+                                    <div class="form-group">
+                                        <label for="title" class="fontbold cdate"> Minutes</label>
+                                        <div class="">
+                                            <select class="textbox" formControlName="duration_minutes"
+                                                class="form-control" 
+                                                (change)="onChangeHours($event.target)"
+                                                [(ngModel)]="hoursModel.duration_minutes"    [ngClass]="{'disabled':hoursModel.duration_hours=='24' || isFrozen }">
+                                                
+                                                <option  class="textbox" 
+                                                    *ngFor="let i of minutes " value="{{i.returnValue}}">
+                                                    {{i.name}}
+                                                  
+                                                </option>
+                                            </select>
+                                            <!-- <div *ngIf="submitted && f.duration_minutes.errors"
+                                                class="invalid-feedback">
+                                                <div *ngIf="f.duration_minutes.errors.required">Munutes are required
+                                                </div>
+                                            </div> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                 
+                    <td style="width:100px" class="center ">
+                        <!-- <button type="submit"   [disabled]="hoursform.invalid" [(ngModel)]="btnText" (click)="onSubmit()">{{btnText}}</button> -->
+                        <button class="btn btn-primary "  [disabled]="hoursform.invalid"  [ngClass]="{'disabled': (hoursform.value.duration_minutes==0 && hoursform.value.duration_hours==00)}"  (click)="onSubmit()">{{btnText}}</button>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </form>
+</div>
+
+<div *ngIf="isFrozen" class="custom-alert"> Timesheet already submitted please select other week</div>
+<div style="width:90%;margin:0 auto" *ngIf="(timeSheetData?.weekTotal?.wTotal && !isFrozen) && (timeSheetData && timeSheetData.weekTotal.wTotal!='0:0')">
+    <div class="hr-line">
+        <h1></h1>
+    </div>
+    <table class="tsheet-table margin-div" *ngIf="timeSheetData">
+        <thead>
+            <tr>
+                <!-- <th *ngFor="let item of timesheetList.headers" class="tHeader">{{item}}<br>{{item}}</th> -->
+                <th class="projectName" style="vertical-align: middle;">{{timeSheetData['headers'].header1}}</th>
+                <th class="taskname" style="vertical-align: middle;">{{timeSheetData['headers'].header2}}</th>
+                <th class="Status" style="vertical-align: middle; width:100px">Status</th>
+                <th class="date">Mon <br>{{timeSheetData['headers'].Mon}}</th>
+                <th class="date">Tue <br>{{timeSheetData['headers'].Tue}}</th>
+                <th class="date">Wed <br>{{timeSheetData['headers'].Wed}}</th>
+                <th class="date">Thu <br>{{timeSheetData['headers'].Thu}}</th>
+                <th class="date">Fri <br>{{timeSheetData['headers'].Fri}}</th>
+                <th class="date">Sat <br>{{timeSheetData['headers'].Sat}}</th>
+                <th class="date">Sun <br>{{timeSheetData['headers'].Sun}}</th>
+                <th class="date">{{timeSheetData['headers'].header3}}</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <ng-container *ngFor="let item of timeSheetData['matters']; let pIndex = index">
+                <tr class="task-name" *ngIf="item.tasks[0]?.total">
+                    <td class="project" [attr.rowspan]="item.tasks.length">{{item.matterName}}<span *ngIf="item?.matterType">- {{item.matterType}} </span> 
+                    </td>
+                    <td class="tasks">{{item.tasks[0].taskName}}<span *ngIf="item.tasks[0].taskName != ''"> </span>
+                    </td>
+                    <td class="billable">{{item.tasks[0].billing}}
+                    </td>
+                    <ng-container *ngIf="item.tasks[0].taskName == ''">
+                        <td>{{item.tasks[0].Mon['hours']}}</td>
+                        <td>{{item.tasks[0].Tue['hours']}}</td>
+                        <td>{{item.tasks[0].Wed['hours']}}</td>
+                        <td>{{item.tasks[0].Thu['hours']}}</td>
+                        <td>{{item.tasks[0].Fri['hours']}}</td>
+                        <td>{{item.tasks[0].Sat['hours']}}</td>
+                        <td>{{item.tasks[0].Sun['hours']}}</td>
+                    </ng-container>
+                    <ng-container *ngIf="item.tasks[0].taskName != ''">
+                      
+                        <td *ngIf="!item.tasks[0].Mon['taskId']" (click)="addTimesheet(item.tasks[0].Mon, 'Mon', pIndex, 0, item.tasks[0].taskName,item)">
+                            <div  >
+                               
+                            </div>
+                        </td>
+                        <td *ngIf="item.tasks[0].Mon['taskId']">
+                            <div *ngIf="item.tasks[0].Mon['hours']!=0 || item.tasks[0].Mon['minutes']!=0">
+                                {{item.tasks[0].Mon['hours']}}:{{item.tasks[0].Mon['minutes']}}<span *ngIf="!isFrozen">
+                                    <i class="fa fa-regular fa-circle-xmark"
+                                        (click)="deleteTimeSheetEvent(item.tasks[0].Mon['taskId'])"></i> <i
+                                        class="fa fa-pencil"
+                                        (click)="editTimesheet(item.tasks[0].Mon, 'Mon', pIndex, 0, item.tasks[0].taskName,item)"
+                                        aria-hidden="true"></i></span>
+                            </div>
+                        </td>
+                        <td *ngIf="!item.tasks[0].Tue['taskId']" (click)="addTimesheet(item.tasks[0].Tue, 'Tue', pIndex, 0, item.tasks[0].taskName,item)">
+                            <div  >
+                              
+                            </div>
+                        </td>
+                        <td *ngIf="item.tasks[0].Tue['taskId']">
+                            <div *ngIf="item.tasks[0].Tue['hours']!=0 || item.tasks[0].Tue['minutes']!=0">
+                                {{item.tasks[0].Tue['hours']}}:{{item.tasks[0].Tue['minutes']}}<span *ngIf="!isFrozen">
+                                    <i class="fa fa-regular fa-circle-xmark"
+                                        (click)="deleteTimeSheetEvent(item.tasks[0].Tue['taskId'])"></i> <i
+                                        class="fa fa-pencil"
+                                        (click)="editTimesheet(item.tasks[0].Tue, 'Tue', pIndex, 0, item.tasks[0].taskName,item)"
+                                        aria-hidden="true"></i></span>
+                            </div>
+                        </td>
+
+                        <td *ngIf="!item.tasks[0].Wed['taskId']" (click)="addTimesheet(item.tasks[0].Wed, 'Wed', pIndex, 0, item.tasks[0].taskName,item)">
+                            <div  >
+                                
+                            </div>
+                        </td>
+                        <td *ngIf="item.tasks[0].Wed['taskId']"> 
+                            <div *ngIf="item.tasks[0].Wed['hours']!=0 || item.tasks[0].Wed['minutes']!=0">
+                                {{item.tasks[0].Wed['hours']}}:{{item.tasks[0].Wed['minutes']}}<span *ngIf="!isFrozen">
+                                    <i class="fa fa-regular fa-circle-xmark"
+                                        (click)="deleteTimeSheetEvent(item.tasks[0].Wed['taskId'])"></i> <i
+                                        class="fa fa-pencil"
+                                        (click)="editTimesheet(item.tasks[0].Wed, 'Wed', pIndex, 0, item.tasks[0].taskName,item)"
+                                        aria-hidden="true"></i></span>
+                            </div>
+                        </td>
+                        <td *ngIf="!item.tasks[0].Thu['taskId']" (click)="addTimesheet(item.tasks[0].Thu, 'Thu', pIndex, 0, item.tasks[0].taskName,item)">
+                            <div  >
+                                
+                            </div>
+                        </td>
+                        <td *ngIf="item.tasks[0].Thu['taskId']">
+                            <div *ngIf="item.tasks[0].Thu['hours']!=0 || item.tasks[0].Thu['minutes']!=0">
+                                {{item.tasks[0].Thu['hours']}}:{{item.tasks[0].Thu['minutes']}}<span *ngIf="!isFrozen">
+                                    <i class="fa fa-regular fa-circle-xmark"
+                                        (click)="deleteTimeSheetEvent(item.tasks[0].Thu['taskId'])"></i> <i
+                                        class="fa fa-pencil"
+                                        (click)="editTimesheet(item.tasks[0].Thu, 'Thu', pIndex, 0, item.tasks[0].taskName,item)"
+                                        aria-hidden="true"></i></span>
+                            </div>
+                        </td>
+                        <td *ngIf="!item.tasks[0].Fri['taskId']"  (click)="addTimesheet(item.tasks[0].Fri, 'Fri', pIndex, 0, item.tasks[0].taskName,item)">
+                            <div >
+                                
+                            </div>
+                        </td>
+                        <td *ngIf="item.tasks[0].Fri['taskId']">
+                            <div *ngIf="item.tasks[0].Fri['hours']!=0 || item.tasks[0].Fri['minutes']!=0">
+                                {{item.tasks[0].Fri['hours']}}:{{item.tasks[0].Fri['minutes']}}<span *ngIf="!isFrozen">
+                                    <i class="fa fa-regular fa-circle-xmark"
+                                        (click)="deleteTimeSheetEvent(item.tasks[0].Fri['taskId'])"></i> <i
+                                        class="fa fa-pencil"
+                                        (click)="editTimesheet(item.tasks[0].Fri, 'Fri', pIndex, 0, item.tasks[0].taskName,item)"
+                                        aria-hidden="true"></i></span>
+                            </div>
+                        </td>
+                          <td *ngIf="!item.tasks[0].Sat['taskId']" (click)="addTimesheet(item.tasks[0].Sat, 'Sat', pIndex, 0, item.tasks[0].taskName,item)">
+                            <div  >
+                                
+                            </div>
+                        </td>
+                        <td *ngIf="item.tasks[0].Sat['taskId']">
+                            <div *ngIf="item.tasks[0].Sat['hours']!=0 || item.tasks[0].Sat['minutes']!=0">
+                                {{item.tasks[0].Sat['hours']}}:{{item.tasks[0].Sat['minutes']}}<span *ngIf="!isFrozen">
+                                    <i class="fa fa-regular fa-circle-xmark"
+                                        (click)="deleteTimeSheetEvent(item.tasks[0].Sat['taskId'])"></i> <i
+                                        class="fa fa-pencil"
+                                        (click)="editTimesheet(item.tasks[0].Sat, 'Sat', pIndex, 0, item.tasks[0].taskName,item)"
+                                        aria-hidden="true"></i></span>
+                            </div>
+                        </td>
+                        <td *ngIf="!item.tasks[0].Sun['taskId']" (click)="addTimesheet(item.tasks[0].Sun, 'Sun', pIndex, 0, item.tasks[0].taskName,item)">
+                            <div  >
+                                
+                            </div>
+                        </td>
+                        <td *ngIf="item.tasks[0].Sun['taskId']">
+                            <div *ngIf="item.tasks[0].Sun['hours']!=0 || item.tasks[0].Sun['minutes']!=0">
+                                {{item.tasks[0].Sun['hours']}}:{{item.tasks[0].Sun['minutes']}}<span *ngIf="!isFrozen">
+                                    <i class="fa fa-regular fa-circle-xmark"
+                                        (click)="deleteTimeSheetEvent(item.tasks[0].Sun['taskId'])"></i> <i
+                                        class="fa fa-pencil"
+                                        (click)="editTimesheet(item.tasks[0].Sun, 'Sun', pIndex, 0, item.tasks[0].taskName,item)"
+                                        aria-hidden="true"></i></span>
+                            </div>
+                        </td>
+                    </ng-container>
+                    <td>{{item.tasks[0].total}}</td>
+                </tr>
+                <ng-container *ngFor="let tdata of item.tasks; let tIndex= index;">
+                    <tr class="task-name" *ngIf="tIndex!=0">
+                        <td class="tasks">{{tdata.taskName}} </td>
+                        <td>{{tdata.billing}}</td>
+
+                        <td *ngIf="!item.tasks[tIndex].Mon['taskId']"  (click)="addTimesheet(tdata.Mon, 'Mon', pIndex, tIndex, tdata.taskName,item)">
+                            <div >
+                                
+                            </div>
+                        </td>
+
+                        <td *ngIf="item.tasks[tIndex].Mon['taskId']">
+                            <div *ngIf="tdata.Mon['hours']!=0 || tdata.Mon['minutes']!=0">
+                                {{tdata.Mon['hours']}}:{{tdata.Mon['minutes']}}<span *ngIf="!isFrozen"> <i
+                                        class="fa fa-regular fa-circle-xmark"
+                                        (click)="deleteTimeSheetEvent(item.tasks[0].Mon['taskId'])"></i> <i
+                                        class="fa fa-pencil"
+                                        (click)="editTimesheet(tdata.Mon, 'Mon', pIndex, tIndex, tdata.taskName,item)"
+                                        aria-hidden="true"></i></span>
+                            </div>
+                        </td>
+                        <td *ngIf="!item.tasks[tIndex].Tue['taskId']" (click)="addTimesheet(tdata.Tue, 'Tue', pIndex, tIndex, tdata.taskName,item)">
+                            <div  >
+                                
+                            </div>
+                        </td>
+                        <td   *ngIf="item.tasks[tIndex].Tue['taskId']">
+                            <div *ngIf="tdata.Tue['hours']!=0 || tdata.Tue['minutes']!=0">
+                                {{tdata.Tue['hours']}}:{{tdata.Tue['minutes']}}<span *ngIf="!isFrozen"> <i
+                                        class="fa fa-regular fa-circle-xmark"
+                                        (click)="deleteTimeSheetEvent(item.tasks[0].Tue['taskId'])"></i> <i
+                                        class="fa fa-pencil"
+                                        (click)="editTimesheet(tdata.Tue, 'Tue', pIndex, tIndex, tdata.taskName,item)"
+                                        aria-hidden="true"></i></span>
+                            </div>
+                        </td>
+
+                        <td *ngIf="!item.tasks[tIndex].Wed['taskId']" (click)="addTimesheet(tdata.Wed, 'Wed', pIndex, tIndex, tdata.taskName,item)">
+                            <div  >
+                                
+                            </div>
+                        </td>
+                        <td  *ngIf="item.tasks[tIndex].Wed['taskId']">
+                            <div *ngIf="tdata.Wed['hours']!=0 || tdata.Wed['minutes']!=0">
+                                {{tdata.Wed['hours']}}:{{tdata.Wed['minutes']}}<span *ngIf="!isFrozen"> <i
+                                        class="fa fa-regular fa-circle-xmark"
+                                        (click)="deleteTimeSheetEvent(item.tasks[0].Wed['taskId'])"></i> <i
+                                        class="fa fa-pencil"
+                                        (click)="editTimesheet(tdata.Wed, 'Wed', pIndex, tIndex, tdata.taskName,item)"
+                                        aria-hidden="true"></i></span>
+                            </div>
+                        </td>
+                        <td *ngIf="!item.tasks[tIndex].Thu['taskId']" (click)="addTimesheet(tdata.Thu, 'Thu', pIndex, tIndex, tdata.taskName,item)">
+                            <div  >
+                                
+                            </div>
+                        </td>
+
+                        <td *ngIf="item.tasks[tIndex].Thu['taskId']">
+                            <div *ngIf="tdata.Thu['hours']!=0 || tdata.Thu['minutes']!=0 ">
+                                {{tdata.Thu['hours']}}:{{tdata.Thu['minutes']}}<span *ngIf="!isFrozen"> <i
+                                        class="fa fa-regular fa-circle-xmark"
+                                        (click)="deleteTimeSheetEvent(item.tasks[0].Thu['taskId'])"></i> <i
+                                        class="fa fa-pencil"
+                                        (click)="editTimesheet(tdata.Thu, 'Thu', pIndex, tIndex, tdata.taskName,item)"
+                                        aria-hidden="true"></i></span>
+                            </div>
+                        </td>
+
+                        <td *ngIf="!item.tasks[tIndex].Fri['taskId']"  (click)="addTimesheet(tdata.Fri, 'Fri', pIndex, tIndex, tdata.taskName,item)">
+                            <div >
+                                
+                            </div>
+                        </td>
+
+                        <td *ngIf="item.tasks[tIndex].Fri['taskId']">
+                            <div *ngIf="tdata.Fri['hours']!=0 || tdata.Fri['minutes']!=0">
+                                {{tdata.Fri['hours']}}:{{tdata.Fri['minutes']}}<span *ngIf="!isFrozen"> <i
+                                        class="fa fa-regular fa-circle-xmark"
+                                        (click)="deleteTimeSheetEvent(item.tasks[0].Fri['taskId'])"></i> <i
+                                        class="fa fa-pencil"
+                                        (click)="editTimesheet(tdata.Fri, 'Fri', pIndex, tIndex, tdata.taskName,item)"
+                                        aria-hidden="true"></i></span>
+                            </div>
+                        </td>
+
+                        <td *ngIf="!item.tasks[tIndex].Sat['taskId']"  (click)="addTimesheet(tdata.Sat, 'Sat', pIndex, tIndex, tdata.taskName,item)">
+                            <div >
+                                
+                            </div>
+                        </td>
+                        <td  *ngIf="item.tasks[tIndex].Sat['taskId']">
+                            <div *ngIf="tdata.Sat['hours']!=0 || tdata.Sat['minutes']!=0">
+                                {{tdata.Sat['hours']}}:{{tdata.Sat['minutes']}}<span *ngIf="!isFrozen"> <i
+                                        class="fa fa-regular fa-circle-xmark"
+                                        (click)="deleteTimeSheetEvent(item.tasks[0].Sat['taskId'])"></i> <i
+                                        class="fa fa-pencil"
+                                        (click)="editTimesheet(tdata.Sat, 'Sat', pIndex, tIndex, tdata.taskName,item)"
+                                        aria-hidden="true"></i></span>
+                            </div>
+                        </td>
+                        <td *ngIf="!item.tasks[tIndex].Sun['taskId']"  (click)="addTimesheet(tdata.Sun, 'Sun', pIndex, tIndex, tdata.taskName,item)">
+                            <div >
+                                
+                            </div>
+                        </td>
+                        <td *ngIf="item.tasks[tIndex].Sun['taskId']">
+                            <div *ngIf="tdata.Sun['hours']!=0 || tdata.Sun['minutes']!=0">
+                                {{tdata.Sun['hours']}}:{{tdata.Sun['minutes']}}<span *ngIf="!isFrozen"> <i
+                                        class="fa fa-regular fa-circle-xmark"
+                                        (click)="deleteTimeSheetEvent(item.tasks[0].Sun['taskId'])"></i> <i
+                                        class="fa fa-pencil"
+                                        (click)="editTimesheet(tdata.Sun, 'Sun', pIndex, tIndex, tdata.taskName,item)"
+                                        aria-hidden="true"></i></span>
+                            </div>
+                        </td>
+
+
+                        <td>{{tdata.total}}</td>
+                    </tr>
+                </ng-container>
+            </ng-container>
+
+        </tbody>
+    </table>
+    <table class="table-total margin-bottom">
+        <tr class="total-hours">
+            <td style="width:100%; padding:0 35px 0 8%;
+            font-weight: bolder;">Total <span class="float-right">{{timeSheetData?.weekTotal?.wTotal}}</span></td>
+        </tr>
+    </table>
+
+    <div *ngIf="!isFrozen">
+        <button class="btn btn-primary float-right"  (click)="weekSubmit()">Submit</button>
+    </div>
+</div>
+<jw-modal id="success" class="alert-box">
+    <div class="doc-iframe-scs-body ">
+        <div class="close-x float-right" (click)="closeModal('success');">X</div>
+        <div class="container">
+            <div class="alertpara">
+                <p class="alertparatxt"> Success</p>
+            </div>
+            <div class="alertext">
+                <div *ngIf="resMessage">
+                    {{resMessage}}
+                </div>
+            </div>
+            <div class="center">
+                <button class="btn btn-primary  " (click)="closeModal('success')">OK</button>
+            </div>
+        </div>
+    </div>
+</jw-modal>
+<jw-modal id="delete-Alert" class="doc-view-scs">
+    <div class="container">
+        <div class="row">
+            <div class="alertbox">
+                <div class="iconclose" (click)="closeModal('delete-Alert');onReset()">X</div>
+                <div class="alertpara">
+                    <p class="alertparatxt"> Confirmation</p>
+                </div>
+                <div class="alertext">Are you sure you want to delete Task ?</div>
+                <div class="alertbutton">
+                    <button class="btn btn-default  alertbtn alertbtnno"
+                        (click)="closeModal('delete-Alert');onReset()">No</button>
+                    <button class="btn btn-default alertbtn alertbtnyes"
+                        (click)="closeModal('delete-Alert');deleteTask()">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</jw-modal>

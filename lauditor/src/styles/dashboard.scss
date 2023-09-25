@@ -1,0 +1,5099 @@
+//  /* Reset */
+//  * {
+// 	margin: 0;
+// 	padding: 0;
+// 	box-sizing: border-box;
+//   }
+  
+//   body {
+// 	background-color: var(--white);
+// 	font-family: "gill";
+//   }
+  
+//   a {
+// 	text-decoration: none;
+//   }
+  
+//   ul {
+// 	list-style: none;
+//   }
+  
+//   /* Header */
+//   .header {
+// 	background-color: #fff;
+// 	box-shadow: 0px 3px 3px #00000033;
+// 	position: sticky;
+// 	top: 0;
+// 	width: 100%;
+// 	height: 70px;
+// 	z-index: 999;
+//   }
+  
+//   /* Logo */
+  
+//   .headtitle {
+// 	display: inline-block;
+// 	font-size: 30px;
+// 	margin-left: 45px;
+// 	text-align: left;
+// 	letter-spacing: 0.5px;
+// 	color: #004d87;
+// 	padding-top: 10px;
+// 	font-weight: 900;
+//   }
+  
+//   .title {
+// 	display: inline-block;
+//   }
+  
+//   /* Nav web menu */
+//   .webnav {
+// 	width: 100%;
+// 	height: 100%;
+// 	position: fixed;
+// 	background-color: #f1f0ef;
+// 	overflow: hidden;
+// 	padding-top: 14px;
+//   }
+  
+//   .webmenu a {
+// 	display: block;
+// 	padding: 12px;
+//   }
+  
+//   .custusername {
+// 	display: block;
+// 	padding-top: 2px;
+// 	margin-bottom: -5px;
+// 	color: #004d87;
+// 	font-size: 20px;
+//   }
+  
+//   .custusertype {
+// 	margin-top: 7px !important;
+// 	font-size: 14px;
+// 	display: INLINE-BLOCK;
+//   }
+  
+//   .custusertime {
+// 	padding-left: 15px;
+//   }
+  
+//   .webmenu a:hover {
+// 	background-color: var(--grey);
+//   }
+  
+//   .webnav {
+// 	max-height: 0;
+// 	transition: max-height 0.5s ease-out;
+  
+// 	padding-right: 35px;
+//   }
+  
+//   .arrowitem {
+// 	text-align: center;
+//   }
+  
+//   .userprofile {
+// 	height: 50px;
+// 	background: #a0004a;
+// 	width: 50px;
+// 	margin-top: -6px;
+// 	border-radius: 100px;
+// 	text-align: center;
+// 	vertical-align: middle;
+//   }
+  
+//   .username {
+// 	margin-top: 3px;
+// 	font-size: 29px;
+// 	font-weight: 600;
+// 	vertical-align: middle;
+// 	color: #fff;
+//   }
+  
+//   .dashboard_notification {
+// 	display: inline-block;
+// 	padding-right: 55px;
+// 	padding-top: 5px;
+//   }
+  
+//   .webmenu {
+// 	padding-left: 5px;
+// 	width: 200px;
+// 	font-weight: 600;
+// 	margin-top: -7px;
+// 	color: #000;
+// 	letter-spacing: 0.5px;
+//   }
+  
+//   .middlecontainertwo {
+// 	margin-left: -20px;
+//   }
+  
+//   .dashboardicoweb {
+// 	margin-top: -13px;
+// 	width: 52px;
+//   }
+  
+//   /* Nav menu  mobile*/
+//   .mobilenav {
+// 	width: 100%;
+// 	height: 100%;
+// 	position: fixed;
+// 	background-color: #f1f0ef;
+// 	overflow: hidden;
+//   }
+  
+//   .mobile-menu a {
+// 	display: block;
+// 	padding: 12px;
+// 	color: #004d87;
+//   }
+  
+//   .mobile-menu a:hover {
+// 	background-color: var(--grey);
+//   }
+  
+//   .mobilenav {
+// 	max-height: 0;
+// 	transition: max-height 0.5s ease-out;
+//   }
+  
+//   /* Menu Icon */
+  
+//   .hamb {
+// 	cursor: pointer;
+// 	float: right;
+// 	padding: 24px 20px;
+//   }
+  
+//   .hamb-line {
+// 	background: #004d87;
+// 	display: block;
+// 	height: 2px;
+// 	position: relative;
+// 	width: 24px;
+//   }
+  
+//   .hamb-line::before,
+//   .hamb-line::after {
+// 	background: #004d87;
+// 	content: "";
+// 	display: block;
+// 	height: 100%;
+// 	position: absolute;
+// 	transition: all 0.2s ease-out;
+// 	width: 100%;
+//   }
+  
+//   .hamb-line::before {
+// 	top: 5px;
+//   }
+  
+//   .hamb-line::after {
+// 	top: -5px;
+//   }
+  
+//   .side-menu {
+// 	display: none;
+//   }
+  
+//   /* Toggle menu icon */
+  
+//   .side-menu:checked ~ .mobilenav {
+// 	max-height: 100%;
+//   }
+  
+//   .side-menu:checked ~ .hamb .hamb-line {
+// 	background: transparent;
+//   }
+  
+//   .side-menu:checked ~ .hamb .hamb-line::before {
+// 	transform: rotate(-45deg);
+// 	top: 0;
+//   }
+  
+//   .side-menu:checked ~ .hamb .hamb-line::after {
+// 	transform: rotate(45deg);
+// 	top: 0;
+//   }
+  
+//   .fontbold {
+// 	font-weight: 600;
+//   }
+  
+//   .addgroup {
+// 	font-size: 20px;
+//   }
+  
+//   /* left master mnenu*/
+//   .left-menu {
+// 	width: 70px;
+// 	background: #f5f5f5;
+// 	position: absolute;
+// 	height: calc(100vh - -250vh);
+// 	left: 0;
+//   }
+  
+//   .rleftmenu {
+// 	height: calc(100vh - -70vh);
+//   }
+  
+//   .legalleftmenu {
+// 	height: calc(100vh - -90vh);
+//   }
+  
+//   .team-left-menu {
+// 	height: calc(100vh - -50vh);
+//   }
+  
+//   .gridmenu {
+// 	height: calc(100vh - -30vh);
+//   }
+  
+//   .row > .left-menu {
+// 	width: 70px !important;
+//   }
+  
+//   .logoicon {
+// 	width: 36px;
+// 	margin-top: -15px;
+//   }
+  
+//   .logo_ico {
+// 	text-align: center;
+// 	display: inline-block;
+// 	width: 70px;
+// 	background: #f5f5f5;
+// 	padding-top: 25px;
+// 	padding-bottom: 15px;
+//   }
+  
+//   .left-menu-icon {
+// 	text-align: center;
+// 	margin-top: 0px;
+// 	width: 70px;
+// 	margin-left: -12px;
+// 	cursor: pointer;
+//   }
+  
+//   .first-element {
+// 	margin-top: 1px;
+//   }
+  
+//   .iconlink {
+// 	color: #000;
+// 	display: block;
+// 	padding-top: 12px;
+// 	padding-bottom: 12px;
+//   }
+  
+//   .iconlink:hover,
+//   .iconlink:focus {
+// 	background: #00b3a7;
+// 	color: #fff;
+//   }
+  
+//   .iconlink:hover > *,
+//   .iconlink:focus > * {
+// 	filter: brightness(0) invert(1);
+// 	color: white !important;
+//   }
+  
+//   .menu-icon {
+// 	display: block;
+//   }
+  
+//   .parent:hover .child {
+// 	animation-name: example;
+// 	background: #00b3a7;
+// 	animation-timing-function: ease;
+//   }
+  
+//   .mobilenav,
+//   .dashboard_notification_mob {
+// 	display: none;
+//   }
+  
+//   /* main-content */
+  
+//   .main {
+// 	padding-left: 178px;
+// 	padding-right: 0px;
+// 	padding-top: 20px;
+//   }
+
+//   .custmain{
+// 	padding-left: 160px;
+  
+//   }
+  
+//   .ddate {
+// 	height: 76px;
+// 	min-width: 288px;
+// 	background: #ffffff 0% 0% no-repeat padding-box;
+// 	box-shadow: 0px 2px 2px #00000067;
+// 	border: 1px solid #e2e2e2;
+// 	border-radius: 5px;
+// 	opacity: 1;
+// 	margin-top: 25px;
+//   }
+  
+//   .time {
+// 	font-size: 2.1vw;
+// 	padding-top: 8px;
+// 	padding-bottom: 8px;
+// 	display: inline-block;
+// 	margin-bottom: 0px;
+// 	text-align: center;
+// 	color: #004d87;
+// 	font-weight: 600;
+// 	letter-spacing: 0.5px;
+//   }
+  
+//   .daycol {
+// 	margin-left: 0px;
+// 	padding-left: 0px;
+//   }
+  
+//   .customcontainer {
+// 	width: 92%;
+// 	margin-left: -10px;
+//   }
+  
+//   .timecontainer {
+// 	background: #eeeeee;
+// 	border: 1px solid #e2e2e2;
+// 	text-align: center;
+// 	border-radius: 3px;
+// 	box-shadow: 0px 3px 3px #00000067;
+//   }
+  
+//   .mmonth {
+// 	font-size: 2.2vw;
+// 	color: #004d87;
+// 	padding-left: 13px;
+// 	padding-top: 8px;
+// 	padding-bottom: 8px;
+// 	display: inline-block;
+// 	font-weight: 900;
+// 	margin-bottom: 0px;
+//   }
+  
+//   .yyear,
+//   .dDay {
+// 	font-size: 2.2vw;
+// 	color: #004d87;
+// 	padding-top: 8px;
+// 	padding-bottom: 8px;
+// 	display: inline-block;
+// 	margin-bottom: 0px;
+// 	font-weight: 600;
+//   }
+  
+//   .icotxt {
+// 	font-size: 10px;
+// 	font-weight: 600;
+// 	display: block;
+// 	cursor: pointer;
+// 	padding-top: 3px;
+// 	letter-spacing: 0.5px;
+//   }
+  
+//   .docico {
+// 	width: 28px;
+// 	padding-right: 3px;
+//   }
+  
+//   .mattersicon {
+// 	width: 40px;
+//   }
+  
+//   .switch {
+// 	/* border: 1px solid #c7c9ca; */
+// 	border-radius: 5px;
+// 	opacity: 1;
+// 	display: inline-block;
+//   }
+  
+//   .Personalize {
+// 	font-size: 16px;
+// 	display: inline-block;
+// 	font-weight: 600;
+// 	vertical-align: middle;
+// 	padding: 5px 22px 7px 22px;
+// 	color: #000;
+// 	cursor: pointer;
+// 	background: #eeeeee;
+// 	/* border: 1px solid #c7c9ca; */
+// 	text-align: center;
+// 	border-radius: 5px;
+// 	font-family: "gill";
+//   }
+  
+//   .Personalize:hover,
+//   .Personalize:focus {
+// 	color: #fff;
+// 	background: #00b3a7;
+// 	border: 1px solid #00b3a7;
+//   }
+  
+//   .optiontwo:hover,
+//   .optionone:hover,
+//   .optiontwo:active,
+//   .optionone:active,
+//   .optiontwo:focus,
+//   .optionone:focus {
+// 	color: #fff;
+// 	background: #00b3a7;
+//   }
+  
+//   .optionone {
+// 	font-size: 16px;
+// 	display: inline-block;
+// 	font-weight: 600;
+// 	vertical-align: middle;
+// 	padding: 7px 22px 7px 22px;
+// 	color: #000;
+// 	cursor: pointer;
+// 	background: #eeeeee;
+// 	text-align: center;
+// 	width: 108px;
+// 	border-top-left-radius: 5px;
+// 	border-bottom-left-radius: 5px;
+// 	font-family: "gill";
+//   }
+  
+//   .optiontwo {
+// 	font-size: 16px;
+// 	display: inline-block;
+// 	font-weight: 700;
+// 	vertical-align: middle;
+// 	padding: 7px 0px 7px 0px;
+// 	color: #000;
+// 	cursor: pointer;
+// 	background: #eeeeee;
+// 	text-align: center;
+// 	border-left: 1px solid #fff;
+// 	margin-left: -4px;
+// 	width: 87px;
+// 	border-top-right-radius: 5px;
+// 	border-bottom-right-radius: 5px;
+// 	font-family: "gill";
+//   }
+  
+//   .switchtwo {
+// 	margin-top: 25px;
+// 	display: block;
+//   }
+  
+//   .personalizebtn {
+// 	height: 40px;
+// 	opacity: 1;
+// 	display: inline-block;
+// 	float: right;
+// 	margin-right: 15px;
+//   }
+  
+//   .meetingcontainer {
+// 	border: 1px solid #e2e2e2;
+// 	border-radius: 5px;
+// 	opacity: 1;
+// 	overflow: hidden;
+// 	box-shadow: 0px 2px 2px #00000067;
+//   }
+  
+//   .containerbox {
+// 	margin-top: 28px;
+// 	width: 90%;
+//   }
+  
+//   .rightcontainerbox {
+// 	margin-top: 0px;
+// 	margin-bottom: 20px;
+//   }
+  
+//   .toalhours {
+// 	line-height: 1;
+//   }
+  
+//   .rightboxdata {
+// 	color: #00b3a7;
+// 	padding-top: 43px;
+// 	font-size: 40px;
+// 	display: inline-block;
+// 	vertical-align: middle;
+//   }
+  
+//   .leftmeetingcon {
+// 	width: 50%;
+// 	display: inline-block;
+// 	float: left;
+//   }
+  
+//   .rightmeetingcon {
+// 	width: 50%;
+// 	display: inline-block;
+// 	float: left;
+//   }
+  
+//   /* client component */
+//   .rightmeetingconclient {
+// 	width: 30%;
+// 	display: inline-block;
+// 	float: left;
+// 	padding-left: 12px;
+//   }
+  
+//   .leftmeetingconclient {
+// 	width: 40%;
+// 	display: inline-block;
+// 	float: left;
+//   }
+  
+//   .middlecontainer {
+// 	width: 16%;
+// 	float: left;
+// 	display: inline-block;
+// 	text-align: center;
+//   }
+  
+//   .middlecontainerone {
+// 	width: 16%;
+// 	float: left;
+// 	display: inline-block;
+// 	text-align: center;
+// 	margin-left: -20px;
+//   }
+  
+//   .circlecontainer {
+// 	width: 14%;
+// 	display: inline-block;
+// 	float: right;
+//   }
+  
+//   .midtime {
+// 	text-align: center;
+// 	display: block;
+// 	font-size: 12px;
+// 	font-weight: 700;
+// 	color: #000;
+//   }
+  
+//   .midprofile {
+// 	padding-top: 17px;
+// 	width: 34px;
+//   }
+  
+//   /* teams componenet */
+//   .vertiright {
+// 	padding-left: 0px !important;
+//   }
+  
+//   /* shared component */
+//   .leftsharedoc {
+// 	width: 50%;
+//   }
+  
+//   .rightmeetingconclientshared {
+// 	width: 36%;
+//   }
+  
+//   .rightbox.righboxshared {
+// 	font-size: 20px;
+// 	font-weight: bold;
+// 	line-height: 1;
+// 	display: -webkit-box !important;
+// 	-webkit-line-clamp: 2;
+// 	-webkit-box-orient: vertical;
+// 	white-space: normal;
+// 	max-width: 173px;
+// 	overflow: hidden;
+//   }
+  
+//   .icongroup {
+// 	padding: 20px 9px 0px 25px;
+// 	display: block;
+//   }
+  
+//   .icomeeting {
+// 	padding: 25px 9px 0px 15px !important;
+//   }
+  
+//   .iconsub {
+// 	width: 75px;
+// 	padding-left: 10px;
+//   }
+  
+//   .meetingimg {
+// 	display: inline-block;
+//   }
+  
+//   .meetingname {
+// 	display: inline-block;
+// 	padding-bottom: 7px;
+//   }
+  
+//   .mname {
+// 	color: #004d87;
+// 	font-size: 1.8vw;
+// 	padding-bottom: 0px;
+// 	margin: 0px;
+// 	font-weight: 600;
+// 	padding-top: 15px;
+//   }
+  
+//   .icoright {
+// 	margin-left: -13px;
+//   }
+  
+//   .mmessage {
+// 	color: #000;
+// 	font-weight: 700;
+//   }
+  
+//   .rightbox {
+// 	color: #000;
+// 	padding-top: 19px;
+// 	font-size: 28px;
+// 	display: inline-block;
+// 	line-height: 1.2;
+//   }
+  
+//   .rightsubitem {
+// 	color: #ffffff;
+// 	height: 30px;
+// 	width: 30px;
+// 	border-radius: 100px;
+// 	background: #ea4018;
+// 	font-size: 12px;
+// 	text-align: center;
+// 	padding-top: 7px;
+// 	margin-top: 20px;
+// 	display: block;
+// 	float: right;
+//   }
+  
+//   .vertical {
+// 	border-right: 2px dotted #9d9d9d;
+// 	height: 50px;
+// 	position: absolute;
+// 	padding-left: 0px;
+// 	margin-top: 21px;
+//   }
+  
+//   .meetintvertical {
+// 	width: 0px;
+// 	padding-left: 23px;
+//   }
+  
+//   .verticalone {
+// 	border-right: 2px dotted #9d9d9d;
+// 	height: 77px;
+// 	position: absolute;
+// 	margin-top: 18px;
+//   }
+  
+//   .clientprofile {
+// 	padding-top: 0px;
+// 	margin-top: -10px;
+//   }
+  
+//   .clientvertical {
+// 	border-left: 2px dashed #9d9d9d;
+// 	border-right: 2px dashed #9d9d9d;
+// 	padding-right: 8px;
+// 	padding-left: 10px;
+//   }
+  
+//   /* total meeting compoenent */
+//   .totalbill {
+// 	width: 55%;
+//   }
+  
+//   .rightmeetingconclientmeeting {
+// 	width: 29%;
+//   }
+  
+//   .rightboxtxt {
+// 	color: #00b3a7;
+// 	padding-top: 33px;
+// 	display: inline-block;
+// 	line-height: 1;
+//   }
+  
+//   .clientmsgtxt {
+// 	line-height: 1.1;
+// 	font-size: 48px;
+// 	margin-top: 0px;
+// 	padding-top: 31px;
+// 	text-align: center;
+//   }
+  
+//   .clientmsg {
+// 	line-height: 1.2;
+// 	font-size: 12px;
+// 	margin-top: -6px;
+// 	display: -webkit-box !important;
+// 	-webkit-line-clamp: 3;
+// 	-webkit-box-orient: vertical;
+// 	white-space: normal;
+// 	max-width: 173px;
+// 	overflow: hidden;
+// 	font-weight: 600;
+// 	color: #000;
+//   }
+  
+//   .icomeet {
+// 	padding: 15px 9px 0px 0px;
+//   }
+  
+//   .vertirightbox {
+// 	padding-left: 27px !important;
+//   }
+  
+//   .yeartxt {
+// 	margin-bottom: 3px;
+//   }
+  
+//   /* approx component */
+  
+//   .middlecontainerapprox {
+// 	width: 44%;
+// 	text-align: left;
+// 	padding-left: 16px;
+//   }
+  
+//   .approxright {
+// 	margin-bottom: 0px;
+// 	padding-top: 18px;
+// 	font-size: 60px;
+//   }
+  
+//   .rightrate {
+// 	margin-bottom: 0px;
+// 	padding-top: 18px;
+// 	font-size: 2.3vw;
+// 	display: inline-block;
+// 	font-weight: bold;
+//   }
+  
+//   .yearrightbox {
+// 	/* padding-bottom: 18px; */
+// 	display: block;
+//   }
+  
+//   .billcontainer {
+// 	margin-top: 4px;
+//   }
+  
+//   .approxcont {
+// 	margin-top: 7px;
+//   }
+  
+//   .billaprrox {
+// 	padding-bottom: 16px;
+//   }
+  
+//   .mattersbox {
+// 	width: 50%;
+// 	padding-bottom: 16px;
+//   }
+  
+//   .verticalmatter {
+// 	padding-left: 65px;
+//   }
+  
+//   .rightmatter {
+// 	margin-bottom: 0px;
+// 	padding-top: 18px;
+// 	font-size: 1.8vw !important;
+// 	color: #004d87;
+// 	display: block;
+// 	font-weight: 600;
+//   }
+  
+//   .cmatter {
+// 	width: 186% !important;
+//   }
+  
+//   .legaldate {
+// 	font-size: 1.2vw;
+// 	font-weight: 600;
+// 	line-height: 1.3;
+// 	color: #000;
+//   }
+  
+//   p.rightbox.rightboxtxt.rightmatter {
+// 	margin-top: 0px;
+// 	margin-bottom: -5px;
+//   }
+  
+//   p.rightbox.rightboxtxt.rightmatter.closedm {
+// 	display: inline-block !important;
+//   }
+  
+//   .mattertxt {
+// 	display: inline-block;
+// 	font-size: 1.2vw;
+// 	color: #000;
+// 	font-weight: 700;
+//   }
+  
+//   .mattertxtdata {
+// 	display: block;
+// 	font-size: 1.2vw;
+// 	color: #000;
+// 	font-weight: 700;
+// 	display: inline-block;
+//   }
+  
+//   .mattercount {
+// 	color: #00b3a7;
+// 	font-size: 2.2vw;
+// 	display: block;
+// 	font-weight: 700;
+//   }
+  
+//   .meetingmatter {
+// 	min-height: 261px;
+//   }
+  
+//   .yeartxtapprox {
+// 	padding-bottom: 18px;
+//   }
+  
+//   .rightcontainerboxapprox {
+// 	margin-top: 4px;
+// 	width: 104%;
+// 	margin-left: 10px;
+//   }
+  
+//   .commoncontainer {
+// 	width: 104%;
+// 	margin-left: -8px;
+// 	padding-top: 1px;
+// 	margin-top: -6px;
+//   }
+  
+//   .rightboxone {
+// 	display: -webkit-box !important;
+// 	-webkit-line-clamp: 2;
+// 	-webkit-box-orient: vertical;
+// 	white-space: normal;
+// 	max-width: 173px;
+// 	overflow: hidden;
+// 	font-size: 16px;
+// 	font-weight: 600;
+// 	line-height: 1.2;
+// 	color: #000;
+//   }
+  
+//   .rightpercentage {
+// 	color: #000;
+// 	font-size: 2.1vw !important;
+// 	margin-left: -20px;
+//   }
+  
+//   .verticaltwo {
+// 	height: 33px !important;
+//   }
+  
+//   .billhour {
+// 	font-size: 2.2vw;
+// 	margin-left: -2px;
+// 	padding-top: 35px;
+// 	font-weight: 700;
+//   }
+  
+//   .approxbillhour {
+// 	font-size: 1.8vw;
+// 	font-weight: 700;
+//   }
+  
+//   .approxmeet,
+//   .meetime {
+// 	padding-left: 4px;
+//   }
+  
+//   .meetime {
+// 	color: #000;
+// 	font-size: 1vw;
+// 	padding-top: 6px;
+// 	font-weight: bold;
+//   }
+  
+//   .bonetwo {
+// 	margin-right: 6px;
+// 	margin-top: 20px;
+//   }
+  
+//   .softvertical {
+// 	margin-left: -30px;
+//   }
+  
+//   .bonethree {
+// 	margin-right: -18px;
+// 	margin-top: 20px;
+//   }
+  
+//   .righbxone {
+// 	margin-right: 25px;
+//   }
+  
+//   .containerboxone {
+// 	margin-bottom: 20px;
+// 	margin-top: 35px;
+//   }
+  
+//   .dotcontent {
+// 	visibility: hidden;
+//   }
+  
+//   .tpara {
+// 	padding-top: 10px;
+//   }
+  
+//   .subsdata {
+// 	display: -webkit-box !important;
+// 	-webkit-line-clamp: 1;
+// 	-webkit-box-orient: vertical;
+// 	white-space: normal;
+// 	max-width: 100%;
+// 	overflow: hidden;
+//   }
+  
+//   .mcontainer {
+// 	height: 54px;
+// 	width: 100% !important;
+//   }
+  
+//   .msgtxt {
+// 	display: block;
+// 	font-size: 1.2vw;
+// 	font-weight: 700;
+//   }
+  
+//   .monthname {
+// 	color: #000;
+// 	font-size: 1.2vw;
+// 	font-weight: 700;
+//   }
+  
+//   /* align property */
+//   .meetone {
+// 	padding-top: 19px;
+// 	font-size: 1.8vw;
+// 	font-weight: 600;
+//   }
+  
+//   .approxmonth {
+// 	padding-top: 22px;
+// 	padding-bottom: 11px;
+// 	width: 112%;
+//   }
+  
+//   .rightboxtwo,
+//   .rightboxthree,
+//   .rightbox.righboxshared {
+// 	padding-top: 14px;
+// 	font-size: 16px;
+// 	display: inline-block;
+// 	font-weight: 600;
+// 	line-height: 1.2;
+//   }
+  
+//   .righmnamecontext {
+// 	margin-left: -19px;
+//   }
+  
+//   .tbill {
+// 	margin-left: 0px;
+//   }
+  
+//   .monthitem {
+// 	width: 0px;
+// 	margin-left: -28px;
+//   }
+  
+//   .relborder {
+// 	border-right: 2px dotted #9d9d9d;
+//   }
+  
+//   .activevertical {
+// 	margin-top: 47px;
+//   }
+  
+//   .rightcontainerboxapprox .row.meetingcontainer {
+// 	padding-top: 0px;
+// 	padding-bottom: 10px;
+// 	margin-bottom: 4px;
+//   }
+  
+//   /* .legalbox {
+// 	  padding-bottom: 10px !important;
+// 	} */
+//   .legalboxleft {
+// 	padding-bottom: 1px !important;
+// 	padding-top: 0px;
+//   }
+  
+//   .commoncontainer {
+// 	width: 105%;
+// 	margin-left: -11px;
+// 	padding-top: 0px;
+// 	margin-top: -6px;
+//   }
+  
+//   .notfication {
+// 	background: #004d87;
+// 	border-radius: 100px;
+// 	color: #fff;
+// 	text-align: center;
+// 	vertical-align: middle;
+// 	padding-top: 0px;
+// 	position: absolute;
+// 	width: 21px;
+// 	height: 21px;
+// 	font-size: 14px;
+// 	margin-top: -11px;
+// 	margin-left: -24px;
+// 	padding-right: 3px;
+//   }
+  
+//   .tmenu {
+// 	width: 224px !important;
+//   }
+  
+//   .tprofile {
+// 	background-color: #046f00;
+//   }
+  
+//   .row.meetingcontainer.avbill {
+// 	padding-bottom: 8px;
+//   }
+  
+//   .row.rightcontainerbox.rightcontainerboxapprox.rone .row.meetingcontainer {
+// 	padding-top: 9px !important;
+// 	padding-bottom: 0px;
+//   }
+  
+//   .leftmeetingconclient span.vertical {
+// 	padding-left: 32px;
+//   }
+  
+//   .closedm {
+// 	display: inline-block !important;
+//   }
+  
+//   p.rightbox.rightboxtxt.rightrate.rightratetime {
+// 	padding-top: 23px;
+// 	font-size: 1.9vw;
+// 	font-weight: 600;
+//   }
+  
+//   .closedvertical {
+// 	height: 6.4vw;
+//   }
+  
+//   .paragap {
+// 	padding-bottom: 7px;
+//   }
+  
+//   /* form component */
+  
+//   .containercomponent {
+// 	background: #00498e;
+// 	height: 195px;
+// 	margin-left: 0px;
+// 	padding-top: 50px;
+// 	text-align: center;
+//   }
+  
+//   .fcomponent {
+// 	text-align: center;
+// 	color: #fff;
+//   }
+  
+//   .caseone,
+//   .casetwo {
+// 	width: auto;
+// 	font-size: 20px;
+// 	border-left: 1px solid #00000057;
+//   }
+  
+//   /* .dropdown {
+// 	background: #00498e;
+// 	color: #fff;
+// 	padding: 3px 11px 7px 11px;
+// 	position: absolute;
+// 	margin-top: 30px;
+//   } */
+//   .iconpull {
+// 	color: #fff;
+// 	font-size: 24px;
+//   }
+  
+//   .casetwo {
+// 	border-top-right-radius: 10px;
+// 	border-bottom-right-radius: 10px;
+//   }
+  
+//   .caseone {
+// 	border-top-left-radius: 10px;
+// 	border-bottom-left-radius: 10px;
+//   }
+  
+//   .msgicon {
+// 	margin-top: -36px;
+// 	padding-top: 0px;
+//   }
+  
+//   .cmname {
+// 	margin-top: -6px;
+// 	margin-bottom: -6px;
+//   }
+  
+//   .cmsgtxt {
+// 	padding-left: 6px;
+//   }
+  
+//   .cmsgtxtone {
+// 	padding-left: 4px;
+// 	font-weight: 700;
+//   }
+  
+//   .billvertical {
+// 	width: 0px;
+// 	margin-left: -16px;
+//   }
+  
+//   .verticalwidth {
+// 	padding-left: 5px;
+//   }
+  
+//   .relcontainer {
+// 	margin-left: -28px;
+//   }
+  
+//   .itempriceone {
+// 	margin-left: -31px;
+//   }
+  
+//   .iconalign {
+// 	margin-left: -10px;
+//   }
+  
+//   .textalign {
+// 	margin-left: -12px;
+//   }
+  
+//   /* component item */
+  
+//   .headertop {
+// 	height: 242px;
+// 	background: #00498e;
+// 	margin-left: 0px;
+// 	padding-left: 62px;
+//   }
+  
+//   .headerrelationship {
+// 	height: 237px;
+//   }
+  
+//   .headerrelationship {
+// 	height: 255px;
+//   }
+  
+//   .compswitch {
+// 	text-align: center;
+// 	padding-top: 10px;
+//   }
+  
+//   .compone,
+//   .comptwo {
+// 	width: auto;
+// 	padding: 8px 17px 8px 17px;
+// 	font-size: 20px;
+//   }
+  
+//   .cswitch {
+// 	display: block;
+// 	padding-top: 20px;
+//   }
+  
+//   .compone {
+// 	border-top-left-radius: 10px;
+// 	border-bottom-left-radius: 10px;
+//   }
+  
+//   .comptwo {
+// 	border-top-right-radius: 10px;
+// 	border-bottom-right-radius: 10px;
+// 	border-left: 1px solid #767676;
+//   }
+  
+//   .slideico {
+// 	background: #00498e;
+// 	cursor: pointer;
+// 	padding: 16px 8px 14px 8px;
+// 	width: 37px;
+// 	margin-left: 80px;
+//   }
+  
+//   /* steps code  */
+  
+//   .stepone {
+// 	background: #00b3a7;
+// 	width: 50px;
+// 	border-radius: 79px;
+// 	height: 50px;
+// 	text-align: center;
+// 	padding: 11px;
+// 	display: block;
+//   }
+  
+//   .stptxt {
+// 	text-align: left;
+// 	font-size: 15px;
+// 	font-weight: 600;
+// 	padding-top: 10px;
+// 	margin-left: -6px;
+//   }
+  
+//   .stepideal {
+// 	border: 1px solid #ccc;
+// 	background: none;
+//   }
+  
+//   .stepimg {
+// 	width: 27px;
+//   }
+  
+//   .stepideal:hover,
+//   .stepideal:active,
+//   .stepideal:visited,
+//   .stepideal:focus {
+// 	background: #00b3a7;
+// 	border: 1px solid 00b3a7;
+//   }
+  
+//   .stepideal:hover > *,
+//   .stepideal:focus > * {
+// 	filter: brightness(0) invert(1);
+// 	color: white !important;
+//   }
+  
+//   .stepm {
+// 	margin-left: -21px;
+//   }
+  
+//   .mandate {
+// 	color: red;
+//   }
+  
+//   .textbox {
+// 	background: #eeeeee;
+// 	color: #000;
+// 	margin-bottom: 15px;
+// 	min-height: 40px;
+//   }
+  
+//   .searchbox {
+// 	min-height: 39px;
+//   }
+  
+//   input.form-control.textbox {
+// 	border-radius: 0.375rem !important;
+//   }
+  
+//   .calitem {
+// 	float: right;
+// 	margin-top: 9px;
+// 	margin-right: 20px;
+// 	width: 21px;
+// 	position: absolute;
+// 	cursor: pointer;
+// 	right: 0px;
+// 	z-index: 9;
+//   }
+  
+//   .addfile {
+// 	margin-top: 20px;
+//   }
+  
+//   .btnsave {
+// 	width: 115px;
+// 	height: 43px;
+// 	background: #004d87 0% 0% no-repeat padding-box;
+// 	border-radius: 5px;
+// 	color: #fff;
+// 	border: none !important;
+// 	margin-left: 15px;
+// 	font-weight: bold;
+// 	font-size: 20px;
+//   }
+  
+//   .btnsave:hover,
+//   .btnsave:active,
+//   .btnsave:focus,
+//   .btnsave:visited {
+// 	background: #024980 0% 0% no-repeat padding-box;
+// 	color: #fff;
+// 	border: none !important;
+//   }
+  
+//   .btncancel:hover,
+//   .btncancel:active,
+//   .btncancel:focus,
+//   .btncancel:visited {
+// 	background: #d1d1d3 0% 0% no-repeat padding-box;
+// 	color: #000;
+// 	border: none !important;
+//   }
+  
+//   .btncancel {
+// 	width: 135px;
+// 	height: 43px;
+// 	background: #ddddde 0% 0% no-repeat padding-box;
+// 	border-radius: 5px;
+// 	color: #000;
+// 	border: none !important;
+// 	font-weight: bold;
+// 	font-size: 20px;
+// 	margin-left: -84px;
+// 	margin-right: 13px;
+//   }
+  
+//   .btnrightitem {
+// 	margin-left: 0px;
+// 	margin-right: 13px;
+//   }
+  
+//   .btnbox {
+// 	text-align: center;
+// 	margin-top: 30px;
+//   }
+  
+//   .selectprior {
+// 	height: 39px;
+// 	background: #eeeeee 0% 0% no-repeat padding-box;
+// 	padding: 8px 20px 10px 20px;
+// 	color: #000;
+// 	font-size: 16px;
+// 	display: inline-block;
+// 	margin-top: 10px;
+//   }
+  
+//   .selectprior:hover,
+//   .selectprior:active,
+//   .selectprior:focus {
+// 	color: #fff;
+// 	background: #00b3a7;
+//   }
+  
+//   .btnaction {
+// 	margin-top: -10px;
+//   }
+  
+//   .optionhigh {
+// 	border-radius: 5px 0px 0px 5px;
+//   }
+  
+//   .optionlow {
+// 	border-radius: 0px 5px 5px 0px;
+//   }
+  
+// //   .add {
+// // 	width: 67px;
+// // 	height: 39px;
+// // 	/* UI Properties */
+// // 	background: #00b3a7 0% 0% no-repeat padding-box;
+// // 	border-radius: 5px;
+// //   }
+  
+//   .appendadd {
+// 	float: right;
+// 	margin-top: 0px;
+// 	margin-right: 0px;
+// 	position: absolute;
+// 	cursor: pointer;
+// 	right: 0px;
+// 	padding-top: 0px;
+// 	z-index: 9;
+// 	width: 67px;
+// 	height: 39px;
+// 	background: #00b3a7 0% 0% no-repeat padding-box;
+// 	border-radius: 5px !important;
+// 	border: none;
+// 	color: #fff;
+//   }
+  
+//   tbody > tr > :nth-child(1) {
+// 	padding-left: 12px;
+//   }
+  
+//   th:nth-child(1) {
+// 	padding-left: 15px;
+//   }
+  
+//   .dropdown {
+// 	margin-right: -28px;
+//   }
+  
+//   .optionaling {
+// 	margin-left: -3px;
+//   }
+  
+//   .alertbox {
+// 	width: 382px;
+// 	height: 295px;
+// 	background: #ffffff 0% 0% no-repeat padding-box;
+// 	box-shadow: 0px 2px 2px #00000067;
+// 	border: 1px solid #e2e2e2;
+// 	border-radius: 5px;
+//   }
+  
+//   .iconclose {
+// 	text-align: right;
+// 	padding-top: 10px;
+// 	padding-right: 5px;
+// 	cursor: pointer;
+//   }
+  
+//   .alertext {
+// 	width: 222px;
+// 	height: 98px;
+// 	margin: auto;
+// 	text-align: center;
+//   }
+  
+//   .alertbutton {
+// 	text-align: center;
+//   }
+  
+//   .alertbtn,
+//   .alertbtn:hover,
+//   .alertbtn:focus {
+// 	background: #004d87 0% 0% no-repeat padding-box;
+// 	border-radius: 5px;
+// 	color: #fff;
+// 	border: none !important;
+//   }
+  
+//   .alertparatxt {
+// 	color: #004d87;
+// 	font-weight: 700;
+// 	font-size: 24px;
+// 	text-align: center;
+// 	padding-top: 25px;
+//   }
+  
+//   .alertbtnyes,
+//   .alertbtnyes:hover,
+//   .alertbtnyes:active,
+//   .alertbtnyes:focus {
+// 	width: 104px;
+// 	height: 41px;
+// 	background: #0c8902 0% 0% no-repeat padding-box;
+// 	border-radius: 5px;
+// 	opacity: 1;
+//   }
+  
+//   .alertbtnno,
+//   .alertbtnno:hover,
+//   .alertbtnno:focus,
+//   .alertbtnno:active {
+// 	width: 104px;
+// 	height: 41px;
+// 	background: #ff0000 0% 0% no-repeat padding-box;
+// 	border-radius: 5px;
+// 	opacity: 1;
+//   }
+  
+//   /* border-pagination */
+//   .b-pagination-outer {
+// 	width: 100%;
+// 	margin: 0 auto;
+// 	text-align: center;
+// 	overflow: hidden;
+// 	display: flex;
+// 	margin-bottom: 40px;
+//   }
+  
+//   #border-pagination {
+// 	margin: 0 auto;
+// 	padding: 0;
+// 	text-align: center;
+//   }
+  
+//   #border-pagination li {
+// 	display: inline;
+//   }
+  
+//   #border-pagination li a {
+// 	display: block;
+// 	text-decoration: none;
+// 	color: #000;
+// 	padding: 7px 5px 5px 5px;
+// 	border: 1px solid #ddd;
+// 	float: left;
+//   }
+  
+//   #border-pagination li a {
+// 	-webkit-transition: background-color 0.4s;
+// 	transition: background-color 0.4s;
+// 	width: 40px;
+// 	height: 40px;
+// 	/* UI Properties */
+// 	background: #eeeeee 0% 0% no-repeat padding-box;
+// 	border: 1px solid #e2e2e2;
+// 	border-radius: 5px;
+// 	margin-left: 10px;
+// 	margin-top: 6px;
+//   }
+  
+//   #border-pagination li a.active {
+// 	background-color: #eeeeee;
+//   }
+  
+//   #border-pagination li a.paginationdot,
+//   #border-pagination li a.paginationdot:hover {
+// 	background: none;
+// 	border: none;
+// 	height: auto;
+// 	width: auto;
+// 	margin-left: 1px;
+// 	margin-top: 2px;
+//   }
+  
+//   .arrowleft {
+// 	margin-right: 22px;
+//   }
+  
+//   .sgroup {
+// 	color: #ff0000;
+// 	font-size: 21px !important;
+// 	padding-top: 1px;
+//   }
+  
+//   .form-control::placeholder {
+// 	/* Chrome, Firefox, Opera, Safari 10.1+ */
+// 	color: #000;
+// 	opacity: 1;
+// 	/* Firefox */
+//   }
+  
+//   .form-control:-ms-input-placeholder {
+// 	/* Internet Explorer 10-11 */
+// 	color: #000;
+// 	opacity: 1;
+// 	/* Firefox */
+//   }
+  
+//   .form-control::-ms-input-placeholder {
+// 	/* Microsoft Edge */
+// 	color: #000;
+// 	opacity: 1;
+// 	/* Firefox */
+//   }
+  
+//   .searchimg {
+// 	width: 18px;
+// 	margin-right: 15px;
+// 	margin-top: 32px;
+//   }
+  
+//   .calicon {
+// 	width: 17px;
+// 	margin-top: 12px;
+//   }
+  
+//   .courtimg {
+// 	padding-top: 0px;
+//   }
+  
+//   .courtimgo {
+// 	padding-top: 4px;
+//   }
+  
+//   .checkboxitem {
+// 	top: 3px;
+// 	right: -4px;
+//   }
+  
+//   .actionbtn,
+//   .actionbtn:hover,
+//   .actionbtn:focus {
+// 	background: #004d87 0% 0% no-repeat padding-box;
+// 	border-radius: 5px;
+// 	opacity: 1;
+// 	box-shadow: none !important;
+//   }
+  
+//   .dropdown-item:focus,
+//   .dropdown-item:hover {
+// 	color: #ffffff;
+// 	background-color: #004d87;
+//   }
+  
+//   .selectbtnt,
+//   .selectbtnt:hover,
+//   .selectbtnt:focus {
+// 	background: #ffffff 0% 0% no-repeat padding-box;
+// 	border-radius: 5px;
+// 	color: #004d87;
+// 	box-shadow: none !important;
+//   }
+  
+//   .rone {
+// 	height: 83px;
+// 	background: #eeeeee 0% 0% no-repeat padding-box;
+// 	box-shadow: 0px 3px 3px #00000033;
+// 	border: 1px solid #e6e6e6;
+// 	border-radius: 5px;
+// 	opacity: 1;
+// 	vertical-align: middle;
+//   }
+  
+//   .rtwo {
+// 	width: 1096px;
+// 	height: 83px;
+// 	/* UI Properties */
+// 	background: #004d87 0% 0% no-repeat padding-box;
+// 	box-shadow: 0px 3px 3px #00000033;
+// 	border-radius: 5px;
+// 	opacity: 1;
+// 	color: #fff;
+// 	vertical-align: middle;
+//   }
+  
+//   .tblgrid {
+// 	border-collapse: separate;
+// 	border-spacing: 0 1em;
+//   }
+  
+//   .sortico {
+// 	cursor: pointer;
+//   }
+  
+// //   .gridtable {
+// // 	padding-right: 133px;
+// //   }
+  
+//   .gridtablecls {
+// 	padding-right: 98px;
+//   }
+  
+//   .thheadname {
+// 	display: inline-block;
+// 	padding-bottom: 0px;
+// 	margin-bottom: 0px;
+//   }
+  
+//   .active {
+// 	color: #fff;
+// 	background: #00b3a7;
+//   }
+  
+//   .removebtn {
+// 	width: 122px;
+// 	height: 41px;
+// 	background: #ff0000 0% 0% no-repeat padding-box;
+// 	border-radius: 5px;
+// 	opacity: 1;
+// 	color: #fff;
+// 	border: none;
+// 	margin-bottom: 20px;
+//   }
+  
+//   .textboxone,
+//   .textboxone:hover,
+//   .textboxone:focus,
+//   .textboxone:active {
+// 	background: #004d87;
+// 	color: #fff !important;
+//   }
+  
+//   .textboxone::placeholder {
+// 	color: #fff;
+//   }
+  
+//   .icocloseico {
+// 	color: #fff;
+//   }
+  
+//   .mobicol {
+// 	margin-left: -8px;
+//   }
+  
+//   .junitem {
+// 	margin-left: -3px;
+//   }
+  
+//   .readtxtbox:focus {
+// 	background-color: #eeeeee;
+// 	box-shadow: none;
+// 	border-color: #ced4da;
+//   }
+  
+//   .itemmargin {
+// 	margin-bottom: 62px;
+// 	margin-bottom: 62px;
+// 	color: #004d87;
+// 	font-size: 20px;
+//   }
+  
+//   .seogroup {
+// 	margin-top: 20px;
+// 	margin-bottom: 20px;
+//   }
+  
+//   .cswitchtwo {
+// 	padding-top: 50px;
+//   }
+  
+//   .compthree {
+// 	border-radius: 0px;
+//   }
+  
+//   .switchrelation {
+// 	padding-top: 25px;
+// 	margin-bottom: 25px;
+//   }
+  
+//   .formsearch {
+// 	width: 347px;
+// 	margin: auto;
+//   }
+  
+//   .file {
+// 	display: none;
+//   }
+  
+//   .file-name {
+// 	position: relative;
+// 	overflow: hidden;
+// 	line-height: 30px;
+// 	padding: 5px;
+// 	box-sizing: border-box;
+// 	font-size: 15px;
+// 	vertical-align: middle;
+// 	width: 300px;
+// 	border: 2px solid #dbdbdb;
+// 	border-radius: 0;
+// 	height: calc(2em + 0.75rem + 2px);
+//   }
+  
+//   .btnfile {
+// 	vertical-align: middle;
+// 	text-transform: uppercase;
+// 	margin-left: 1rem;
+// 	float: right;
+// 	margin-top: 0px;
+// 	position: absolute;
+  
+// 	cursor: pointer;
+// 	right: 0px;
+// 	z-index: 9;
+// 	width: 67px;
+// 	height: 39px;
+// 	background: #00b3a7 0% 0% no-repeat padding-box;
+// 	border-radius: 5px !important;
+// 	border: none;
+// 	color: #fff;
+//   }
+  
+//   #border-pagination li a:hover,
+//   #border-pagination li a:focus,
+//   #border-pagination li a:active {
+// 	background: #00b3a7;
+// 	color: #fff;
+//   }
+  
+//   .textfsize {
+// 	text-align: center;
+// 	font-size: 20px;
+// 	height: 56px;
+// 	width: 74px;
+// 	font-weight: 700;
+// 	padding: 4px 20px 10px 20px !important;
+//   }
+  
+//   .optionfont {
+// 	border-radius: 10px 0px 0px 10px;
+//   }
+  
+//   .optionfontlast {
+// 	border-radius: 0px 10px 10px 0px;
+//   }
+  
+//   .fsize {
+// 	font-size: 14px !important;
+// 	text-align: center;
+// 	line-height: 0px;
+// 	padding-top: 4px;
+//   }
+  
+//   .pnumber {
+// 	font-size: 20px;
+// 	color: #004d87;
+// 	font-weight: 700;
+// 	margin-bottom: 0px;
+//   }
+  
+//   .psize {
+// 	font-size: 16px;
+// 	color: #000000;
+// 	font-weight: 700;
+// 	margin-bottom: 10px;
+//   }
+  
+//   .itemplace::placeholder {
+// 	color: #000;
+// 	font-size: 14px;
+// 	padding-left: 10px;
+// 	padding-top: 15px;
+//   }
+  
+//   .fontitem {
+// 	margin-top: -10px;
+// 	margin-bottom: 16px;
+//   }
+  
+//   .form-check.custcheckbox {
+// 	display: inline-block;
+// 	font-size: 14px;
+// 	font-weight: 700;
+// 	width: 110px;
+//   }
+  
+//   .formchkbox {
+// 	margin-bottom: 30px;
+//   }
+  
+//   label.form-check-label {
+// 	padding-top: 9px;
+// 	padding-left: 5px;
+//   }
+  
+//   .psitem {
+// 	background-color: #fff !important;
+// 	height: 50px;
+// 	width: 50px;
+//   }
+  
+//   .rowpsitem {
+// 	border-radius: 5px;
+// 	background: #eeeeee !important;
+// 	padding: 24px 12px 12px 41px;
+// 	margin-right: 0px;
+// 	margin-left: 0px;
+// 	border: 1px solid #e2e2e2;
+//   }
+  
+//   .psitemlast {
+// 	float: right;
+//   }
+  
+//   .psitemmiddle {
+// 	margin: auto;
+//   }
+  
+//   .pstext {
+// 	background: #fff;
+// 	margin-top: 10px;
+// 	margin-bottom: 25px;
+// 	min-height: 95px;
+//   }
+  
+//   .msgnotify {
+// 	float: right;
+//   }
+  
+//   .msgnotify {
+// 	float: right;
+// 	padding-right: 20px;
+// 	margin-top: 5px;
+// 	height: 25px;
+// 	cursor: pointer;
+//   }
+  
+//   .notfiy_tree {
+// 	margin-left: 5px;
+// 	width: 27px;
+// 	height: 25px;
+//   }
+  
+//   .notify_mdg {
+// 	font-size: 16px;
+// 	padding-left: 2px;
+// 	font-weight: 700;
+// 	padding-top: 6px;
+//   }
+  
+//   .msgitemcls {
+// 	height: 50px;
+// 	box-shadow: 0px 2px 2px #00000033;
+// 	border: 1px solid #e6e6e6;
+//   }
+  
+//   /* .delicocls{
+  
+//   }
+  
+//   .mailicocls{
+  
+//   }
+  
+//   .msgicocls{
+  
+//   } */
+  
+//   .infocontainer {
+// 	min-height: 933px;
+// 	background: #eeeeee 0% 0% no-repeat padding-box;
+// 	opacity: 1;
+// 	margin-bottom: 20px;
+// 	margin-top: 10px;
+// 	display: inline-block;
+// 	width: 100%;
+// 	padding-left: 20px;
+// 	padding-top: 27px;
+//   }
+  
+//   .infocontainerleft {
+// 	height: 97%;
+// 	min-height: 933px;
+// 	background: #c9c9c9;
+// 	opacity: 1;
+// 	margin-bottom: 20px;
+// 	margin-top: 10px;
+// 	display: inline-block;
+// 	width: 40px;
+//   }
+  
+//   .arrowtoggel {
+// 	width: 100%;
+// 	height: 40px;
+// 	background: #00498e;
+// 	opacity: 1;
+// 	margin-top: 466px;
+// 	text-align: center;
+//   }
+  
+//   .slidearrowtgl {
+// 	vertical-align: bottom;
+// 	cursor: pointer;
+// 	transform: matrix(0, 1, -1, 0, 0, 0);
+// 	height: 11px;
+//   }
+  
+//   #txt1 {
+// 	display: inline-block;
+// 	width: 54%;
+// 	font-size: 14px;
+// 	font-weight: 700;
+//   }
+  
+//   .cnumber {
+// 	display: inline-block;
+// 	font-size: 14px;
+// 	font-weight: 700;
+// 	max-width: 210px;
+//   }
+  
+//   .summarycitem {
+// 	padding-top: 18px;
+//   }
+  
+//   .summarycitem:nth-last-child(1) {
+// 	padding-bottom: 10px;
+//   }
+  
+//   .statusprior {
+// 	width: 80px;
+// 	display: inline-block;
+//   }
+  
+//   #but_enable {
+// 	width: 43px;
+// 	height: 24px;
+// 	color: #fff;
+// 	font-size: 14px;
+// 	background: #004d87 0% 0% no-repeat padding-box;
+// 	border-radius: 5px;
+// 	border: 1px solid #004d87;
+//   }
+  
+//   .hearingdate {
+// 	color: #ff5800;
+// 	font-size: 14px;
+// 	font-weight: 700;
+//   }
+  
+//   .editcase {
+// 	display: block;
+// 	font-size: 14px;
+// 	color: #868686;
+//   }
+  
+//   .itemhearing {
+// 	display: inline-block;
+// 	padding-left: 15px;
+//   }
+  
+//   .hearing {
+// 	color: #ff5800;
+// 	font-size: 14px;
+// 	margin: 0px;
+// 	line-height: 1.2;
+// 	font-weight: 700;
+//   }
+  
+//   textarea.form-control.textbox.itemplace {
+// 	resize: none;
+//   }
+  
+//   .hearingimg {
+// 	display: block;
+// 	float: left;
+//   }
+  
+//   .formcal {
+// 	display: inline-block;
+//   }
+  
+//   .pstext:hover,
+//   .pstext:active,
+//   .pstext:focus,
+//   .psitem:focus,
+//   .psitem:hover,
+//   .psitem:active {
+// 	box-shadow: none;
+// 	resize: none;
+//   }
+  
+//   .fposition {
+// 	margin-top: 70px;
+// 	margin-bottom: 10px;
+//   }
+  
+//   .msgicofile {
+// 	margin-top: 20px;
+//   }
+  
+//   /* .chkpadding{
+// 	padding-left: 40px;
+//   } */
+//   .custcheck {
+// 	height: 30px;
+// 	width: 30px;
+//   }
+  
+//   /* #border-pagination li a:hover:not(.active) {
+// 	background: #ddd;
+//   } */
+  
+//   /* prgress steps */
+//   .wrapper {
+// 	margin-top: 50px;
+// 	margin-bottom: 20px;
+  
+// 	font-size: 14px;
+//   }
+  
+//   .StepProgress {
+// 	position: relative;
+// 	padding-left: 45px;
+// 	list-style: none;
+//   }
+  
+//   .StepProgress::before {
+// 	display: inline-block;
+// 	content: "";
+// 	position: absolute;
+// 	top: 0;
+// 	left: 20px;
+// 	width: 10px;
+// 	height: 100%;
+// 	border-left: 1px dashed #707070;
+//   }
+  
+//   .StepProgress-item {
+// 	position: relative;
+// 	counter-increment: list;
+//   }
+  
+//   .StepProgress-item:not(:last-child) {
+// 	padding-bottom: 20px;
+//   }
+  
+//   .StepProgress-item::before {
+// 	display: inline-block;
+// 	content: "";
+// 	position: absolute;
+// 	left: -30px;
+// 	height: 100%;
+// 	width: 10px;
+//   }
+  
+//   .StepProgress-item::after {
+// 	content: "";
+// 	display: inline-block;
+// 	position: absolute;
+// 	top: 0;
+// 	left: -37px;
+// 	width: 25px;
+// 	height: 25px;
+// 	border: 1px solid #707070;
+// 	border-radius: 50%;
+// 	background-color: #ff5800;
+// 	background-image: url(https://i.postimg.cc/zvqNmB1b/imgone.png);
+// 	background-position: 46% 28%;
+// 	background-size: 25px;
+// 	background-repeat: no-repeat;
+//   }
+  
+//   .StepProgress-item.current::before {
+// 	border-left: 1px solid #707070;
+//   }
+  
+//   .StepProgress-item.current::after {
+// 	content: counter(list);
+// 	padding-top: 1px;
+// 	width: 19px;
+// 	height: 18px;
+// 	top: -4px;
+// 	left: -40px;
+// 	font-size: 14px;
+// 	text-align: center;
+// 	color: green;
+// 	border: 1px solid #707070;
+// 	background-color: white;
+//   }
+  
+//   .StepProgress strong {
+// 	display: block;
+//   }
+  
+//   .lgalsubitem {
+// 	font-size: 14px;
+// 	padding-top: 19px;
+// 	margin-bottom: 0px;
+// 	font-weight: 700;
+// 	color: #000;
+//   }
+  
+//   .editico {
+// 	margin-top: -151px;
+// 	padding-left: 16px;
+// 	cursor: pointer;
+//   }
+  
+//   .lgalitem {
+// 	display: inline-block;
+// 	width: 310px;
+//   }
+  
+//   .lgalitemright {
+// 	display: inline;
+//   }
+  
+//   .dashboarNotify {
+// 	width: 22px;
+// 	height: 22px;
+// 	background: #004d87;
+// 	border-radius: 100%;
+// 	position: absolute;
+// 	margin-top: -47px;
+// 	margin-left: 25px;
+// 	color: #fff;
+// 	font-size: 14px;
+// 	text-align: center;
+// 	padding-right: 3px;
+//   }
+  
+//   .dashboardBox {
+// 	width: 61px;
+// 	display: inline-block;
+//   }
+  
+//   /* custcheckbox code */
+//   .cusCheckbox:not(:checked),
+//   .cusCheckbox:checked {
+// 	position: absolute;
+// 	left: -9999px;
+//   }
+  
+//   .cusCheckbox:not(:checked) + label,
+//   .cusCheckbox:checked + label {
+// 	position: relative;
+// 	padding-left: 19px;
+// 	cursor: pointer;
+//   }
+  
+//   .cusCheckbox:not(:checked) + label:before,
+//   .cusCheckbox:checked + label:before {
+// 	content: "";
+// 	position: absolute;
+// 	left: -16px;
+// 	top: 4px;
+// 	width: 30px;
+// 	height: 30px;
+// 	background: #fff;
+// 	border-radius: 3px;
+// 	box-shadow: inset 0 1px 3px rgb(0 0 0 / 10%);
+// 	border: 1px solid #ccc;
+// 	background-color: #fff;
+// 	outline: none;
+//   }
+  
+//   .cusCheckbox:not(:checked) + label:after,
+//   .cusCheckbox:checked + label:after {
+// 	content: "✔";
+// 	position: absolute;
+// 	top: 12px;
+// 	left: -8px;
+// 	font-size: 18px;
+// 	line-height: 0.8;
+// 	color: #000;
+// 	transition: all 0.2s;
+// 	font-weight: 100;
+//   }
+  
+//   .cusCheckbox:not(:checked) + label:after {
+// 	opacity: 0;
+// 	transform: scale(0);
+//   }
+  
+//   .cusCheckbox:checked + label:after {
+// 	opacity: 1;
+// 	transform: scale(1);
+//   }
+  
+//   /* calendor grid */
+//   .gridcalendor {
+// 	font-size: 14px;
+// 	font-weight: 600;
+// 	margin-top: 20px;
+//   }
+  
+//   td.claw {
+// 	max-width: 106px;
+//   }
+  
+//   .tblcalendor {
+// 	background: #f0f0f0;
+// 	border: 0px solid #fff;
+//   }
+  
+//   .tblcalendor,
+//   .tblcalendor th,
+//   .tblcalendor td,
+//   .tblcalendor tr {
+// 	border: 2px solid #fff !important;
+// 	color: #000000;
+// 	min-width: 65px;
+//   }
+  
+//   table.table.table-bordered.tblcalendor.tbltimesheet td {
+// 	min-width: 94px;
+//   }
+  
+//   .calendorselect {
+// 	width: 18.9%;
+// 	display: inline-block;
+// 	height: 39px;
+// 	background-color: #eeeeee;
+// 	border: 1px solid #e2e2e2;
+// 	border-radius: 5px;
+// 	font-weight: 600;
+// 	background-size: 20px 18px !important;
+// 	cursor: pointer;
+// 	margin-top: 10px;
+//   }
+  
+//   .tblcalendor > tr > :nth-child(2) {
+// 	padding-left: 15px !important;
+//   }
+  
+//   td.cfile {
+// 	padding-left: 11px;
+//   }
+  
+//   .calendorfcontainer {
+// 	padding-right: 95px;
+// 	margin-left: 0px !important;
+// 	margin-right: 0px !important;
+// 	padding-left: 155px !important;
+//   }
+  
+//   .calnext {
+// 	float: right;
+// 	width: 109px;
+// 	height: 39px;
+// 	/* UI Properties */
+// 	background: #eeeeee 0% 0% no-repeat padding-box;
+// 	border-radius: 5px 0px 0px 5px;
+// 	font-size: 16px;
+// 	font-weight: 600;
+// 	border: none;
+// 	margin-left: 3px;
+// 	margin-top: 10px;
+//   }
+  
+//   .calpre {
+// 	float: right;
+// 	width: 109px;
+// 	height: 39px;
+// 	/* UI Properties */
+// 	background: #eeeeee 0% 0% no-repeat padding-box;
+// 	border-radius: 5px 0px 0px 5px;
+// 	font-size: 16px;
+// 	font-weight: 600;
+// 	border: none;
+// 	margin-top: 10px;
+//   }
+  
+//   .calendordate {
+// 	font-weight: 600;
+// 	padding-top: 10px;
+//   }
+  
+//   .calendordate:nth-child(2) {
+// 	font-weight: 600;
+// 	padding-left: 50px;
+//   }
+  
+//   .calnext:hover,
+//   .calpre:hover,
+//   .calnext:focus,
+//   .calpre:focus {
+// 	background: #eee;
+// 	border: none;
+//   }
+  
+//   .calendorselect:nth-child(2),
+//   .calendorselect:nth-child(3),
+//   .calendorselect:nth-child(4),
+//   .calendorselect:nth-child(5) {
+// 	margin-left: 10px;
+//   }
+  
+//   .formcalico {
+// 	width: 25px;
+// 	display: inline-block;
+// 	cursor: pointer;
+//   }
+  
+//   .calselectitem {
+// 	max-width: 219px;
+// 	text-overflow: ellipsis;
+//   }
+  
+//   .calendofont {
+// 	font-size: 14px;
+// 	font-weight: 600;
+//   }
+  
+//   .caseselect {
+// 	font-size: 14px;
+// 	max-width: 140px;
+// 	text-overflow: ellipsis;
+//   }
+  
+//   .formcalinput {
+// 	width: 80%;
+// 	display: inline-block;
+//   }
+  
+//   .numbercls {
+// 	display: inline-block;
+// 	width: 58px;
+//   }
+  
+//   .thheadnameone {
+// 	display: inline-block;
+// 	padding-right: 5px;
+// 	padding-bottom: 0px;
+// 	margin-bottom: 0px;
+//   }
+  
+//   table.table.table-bordered.tblcalendor.tbltimesheet th {
+// 	background: white !important;
+//   }
+  
+//   span.ctime {
+// 	padding-right: 6px;
+//   }
+  
+//   .actionbico {
+// 	padding-left: 5px;
+// 	cursor: pointer;
+//   }
+  
+//   .fgroupone {
+// 	display: inline-block;
+// 	margin-top: -22px;
+//   }
+  
+//   .gridbox {
+// 	padding-right: 92px !important;
+//   }
+  
+//   .tbltimesheet td:nth-child(3),
+//   .columncolor,
+//   .tbltimesheet td:nth-child(7) {
+// 	background: #feffeb !important;
+//   }
+  
+//   .tbltimesheet td.colnormal {
+// 	background: #f0f0f0 !important;
+//   }
+  
+//   .timesheetsection {
+// 	margin-top: 20px;
+//   }
+  
+//   td.wcolr,
+//   td.colnormal.wcolr {
+// 	background: #fff !important;
+//   }
+  
+//   .tbltotal {
+// 	background: #f0f0f0;
+// 	padding: 8px 0px 0px 15px;
+// 	height: 43px;
+// 	font-size: 16px;
+//   }
+  
+//   .totalbtnsub {
+// 	text-align: right;
+// 	margin-top: 25px;
+//   }
+  
+//   .timesheetitle {
+// 	color: #004d87;
+// 	font-size: 20px;
+// 	font-weight: 600;
+//   }
+  
+//   .tableplan > :not(caption) > * {
+// 	border: 1px dashed #707070;
+//   }
+  
+//   .tableplan > :not(caption) > * > * {
+// 	border: 1px dashed #707070;
+//   }
+  
+//   img.lefticon {
+// 	padding-left: 20px;
+//   }
+  
+//   .tdate {
+// 	padding-left: 21px;
+// 	font-weight: 600;
+// 	color: #00498e;
+//   }
+  
+//   .tlabel {
+// 	font-weight: 600;
+// 	color: #00498e;
+//   }
+  
+//   .caldate {
+// 	font-weight: 600;
+//   }
+  
+//   .tbldash td,
+//   .tbldash th,
+//   .tbldash tr {
+// 	border: 1px dashed #707070;
+// 	border-top: none;
+// 	border-right: none;
+// 	position: relative;
+//   }
+  
+//   .timeselect {
+// 	font-weight: 600;
+//   }
+  
+//   .tbldash td:nth-child(1),
+//   .tbldash th:nth-child(1),
+//   tr.timerow {
+// 	border-left: none;
+//   }
+  
+//   .tbldash td,
+//   tr.lstrow {
+// 	border-bottom: none;
+//   }
+  
+//   .calcircle.calcircletwo {
+// 	margin-bottom: -22px;
+//   }
+  
+//   p.timetask {
+// 	background: #004c87;
+// 	color: #fff;
+// 	padding: 4px;
+// 	position: absolute;
+// 	margin-top: 14px;
+// 	max-width: 133px;
+// 	white-space: nowrap;
+// 	overflow: hidden;
+// 	text-overflow: ellipsis;
+// 	margin-left: -8px;
+// 	width: 100%;
+//   }
+  
+//   p.ttask {
+// 	margin-top: -4px;
+//   }
+  
+//   .expandone {
+// 	width: 100px;
+//   }
+  
+//   .expandpara {
+// 	max-width: 50% !important;
+//   }
+  
+//   p.calcircle.calcirclethree {
+// 	font-size: 53px;
+// 	padding-top: 0px;
+//   }
+  
+//   /* .tbldash tr:last-child { background:#ff0000; } */
+//   .itemlist {
+// 	padding-top: 28px;
+//   }
+  
+//   tr.tblheaderrow {
+// 	border: none;
+//   }
+  
+//   .btncalednor {
+// 	text-align: center;
+// 	padding-top: 10px;
+//   }
+  
+//   .settingicon {
+// 	padding-left: 25px;
+// 	text-align: right;
+// 	float: right;
+// 	padding-top: 19px;
+// 	cursor: pointer;
+//   }
+  
+//   /* .lbltime{
+// 	max-width: 75px;
+// 	  white-space: nowrap;
+// 	  overflow: hidden;
+// 	  text-overflow: ellipsis;
+// 	  font-size: 12px;
+//   } */
+//   .calcircle {
+// 	width: 76px;
+// 	height: 76px;
+// 	background: #00b3a7 0% 0% no-repeat padding-box;
+// 	color: #fff;
+// 	font-size: 34px;
+// 	text-align: center;
+// 	border-radius: 100%;
+// 	padding-top: 12px;
+// 	margin: auto;
+// 	margin-bottom: 20px;
+//   }
+  
+//   .caliconfile td {
+// 	width: 50px;
+// 	height: 100px;
+// 	position: relative;
+//   }
+  
+//   .lblitem {
+// 	text-align: center;
+// 	font-size: 20px;
+// 	margin: 0px;
+//   }
+  
+//   .tblheaderrow,
+//   tr.tblheaderrow th {
+// 	border: none;
+//   }
+  
+//   .cdate {
+// 	font-size: 12px;
+// 	font-weight: 600;
+// 	display: block;
+//   }
+  
+//   .commontd {
+// 	max-width: 75px;
+// 	white-space: nowrap;
+// 	overflow: hidden;
+// 	text-overflow: ellipsis;
+// 	font-size: 12px;
+//   }
+  
+//   label.lbltime {
+// 	display: inline-block;
+// 	position: absolute;
+// 	max-width: 100px;
+// 	white-space: nowrap;
+// 	overflow: hidden;
+// 	text-overflow: ellipsis;
+// 	font-size: 12px;
+// 	padding-left: 2px;
+//   }
+  
+//   .custleftmenu {
+// 	height: calc(100vh - -750vh);
+//   }
+  
+//   .btnaddevent {
+// 	min-width: 67px;
+//   }
+  
+//   .btncustcal {
+// 	margin-bottom: 11px;
+// 	margin-top: 0px;
+//   }
+  
+//   img.lefticon,
+//   .righticon {
+// 	cursor: pointer;
+//   }
+  
+//   .lastitemlist {
+// 	padding-top: 0px !important;
+//   }
+//   /* message page css */
+//   .msgheader {
+// 	height: 124px;
+// 	margin-left: 0px;
+// 	padding-left: 62px;
+// 	text-align: center;
+// 	background: #fff;
+//   }
+  
+//   .msgswitch {
+// 	padding-top: 30px;
+//   }
+  
+//   .msgclient {
+// 	padding: 6px 20px 6px 20px;
+//   }
+//   label.msglabel {
+// 	font-size: 20px;
+// 	font-weight: 600;
+// 	padding-bottom: 12px;
+// 	color: #000;
+//   }
+  
+//   .msgiconlist {
+// 	padding: 10px 1px 0px 0px !important;
+//   }
+//   .msgcircle {
+// 	color: #ffffff;
+// 	height: 40px;
+// 	width: 40px;
+// 	border-radius: 100px;
+// 	background: #ea4018;
+// 	font-size: 19px;
+// 	text-align: center;
+// 	padding-top: 5px;
+// 	margin-top: 5px;
+// 	display: block;
+// 	float: right;
+//   }
+//   .msgtime {
+// 	text-align: right;
+//   }
+//   .mchildtime {
+// 	font-weight: bold;
+// 	font-size: 16px;
+// 	padding-top: 7px;
+//   }
+  
+//   .mlname {
+// 	padding-top: 19px;
+// 	font-size: 20px;
+// 	font-weight: 600;
+// 	color: #000;
+//   }
+  
+//   .msgcontainer,
+//   .msgcontainerchat {
+// 	background: #eeeeee !important;
+// 	border: 1px solid #e5e5e5;
+// 	box-shadow: none;
+//   }
+//   .msgcontainer:hover,
+//   .msgcontainer:hover .mlname,
+//   .msgcontainer:hover .mtime,
+//   .msgcontainer:focus,
+//   .msgcontainer:focus .mlname,
+//   .msgcontainer:focus .mtime {
+// 	background: #00b3a7 !important;
+// 	color: #fff !important;
+// 	cursor: pointer;
+//   }
+//   .msgcontainer:hover .msgcircle,
+//   .msgcontainer:hover .msgcircle {
+// 	color: #00b3a7 !important;
+// 	background: #fff !important;
+// 	cursor: pointer;
+//   }
+  
+//   .msgcontaineractive {
+// 	background: #00b3a7 !important;
+// 	color: #fff !important;
+//   }
+  
+//   .msgcircleactive {
+// 	color: #00b3a7 !important;
+// 	background: #fff !important;
+//   }
+//   .arrowlg {
+// 	padding-top: 25px;
+// 	cursor: pointer;
+//   }
+//   .msgvideo {
+// 	padding-top: 20px;
+// 	padding-right: 18px;
+// 	cursor: pointer;
+//   }
+//   .msgcall {
+// 	padding-top: 20px;
+// 	cursor: pointer;
+//   }
+//   .messagecont {
+// 	margin-top: 30px;
+//   }
+//   .msgchatlist {
+// 	padding: 10px 1px 7px 0px !important;
+//   }
+  
+//   .chatcustname {
+// 	padding-top: 33px;
+// 	padding-left: 10px;
+//   }
+  
+//   .msgcontainerchatbox {
+// 	max-height: 620px;
+// 	overflow-y: auto;
+// 	border-top: none !important;
+// 	border-top-left-radius: 0px;
+// 	border-top-right-radius: 0px;
+// 	box-shadow: none;
+// 	display: block;
+// 	min-height: 500px;
+//   }
+  
+//   .formitem {
+// 	margin-top: 25px;
+//   }
+  
+//   .chattxt {
+// 	font-size: 14px;
+// 	display: inline-block;
+// 	width: 80%;
+//   }
+//   .chatpara {
+// 	background: #eee;
+// 	border-radius: 10px;
+// 	padding: 12px;
+// 	padding-top: 14px;
+// 	padding-bottom: 0px;
+// 	display: inline-block;
+// 	width: 100%;
+// 	color: #000;
+// 	font-weight: 600;
+//   }
+//   .chatimgone {
+// 	width: 70px;
+// 	margin-top: -6px;
+//   }
+//   .chatimgtwo {
+// 	width: 50px;
+//   }
+//   .chattxttime {
+// 	font-size: 11px;
+// 	float: right;
+//   }
+//   .chatdate {
+// 	display: block;
+// 	margin-top: -20px;
+// 	padding-bottom: 10px;
+//   }
+//   .textareatwo {
+// 	margin-top: 32px;
+// 	margin-bottom: 45px;
+//   }
+//   .textarea {
+// 	margin-top: 20px;
+//   }
+//   .chattxttwo {
+// 	margin-left: -50px;
+//   }
+  
+//   input.form-control.textbox.chatinput {
+// 	background: #fff !important;
+// 	border-radius: 30px !important;
+// 	height: 51px !important;
+//   }
+//   .seobox {
+// 	margin-left: -10px;
+// 	margin-right: 0px;
+// 	padding: 0px;
+//   }
+  
+//   .toggelchat:hover,
+//   .toggelchat:hover,
+//   .toggelchat:hover .mlname,
+//   .toggelchat:hover .mtime,
+//   .toggelchat:focus,
+//   .toggelchat:focus .mlname,
+//   .toggelchat:focus .mtime {
+// 	background: #eeeeee !important;
+  
+// 	box-shadow: none;
+// 	color: #000 !important;
+//   }
+  
+//   .toggelchat:hover .msgcircle,
+//   .toggelchat:hover .msgcircle {
+// 	color: #fff !important;
+// 	background: #ea4018 !important;
+// 	cursor: pointer;
+//   }
+  
+//   .chatuser {
+// 	color: #ffffff;
+// 	height: 43px;
+// 	width: 43px;
+// 	border-radius: 100px;
+// 	background: #56009e;
+// 	font-size: 23px;
+// 	text-align: center;
+// 	padding-top: 3px;
+// 	margin-top: 14px;
+// 	display: block;
+// 	font-weight: BOLD;
+// 	margin-bottom: 12px;
+//   }
+//   .circlemsg {
+// 	text-align: right;
+//   }
+//   .subcircleimg {
+// 	margin-right: 10px;
+// 	width: 32px;
+//   }
+//   .mchildtimetxt {
+// 	font-weight: bold;
+// 	font-size: 14px;
+// 	padding-top: 7px;
+//   }
+//   .chatusertitle {
+// 	font-weight: 900;
+// 	padding-top: 23px;
+// 	word-break: break-all;
+// 	font-size: 19px;
+// 	color: #000;
+//   }
+//   .expanduserico {
+// 	padding-top: 7px;
+// 	padding-bottom: 5px;
+//   }
+  
+//   .expandchat,
+//   .expandchattwo {
+// 	display: none;
+// 	margin-top: 7px;
+//   }
+//   .timeexpand {
+// 	font-size: 14px;
+// 	font-weight: bold;
+// 	color: #000;
+// 	padding-top: 24px;
+//   }
+  
+//   .suser {
+// 	background: #0b4fa4;
+//   }
+//   .IPuser {
+// 	background: #f4630a;
+//   }
+//   .Fuser {
+// 	background: #007c0d;
+//   }
+//   .Iluser {
+// 	background: #7a4302;
+//   }
+//   .cluser {
+// 	background: #404e37;
+//   }
+//   .cpuser {
+// 	background: #d223d8;
+//   }
+//   .iiuser {
+// 	background: #b0803e;
+//   }
+//   .ciuser {
+// 	background: #797778;
+//   }
+  
+//   .fluser {
+// 	background: #7c702d;
+//   }
+  
+//   .expandfamily {
+// 	margin-top: 7px;
+//   }
+  
+//   /* relationship screen 7,8 css*/
+  
+//   .rscreen {
+// 	background: #fff;
+// 	height: 160px;
+//   }
+//   .rcompswitch {
+// 	border-left: 1px solid #fff;
+//   }
+  
+//   .relinfo {
+// 	margin-bottom: 10px;
+//   }
+  
+//   .cmnswitch {
+// 	width: auto;
+// 	padding: 5px 19px 5px 19px;
+// 	font-size: 19px;
+//   }
+  
+//   .shared .cmnswitch {
+// 	width: 49% !important;
+//   }
+  
+//   .lefttglbtn {
+// 	padding-top: 3px;
+// 	padding-bottom: 50px;
+//   }
+//   .rightshared {
+// 	padding-bottom: 54px;
+//   }
+  
+//   .relshare {
+// 	margin-top: 14px;
+//   }
+//   .dopara {
+// 	color: #00b3a7;
+// 	font-size: 20px;
+// 	font-weight: 600;
+// 	padding-bottom: 28px;
+//   }
+  
+//   .sharedblock {
+// 	background: #00b3a7;
+// 	color: #fff;
+// 	font-size: 25px;
+// 	padding: 11px;
+// 	font-weight: 600;
+// 	padding-left: 26px;
+//   }
+//   .shardminus,
+//   .shardplus,
+//   .tog {
+// 	padding-right: 8px;
+// 	padding-top: 4px;
+// 	font-weight: 100 !important;
+// 	float: right;
+// 	cursor: pointer;
+//   }
+//   .shardminusone,
+//   .shardplusone,
+//   .togone {
+// 	padding-right: 8px;
+// 	padding-top: 4px;
+// 	font-weight: 100 !important;
+// 	float: right;
+// 	cursor: pointer;
+//   }
+//   .sharebtn,
+//   .sharebtn:hover,
+//   .sharebtn:active,
+//   .sharebtn:focus {
+// 	border-radius: 30px;
+// 	background: #004d87 0% 0% no-repeat padding-box;
+// 	box-shadow: none;
+// 	padding-left: 20px;
+// 	padding-right: 30px;
+// 	font-size: 18px;
+//   }
+//   .tbltxt {
+// 	display: inline-block;
+//   }
+//   .hrline {
+// 	height: 40px;
+// 	width: 3px;
+// 	border-right: 1px dashed;
+// 	position: absolute;
+// 	display: inline-block;
+// 	padding-left: 11px;
+// 	margin-top: -6px;
+//   }
+//   .notimg {
+// 	width: 25px;
+//   }
+//   .eyeimg {
+// 	width: 31px;
+//   }
+  
+//   tr.headeritem th {
+// 	color: #00498e;
+//   }
+  
+//   .hrline {
+// 	padding-left: 11px;
+// 	margin-top: 4px;
+// 	display: none;
+//   }
+//   .tbltxt {
+// 	display: inline-block;
+// 	border-right: 1px dashed;
+// 	min-height: 43px;
+// 	padding-right: 10px;
+// 	padding-top: 8px;
+//   }
+//   .rstbl {
+// 	margin-bottom: 0px;
+//   }
+//   tbody > tr > :nth-child(1) {
+// 	padding-left: 12px;
+// 	word-break: break-word;
+// 	max-width: 156px;
+//   }
+  
+//   .cdocument {
+// 	color: #000;
+// 	background: #eeeeee;
+//   }
+//   .gridfbox {
+// 	margin-bottom: 0px !important;
+//   }
+//   .togcontinaer {
+// 	display: none;
+//   }
+//   /* .cdocument:hover, .cdocument:focus {
+// 	  background: #00B3A7;
+// 	  color: #fff;
+// 	  cursor: pointer;
+//   } */
+//   .btndocshare {
+// 	text-align: right;
+// 	margin-top: 30px;
+//   }
+//   .sharedgreen {
+// 	background: #057700;
+// 	margin-bottom: 20px;
+//   }
+  
+//   .sharedblue {
+// 	background: #0075b3;
+// 	margin-bottom: 20px;
+//   }
+//   .sharedred {
+// 	background: #b31c00;
+// 	margin-bottom: 20px;
+//   }
+//   .activeone {
+// 	background: #00b3a7;
+// 	color: #fff;
+// 	cursor: pointer;
+//   }
+//   .msgoption {
+// 	color: #004d87;
+// 	font-weight: bold;
+// 	padding-bottom: 20px;
+// 	font-size: 20px;
+//   }
+  
+//   .immigrationtxt {
+// 	font-size: 16px;
+// 	font-weight: 600;
+// 	color: #000;
+// 	padding-left: 14px;
+//   }
+  
+//   .actionpara {
+// 	color: #00498e;
+// 	padding-bottom: 0px;
+//   }
+//   textarea#comment {
+// 	background: #eeeeee;
+//   }
+//   .sharedboxitem{
+// 	margin-top: 14px;
+//   }
+
+//   .tabitemlist {
+//     padding-top: 29px;
+
+// }
+
+// .notemsgcircle {
+// 	background: #F15F12;
+//   }
+//   /* .custodycontainer{
+//     padding-left: 103px;
+//     padding-right: 0px;
+//     padding-top: 20px;
+//   } */
+
+//   .custodyrow{
+// 	background-color: #004D87;
+//     height: 60px;
+//     width: 92%;
+//     box-shadow: 0px 3px 3px #00000033;
+//     color: #fff;
+//     border-radius: 5px;
+	
+//   }
+
+//   .casestudy{
+// 	display: inline-block;
+//     font-size: 27px;
+//     font-weight: 600;
+//     height: 100px;
+//     padding: 10px 0px 8px 10px;
+
+//   }
+// .custlist{
+// 	padding-top: 0px;
+// }
+//   .icocontext {
+//     float: right;
+//     padding-top: 13px;
+//     padding-left: 1px;
+//     padding-right: 16px;
+//     cursor: pointer;
+	
+// }
+// .teamclient {
+//     font-size: 20px;
+//     font-weight: 600;
+//     margin-bottom: 0px;
+//     color: #004d87;
+// }
+// .timezone{
+// 	color: #898686;
+//     font-size: 14px;
+// }
+// .monthtitle {
+//     font-size: 18px;
+//     font-weight: 600;
+// 	margin-bottom: 0px;
+// 	color: #000;
+// }
+// .meetingitem{
+// 	font-size: 15px;
+//     font-weight: 600;
+// 	color: #000;
+
+// }
+// .bellinfo{
+// 	font-size: 16px;
+   
+// 	margin-bottom: 0px;
+// 	color: #000;
+// }
+// .bellico {
+//     padding-top: 5px;
+//     padding-right: 5px;
+// }
+// .belldate {
+// 	font-size: 14px;
+//     padding-left: 34px;
+//     margin: 0px;
+//     margin-top: -6px;
+//     font-weight: 600;
+// }
+// .affitem {
+//     padding-top: 29px;
+// }
+
+// .namecircle {
+//     background: #057700;
+//     color: #fff;
+//     border-radius: 100px;
+//     height: 25px;
+//     width: 25px;
+//     text-align: center;
+//     font-size: 14px;
+//     padding: 2px;
+// }
+// .namecirclesub{
+// 	background: #004d87;
+// }
+
+// .namecirclesubone{
+// 	background: #ba3a00;
+// }
+
+// .emptyrow{
+// 	padding-top: 15px;
+// }
+// .namecirclesubtwo{
+// 	background: #940561;
+// }
+// .tickico {
+//     margin-top: -5px;
+// }
+// .lblorg{
+// 	padding-left: 27px;
+//     font-size: 14px;
+//     font-weight: 600;
+//     margin-top: -5px;
+// 	margin-bottom: -4px;
+// }
+
+// .horzline {
+//     border-right: 1px dashed #ccc;
+//     height: 71px;
+//     position: absolute;
+//     display: block;
+//     margin-left: -24px;
+// }
+
+
+//   /* responsive  */
+//   @media (min-width: 1600px) {
+//   }
+  
+//   @media (max-width: 1313px) {
+// 	.middlecontainerone {
+// 	  width: 16%;
+// 	  float: left;
+// 	  display: inline-block;
+// 	  text-align: center;
+// 	  margin-left: 0px;
+// 	}
+  
+// 	.calendorselect {
+// 	  width: 17.9%;
+// 	}
+  
+// 	p.rightbox.rightboxtxt.rightrate.rightratetime {
+// 	  padding-top: 23px;
+// 	  font-size: 22px;
+// 	  font-weight: 600;
+// 	}
+  
+// 	.tdate {
+// 	  padding-left: 2px;
+// 	}
+//   }
+  
+//   @media (max-width: 1263px) {
+// 	/* .toalhours {
+// 		font-size: 24px;
+// 	  } */
+// 	.rightratetime {
+// 	  padding-bottom: 22px;
+// 	}
+  
+// 	img.lefticon,
+// 	.righticon {
+// 	  padding-left: 2px;
+// 	  width: 14px;
+// 	}
+  
+// 	.dropdown {
+// 	  margin-right: -2px;
+// 	}
+  
+// 	.mcontainer {
+// 	  height: 36px;
+// 	  width: 100% !important;
+// 	}
+  
+// 	.righmnamecontext {
+// 	  margin-left: 0px;
+// 	}
+  
+// 	.time {
+// 	  font-size: 20px;
+// 	  /* font-size: 2.2vw; */
+// 	  padding-top: 11px;
+// 	}
+  
+// 	.relcontainer {
+// 	  margin-left: 0px;
+// 	}
+//   }
+  
+//   @media (max-width: 1281px) {
+// 	.middlecontainertwo {
+// 	  margin-left: 12px;
+// 	}
+  
+// 	.rightnametwo {
+// 	  width: 25%;
+// 	}
+  
+// 	.approxbillhour {
+// 	  font-size: 1.6vw;
+// 	  font-weight: 700;
+// 	}
+  
+// 	label.lbltime {
+// 	  display: inline-block;
+// 	  position: absolute;
+// 	  max-width: 73px;
+// 	  white-space: nowrap;
+// 	  overflow: hidden;
+// 	  text-overflow: ellipsis;
+// 	  font-size: 12px;
+// 	}
+  
+// 	.numbercls {
+// 	  display: inline-block;
+// 	  width: 32px;
+// 	}
+  
+// 	.chattxttwo {
+// 	  margin-left: -30px;
+// 	}
+//   }
+  
+//   @media (max-width: 1180px) {
+// 	.mtime {
+// 	  font-size: 14px;
+// 	}
+  
+// 	.usertag {
+// 	  padding: 0px;
+// 	  padding-left: 30px;
+// 	}
+// 	.msgvideo {
+// 	  padding-top: 20px;
+// 	  padding-right: 5px;
+// 	  cursor: pointer;
+// 	  width: 40px;
+// 	}
+  
+// 	.chatsubico {
+// 	  padding: 0px;
+// 	}
+  
+// 	.sharebtn,
+// 	.sharebtn:hover,
+// 	.sharebtn:active,
+// 	.sharebtn:focus {
+// 	  font-size: 18px;
+// 	  margin-top: 4px;
+// 	}
+// 	.chatcustname {
+// 	  padding-top: 18px;
+// 	  padding-left: 10px;
+// 	}
+  
+// 	.msgnotify {
+// 	  float: right;
+// 	  padding-right: 10px;
+// 	  margin-top: 5px;
+// 	  height: 25px;
+// 	  width: 32px;
+// 	  cursor: pointer;
+// 	}
+  
+// 	.notfiy_tree {
+// 	  margin-left: 5px;
+// 	  width: 24px;
+// 	  height: 22px;
+// 	}
+  
+// 	.meetintvertical {
+// 	  padding-left: 2px;
+// 	}
+  
+// 	.fgroupone {
+// 	  margin-top: 0px;
+// 	}
+  
+// 	.btnadd {
+// 	  min-width: 67px;
+// 	}
+  
+// 	.gridcalendor,
+// 	.calpre,
+// 	.calnext,
+// 	.calendorselect {
+// 	  font-size: 12px;
+// 	}
+  
+// 	.table-responsive-sm.gridcalendor {
+// 	  overflow: auto;
+// 	}
+  
+// 	/* .mname{
+// 			font-size: 30px;
+// 		} */
+// 	.rightbox {
+// 	  font-size: 16px;
+// 	  line-height: 1.1;
+// 	  margin-top: 0px;
+// 	  display: -webkit-box !important;
+// 	  -webkit-line-clamp: 3;
+// 	  -webkit-box-orient: vertical;
+// 	  white-space: normal;
+// 	  max-width: 173px;
+// 	  overflow: hidden;
+// 	}
+  
+// 	.calendorname {
+// 	  font-size: 23px;
+// 	}
+  
+// 	.rightboxtxt,
+// 	.clientmsgtxt {
+// 	  font-size: 26px;
+// 	}
+  
+// 	.legaldate {
+// 	  font-size: 14px;
+// 	  padding-top: 25px;
+// 	}
+  
+// 	.approxmeet,
+// 	.meetime {
+// 	  padding-left: 14px;
+// 	}
+  
+// 	/* .toalhours {
+// 		font-size: 16px;
+// 	  } */
+// 	.vertirightbox,
+// 	.verticaltotal {
+// 	  height: 30px !important;
+// 	}
+  
+// 	.billhour {
+// 	  font-size: 18px;
+// 	  padding-top: 29px;
+// 	  margin-left: 0px;
+// 	}
+  
+// 	.rightpercentage {
+// 	  font-size: 19px !important;
+// 	  padding-top: 28px;
+// 	  margin-left: -5px;
+// 	}
+  
+// 	.middlecontainerone {
+// 	  width: 16%;
+// 	  float: left;
+// 	  display: inline-block;
+// 	  text-align: center;
+// 	}
+  
+// 	/* .rightcontainerboxapprox .row.meetingcontainer {res
+// 		padding-top: initial;
+// 		padding-bottom: initial;
+// 		margin-bottom: initial;
+// 	  } */
+// 	/* .legalbox {
+// 		padding-bottom: 25px !important;
+// 	  } */
+// 	.legalboxleft {
+// 	  padding-bottom: 0px !important;
+// 	  padding-top: 4px;
+// 	}
+  
+// 	.commoncontainer {
+// 	  width: 104%;
+// 	  margin-left: -8px;
+// 	  padding-top: auto;
+// 	  margin-top: auto;
+// 	}
+  
+// 	.bonetwo {
+// 	  margin-right: 10px;
+// 	  margin-top: 19px;
+// 	}
+  
+// 	.settingicon {
+// 	  padding-left: 11px;
+// 	}
+// 	.msgcircle {
+// 	  padding-top: 5px;
+// 	  margin-top: 5px;
+// 	}
+  
+// 	.droptest {
+// 	  text-align: center;
+// 	}
+// 	.hrline {
+// 	  padding-left: 11px;
+// 	  margin-top: 4px;
+// 	  display: none;
+// 	}
+// 	.tbltxt {
+// 	  display: inline-block;
+// 	  border-right: 1px dashed;
+// 	  min-height: 43px;
+// 	  padding-right: 10px;
+// 	}
+//   }
+  
+//   @media (max-width: 1024px) {
+// 	.textfsize {
+// 	  text-align: center;
+// 	  font-size: 17px;
+// 	  height: 52px;
+// 	  width: 64px;
+// 	  font-weight: 700;
+// 	  padding: 4px 20px 10px 20px !important;
+// 	}
+// 	.chatusertitle {
+		
+// 		font-size: 15px;
+// 		color: #000;
+// 	  }
+  
+// 	.mobcolumn {
+// 	  width: 25%;
+// 	  display: inline-block;
+// 	}
+// 	.mobcolumntwo {
+// 	  width: 75%;
+// 	  display: inline-block;
+// 	}
+// 	.chatdate {
+// 	  display: block;
+// 	  margin-top: 0px;
+// 	  padding-bottom: 10px;
+// 	  right: 0;
+// 	  float: right;
+// 	  width: 100%;
+// 	  text-align: right;
+// 	}
+// 	.calbox {
+// 	  display: inline-block;
+// 	}
+  
+// 	.caldatename {
+// 	  width: 64%;
+// 	}
+  
+// 	.callmin {
+// 	  margin-top: 4px;
+// 	}
+  
+// 	.calendorselect:nth-child(2),
+// 	.calendorselect:nth-child(3),
+// 	.calendorselect:nth-child(4),
+// 	.calendorselect:nth-child(5) {
+// 	  margin-left: 10px;
+// 	}
+  
+// 	.fsize {
+// 	  font-size: 12px !important;
+// 	  text-align: center;
+// 	  line-height: 0px;
+// 	  padding-top: 4px;
+// 	}
+  
+// 	.optiontwo,
+// 	.optionone,
+// 	.Personalize {
+// 	  font-size: 13px;
+// 	}
+  
+// 	.msgnotify {
+// 	  float: right;
+// 	  padding-right: 10px;
+// 	  margin-top: 5px;
+// 	  height: 25px;
+// 	  width: 32px;
+// 	  cursor: pointer;
+// 	}
+  
+// 	/* .dropdown {
+// 	  background: #00498e;
+// 	  color: #fff;
+// 	  padding: 3px 11px 3px 11px;
+// 	  position: absolute;
+// 	  margin-top: 48px;
+// 	} */
+// 	.iconalign {
+// 	  margin-left: 0px;
+// 	}
+  
+// 	.textalign {
+// 	  margin-left: 0px;
+// 	}
+  
+// 	.rightcontainerboxapprox {
+// 	  margin-top: 4px;
+// 	  width: auto;
+// 	  margin-left: 0px;
+// 	}
+  
+// 	.containerbox {
+// 	  margin-top: 28px;
+// 	  width: 100%;
+// 	}
+  
+// 	.main {
+// 	  padding-left: 135px;
+// 	  padding-right: 0px;
+// 	  padding-top: 20px;
+// 	}
+//   }
+  
+//   @media (max-width: 940px) {
+// 	.header {
+// 	  background-color: #fff;
+// 	  box-shadow: 0px 3px 3px #00000033;
+// 	  position: sticky;
+// 	  top: 0;
+// 	  width: 100%;
+// 	  height: 55px;
+// 	  z-index: 999;
+// 	}
+  
+// 	.gridbox {
+// 	  padding-right: 4px !important;
+// 	}
+  
+// 	.fgroupone {
+// 	  margin-top: 0px;
+// 	}
+  
+// 	.calselectitem {
+// 	  max-width: 138px;
+// 	  text-overflow: ellipsis;
+// 	}
+  
+// 	.gridcalendor,
+// 	.calpre,
+// 	.calnext,
+// 	.calendorselect {
+// 	  font-size: 12px;
+// 	}
+  
+// 	.calendorfcontainer {
+// 	  margin-left: 0px !important;
+// 	  margin-right: 0px !important;
+// 	  padding-left: 75px !important;
+// 	}
+  
+// 	.gridtable {
+// 	  padding-right: 20px;
+// 	  overflow: auto;
+// 	}
+  
+// 	.commoncontainer {
+// 	  width: 106%;
+// 	}
+  
+// 	.iconaligncls {
+// 	  margin-left: -4px;
+// 	}
+  
+// 	.teamiconmsg {
+// 	  height: 54px;
+// 	}
+  
+// 	.headertop {
+// 	  height: 204px;
+// 	  padding-left: 62px;
+// 	}
+// 	.msgheader {
+// 	  height: 80px;
+// 	}
+  
+// 	.headerrelationship {
+// 	  height: 237px;
+// 	}
+  
+// 	.formsearch {
+// 	  width: 259px;
+// 	  margin: auto;
+// 	}
+  
+// 	.mobilesvg {
+// 	  height: 66px;
+// 	}
+  
+// 	.icoright {
+// 	  margin-left: -6px;
+// 	}
+  
+// 	.billhour {
+// 	  font-size: 24px;
+// 	  padding-top: 26px;
+// 	  margin-left: 0px;
+// 	  z-index: 9999999;
+// 	  width: 100px;
+// 	}
+  
+// 	.bonethree {
+// 	  margin-right: 11px;
+// 	  margin-top: 20px;
+// 	}
+  
+// 	.bonetwo {
+// 	  margin-right: 3px;
+// 	}
+  
+// 	.time {
+// 	  font-size: 16px;
+// 	  padding-top: 11px;
+// 	}
+  
+// 	.tnumber {
+// 	  padding-left: 16px;
+// 	}
+  
+// 	.monthitem {
+// 	  width: 0px;
+// 	  margin-left: auto;
+// 	}
+  
+// 	.approxmeet,
+// 	.meetime {
+// 	  padding-left: 12px;
+// 	}
+  
+// 	.softvertical {
+// 	  margin-left: 0px;
+// 	}
+  
+// 	.activevertical {
+// 	  margin-top: 30px;
+// 	}
+  
+// 	.rightratetime {
+// 	  margin-bottom: 0px;
+// 	  padding-bottom: 0px;
+// 	  padding-top: 24px;
+// 	  font-size: 22px;
+// 	}
+  
+// 	.containerbox {
+// 	  width: 100%;
+// 	}
+  
+// 	.customcontainer {
+// 	  width: 100%;
+// 	}
+  
+// 	.userprofile {
+// 	  height: 45px;
+// 	  background: #a04a00;
+// 	  width: 45px;
+// 	  margin-top: 4px;
+// 	  border-radius: 100px;
+// 	  text-align: center;
+// 	  vertical-align: middle;
+// 	}
+  
+// 	.slideico {
+// 	  margin-left: 70px;
+// 	}
+  
+// 	.row > .left-menu {
+// 	  width: 72px !important;
+// 	}
+  
+// 	.icongroup {
+// 	  padding: 20px 0px 0px 10px;
+// 	  display: block;
+// 	}
+  
+// 	.notfication {
+// 	  background: #004d87;
+// 	  border-radius: 100px;
+// 	  color: #fff;
+// 	  text-align: center;
+// 	  vertical-align: middle;
+// 	  padding-top: 3px;
+// 	  position: absolute;
+// 	  width: 20px;
+// 	  height: 20px;
+// 	  font-size: 11px;
+// 	  margin-top: -2px;
+// 	  margin-left: -21px;
+// 	}
+  
+// 	.msgicon {
+// 	  margin-top: 6px;
+// 	  margin-left: 4px;
+// 	}
+  
+// 	.cmname {
+// 	  margin-top: 5px;
+// 	  margin-bottom: 2px;
+// 	}
+  
+// 	.cmsgtxt {
+// 	  padding-left: 6px;
+// 	  margin-top: 0px;
+// 	}
+  
+// 	.logo_ico {
+// 	  text-align: center;
+// 	  display: inline-block;
+// 	  width: 72px;
+// 	  background: #f5f5f5;
+// 	  padding-top: 20px;
+// 	  padding-bottom: 9px;
+// 	}
+  
+// 	.headtitle {
+// 	  display: inline-block;
+// 	  font-size: 30px;
+// 	  margin-left: 13px;
+// 	  text-align: left;
+// 	  letter-spacing: 1px;
+// 	  color: #004d87;
+// 	  padding-top: 7px;
+// 	  font-weight: 900;
+// 	}
+  
+// 	.logoicon {
+// 	  width: 34px;
+// 	}
+  
+// 	.webnav {
+// 	  padding-top: 0px;
+// 	}
+  
+// 	.main {
+// 	  padding-left: 104px;
+// 	}
+  
+// 	.username {
+// 	  margin-top: 4px;
+// 	  font-size: 24px;
+// 	  font-weight: 600;
+// 	  vertical-align: middle;
+// 	  color: #fff;
+// 	}
+  
+// 	.custusertype {
+// 	  margin-top: -22px !important;
+// 	  font-size: 14px;
+// 	  display: INLINE-BLOCK;
+// 	}
+  
+// 	.leftmeetingconclient span.vertical {
+// 	  padding-left: 5px;
+// 	}
+  
+// 	.iconsub {
+// 	  width: 43px;
+// 	}
+  
+// 	.itempriceone {
+// 	  margin-left: 0px;
+// 	}
+  
+// 	.custusername {
+// 	  display: block;
+// 	  padding-top: 5px;
+// 	  margin-bottom: -5px;
+// 	  color: #004d87;
+// 	}
+  
+// 	.dashboardicoweb {
+// 	  margin-top: -4px;
+// 	  width: 48px;
+// 	}
+  
+// 	.optionone,
+// 	.optiontwo,
+// 	.Personalize {
+// 	  font-size: 13px;
+// 	}
+  
+// 	.ddate {
+// 	  font-size: 16px;
+// 	}
+  
+// 	.rightboxone {
+// 	  padding-top: 22px;
+// 	  font-size: 1.5vw;
+// 	}
+  
+// 	.mtime {
+// 	  font-size: 12px;
+// 	}
+  
+// 	/* .rightbox,.mname,.clientmsgtxt{
+// 			font-size: 16px;
+// 		} */
+// 	.rightmeetingcon {
+// 	  width: 46%;
+// 	}
+  
+// 	.leftmeetingcon {
+// 	  width: 54%;
+// 	}
+  
+// 	.vertical {
+// 	  height: 45px;
+// 	  padding-left: 9px;
+// 	}
+  
+// 	.rightsubitem {
+// 	  height: 26px;
+// 	  width: 26px;
+// 	  font-size: 12px;
+// 	  padding-top: 5px;
+// 	}
+  
+// 	.midprofile {
+// 	  width: 80%;
+// 	}
+  
+// 	.midtime {
+// 	  font-size: 9px;
+// 	}
+  
+// 	.closedvertical {
+// 	  height: 50px !important;
+// 	}
+  
+// 	.msgtxt {
+// 	  display: block;
+// 	  font-weight: 700;
+// 	  margin-top: -1px !important;
+// 	}
+  
+// 	.middlecontainertwo {
+// 	  margin-left: -13px;
+// 	}
+  
+// 	.table-responsive-sm.gridcalendor {
+// 	  overflow: auto;
+// 	}
+// 	.rscreen {
+// 	  background: #fff;
+// 	  height: 160px;
+// 	}
+// 	.sharedblock {
+// 	  font-size: 21px;
+// 	}
+//   }
+  
+//   @media (max-width: 860px) {
+// 	.middlecontainerone {
+// 	  margin-left: -12px;
+// 	}
+// 	.usernamelist {
+// 		max-width: 66%;
+// 		white-space: nowrap;
+// 		overflow: hidden;
+// 		text-overflow: ellipsis;
+// 		HEIGHT: 19PX;
+// 	}
+// 	.horzline {
+// 		border-right: 1px dashed #ccc;
+// 		height: 71px;
+// 		position: absolute;
+// 		display: block;
+// 		margin-left: -12px;
+// 	}
+// 	.tickico {
+// 		margin-top: -5px;
+// 		position: absolute;
+// 		margin-left: -10px;
+// 	}
+// 	.tickico {
+// 		margin-top: -5px;
+// 		position: absolute;
+// 	}
+  
+// 	.mobcolumn {
+// 	  width: 25%;
+// 	  display: inline-block;
+// 	}
+// 	.mobcolumntwo {
+// 	  width: 75%;
+// 	  display: inline-block;
+// 	}
+  
+// 	.chatcustname {
+// 	  font-size: 18px !important;
+// 	  margin-left: 16px !important;
+// 	}
+  
+// 	.arrowcolumn {
+// 	  min-width: 40px;
+// 	  margin: 0px;
+// 	  padding: 0px;
+// 	}
+  
+// 	.chattxttwo {
+// 	  margin-left: -10px;
+// 	}
+// 	.col-sm-11.infoconalign {
+// 	  width: 242px;
+// 	  margin: 0px;
+// 	  padding-left: calc(var(--bs-gutter-x) * -5px);
+// 	}
+  
+// 	.softvertical {
+// 	  margin-left: -39px;
+// 	  padding-left: 10px;
+// 	}
+  
+// 	.bonethree {
+// 	  margin-right: -26px;
+// 	  margin-top: 20px;
+// 	}
+  
+// 	span.vertical.verticalclient {
+// 	  padding-left: 14px;
+// 	}
+  
+// 	.icomeeting {
+// 	  padding: 20px 9px 0px 0px !important;
+// 	}
+  
+// 	.avrgtxt {
+// 	  padding-left: 5px;
+// 	}
+  
+// 	.colalign {
+// 	  padding-left: 22px;
+// 	  padding-right: 0px;
+// 	}
+  
+// 	.activealign {
+// 	  padding-left: 17px;
+// 	}
+  
+// 	.mname {
+// 	  padding-top: 20px;
+// 	}
+  
+// 	.maymonth {
+// 	  font-size: 15px !important;
+// 	}
+  
+// 	.monthitem {
+// 	  width: 0px;
+// 	  margin-left: -24px;
+// 	}
+// 	.msgchatlist {
+// 	  padding: 9px 9px 6px 0px !important;
+// 	}
+  
+// 	.msgalign {
+// 	  margin-left: 14px;
+// 	  padding-right: 0px;
+// 	}
+  
+// 	.msglisa {
+// 	  padding-bottom: 10px !important;
+// 	  padding-top: 5px !important;
+// 	}
+// 	.msginputchat {
+// 	  padding-top: 10px;
+// 	}
+// 	.msgcall {
+// 	  width: 20px;
+// 	}
+// 	.msgvideo {
+// 	  width: 32px;
+// 	}
+
+// 	.tabitemlist{
+// 		PADDING-TOP:43px;
+// 	}
+
+// 	.chattxttime {
+// 		font-size: 10px;
+// 		float: right;
+// 	}
+// 	.chattxt {
+// 		font-size: 14px;
+// 		display: inline-block;
+// 		width: 75%;
+// 	}
+// 	.shareditem {
+// 		padding-top: 40px;
+// 	}
+//   }
+  
+//   @media (max-width: 800px) {
+// 	.itemprice {
+// 	  font-size: 23px;
+// 	  padding-top: 15px;
+// 	}
+  
+// 	.alertbtn {
+// 	  margin-top: 3px;
+// 	}
+//   }
+  
+//   @media (max-width: 770px) {
+// 	.bonetwo {
+// 	  margin-right: 5px;
+// 	}
+  
+// 	.bonethree {
+// 	  margin-right: -24px;
+// 	}
+  
+// 	.btncancel {
+// 	  width: 106px;
+// 	}
+  
+// 	.billhour {
+// 	  margin-left: -3px;
+// 	}
+  
+// 	.optionone,
+// 	.optiontwo,
+// 	.Personalize {
+// 	  font-size: 12px;
+// 	}
+  
+// 	.middlecontainertwo {
+// 	  margin-left: -3px;
+// 	}
+  
+// 	.middlecontainerone {
+// 	  margin-left: -3px;
+// 	}
+  
+// 	.rightpercentage {
+// 	  font-size: 18px !important;
+// 	  padding-top: 27px;
+// 	  margin-left: -8px;
+// 	}
+//   }
+  
+//   @media (max-width: 767px) {
+// 	.itemprice {
+// 	  font-size: 23px;
+// 	  padding-top: 23px;
+// 	}
+  
+// 	.mattertxtdata {
+// 	  font-size: 12px;
+// 	}
+  
+// 	.softvertical {
+// 	  margin-left: -9px;
+// 	}
+  
+// 	.billhour {
+// 	  font-size: 12px;
+// 	  padding-top: 35px;
+// 	  margin-left: 0px;
+// 	  z-index: 9999999;
+// 	  width: auto;
+// 	}
+
+// 	.casestudy {
+	
+// 		font-size: 16px;
+// 		padding: 20px 0px 8px 0px;
+// 	}
+
+// 	.icocontext {
+// 		float: right;
+// 		padding-top: 14px;
+// 		padding-left: 1px;
+// 		padding-right: 6px;
+// 		cursor: pointer;
+// 		width: 34px;
+// 	}
+//   }
+  
+//   /* Responsiveness menu*/
+  
+//   @media (min-width: 740px) {
+// 	.nav {
+// 	  max-height: none;
+// 	  top: 0;
+// 	  position: relative;
+// 	  float: right;
+// 	  width: fit-content;
+// 	  background-color: transparent;
+// 	}
+  
+// 	.menu li {
+// 	  float: left;
+// 	  padding-left: 12px;
+// 	}
+  
+// 	.menu a:hover {
+// 	  background-color: transparent;
+// 	  color: var(--grey);
+// 	}
+  
+// 	.hamb {
+// 	  display: none;
+// 	}
+//   }
+  
+//   @media (max-width: 740px) {
+// 	ul {
+// 	  list-style: none;
+// 	  width: 100%;
+// 	  padding-left: 70px;
+// 	}
+  
+// 	.mobilenav {
+// 	  display: block;
+// 	  top: 55px;
+// 	}
+  
+// 	.webnav {
+// 	  display: none;
+// 	}
+  
+// 	.dashboard_notification_mob {
+// 	  display: block;
+// 	  padding-right: 0px;
+// 	  padding-top: 5px;
+// 	  float: right;
+// 	}
+  
+// 	.personalizebtn {
+// 	  margin: 10px;
+// 	  width: 100%;
+// 	  text-align: center;
+// 	}
+  
+// 	.optionone,
+// 	.optiontwo {
+// 	  width: 50%;
+// 	}
+  
+// 	.oneswitch {
+// 	  width: 32%;
+// 	}
+  
+// 	.switch {
+// 	  width: 100%;
+// 	}
+  
+// 	.switchone {
+// 	  width: 249px;
+// 	}
+  
+// 	.monthitem {
+// 	  width: 0px;
+// 	  margin-left: 11px;
+// 	}
+  
+// 	.leftmeetingconclient span.vertical {
+// 	  padding-left: 6px;
+// 	}
+  
+// 	/* .rightbox, .mname {
+// 			font-size: 14px;
+// 		} */
+// 	.rightsubitem {
+// 	  height: 26px;
+// 	  width: 26px;
+// 	  font-size: 12px;
+// 	  padding-top: 3px;
+// 	  margin-top: 11px;
+// 	  margin-right: 6px;
+// 	}
+  
+// 	.mtime {
+// 	  font-size: 9px !important;
+// 	}
+  
+// 	.vertical {
+// 	  height: 30px !important;
+// 	  padding-left: 2px;
+// 	}
+  
+// 	.icongroup {
+// 	  padding: 15px 0px 0px 14px;
+// 	  display: block;
+// 	}
+  
+// 	.calendorname {
+// 	  font-size: 12px !important;
+// 	}
+  
+// 	.mattertxt,
+// 	.mattercount {
+// 	  font-size: 11px !important;
+// 	}
+  
+// 	.yearrightbox {
+// 	  /* padding-bottom: 18px !important; */
+// 	  display: block;
+// 	}
+  
+// 	.rightbox,
+// 	.mname {
+// 	  font-size: 13px !important;
+// 	}
+  
+// 	.lgalitem {
+// 	  display: inline-block;
+// 	  width: 227px;
+// 	}
+  
+// 	.editico {
+// 	  margin-top: -264px;
+// 	  padding-left: 16px;
+// 	  cursor: pointer;
+// 	}
+  
+// 	.tblgrid {
+// 	  width: 630px;
+// 	}
+//   }
+  
+//   @media (max-width: 577px) {
+// 	.row > * {
+// 	  width: auto !important;
+// 	}
+// 	.tbltxt {
+// 	  font-size: 13px;
+// 	}
+// 	.sharedblock {
+// 	  font-size: 16px;
+// 	}
+
+
+  
+// 	.sharebtn,
+// 	.sharebtn:hover,
+// 	.sharebtn:active,
+// 	.sharebtn:focus {
+// 	  border-radius: 30px;
+// 	  background: #004d87 0% 0% no-repeat padding-box;
+// 	  box-shadow: none;
+// 	  padding-left: 20px;
+// 	  padding-right: 30px;
+// 	  font-size: 13px;
+// 	}
+// 	.msgiconlist {
+// 	  width: 48px !important;
+// 	}
+// 	.row.stepitem > *,
+// 	.containerboxformfile > * {
+// 	  width: 100% !important;
+// 	  min-width: 100% !important;
+// 	}
+  
+// 	.mobshared {
+// 	  margin-bottom: 0px;
+// 	  padding-bottom: 0px;
+// 	}
+  
+// 	.expndcolumn {
+// 	  width: 100% !important;
+// 	}
+  
+// 	.infoconalign {
+// 	  margin-right: calc(-1.5 * var(--bs-gutter-x));
+// 	  margin-left: calc(-1 * var(--bs-gutter-x));
+// 	}
+  
+// 	.inforowaling {
+// 	  margin-right: calc(-1.5 * var(--bs-gutter-x));
+// 	  margin-left: calc(-1 * var(--bs-gutter-x));
+// 	}
+  
+// 	.lgalitemright {
+// 	  display: inline;
+// 	  text-align: right;
+// 	  float: right;
+// 	}
+  
+// 	.arrowitem {
+// 	  width: 100% !important;
+// 	}
+  
+// 	.headertop > * {
+// 	  width: 100% !important;
+// 	}
+  
+// 	.headertop {
+// 	  width: 100% !important;
+// 	}
+  
+// 	.colalign {
+// 	  padding-left: 0px;
+// 	  padding-right: 0px;
+// 	}
+  
+// 	/* .dropdown {
+// 	  background: #00498e;
+// 	  color: #fff;
+// 	  padding: 3px 11px 3px 11px;
+// 	  position: absolute;
+// 	  margin-top: 36px;
+// 	  margin-left: 30px;
+// 	} */
+// 	.fcomponent > * {
+// 	  padding-left: 95px;
+// 	}
+  
+// 	.containercomponent {
+// 	  background: #00498e;
+// 	  height: 200px;
+// 	  margin-left: 0px;
+// 	  width: 100% !important;
+// 	}
+  
+// 	.caseone,
+// 	.casetwo {
+// 	  width: 44%;
+// 	}
+  
+// 	.meetingcontainer {
+// 	  min-width: 265px;
+// 	}
+  
+// 	.rightboxone {
+// 	  padding-top: 16px;
+// 	}
+  
+// 	.midtime {
+// 	  font-size: 9px;
+// 	}
+  
+// 	.rightnameone {
+// 	  padding-left: 10px;
+// 	}
+  
+// 	.iconsub {
+// 	  width: 57px;
+// 	}
+  
+// 	.rightcontainerboxapprox {
+// 	  margin-top: 4px;
+// 	  width: auto;
+// 	  margin-left: -10px;
+// 	}
+  
+// 	.mobmsg {
+// 	  max-width: 117px;
+// 	}
+  
+// 	p.rightbox.righboxshared {
+// 	  max-width: 87px;
+// 	  padding-left: 4px;
+// 	}
+  
+// 	.customcontainer {
+// 	  margin-left: 10px;
+// 	}
+  
+// 	.compswitch > * {
+// 	  text-align: center !important;
+// 	}
+  
+// 	.editico {
+// 	  margin-top: -252px;
+// 	  padding-left: 2px;
+// 	  cursor: pointer;
+// 	  width: 30px;
+// 	  height: 20px;
+// 	  text-align: right;
+// 	  right: 0px;
+// 	}
+  
+// 	.msgalign {
+// 	  margin-left: auto;
+// 	  padding-right: auto;
+// 	}
+//   }
+  
+//   @media (max-width: 500px) {
+// 	.meetingcontainer > * {
+// 	  padding-left: 0px !important;
+// 	}
+// 	.chatimgone {
+// 	  width: 53px;
+// 	}
+// 	.timsheetsubitem{
+// 		padding-top: 16px;
+// 	}
+// 	.horzline{
+// 			visibility: hidden;
+// 	}
+// 	.textareatwo {
+// 	  width: 93% !important;
+// 	}
+// 	input.form-control.textbox.chatinput {
+// 	  width: 111px;
+// 	}
+  
+// 	.row.meetingcontainer.legalboxleft.container.msgcontainerchat > * {
+// 	  width: auto !important;
+// 	  max-width: auto !important;
+// 	}
+  
+// 	img.icongroup.icomeeting.msgiconlist.msgchatlist {
+// 	  width: 71px !important;
+// 	  margin-right: 0px;
+// 	  margin-left: -22px;
+// 	  margin-top: -18px;
+// 	}
+// 	.msgvideomob {
+// 	  width: 30px;
+// 	}
+// 	.msgcallmobile {
+// 	  width: 20px;
+// 	}
+// 	.msgmobile {
+// 	  width: 34% !important;
+// 	  text-align: right;
+// 	}
+  
+// 	.mobilepadding {
+// 	  padding-left: 0px;
+// 	  padding-right: 0px;
+// 	}
+  
+// 	.chatcustname {
+// 	  font-size: 18px !important;
+// 	  margin-left: 0px !important;
+  
+// 	  padding-right: 6px !important;
+// 	}
+  
+// 	span.rightsubitem.bonetwo.msgcircle {
+// 	  margin-right: -43px !important;
+// 	  padding-right: 0px;
+// 	  margin-top: 6px;
+// 	}
+// 	.mchildtime {
+// 	  margin-right: -45px !important;
+// 	}
+// 	.arrowlg {
+// 	  padding-top: 13px;
+// 	  cursor: pointer;
+// 	}
+  
+// 	.msgvideo {
+// 	  padding-top: 20px;
+// 	  padding-right: 6px;
+// 	  cursor: pointer;
+// 	}
+// 	.mobcolumn {
+// 	  width: 20% !important;
+// 	  display: inline-block;
+// 	}
+// 	.mobcolumntwo {
+// 	  width: 75% !important;
+// 	  display: inline-block;
+// 	}
+// 	.chattxttwo {
+// 	  margin-left: 0px;
+// 	}
+// 	.commoncontainer {
+// 	  width: 100%;
+// 	}
+  
+// 	.tblgrid {
+// 	  width: 600px;
+// 	}
+// 	.toggleresponse {
+// 	  width: 76% !important;
+// 	}
+  
+// 	.usertag {
+// 	  width: 58% !important;
+// 	  padding-left: 0px;
+// 	}
+// 	.usertagadmin {
+// 	  width: 58% !important;
+// 	  padding-left: 0px;
+// 	  margin-top: -10px;
+// 	}
+// 	.settingicon {
+// 	  padding-left: 5px;
+// 	  width: 31px;
+// 	}
+  
+// 	.expandpara {
+// 	  max-width: 100% !important;
+// 	}
+  
+// 	.calcircle {
+// 	  width: 50px;
+// 	  height: 50px;
+// 	  font-size: 18px;
+// 	  text-align: center;
+// 	  border-radius: 100%;
+// 	  padding-top: 11px;
+// 	  margin: auto;
+// 	  margin-bottom: 20px;
+// 	}
+  
+// 	label.lbltime {
+// 	  max-width: 44px;
+// 	  font-size: 10px;
+// 	}
+  
+// 	.caliconfile td {
+// 	  width: 50px;
+// 	  height: 60px;
+// 	  position: relative;
+// 	  padding: 5px 0px 0px 2px;
+// 	  margin: 0px;
+// 	}
+  
+// 	.tbldash td:nth-child(1),
+// 	.tbldash th:nth-child(1),
+// 	tr.timerow {
+// 	  border-left: none;
+// 	  padding: 3px;
+// 	  font-size: 11px;
+// 	}
+  
+// 	p.calcircle.calcirclethree {
+// 	  font-size: 26px;
+// 	  padding-top: 5px;
+// 	}
+  
+// 	.widthlign > * {
+// 	  width: 100pc !important;
+// 	}
+  
+// 	.settingicon {
+// 	  padding-left: 13px;
+// 	  padding-top: 1px;
+// 	}
+  
+// 	.tdate {
+// 	  padding-left: 10px;
+// 	  font-weight: 600;
+// 	  color: #00498e;
+// 	}
+  
+// 	.calendorselect {
+// 	  width: 46.9%;
+// 	}
+  
+// 	.custleftmenu {
+// 	  height: calc(100vh - -870vh);
+// 	}
+  
+// 	.calendorselect:nth-child(2),
+// 	.calendorselect:nth-child(3),
+// 	.calendorselect:nth-child(4),
+// 	.calendorselect:nth-child(5) {
+// 	  margin-left: 0px;
+// 	}
+  
+// 	.calnext {
+// 	  float: right;
+// 	  width: 62px;
+// 	  margin-top: 10px;
+// 	  margin-right: 15px;
+// 	  margin-top: 10px;
+// 	}
+  
+// 	.calpre {
+// 	  width: 62px;
+// 	  margin-top: 10px;
+// 	}
+  
+// 	.msgnotify {
+// 	  float: right;
+// 	  padding-right: 5px;
+// 	  margin-top: 10px;
+// 	  height: 18px;
+// 	  width: 28px;
+// 	  cursor: pointer;
+// 	}
+  
+// 	.oneswitch {
+// 	  width: 32%;
+// 	  padding-left: 4px;
+// 	  padding-right: 4px;
+// 	}
+  
+// 	.containerbox {
+// 	  margin-top: 28px;
+// 	  width: auto;
+// 	}
+  
+// 	.bonethree {
+// 	  margin-left: 12px;
+// 	  margin-top: 20px;
+// 	}
+  
+// 	.relbox {
+// 	  width: 270px;
+// 	}
+  
+// 	.stepone {
+// 	  width: 40px;
+// 	  border-radius: 79px;
+// 	  height: 40px;
+// 	  text-align: center;
+// 	  padding: 4px;
+// 	  display: block;
+// 	}
+  
+// 	.stptxt {
+// 	  text-align: left;
+// 	  font-size: 10px;
+// 	  font-weight: 600;
+// 	  padding-top: 10px;
+// 	  margin-left: -6px;
+// 	}
+  
+// 	.stepimg {
+// 	  width: 25px;
+// 	}
+  
+// 	.rightpercentage {
+// 	  font-size: 13px !important;
+// 	  padding-top: 28px;
+// 	  margin-left: 0px;
+// 	}
+  
+// 	.billhour {
+// 	  padding-top: 28px;
+// 	  margin-left: 0px;
+// 	  padding-left: 12px;
+// 	}
+  
+// 	.icomeeting {
+// 	  padding: 20px 9px 0px 15px !important;
+// 	}
+  
+// 	.btncancel {
+// 	  margin-left: 12px;
+// 	  margin-right: 4px;
+// 	  margin-bottom: 10px;
+// 	}
+  
+// 	.rightbox.righboxshared,
+// 	.clientmsg,
+// 	.rightboxone {
+// 	  font-size: 11px;
+// 	  max-width: 56px;
+// 	}
+  
+// 	.approxmeet,
+// 	.meetime {
+// 	  padding-left: 1px;
+// 	  margin-left: -16px;
+// 	}
+  
+// 	img.icongroup.icomeeting {
+// 	  margin-left: -7px;
+// 	}
+  
+// 	.formcontainer {
+// 	  margin-left: auto;
+// 	}
+  
+// 	.containerboxone {
+// 	  margin-left: -10px;
+// 	}
+  
+// 	.ddate,
+// 	.time,
+// 	.mmonth,
+// 	.dDay,
+// 	.yyear {
+// 	  font-size: 4.5vw;
+// 	}
+  
+// 	.legaldate {
+// 	  padding-bottom: 14px;
+// 	  margin-top: 1px;
+// 	  padding-top: 20px;
+// 	}
+  
+// 	.timecontainer {
+// 	  padding-right: 35px;
+// 	}
+  
+// 	.mcontainer {
+// 	  width: 100% !important;
+// 	}
+  
+// 	.rtxt {
+// 	  font-size: 15px;
+// 	}
+  
+// 	.middlecontainertwo {
+// 	  margin-left: 0px;
+// 	}
+  
+// 	.accepteditem {
+// 	  padding-left: 56px;
+// 	}
+  
+// 	.icongroup {
+// 	  padding: 20px 0px 0px 20px;
+// 	  display: block;
+// 	  width: 48px;
+// 	}
+  
+// 	span.rightsubitem.bonetwo {
+// 	  margin-right: -45px;
+// 	  padding-right: 0px;
+// 	}
+  
+// 	.vertical {
+// 	  padding-left: 7px;
+// 	}
+  
+// 	.alertbtnyes {
+// 	  margin-top: 3px;
+// 	}
+  
+// 	.btnsave {
+// 	  margin-top: 10px;
+// 	}
+  
+// 	.savecls {
+// 	  margin-top: 0px;
+// 	}
+  
+// 	.btnaction {
+// 	  margin-top: 10px;
+// 	}
+  
+// 	.rightsubitem {
+// 	  margin-right: 10px;
+// 	}
+  
+// 	.bonethree {
+// 	  margin-left: 4px;
+// 	  margin-top: 14px;
+// 	  margin-right: 0px !important;
+// 	}
+  
+// 	.msgicon {
+// 	  margin-top: 6px;
+// 	  margin-left: -8px;
+// 	}
+  
+// 	.mobicol {
+// 	  margin-left: -8px;
+// 	}
+  
+// 	.junitem {
+// 	  margin-left: -16px;
+// 	}
+  
+// 	p.rightbox.righboxshared {
+// 	  max-width: 87px;
+// 	  padding-left: 4px;
+// 	}
+  
+// 	.mobmsg {
+// 	  padding-left: 6px;
+// 	  max-width: 86px;
+// 	}
+  
+// 	.compstep {
+// 	  margin-top: 10px;
+// 	}
+  
+// 	.stepitem {
+// 	  padding-left: 99px;
+// 	}
+  
+// 	.lgalitem {
+// 	  display: inline-block;
+// 	  width: 169px;
+// 	}
+  
+// 	.pleagalsubitem {
+// 	  font-size: 16px;
+// 	}
+  
+// 	.editico {
+// 	  margin-top: -252px;
+// 	  padding-left: 0px;
+// 	  cursor: pointer;
+// 	  width: 23px;
+// 	  height: 15px;
+// 	  text-align: right;
+// 	  right: 0px;
+// 	}
+  
+// 	.row.containerbox.containerboxone.messagecontainer > * {
+// 	  width: 95% !important;
+// 	}
+  
+// 	.chattxt {
+// 	  font-size: 12px;
+// 	}
+// 	.chattxttime {
+// 	  font-size: 11px;
+// 	}
+// 	.btnshared{
+// 		margin-top: -12px;
+// 	  }
+// 	  .altswitch {
+// 		width: 24%;
+// 		padding-left: 4px;
+// 		padding-right: 4px;
+// 		white-space: nowrap;
+// 		overflow: hidden;
+// 		text-overflow: ellipsis;
+// 	}
+// 	.gridmsg {
+// 		padding-left: 27px;
+// 	}
+
+// 	.tabitemlist{
+// 		padding-top: 0px;
+		
+// 	}
+
+// 	.chattxt {
+	
+// 		width: 100%;
+// 		margin-bottom: 0px;
+// 	}
+
+// 	.row.containerbox.containerboxone.messagecontainer {
+// 		margin-left: 1px;
+// 	}
+// 	.btnsharemob {
+// 		margin-top: -10px;
+// 	}
+//   }
+  
+//   @media (max-width: 446px) {
+// 	.rowpsitem {
+// 	  padding: 24px 0px 11px 1px;
+// 	}
+//   }
+  
+//   @media (max-width: 420px) {
+// 	.pleagalsubitem {
+// 	  font-size: 14px;
+// 	}
+  
+// 	.lgalsubitem {
+// 	  font-size: 11px;
+// 	  padding-top: 5px;
+// 	  margin-bottom: 0px;
+// 	  font-weight: 700;
+// 	  color: #000;
+// 	}
+  
+// 	.editico {
+// 	  margin-top: -154px;
+// 	  width: 20px;
+// 	}
+//   }
+  
+//   @media (max-width: 413px) {
+// 	.main {
+// 	  padding-left: 81px;
+// 	  margin-left: 3px;
+// 	}
+  
+// 	.stepitem {
+// 	  padding-left: 60px;
+// 	}
+  
+// 	.iconsub {
+// 	  width: 50px;
+// 	}
+//   .casestudy {
+//     font-size: 16px;
+//     padding: 20px 0px 8px 0px;
+//     max-width: 172px;
+//     white-space: nowrap;
+//     overflow: hidden;
+//     text-overflow: ellipsis;
+// }
+// 	.mattertxt,
+// 	.mattercount {
+// 	  font-size: 9px !important;
+// 	}
+  
+// 	.timecontainer {
+// 	  padding-right: 43px;
+// 	}
+  
+// 	.tdate {
+// 	  padding-left: 7px;
+// 	  font-weight: 600;
+// 	  color: #00498e;
+// 	}
+//   }
+  
+//   @media (max-width: 360px) {
+// 	.lgalitem {
+// 	  display: inline-block;
+// 	  width: 100px;
+// 	}
+  
+// 	.lgalitemright {
+// 	  margin-left: 40px;
+// 	}
+  
+// 	.col-sm-11.infoconalign {
+// 	  width: 205px !important;
+// 	  margin: 0px;
+// 	  padding-left: calc(var(--bs-gutter-x) * -5px);
+// 	}
+  
+// 	.psitem {
+// 	  background-color: #fff !important;
+// 	  height: 30px;
+// 	  width: 30px;
+// 	}
+  
+// 	.bonethree {
+// 	  margin-left: -15px;
+// 	  margin-top: 14px;
+// 	  margin-right: 0px !important;
+// 	}
+  
+// 	.switch {
+// 	  width: 104%;
+// 	}
+  
+// 	.dashboard_notification_mob {
+// 	  display: none;
+// 	}
+  
+// 	.monthitem {
+// 	  margin-left: -10px;
+// 	}
+  
+// 	.main {
+// 	  padding-left: 78px;
+// 	  margin-left: 0px;
+// 	}
+  
+// 	.textfsize {
+// 	  text-align: center;
+// 	  font-size: 17px;
+// 	  height: 51px;
+// 	  width: 47px;
+// 	  font-weight: 700;
+// 	  padding: 5px 8px 10px 9px !important;
+// 	}
+//   }
+  

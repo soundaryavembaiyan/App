@@ -1,0 +1,54 @@
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-12 compswitch ">
+      <div class="switch  cswitch cswitchtwo msgswitch">
+        <a href="javascript:void(0);" class="optionone compone" (click)="view = CalendarView.Day;onDayView()"
+          [class.active]="view === CalendarView.Day">Day</a>
+        <a href="javascript:void(0);" class="optiontwo compthree" (click)="view = CalendarView.Week;onClickRefresh()"
+          [class.active]="view === CalendarView.Week">Week</a>
+        <a href="javascript:void(0);" class="optiontwo comptwo" (click)="view = CalendarView.Month;onClickRefresh()"
+          [class.active]="view === CalendarView.Month">Month</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row widthlign">
+  <div class="col-sm-5  col-md-4 col-lg-3 ">
+    <div class="itemlist">
+      <label class="tlabel" mwlCalendarToday [(viewDate)]="viewDate" (click)="onClickRefresh()">Today </label>
+      <img src="assets/img/right.PNG" class="lefticon" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate" (click)="onClickRefresh()">
+      <img src="assets/img/left.PNG" class="righticon" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate" (click)="onClickRefresh()">
+      <label class="tdate">{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }} </label>
+    </div>
+  </div>
+  <!-- <div class="col-sm-3 col-md-2 col-lg-3">
+    <img src="assets/img/setting.PNG" class="settingicon">
+    <img src="assets/img/help.PNG" class="settingicon">
+  </div> -->
+</div>
+<div [ngSwitch]="view" class="mainmargin" [ngClass]="{'scroll-container': view != 'month'}" #scrollContainer>
+  <mwl-calendar-month-view *ngSwitchCase="'month'" [viewDate]="viewDate" [events]="events"
+  [refresh]="refresh"  [cellTemplate]="customCellTemplate" >
+  </mwl-calendar-month-view>
+  <mwl-calendar-week-view *ngSwitchCase="'week'"  [viewDate]="viewDate" [events]="events" [refresh]="refresh"
+  (eventClicked)="onEventClick($event.event)"   [allDayEventsLabelTemplate]="myAllDayEventsLabelTemplate" >
+  </mwl-calendar-week-view>
+  <mwl-calendar-day-view *ngSwitchCase="'day'" [viewDate]="viewDate" [events]="events" [refresh]="refresh" 
+  (eventClicked)="onEventClick($event.event)" [allDayEventsLabelTemplate]="myAllDayEventsLabelTemplate">
+  </mwl-calendar-day-view>
+</div>
+<ng-template #customCellTemplate let-day="day" let-locale="locale">
+  <td class="commontd">
+    <span class="cal-day-number">{{ day.date | calendarDate:'monthViewDayNumber':locale }}</span>
+   <span *ngFor="let item of day.events" (click)="onEventClick(item)">
+    <input class="bullet" type="radio" id="html" name="fav_language" value="HTML" *ngIf="day.events[0]?.title">
+    <label for="html" class="lbltime">{{ item.title}}</label><br/>
+  </span>
+  </td>
+</ng-template>
+
+<ng-template #myAllDayEventsLabelTemplate>
+  <div class="cal-time-label-column" >all-day</div>
+
+</ng-template>

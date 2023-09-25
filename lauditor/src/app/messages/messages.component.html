@@ -1,0 +1,427 @@
+<!-- <div class="row  width-alignment center" >
+    <div #useThisTemplateVar class="switch  cswitch cswitchtwo msgswitch">
+       
+        <a class="button1 optionone compone  msgclient clients" routerLink="/clients">Clients</a>  <!--*ngIf="product != 'content'"-->
+        <!--<a class=" button1 optionone compone  msgclient clients" routerLink="/messages/clients" *ngIf="product == 'content'">Customers</a>--
+        <a class="button1 optiontwo comptwo  msgclient teams" routerLink="/teams">Teams</a>
+       
+    </div>
+</div> -->
+
+<div class="row width-alignment center" *ngIf="product != 'corporate'">
+    <div #useThisTemplateVar class="switch  cswitch cswitchtwo msgswitch">
+        <a href="javascript:void(0);" class="optionone compone" [ngClass]="{'active': selectedValue === 'clients'}"
+            (click)="isActive('clients')">Clients</a>
+        <a href="javascript:void(0);" class="optiontwo comptwo" [ngClass]="{ 'active' : selectedValue === 'teams' }"
+            (click)="isActive('teams')">Teams</a>
+    </div>
+</div>
+
+<div class="row width-alignment center" *ngIf="product == 'corporate'">
+    <div #useThisTemplateVar class="switch  cswitch cswitchtwo msgswitch">
+        <a href="javascript:void(0);" class="optionone compone" [ngClass]="{'active': selectedValue === 'clients'}"
+            (click)="isActive('clients')">External Counsels</a>
+        <a href="javascript:void(0);" class="optiontwo comptwo" [ngClass]="{ 'active' : selectedValue === 'teams' }"
+            (click)="isActive('teams')">Teams</a>
+    </div>
+</div>
+
+
+<!-- <router-outlet></router-outlet> -->
+<div class="row main width-alignment  stepitem ">
+    <div *ngIf="isClient" class="col-xs-12 col-sm-12 col-md-6">
+        <!-- Form Component -->
+        <!-- left row card 1 layout -->
+        <div class="row containerbox containerboxone messagecontainer ">
+            <div class="col-sm-12">
+                <div class="container seobox">
+                                            <!-- input filled with search icon -->                        
+                        <!-- <label for="title" class="msglabel">List of Clients </label> -->
+                        <!--*ngIf="product != 'content'"-->
+                        
+                        <label for="title" class="msglabel" *ngIf="product != 'content' && product != 'corporate'">List of Clients</label>
+                        <label for="title" class="msglabel" *ngIf="product == 'content'">List of Customers</label>
+                        <label for="title" class="msglabel" *ngIf="product == 'corporate'">List of External Counsels</label>
+
+                        <!--<label for="title" class="msglabel" *ngIf="product == 'content'">List of Customers </label>-->
+                        <div class="form-group">
+                            <div class="input-group court" id="search">
+                                <input type="text" id="space" class="form-control textbox space"  (keypress)="removeSpace()"     placeholder="Search" 
+                                    [(ngModel)]="clientSearch">
+                                <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg"
+                                    style="margin-top:12px">
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <!-- container for msg notifcation -->
+            <!-- message notifcation box one -->
+            <!-- {{selectedUser|json}} -->
+            <div class="col-sm-12 messagecont msg-padding"
+                *ngFor="let client of selectedUser | filter:clientSearch;let i=index">
+                <div class="row meetingcontainer  legalboxleft container msgcontainer"
+                    [ngClass]="{'active': client.isSelected}" (click)="selectChatUser(client)">
+                    <div class="col-sm-8 col-xs-8">
+                        <div class="row">
+                            <div class="col-sm-3 col-xs-3">
+                                <div class=" userprofile profile">
+                                    <div class="username icongroup icomeeting msgiconlist msglisa">{{client.name[0]}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-8 col-xs-9 msgalign">
+                                <p class="mname toalhours approxmeet meetone mlname"> {{client.name}} </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4 col-xs-4">
+                        <!-- !Corporate - chatPopup -->
+                        <div *ngIf="client.clientType == 'Entity' && product != 'corporate'" class="circlemsg" (click)="toggle(i,client)">
+                            <i class="fa " [ngClass]="hideRuleContent[i] || client.isExpand ? 'fa-minus-circle' : 'fa-plus-circle'" aria-hidden="true"></i>
+                        </div>
+                        <!-- Corporate - chatPopup -->
+                        <div *ngIf="client.clientType == 'Entity' && product == 'corporate'" class="circlemsg" (click)="toggle(i,client)">
+                            <i class="fa " [ngClass]="hideRuleContent[i] && client.isExpand ? 'fa-minus-circle' : 'fa-plus-circle'" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- !Corporate - chatPopup -->
+                <div *ngIf="client.clientType == 'Entity' && product != 'corporate'">
+                    <div class="expandCollapseContent" *ngIf="hideRuleContent[i] || client.isExpand">
+                        <div *ngFor="let i of entityClients;let j = index">
+                            <div class="col-sm-12 ">
+                                <div (click)="selectChatUser(i)"  
+                                    class="row meetingcontainer legalboxleft container msgcontainer toggelchat">
+                                    <div class="col-sm-9 col-xs-9 toggleresponse">
+                                        <div class="row">
+                                            <div class="col-sm-2 col-xs-2">
+                                                <!-- <div class="chatpretxt"><img src="assets/img/marry.JPG" class="expanduserico"></div> -->
+                                                <div class="chatpretxt">
+                                                    <span class="chatuser">{{i.name[0]}}</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-10 col-xs-10  usertag ">
+                                                <p class="chatusertitle"> {{i.name}} </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3 ">
+                                        <div class="msgtime">
+                                            <!-- <label class="mtime timeexpand">09:30am</label> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Corporate - chatPopup -->
+                <div *ngIf="client.clientType == 'Entity' && product == 'corporate'">
+                    <div class="expandCollapseContent" *ngIf="hideRuleContent[i] && client.isExpand">
+                        <div *ngFor="let i of entityClients;let j = index">
+                            <div class="col-sm-12 ">
+                                <div (click)="selectChatUser(i)"  
+                                    class="row meetingcontainer legalboxleft container msgcontainer toggelchat">
+                                    <div class="col-sm-9 col-xs-9 toggleresponse">
+                                        <div class="row">
+                                            <div class="col-sm-2 col-xs-2">
+                                                <!-- <div class="chatpretxt"><img src="assets/img/marry.JPG" class="expanduserico"></div> -->
+                                                <div class="chatpretxt">
+                                                    <span class="chatuser">{{i.name[0]}}</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-10 col-xs-10  usertag ">
+                                                <p class="chatusertitle"> {{i.name}} </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3 ">
+                                        <div class="msgtime">
+                                            <!-- <label class="mtime timeexpand">09:30am</label> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- ends here -->
+    </div>
+    <div *ngIf="!isClient" class="col-xs-12 col-sm-12 col-md-6">
+        <div class="containerbox containerboxone messagecontainer ">
+            <div class="col-sm-12">
+                <div class="container seobox">
+                    <form>
+                        <!-- input filled with search icon -->
+                        <!-- <label for="title" class="msglabel">List of Groups </label> -->
+
+                        <label for="title" class="msglabel" *ngIf="product != 'corporate'">List of Groups</label>
+                        <label for="title" class="msglabel" *ngIf="product == 'corporate'">List of Departments</label>
+
+                        <div class="form-group">
+                            <div class="input-group court" id="search">
+                                <input type="text" class="form-control textbox" placeholder="Search" name="teamSearch"
+                                    [(ngModel)]="teamSearch" />
+                                <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg"
+                                    style="margin-top:12px">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- container for msg notifcation -->
+            <!-- message notifcation box one -->
+
+            <div class="col-sm-12 messagecont" *ngFor="let result of groups |filter: teamSearch;let i = index">
+                <div class="row meetingcontainer legalboxleft container msgcontainer toggelchat">
+                    <div class="col-sm-9 col-xs-9 toggleresponse">
+                        <div class="row">
+                            <div class="col-sm-2 col-xs-2">
+                                <div class="chatpretxt">
+                                    <span class="chatuser">{{result.groupName[0]}}</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-10 col-xs-10 usertag usertagadmin">
+                                <p class="chatusertitle"> {{result.groupName}} </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 ">
+                        <!-- <div class="msgtime">
+                            <label class="mtime mchildtimetxt">09:30am</label>
+                        </div> -->
+                        <div *ngIf="result.users.length>0" class="circlemsg" (click)="toggle(i,result)">
+                            <i class="fa " [ngClass]="(hideRuleContent[i]&&result.isExpand) ? 'fa-minus-circle ' : 'fa-plus-circle'"
+                                aria-hidden="true"></i>
+                            <!-- <i class="fa " aria-hidden="true"></i> -->
+
+                        </div>
+                    </div>
+                </div>
+                <div class="expandCollapseContent" *ngIf="hideRuleContent[i] && result.isExpand">
+                    <div *ngFor="let i of result.users;let j = index">
+                        <div class="col-sm-12 ">
+                            <div (click)="selectChatUser(i)"
+                                class="row meetingcontainer legalboxleft container msgcontainer toggelchat">
+                                <div class="col-sm-9 col-xs-9 toggleresponse">
+                                    <div class="row">
+                                        <div class="col-sm-2 col-xs-2">
+                                            <!-- <div class="chatpretxt">
+                                        <img src="assets/img/marry.JPG" class="expanduserico">
+                                    </div> -->
+                                            <div class="chatpretxt">
+                                                <span class="chatuser">{{i.name[0]}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-10 col-xs-10  usertag ">
+                                            <p class="chatusertitle"> {{i.name}} </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3 ">
+                                    <div class="msgtime">
+                                        <!-- <label class="mtime timeexpand">09:30am</label> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+
+
+
+            <!-- <div class="col-sm-12 messagecont" *ngFor="let admin of groups |filter: teamSearch; let adminIndex = index">
+                <div class="row meetingcontainer legalboxleft container msgcontainer toggelchat"
+                    >
+                    <div class="col-sm-9 col-xs-9 toggleresponse">
+                        <div class="row">
+                            <div class="col-sm-2 col-xs-2">
+                                <div class="chatpretxt">
+                                    <span class="chatuser">{{admin.groupName[0]}}</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-10 col-xs-10 usertag usertagadmin">
+                                <p class="chatusertitle"> {{admin.groupName}} </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 ">
+                        <div class="circlemsg" (click)="toggle(adminIndex)">
+                            <img src="assets/img/pluscricle.JPG" class="subcircleimg chatevent">
+                        </div>
+                    </div>
+                </div>
+                <div class="expandCollapseContent" *ngIf="hideRuleContent[adminIndex]">
+                    <div *ngFor="let i of admin.users;let j = index">
+                        <div class="col-sm-12 " class="collapse" id="demo{{adminIndex}}">
+                            <div (click)="selectChatUser(i)"
+                                class="row meetingcontainer legalboxleft container msgcontainer toggelchat">
+                                <div class="col-sm-9 col-xs-9 toggleresponse">
+                                    <div class="row">
+                                        <div class="col-sm-2 col-xs-2">
+                                            <div class="chatpretxt">
+                                                <span class="chatuser">{{i.name[0]}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-10 col-xs-10  usertag ">
+                                            <p class="chatusertitle"> {{i.name}} </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3 ">
+                                    <div class="msgtime">
+                                        <label class="mtime timeexpand">09:30am</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-6">
+        <div class="row containerbox formcontainer">
+            <label for="title" class="msglabel">Chat </label>
+            <!-- first chat box -->
+            <div class="col-sm-12">
+                <div class="row meetingcontainer legalboxleft container msgcontainerchat">
+                    <div class="col-sm-7 col-xs-8">
+                        <div class="row">
+                            <div class="col-sm-2" *ngIf="chatUserName">
+                                <!-- <div class=" userprofile profile">
+                        <div class="username icongroup icomeeting msgiconlist msglisa">{{chatUserName[0]}}</div>
+                      </div> -->
+                                <img src="assets/img/rightlarge.JPG" class="arrowlg">
+                            </div>
+                            <div class="col-sm-3 col-xs-3 mobilepadding" *ngIf="chatUserName">
+                                <div class=" userprofile profile">
+                                    <div class="username   msglisa" *ngIf="chatUserName">{{chatUserName[0]}}</div>
+                                </div>
+                                <!-- <img src="assets/img/lisa.png" alt="Meeting" class="icongroup icomeeting msgiconlist msgchatlist"> -->
+                            </div>
+                            <div class="col-sm-7 col-xs-9 mobilepadding">
+                                <p class="mname toalhours approxmeet meetone mlname " *ngIf="chatUserName">
+                                    {{chatUserName}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-5">
+                        <!-- <div class="msgtime">
+                    <img src="assets/img/video.JPG" class="msgvideo msgvideomob">
+                    <img src="assets/img/call.JPG" class="msgcall msgcallmobile">
+                  </div> -->
+                    </div>
+                </div>
+                <!-- box content for realtime chat -->
+                <div class="row meetingcontainer legalboxleft container msgcontainerchatbox">
+                    <div class="col-sm-12">
+                        <div class="form-group formitem">
+                            <div class="input-group court" id="search">
+                                <input type="text" class="form-control textbox" placeholder="Search" [(ngModel)]="term">
+                                <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg"
+                                    style="margin-top:12px">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="coffer-chat" class="scrollbar-deep bordered-deep thin" >
+                        <!-- #scrollMe
+                        [scrollTop]="scrollMe.scrollHeight" -->
+                        <ul>
+                            <!-- <ng-container > -->
+                            <li class="" *ngFor="let msg of messages|filter:term"
+                                [class]="msg['action'] == 'SENT' ? 'coffer-me t' : 'coffer-you t'">
+                                <div *ngIf="msg.action=='SENT' " class="col-sm-12 textarea">
+                                    <div class="row">
+                                        <div *ngIf="msg.action=='SENT' " class=" userprofile profile">
+                                            <div class="username   msglisa" *ngIf="sendUser">{{sendUser[0]}}</div>
+                                        </div>
+                                        <div class="col-sm-10 mobcolumntwo">
+                                            <div class="chatpara">
+                                                <p class="chattxt "> {{msg.text}} </p>
+                                                <label class="chattxttime">
+                                                    <!-- <p
+                                                        [class]="msg['action'] == 'SENT' ? 'coffer-time-me' : 'coffer-time-you'">
+                                                        {{msg.timestamp}}
+                                                    </p> -->
+                                                    <p>
+                                                        {{msg.timestamp}}
+                                                    </p>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div *ngIf="msg.action !='SENT'" class="col-sm-12 textareatwo">
+                                    <div class="row">
+                                        <div class="col-sm-3 mobcolumn">
+                                            <div class=" userprofile profile">
+                                                <div class="username   msglisa" *ngIf="chatUserName">{{chatUserName[0]}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-9 mobcolumntwo">
+                                            <div class="chatpara chattxttwo">
+                                                <p class="chattxt"> {{msg.text}} </p>
+                                                <label class="chattxttime">
+                                                    <p>
+                                                        {{msg.timestamp}}
+                                                    </p>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+                <!-- box content for realtime chat ends here  -->
+                <div class="row meetingcontainer legalboxleft container msgcontainerchat">
+                    <div class="col-sm-12 col-xs-12">
+                       
+                        <div class="row">
+                            <!-- <div class="col-sm-2 col-xs-3">
+                      <img src="assets/img/plus.JPG" class="arrowlg">
+                    </div> -->
+                            <div class="col-sm-10 col-xs-10">
+                            
+                                <div class="form-group ">
+                                    <input type="text" class="form-control textbox chatinput" id="title" name="caseno"
+                                        #messege_input [(ngModel)]="messegeInput" required="">
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-sm-2 col-xs-2">
+                                <span class="text">
+                                    <i id="btn_send" class="fa fa-paper-plane" [ngClass]="{'disable':  messegeInput.length==0}"  (click)="sendMessage(messege_input.value)" aria-hidden="true"></i> </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-1 chatsubico">
+
+                        <!-- <div class="msgtime">
+                    <img src="assets/img/camera.JPG" class="msgvideo">
+                    <img src="assets/img/audio.JPG" class="msgcall">
+                  </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

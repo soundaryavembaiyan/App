@@ -1,0 +1,41 @@
+// component css goes here
+/*
+.lable-size {
+    font-size: 32px;
+    font-weight: bold;
+    color: #437CA7;
+  }
+  */
+  input,
+  textarea {
+      background: #EEEEEE;
+      border: none;
+  }
+
+  .group-custom-align {
+      width: 41%;
+      margin: 0 auto;
+      margin-top:5px;
+  }
+  #court {
+    .calitem.courtimg{
+        left: 10px !important;
+          }
+          input{
+            padding-left: 10%;
+            font-size: 20px;
+            font-weight: bold;
+          }
+  }
+
+// model popup styles  / 
+
+.selmember{
+  cursor: pointer
+}
+
+.update{
+  color: #004d87;
+  font-weight: 800;
+  font-size: 1.3rem;
+}

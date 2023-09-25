@@ -1,0 +1,154 @@
+<!-- Header here-->
+<div [ngClass]="{'blur': successModel}">
+<div class="container-fluid">
+  <div class="row">
+    <div class="row main headertop" [ngStyle]="{'display':isDisplay?'block':'none'}">
+      <div class="col-sm-12 compswitch ">
+        <!--<div class="switch  cswitch">
+            <a href="javascript:void(0);" class="optionone compone" [ngClass]="{'active': selectedMatter === 'legalmatter'}" (click)="onClick('legalmatter')">Legal Matters</a>
+            <a href="javascript:void(0);" class="optiontwo comptwo" [ngClass]="{'active': selectedMatter === 'generalmatter'}" (click)="onClick('generalmatter')">General Matters</a>
+          </div>-->
+        <div class="switch  cswitch cswitchtwo">
+          <a href="javascript:void(0);" class="optionone compone" [ngClass]="{'active': selectedValue === 'create'}"
+            (click)="isActive('create')">Create</a>
+          <a href="javascript:void(0);" class="optiontwo comptwo" [ngClass]="{ 'active' : selectedValue === 'view' }"
+            (click)="isActive('view')">View</a>
+        </div>
+      </div>
+    </div>
+    <div class="arrowitem" (click)="hideAndShow()">
+      <i *ngIf="isDisplay" class="fa fa-light fa-chevron-up"></i>
+      <i *ngIf="!isDisplay" class=" fa fa-light fa-chevron-down"></i>
+    </div>
+
+  </div>
+</div>
+<!-- Header ends here-->
+
+
+
+<!--Heading Label-->
+
+<div class="row main width-alignment">
+  <div class="col-6">
+    <div class="custusername tab-margin fontweight">
+      List of Invoices
+    </div>
+  </div>
+  <!--Search-->
+  <div class="col-6">
+    <div class="form-group name-set float-right">
+      <div class="input-group group-custom-align court" id="search">
+        <input type="text" class="form-control textbox" placeholder="Search Invoice" required="" [(ngModel)]="searchText" (keydown)="onKeydown($event)">
+        <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg" (click)="onKeydown($event)">
+      </div>
+    </div>
+  </div>
+  <!--Search-->
+
+</div>
+<!--Heading Label-->
+
+
+<!--Table View for Invoices-->
+<div *ngIf="invoicelist.length > 0">
+<div class="row main width-alignment">
+  <div class="col-sm-12 gridtable ">
+    <table class="table table-borderless tblgrid">
+
+      <thead>
+        <tr class="theader">
+          <th>
+            <p class="thheadname"> Invoice Number </p>
+            <img src="assets/img/SORT.PNG" class="sortico" (click)="sortingFile('invoice_no')">
+          </th>
+          <th>
+            <p class="thheadname"> Client Name </p>
+            <img src="assets/img/SORT.PNG" class="sortico" (click)="sortingFile('name')">
+          </th>
+          <th>
+            <p class="thheadname"> Created Date</p>
+            <img src="assets/img/SORT.PNG" class="sortico" (click)="sortingDateFile('created')">
+          </th>
+          <th>
+            <p class="thheadname"> Due Date</p>
+            <img src="assets/img/SORT.PNG" class="sortico" (click)="sortingDateFile('dueDate')">
+          </th>
+          <th>
+            <p class="thheadname"> Created By</p>
+            <img src="assets/img/SORT.PNG" class="sortico" (click)="sortingFile('createdby')">
+          </th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="rone veiw-items" *ngFor="let i of invoicelist | filter:searchText">
+            
+          <td>{{ i.invoice_no }}</td>
+          <td>{{ i.name }}</td>
+          <td>{{ i.created }}</td>
+          <td>{{ i.dueDate }}</td>
+          <td>{{ i.createdby }}</td>
+          <td>
+            <div class="dropdown">
+              <button class="btn btn-primary dropdown-toggle actionbtn" data-bs-toggle="dropdown" aria-expanded="false"
+              [ngClass]="{'disabled': i.isdisabled}"> Action </button>
+              <ul class="dropdown-menu custom-dropdown">
+                <li>
+                  <a class="dropdown-item" (click)="viewdetails(i)" >View Details</a>
+                </li>
+                <li><!--*ngIf="i.document_status === 'done'"-->
+                  <a class="dropdown-item" (click)="onSub(i)">Share</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" (click)="delete(i.id)">Delete</a>
+                </li>
+              </ul>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+<!--Table View for Invoices ends here-->
+</div><!-- blur opacity for share dialog-->
+
+<!--Dialog for sharing the Invoices-->
+<div class="modal" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" 
+  aria-hidden="true" style="display:block;" *ngIf='successModel'>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+
+        <button type="button" class="btn-close pull-right" (click)="btnclose()" style="float: right; padding:10px;"
+          aria-label="Close"></button>
+
+        <div class="alertpara alertparatxt sharewith"> Share With: {{invoice_data?.name}} </div>
+
+        <div class="alertexted via spaceBlock"> Via: Lauditor(Secure)
+          <!-- <mat-checkbox color="primary"  [(ngModel)]="isChecked"> <p class="chcktxt">Lauditor(Secure)</p> </mat-checkbox> -->
+          <!-- <mat-checkbox color="primary"> <p class="chcktxt">Email</p> </mat-checkbox> -->
+        </div>
+
+        <div class="container message"> Message (optional) 
+          <textarea rows="4" class="form-control textboxed txttxt spaceBlock"> </textarea>
+        </div>
+
+        <div class="alertbutton diaPad">
+          <button class="btn btn-default btncancel btnrightitem" (click)="btnclose()">Cancel</button>
+          <button class="btn btn-primary btnsave bbtn savecls" (click)="sendInvoice()">Send</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<!--Dialog for sharing the Invoices ends here!!-->
+
+
+<div *ngIf="invoicelist && invoicelist?.length === 0 && errorMsg" class="custom-alert padded"> 
+  List of Invoices not available !!
+</div>
+

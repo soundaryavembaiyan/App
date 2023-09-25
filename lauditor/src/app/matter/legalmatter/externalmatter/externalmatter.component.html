@@ -1,0 +1,74 @@
+<div class="row main width-alignment">
+    <div class="col-6">
+      <div class="custusername tab-margin fontweight">
+        List of Legal Matters
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="form-group name-set float-right">
+  
+        <div class="input-group group-custom-align court" id="search">
+          <input type="text" class="form-control textbox" placeholder="Search Group" [(ngModel)]="searchText" />
+          <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row main width-alignment">
+    <div class="col-sm-12 gridtable ">
+      <table class="table table-borderless tblgrid">
+  
+        <thead>
+          <tr class="theader">
+            <th>
+              <p class="thheadname"> Name</p>
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('title')">
+            </th>
+            <th>
+              <p class="thheadname"> Type</p>
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('case_type')">
+            </th>
+            <th>
+              <p class="thheadname"> Created On</p>
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('date_of_filling')">
+            </th>
+            <th>
+              <p class="thheadname"> Status</p>
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('status')">
+            </th>
+            <th>
+              <p class="thheadname"> Groups</p>
+              <img src="assets/img/SORT.PNG" class="sortico">
+            </th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="rone veiw-items" *ngFor="let legalMatter of legalMatters |filter:searchText">
+            <td>{{legalMatter.title}}</td>
+            <td>{{legalMatter.caseType}}</td>
+            <td>{{legalMatter.date_of_filling}}</td>
+            <td>{{legalMatter.status}}</td>
+            <td  (mouseover)="onMouseOver(legalMatter?.groups)" [matTooltip]="hoveredGroups">{{legalMatter?.groups[0]?.name}} <br/>
+               {{legalMatter?.groups[1]?.name}}</td>
+            <!--need to get back once we get group info-->
+            <td>
+              
+              <div class="dropdown">
+                <button  class="btn btn-primary actionbtn" aria-expanded="false" 
+                  [ngClass]="{'disabled': legalMatter.isdisabled}"
+                  (click)="loadViewDetails(legalMatter)"> More Details </button>
+                <!-- <ul class="dropdown-menu custom-dropdown">
+                  <li>
+                    <a class="dropdown-item" (click)="loadViewDetails(legalMatter)">View Details</a>
+                  </li>
+                </ul> -->
+              </div>
+  
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>

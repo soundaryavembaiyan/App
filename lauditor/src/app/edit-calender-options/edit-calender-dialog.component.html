@@ -1,0 +1,23 @@
+<div class="modal-header">
+  <h4 class="modal-title">Edit recurring Event</h4>
+</div>
+<div class="modal-body">
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div style="margin-left:40px">
+      <input type="radio" value="this" formControlName="editcalenderevent">
+        <span>This Event</span>
+    </div>
+    <div style="margin-left:40px">
+      <input type="radio" value="forward" formControlName="editcalenderevent">
+        <span>This and following events</span>
+    </div>
+    <div style="margin-left:40px">
+      <input type="radio" value="all" formControlName="editcalenderevent">
+        <span>All events</span>
+    </div>
+    <div class="btn-align center">
+    <button type="reset" class="btn btn-default  alertbtn alertbtnno" (click)="cancel()">Cancel</button>
+    <button type="submit" class="btn btn-default alertbtn alertbtnyes">OK</button>
+    </div>
+  </form>
+</div>

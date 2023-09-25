@@ -1,0 +1,340 @@
+<form [formGroup]="CalenderForm" (ngSubmit)="onSubmit()" autocomplete="off">
+    <div class="row main main-width stepitem ">
+        <div class="col-xs-12 col-sm-12 col-md-6">
+            <div class="row containerbox containerboxone ">
+                <div class="col-sm-12">
+                    <div class="container">
+
+                        <div class="form-group">
+                            <label for="matter_id" class="fontbold">Matter Name <span class="mandate">*</span>
+                            </label>
+                            <select class="form-select calendorselect" (change)="onChangeMatter($event)"
+                                formControlName="matter_id">
+                                <option hidden value="">Please Select matter</option>
+                                <option class="textbox" *ngFor="let i of matterList " value="{{i.id}}">{{i.title}}
+                                </option>
+                            </select>
+                            <div *ngIf="isSubmitted && f.matter_id.errors?.['required']" class="invalid-feedback">
+                                <sup>*</sup>Matter Name is required
+                            </div>
+                        </div>
+                        <div class="form-group" *ngIf="selectedMatterId">
+                            <input class="checkbox" type="checkbox" id="addtimesheet" name="fav_language" value="addtimesheet"
+                            (click)="addtoTimesheet($event)" formControlName="addtimesheet">
+                        <label for="addtimesheet" class="fontbold">Add to Timesheet
+                        </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="date" class="fontbold marginright">Date<span class="mandate">*</span>
+                            </label>
+                            <input class="form-control dateClass" bsDatepicker id="drp" #dp1="bsDatepicker"
+                                [bsValue]="bsValue" (bsValueChange)='selectDuration($event)' readonly
+                                formControlName="date" [bsConfig]="{ showWeekNumbers:false }">
+                            <img src="assets/img/formcalendor.svg" class="formcalico" id="datepicker"
+                                (click)="dp1.show()">
+                                <span *ngIf="showTime">
+                                    <label for="time" class="fontbold marginright">Time<span class="mandate">*</span>
+                                    </label>
+        
+                                    <select class="marginright form-control timeClass" (change)="getTime($event)" formControlName="from_ts">
+                                        <option *ngFor="let option of hrs" [value]="option" [selected]="option == selectedQuantity">
+                                            {{ option }}
+                                        </option>
+                                    </select>
+                                    <select class="form-control timeClass" (change)="togetTime($event)" formControlName="to_ts">
+                                        <option *ngFor="let option of tohrs" [value]="option" [selected]="option == ToSelectedQuantity">
+                                            {{ option }}
+                                        </option>
+                                    </select>    
+                                </span>
+
+                            <br />
+                            
+                            <div class="form-group" *ngIf="displayDuration">
+                                <label for="duration" class="fontbold"> Duration: </label>
+                                <span> {{selectedHours}} Hours,
+                                    {{selectedMinutes}} Minutes</span>
+                            </div>
+
+                            <div *ngIf="isSubmitted && f.date.errors?.['required']" class="invalid-feedback">
+                                <sup>*</sup>Date is required
+                            </div>
+                            <div *ngIf="isSubmitted && f.from_ts.errors?.['required']" class="invalid-feedback">
+                                <sup>*</sup>From Time is required
+                            </div>
+                            <div *ngIf="isSubmitted && f.to_ts.errors?.['required']" class="invalid-feedback">
+                                <sup>*</sup>To Time is required
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input class="checkbox" type="checkbox" id="allday"
+                                name="fav_language" value="allday"
+                                (click)="allDay($event)"
+                                formControlName="allday">
+                            <label for="allday" class="fontbold">All Day
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-6">
+            <div class="row containerbox containerboxone ">
+                <div class="col-sm-12">
+                    <div class="container">
+                        <div class="form-group">
+                            <label for="title" class="fontbold">Subject/Task<span class="mandate">*</span>
+                            </label>
+                            <select class="form-select calendorselect" formControlName="title">
+                                <option hidden value="">Please Select Subject/Task</option>
+                                <option class="textbox" *ngFor="let i of tasks " value="{{i}}">{{i}}
+                                </option>
+                            </select>
+                            <div *ngIf="isSubmitted && f.title.errors?.['required']" class="invalid-feedback">
+                                <sup>*</sup>Subject/Task is required
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="title" class="fontbold">Time Zone<span class="mandate">*</span>
+                            </label>
+                            <select class="form-select calendorselect" formControlName="timezone_location">
+                                <option class="textbox" *ngFor="let i of timeZones " value="{{i}}">{{i[1]}}
+                                </option>
+                            </select>
+                            <div *ngIf="isSubmitted && f.timezone_location.errors?.['required']"
+                                class="invalid-feedback">
+                                <sup>*</sup>TimeZone is required
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="title" class="fontbold">Repetition
+                            </label>
+                            <select class="form-select calendorselect" formControlName="repeat_interval">
+                                <option hidden value="">None</option>
+                                <option class="textbox" *ngFor="let i of repetition" value="{{i.value}}">{{i.name}}
+                                </option>
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row main main-width stepitem  dashborder">
+        <div class="col-2 fontbold">
+            Notify Me
+        </div>
+        <div class="col-2">
+            <button type="button" class="btn btn-primary" (click)="addNotification()">Add Notification</button>
+        </div>
+        <div class="col-8">
+            <ul class="list-group">
+                <li *ngFor="let item of notificationItems let i = index">
+                    <div class="row">
+                            <div class="rowItem">
+                                <input class="form-control notificationTime"
+                                    type="number" [(ngModel)]="item.time"
+                                    #name="ngModel" name="tags{{ i }}" min="0"
+                                    [ngModelOptions]="{standalone: true}"
+                                    (input)="onKey($event, i, 'time')" />
+                                <p class="text-danger" [id]="i+'_notificationTime'"></p>
+                            </div>
+
+                            <div class="rowItem">
+                                <select class="notificationRow form-control"
+                                    [(ngModel)]="item.type" #name="ngModel"
+                                    name="tags{{ i }}"
+                                    [ngModelOptions]="{standalone: true}"
+                                    (change)='onOptionsSelected($event,i)'>
+                                    <option value="minutes">Minutes
+                                    </option>
+                                    <option value="hours">Hours</option>
+                                    <option value="days">Days</option>
+                                    <option value="weeks">Weeks</option>
+                                </select>
+                                <p class="text-danger" [id]="i+'_smalltext_align'"></p>
+                            </div>
+
+                        <a class="rowItem" aria-label="Close" (click)="removeNotification(i)">
+                            <img src="assets/img/delico.svg" class="actionbico">
+                        </a>
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+    <div class="row main main-width stepitem  dashborder">
+        <div class="col-xs-12 col-sm-12 col-md-6">
+            <div class="row containerbox containerboxone ">
+                <div class="col-sm-12">
+                    <div class="container">
+                        <div class="form-group">
+                            <label for="meeting-link" class="fontbold"> Meeting Link </label>
+                            <input type="text" class="form-control textbox" id="meeting-link" name="meeting-link"
+                                formControlName="meeting_link">
+                        </div>
+                        <div class="form-group">
+                            <label for="location" class="fontbold"> Location </label>
+                            <input type="text" class="form-control textbox" id="location" name="location"
+                                formControlName="location">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-6">
+            <div class="row containerbox containerboxone ">
+                <div class="col-sm-12">
+                    <div class="container">
+                        <div class="form-group">
+                            <label for="number" class="fontbold">Dial-in Number</label>
+                            <input type="text" class="form-control textbox" id="number" name="number"
+                                formControlName="dialin">
+                        </div>
+                        <div class="form-group">
+                            <label for="meeting-agenda" class="fontbold"> Meeting Agenda </label>
+                            <textarea rows="4" cols="50" class="form-control textbox" name="meeting-agenda"
+                                formControlName="description"></textarea>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row main main-width stepitem  dashborder">
+        <div class="col-xs-12 col-sm-12 col-md-6">
+            <div class="row containerbox containerboxone ">
+                <div class="col-sm-12">
+                    <div class="container">
+                        <div class="form-group">
+                            <label for="meeting-link" class="fontbold">Add Team Members</label>
+                            <div class="input-group court" id="judge">
+                                <input type="text" list="browsers" name="browser" placeholder="Search team member"
+                                    id="file-name" class="textbox form-control" formControlName="invitees_internal">
+                                <datalist id="browsers">
+                                    <option *ngFor="let opt of tmsList" [value]="opt.name"></option>
+                                </datalist>
+                                <input type="button" class="btnfile" value="ADD" (click)="addTeamMember()">
+                            </div>
+                            <div class="form-group group-custom-align" *ngFor="let teammember of selectedTeammembers ">
+                                <div class="input-group multicheck court" id="selectedgroup">
+                                    <div class="form-control textbox" [innerHtml]="teammember?.name"></div>
+                                    <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup"
+                                        aria-hidden="true" (click)="removeTeamMember(teammember)"></i>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-6">
+            <div class="row containerbox containerboxone ">
+                <div class="col-sm-12">
+                    <div class="container">
+                        <div class="form-group">
+                            <label for="meeting-link" class="fontbold">Add Entity</label>
+                            <div class="input-group court" id="judge">
+                                <select id="select" class="textbox form-control" (change)="onChangeEntity($event)">
+                                    <option>Please Select Entity</option>
+                                    <option *ngFor="let entity of entityList" [value]="entity.id">{{entity.name}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="input-group court form-group" id="judge" *ngIf="clientsList"><!--*ngIf="clientsList.length>0"-->
+                                <input type="text" list="browsers-clients" name="browser" placeholder="Search client"
+                                    id="file-name" class="textbox form-control" formControlName="invitees_external">
+                                <datalist id="browsers-clients">
+                                    <option *ngFor="let opt of clientsList" [value]="opt.name"></option>
+                                </datalist>
+                                <input type="button" class="btnfile" value="ADD" (click)="addClient()">
+                            </div>
+                            <div class="form-group group-custom-align" *ngFor="let client of selectedClients">
+                                <div class="input-group multicheck court" id="selectedgroup">
+                                    <div class="form-control textbox" [innerHtml]="client.name"></div>
+                                    <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup"
+                                        aria-hidden="true" (click)="removeClient(client)"></i>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row main main-width stepitem  dashborder" *ngIf="selectedMatterId">
+        <div class="col-xs-12 col-sm-12 col-md-6">
+            <div class="row containerbox containerboxone ">
+                <div class="col-sm-12">
+                    <div class="container">
+                        <div class="form-group">
+                            <label for="meeting-link" class="fontbold">Add Document</label>
+                            <div class="input-group court" id="judge">
+                                <input type="text" list="browsers-docs" name="browser" placeholder="Search Document"
+                                    id="file-name" class="textbox form-control" formControlName="attachments">
+                                <datalist id="browsers-docs">
+                                    <option *ngFor="let opt of docsList" [value]="opt.name"></option>
+                                </datalist>
+                                <input type="button" class="btnfile" value="Attach" (click)="addDoc()">
+                            </div>
+                            <div class="form-group group-custom-align" *ngFor="let doc of selectedDocs">
+                                <div class="input-group multicheck court" id="selectedgroup">
+                                    <div class="form-control textbox" [innerHtml]="doc.name"></div>
+                                    <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup"
+                                        aria-hidden="true" (click)="removeDoc(doc)"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="product != 'corporate'">
+            <div class="row containerbox containerboxone ">
+                <div class="col-sm-12">
+                    <div class="container">
+                        <div class="form-group">
+                            <label for="meeting-link" class="fontbold">Add Individuals</label>
+                            <div class="input-group court" id="judge">
+                                <input type="text" list="browsers-con"
+                                    name="browser" placeholder="Search Individual Clients"
+                                    id="file-name" class="textbox form-control"
+                                    formControlName="invitees_consumer_external">
+                                <datalist id="browsers-con">
+                                    <option *ngFor="let opt of conlist"
+                                        [value]="opt.name"></option>
+                                </datalist>
+                                <input type="button" class="btnfile" value="ADD"
+                                    (click)="addconsumerinvites()">
+                            </div>
+                            <div class="form-group group-custom-align"
+                                *ngFor="let con of selectedconsumer">
+                                <div class="input-group multicheck court"
+                                    id="selectedgroup">
+                                    <div class="form-control textbox"
+                                        [innerHtml]="con?.name"></div>
+                                    <i class="fa fa-regular fa-circle-xmark
+                                        calimg calitem input-group-append
+                                        sgroup"
+                                        aria-hidden="true"
+                                        (click)="removeconsumerinvite(con)"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="dashborder">
+        <div class="btnbox">
+            <button type="reset" (click)="onReset()" class="btn btn-default btncancel btnrightitem">Cancel</button>
+            <button type="submit" class="btn btn-default btnsave savecls">Save</button>
+        </div>
+    </div>
+</form>

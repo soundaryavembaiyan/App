@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="39.5" height="37.858" viewBox="0 0 39.5 37.858">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_5638" data-name="Rectangle 5638" width="39.5" height="37.858" fill="none" stroke="#000" stroke-width="1"/>
+    </clipPath>
+  </defs>
+  <g id="Group_2405" data-name="Group 2405" transform="translate(0 0)">
+    <g id="Group_2404" data-name="Group 2404" transform="translate(0 0)" clip-path="url(#clip-path)">
+      <path id="Path_1723" data-name="Path 1723" d="M34.064,13.226V3.511A1.766,1.766,0,0,0,32.3,1.744H2.267A1.766,1.766,0,0,0,.5,3.511V27.358a1.766,1.766,0,0,0,1.767,1.767h15.9" transform="translate(0.26 0.906)" fill="none" stroke="#000" stroke-width="1"/>
+      <line id="Line_956" data-name="Line 956" y2="5.299" transform="translate(28.141 0.001)" fill="none" stroke="#000" stroke-width="1"/>
+      <line id="Line_957" data-name="Line 957" y2="5.299" transform="translate(22.841 0.001)" fill="none" stroke="#000" stroke-width="1"/>
+      <line id="Line_958" data-name="Line 958" y2="5.299" transform="translate(17.542 0.001)" fill="none" stroke="#000" stroke-width="1"/>
+      <line id="Line_959" data-name="Line 959" y2="5.299" transform="translate(12.242 0.001)" fill="none" stroke="#000" stroke-width="1"/>
+      <line id="Line_960" data-name="Line 960" y2="5.299" transform="translate(6.943 0.001)" fill="none" stroke="#000" stroke-width="1"/>
+      <line id="Line_961" data-name="Line 961" x1="33.564" transform="translate(0.76 10.6)" fill="none" stroke="#000" stroke-width="1"/>
+      <path id="Path_1724" data-name="Path 1724" d="M23.241,23.256c0,.975-1.187,1.767-2.65,1.767s-2.65-.792-2.65-1.767" transform="translate(9.316 12.076)" fill="none" stroke="#000" stroke-width="1"/>
+      <path id="Path_1725" data-name="Path 1725" d="M22.7,28.131h8.833v-2.65c-.682-.333-1.8-.39-2.182-1.679-.649-2.168-.468-3.67-.468-7.154a6.183,6.183,0,0,0-12.367,0c0,3.484.181,4.986-.468,7.154-.384,1.288-1.5,1.346-2.182,1.679v2.65Z" transform="translate(7.203 5.434)" fill="none" stroke="#000" stroke-linejoin="round" stroke-width="1"/>
+    </g>
+  </g>
+</svg>

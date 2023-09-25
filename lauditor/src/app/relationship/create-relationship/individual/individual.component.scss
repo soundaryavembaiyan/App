@@ -1,0 +1,105 @@
+.textbox {
+    margin-bottom: 0px;
+}
+
+.comptwo1 {
+    border-left: unset;
+    margin-left: 1px;
+}
+
+.compthree1 {
+    margin-left: 2px;
+    border-left: unset;
+}
+
+.setWidth {
+    width: 96%;
+    height: 40px;
+    margin-top: 2px;
+    border-radius: 8px;
+    text-align: left;
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.text-size {
+    font-size: 17px !important;
+    // border: none;
+    background-color: #e8e8e8;
+    // margin-bottom: 40px;
+}
+
+.lawSet {
+    margin-top: 20px;
+}
+
+.fa-times-circle-o:before {
+
+    content: "\f05c";
+}
+
+.btnsave {
+    width: 150px;
+}
+
+.input-group {
+    margin-bottom: 5px;
+}
+
+.hide {
+    opacity: 0.2
+}
+
+.invalid-feedback {
+    display: block;
+}
+
+.nameSet {
+    width: 96%;
+    padding-bottom: 10px;
+    color: #0B5A9A;
+    //font: normal normal 400 15px Gill Sans;
+    font-size: 18px;
+    font-weight: bolder;
+}
+
+.alertText {
+    //font: normal normal 400 18px Gill Sans;
+    font-size: 18px;
+    font-weight: bolder;
+    letter-spacing: 0px;
+    opacity: 1;
+    padding-top: 10px;
+}
+
+.textGreen {
+    color: #359A00;
+}
+
+.textDanger {
+    color: #FF0000;
+}
+
+.forGroups {
+    padding-top: 25px;
+}
+
+.btnsave:disabled,
+.btnsave[disabled] {
+    background: #004d87 0% 0% no-repeat padding-box;
+    border-radius: 5px;
+    color: #fff;
+    border: none !important;
+}
+
+.btn-close {
+    //top: 362px;
+    width: 38px;
+    height: 38px;
+    opacity: 1;
+    margin-left: 450px;
+}
+
+.alertbutton {
+    padding-bottom: 22px;
+}

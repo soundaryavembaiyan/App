@@ -1,0 +1,89 @@
+<!--component html goes here -->
+   <!-- component right side -->
+  
+   <div  *ngIf="clientInfo &&clientInfo.name " class="row containerbox formcontainer">
+    <label for="title" class="msglabel">Chat </label>
+    <!-- first chat box -->
+    <div class="col-sm-12">
+      <div class="row meetingcontainer legalboxleft container msgcontainerchat">
+        <div class="col-sm-7 col-xs-8">
+          <div class="row">
+            <div class="col-sm-2">
+              <!-- <div class=" userprofile profile">
+                <div class="username icongroup icomeeting msgiconlist msglisa">{{clientInfo.name[0]}}</div>
+              </div> -->
+              <img src="assets/img/rightlarge.JPG" class="arrowlg">
+            </div>
+            <div class="col-sm-3 col-xs-3 mobilepadding">
+              <div class=" userprofile profile">
+                <div class="username   msglisa">{{clientInfo.name[0]}}</div>
+              </div>
+              <!-- <img src="assets/img/lisa.png" alt="Meeting" class="icongroup icomeeting msgiconlist msgchatlist"> -->
+            </div>
+            <div class="col-sm-7 col-xs-9 mobilepadding">
+              <p class="mname toalhours approxmeet meetone mlname " *ngIf="clientInfo"> {{clientInfo.name}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-5">
+          <!-- <div class="msgtime">
+            <img src="assets/img/video.JPG" class="msgvideo msgvideomob">
+            <img src="assets/img/call.JPG" class="msgcall msgcallmobile">
+          </div> -->
+        </div>
+      </div>
+      <!-- box content for realtime chat -->
+      <div class="row meetingcontainer legalboxleft container msgcontainerchatbox">
+        <div class="col-sm-12">
+          <div class="form-group formitem" >
+            <div class="input-group court" id="search">
+              <input type="text" class="form-control textbox" placeholder="Search">
+              <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg" style="margin-top:12px">
+            </div>
+          </div>
+        </div>
+        <!-- initiate use one -->
+        <div class="col-sm-12 textarea" [class]="msg.action == 'SENT' ? 'me' : 'you'" *ngFor="let msg of messages">
+          <div class="row">
+            <div class="col-sm-2 mobcolumn">
+              <img src="assets/img/lisa.png" class="chatimgone">
+            </div>
+            <div class="col-sm-10 mobcolumntwo">
+              <div class="chatpara">
+                <p class="chattxt "> {{msg.text}} </p>
+                <label class="chattxttime"> {{msg.timestamp}} </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- box content for realtime chat ends here  -->
+      <div class="row meetingcontainer legalboxleft container msgcontainerchat">
+        <div class="col-sm-12 col-xs-12">
+          <div class="row">
+            <!-- <div class="col-sm-2 col-xs-3">
+              <img src="assets/img/plus.JPG" class="arrowlg">
+            </div> -->
+            <div class="col-sm-10 col-xs-10">
+             <div class="form-group ">
+                <input type="text" class="form-control textbox chatinput" id="title" name="caseno" #messageinput required="">
+                
+              </div>
+              
+            </div>
+            <div class="col-sm-2 col-xs-2">
+            <span (click)="sendMessage(messageinput.value)"><i  id="btn_send"  class="fa fa-paper-plane" aria-hidden="true"></i></span>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-1 chatsubico">
+      
+          <!-- <div class="msgtime">
+            <img src="assets/img/camera.JPG" class="msgvideo">
+            <img src="assets/img/audio.JPG" class="msgcall">
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </div>

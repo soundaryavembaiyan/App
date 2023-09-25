@@ -1,0 +1,25 @@
+/*
+.btnsave:disabled,
+.btnsave[disabled] {
+    background: #004d87 0% 0% no-repeat padding-box;
+    border-radius: 5px;
+    color: #fff;
+    border: none !important;
+  }
+  */
+
+.btnsave:disabled,
+.btnsave[disabled] {
+    background: #004d87 0% 0% no-repeat padding-box;
+    border-radius: 5px;
+    color: #fff;
+    border: none !important;
+  }
+
+.btn-close {
+    //top: 362px;
+    width: 38px;
+    height: 38px;
+    opacity: 1;
+    margin-left: 450px;
+}
