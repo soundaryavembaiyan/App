@@ -25,6 +25,7 @@ export class GridComponent implements OnInit {
   hoursModel: any = DashBoardHoursModel;
   hiringModel: any = [{'type': '', 'count': ''}, {'type': '', 'count':''}];
   clientModel: any = [{'type': '', 'count': ''}, {'type': '', 'count':''}];
+  externalModel: any = [{'type': '', 'count': ''}, {'type': '', 'count':''}];
   storageModel: any = DashBoardStorageModel;
   timesheetModel: any = DashBoardTimesheetModel;
   matterModel: any = DashBoardMatterModel;
@@ -87,6 +88,7 @@ export class GridComponent implements OnInit {
     this.getSubscription();
     this.getGroupsandtms();
     this.getClients();
+    this.getExternal();
     this.getRelationships();
     this.getNotify();
     
@@ -168,6 +170,7 @@ export class GridComponent implements OnInit {
   getHiring() {
     this.httpservice.getFeaturesdata(URLUtils.getHiring).subscribe((res: any) => {
       this.hiringModel = res?.data;
+      console.log('hireModel',this.hiringModel)
     })
   }
   getStorage() {
@@ -223,6 +226,13 @@ export class GridComponent implements OnInit {
   getClients(){
     this.httpservice.getFeaturesdata(URLUtils.getNewClients).subscribe((res: any) => {
       this.clientModel = res?.data;
+      console.log('clientMode',this.clientModel)
+    })
+  }
+  getExternal(){
+    this.httpservice.getFeaturesdata(URLUtils.getExternalCounsels).subscribe((res: any) => {
+      this.externalModel = res?.data;
+      console.log('ExtclientMode',this.externalModel)
     })
   }
   getRelationships(){
