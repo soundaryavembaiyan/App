@@ -35,6 +35,8 @@ export class URLUtils {
     static getGroupsandtms = `/v3/dashboard/groupsandtms`
     static getNewClients = `/v3/dashboard/new-clients`
     static getDashboardRelations = `/v3/dashboard/relationships`
+    static getExternalCounsels = '/v3/dashboard/external-counsels'
+  
     static postDocumentsClient = '/v3/document/upload'
     static postDocumentsFirm = '/v3/documents/firm'
     static MergePdfDocumentsClient = '/v3/mergepdf'
