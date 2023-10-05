@@ -41,7 +41,7 @@
         </div>
       </div>
       <!-- left row  card 3 layout -->
-      <div class="row containerbox card" (click)="categoryRoute('/meetings')">
+      <div class="row containerbox card" (click)="categoryRoute('/meetings/view')">
         <div class="col-sm-12">
           <div class="row meetingcontainer legalboxleft">
             <div class="col-sm-5">
@@ -350,7 +350,7 @@
           <!-- ends here -->
                  <!-- right row card 11 layout -->
           <div class="row rightcontainerbox rightcontainerboxapprox "
-                *ngIf="kpiCards.includes('matters')" (click)="categoryRoute('/matter')">
+                *ngIf="kpiCards.includes('matters')" (click)="categoryRoute('/matter/legalmatter/view')">
             <div class="col-sm-12">
               <div class="row meetingcontainer legalbox">
                 <div class="col-sm-7">
@@ -360,12 +360,11 @@
                     </div>
                     <div class="col-sm-8">
                       <p class="mname toalhours approx rightmatter" *ngIf="product != 'corporate'">Closed</p>
-                      <p class="mname toalhours approx rightmatter" *ngIf="product == 'corporate'">External Counsel</p>
+                      <p class="mname toalhours approx rightmatter" *ngIf="product == 'corporate'">External</p>
                       <span class="mattertxt">Matters</span>
                       <span class="mattercount" [innerHtml]="matterModel?.closed?.total"></span><!--*ngIf="matterModel.closed && matterModel.closed.total"-->
-                       <span class="mattertxt"
-                        *ngIf="matterModel.closed && matterModel.closed.countsByType[0]">{{matterModel.closed.countsByType[0].count}} {{matterModel.closed.countsByType[0].type}}</span>
-                  &nbsp;
+                      <span class="mattertxt" *ngIf="matterModel.closed && matterModel.closed.countsByType[0]">{{matterModel.closed.countsByType[0].count}} {{matterModel.closed.countsByType[0].type}}</span>
+                      &nbsp;
                       <span class="mattertxt" *ngIf="matterModel.closed && matterModel.closed.countsByType[1]">{{matterModel.closed.countsByType[1].count}} {{matterModel.closed.countsByType[1].type}}</span>
                     </div>
                   </div>
@@ -375,10 +374,8 @@
                 </div>
                 <div class="col-sm-4">
                   <p class="rightbox rightboxtxt rightmatter" *ngIf="product != 'corporate'">Active</p>
-                  <!--<p class="rightbox rightboxtxt rightmatter" *ngIf="product == 'corporate'"></p>-->
-                  <span class="mattertxt" *ngIf="product != 'corporate'">Matters</span>
-                  <span class="mattertxt tops" *ngIf="product == 'corporate'">Matters</span>
-
+                  <p class="rightbox rightboxtxt rightmatter" *ngIf="product == 'corporate'">Internal</p>
+                  <span class="mattertxt">Matters</span>
                   <span class="mattercount" [innerHtml]="matterModel?.active?.total"></span><!--*ngIf="matterModel.active && matterModel.active.total"-->
                   <span class="mattertxt" *ngIf="matterModel.active && matterModel.active.countsByType[0]">{{matterModel.active.countsByType[0].count}} {{matterModel.active.countsByType[0].type}}</span>
                   &nbsp;
@@ -389,8 +386,8 @@
           </div>
           <!-- ends here -->
                   <!-- right row card 12 layout -->
-          <div class="row rightcontainerbox rightcontainerboxapprox "
-                *ngIf="kpiCards.includes('newClients')" (click)="categoryRoute('/relationship/view/individuals')">
+          <div class="row rightcontainerbox rightcontainerboxapprox" *ngIf="kpiCards.includes('newClients')" 
+                (click)="categoryRoute('/relationship/view/individuals')">
             <div class="col-sm-12">
               <div class="row meetingcontainer legalbox">
                 <div class="col-sm-7">
@@ -398,23 +395,40 @@
                     <div class="col-sm-4">
                       <img src="assets/img/client.svg" alt="Meeting" class="icongroup">
                     </div>
-                    <div class="col-sm-8">
+
+                    <!-- Clients total - laud.-->
+                    <div class="col-sm-8" *ngIf="product != 'corporate'">
                       <p class="mname toalhours approx rightmatter cmatter">New Clients</p>
                       <span class="mattertxt">{{clientModel[0]['type']}}</span>
-                      <span class="mattercount"
-                            [innerHtml]="hiringModel[0]['count']"></span>
+                      <span class="mattercount" [innerHtml]="clientModel[0]['count']"></span>
                     </div>
+
+                    <!-- Extrenal Counsels total - corp.-->
+                    <div class="col-sm-8" *ngIf="product == 'corporate'">
+                      <p class="mname toalhours approx rightmatter cmatter">New External Counsels</p>
+                      <span class="mattertxt">{{externalModel[0]['type']}}</span>
+                      <span class="mattercount" [innerHtml]="externalModel[0]['count']"></span>
+                    </div>
+
                   </div>
                 </div>
-                <div class="col-sm-1 verticalwidth">
+                
+                <div class="col-sm-1 verticalwidth" *ngIf="product != 'corporate'">
                     <span class="vertical verticaltotal closedvertical"></span>
                 </div>
-                <div class="col-sm-4">
+
+                <div class="col-sm-4" *ngIf="product == 'corporate'">
                   <p class="rightbox rightboxtxt rightmatter dotcontent">.</p>
-                  <span class="mattertxt">{{clientModel[1]['type']}}</span>
-                  <span class="mattercount"
-                        [innerHtml]="hiringModel[1]['count']"></span>
+                  <span class="mattertxt newmat">All External Counsels</span>
+                  <span class="mattercount" [innerHtml]="externalModel[0]['total_count']"></span>
                 </div>
+
+                <div class="col-sm-4" *ngIf="product != 'corporate'">
+                  <p class="rightbox rightboxtxt rightmatter dotcontent">.</p>
+                  <span class="mattertxt newmat">{{clientModel[1]['type']}}</span>
+                  <span class="mattercount" [innerHtml]="clientModel[1]['count']"></span>
+                </div>
+
               </div>
             </div>
           </div>
@@ -495,6 +509,10 @@
                     </div>
                     <div class="col-sm-8">
                       <p class="mname toalhours rightmatter cmatter">My Active Matters</p>
+                      <!--
+                      <p class="mname toalhours rightmatter cmatter" *ngIf="product != 'corporate'">My Active Matters</p>
+                      <p class="mname toalhours rightmatter cmatter" *ngIf="product == 'corporate'">External Counsels</p>
+                      -->
                       <span class="mattercount closedm " *ngIf="matterModel.active && matterModel.active.countsByType[1]"[innerHtml]="matterModel.active.countsByType[1].count"></span>&nbsp;
                       <span class="mattertxtdata" *ngIf="matterModel.active && matterModel.active.countsByType[1]"[innerHtml]="matterModel.active.countsByType[1].type"></span>
                     </div>
@@ -502,7 +520,7 @@
                 </div>
                 <!-- <span class="mattertxt" *ngIf="matterModel.active && matterModel.active.countsByType[0]">{{matterModel.active.countsByType[0].count}} {{matterModel.active.countsByType[0].type}}</span>
                   <span class="mattertxt" *ngIf="matterModel.active && matterModel.active.countsByType[1]">{{matterModel.active.countsByType[1].count}} {{matterModel.active.countsByType[1].type}}</span> -->
-                <div class="col-sm-5">
+                <div class="col-sm-5 getD">
                   <p class="rightbox rightboxtxt rightmatter  dotcontent">.</p>
                   <span class="mattercount closedm " *ngIf="matterModel.active && matterModel.active.countsByType[0]" [innerHtml]="matterModel.active.countsByType[0].count"></span>&nbsp;
                   <span class="mattertxtdata" *ngIf="matterModel.active && matterModel.active.countsByType[0]" [innerHtml]="matterModel.active.countsByType[0].type"></span>
@@ -674,26 +692,29 @@
           </div>
           <!-- ends here -->
                  <!-- right row card 22 layout -->
-          <div class="row rightcontainerbox rightcontainerboxapprox test card"
+          <div class="row rightcontainerbox rightcontainerboxapprox"
                 *ngIf="kpiCards.includes('relationships')" (click)="categoryRoute('/relationship/view/individuals')">
             <div class="col-sm-12">
               <div class="row meetingcontainer legalbox">
-                <div class="row mcontainer">
+                <div class="col-sm-7">
                   <div class="row">
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
                       <img src="assets/img/law.svg" alt="Meeting" class="icongroup">
                     </div>
-                    <div class="col-sm-9">
+                    <div class="col-sm-8">
                       <p class="mname toalhours approx rightmatter ">Relationship</p>
                     </div>
                   </div>
                 </div>
                 <div class="row">
-                  <div class="col-sm-3"></div>
+                  <div class="col-sm-3 getMove"></div>
                   <div class="col-sm-4">
                     <span class="mattertxt rtxt">Accepted</span>
                     <span class="mattercount">{{relationshipModel.accepted}}</span>
                   </div>
+                  <div class="col-sm-1 verticalwidth">
+                    <span class="vertical verticaltotal "></span>
+                 </div>
                   <div class="col-sm-4">
                     <span class="mattertxt rtxt">Pending</span>
                     <span class="mattercount">{{relationshipModel.pending}}</span>
@@ -703,6 +724,8 @@
             </div>
           </div>
           <!-- ends here -->
+
+    
         </div>
       </div>
     </div>
