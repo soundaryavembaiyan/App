@@ -22,7 +22,6 @@ export class MatterComponent implements OnInit {
       this.selectedValue = 'create';
     }
 
-
     else if(window.location.pathname == '/matter/generalmatter/create'){
       this.selectedMatter='generalmatter';
       this.selectedValue = 'create';
@@ -31,6 +30,22 @@ export class MatterComponent implements OnInit {
       this.selectedMatter='legalmatter';
       this.selectedValue = 'view';
     }
+    
+    //Action matter highlight for Legal.
+    else if(window.location.pathname == '/matter/legalmatter/viewDetails'){
+      this.selectedMatter='legalmatter';
+      this.selectedValue = 'view';
+    }
+    else if(window.location.pathname == '/matter/legalmatter/updateGroups'){
+      this.selectedMatter='legalmatter';
+      this.selectedValue = 'view';
+    }
+    else if(window.location.pathname == '/matter/legalmatter/matterEdit'){
+      this.selectedMatter='legalmatter';
+      this.selectedValue = 'view';
+    }
+    //.....
+      
     else{
       this.selectedMatter='generalmatter';
       this.selectedValue = 'view';
