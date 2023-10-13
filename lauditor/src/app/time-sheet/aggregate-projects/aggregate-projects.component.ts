@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ngxCsv } from 'ngx-csv';
 import { HttpService } from 'src/app/services/http.service';
 import { URLUtils } from 'src/app/urlUtils';
+import { environment } from 'src/environments/environment';
 
 @Component({
     selector: 'aggregate-projects',
@@ -20,6 +21,8 @@ export class AggregateProjectsComponent implements OnInit {
     calendarDates:any;
     grandTotal:any;
     searchTeam:any;
+    product = environment.product;
+    
     constructor(private httpService: HttpService) {
 
     }
