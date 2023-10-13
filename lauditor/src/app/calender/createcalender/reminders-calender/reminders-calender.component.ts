@@ -41,6 +41,7 @@ export class RemindersCalenderComponent implements OnInit {
   selectedClients: any = [];
   isSubmitted = false;
   entityList: any = [];
+  entitycorpList: any = [];
   increaseTodate: boolean = false;
   displayDuration: boolean = true;
   public hrs: any = [];
@@ -57,6 +58,9 @@ export class RemindersCalenderComponent implements OnInit {
   showTime = true;
   selectedconsumer: any = [];
   conlist: any[]=[];
+
+  corpList: any = [];
+  selectedCorp:any =[];
 
   constructor(
     private router: Router,
@@ -167,6 +171,23 @@ export class RemindersCalenderComponent implements OnInit {
     })
   }
   getEntities() {
+    
+    // if(this.product == 'corporate'){
+    //   this.httpservice.getFeaturesdata(URLUtils.getCalenderExternal).subscribe(
+    //       (res: any) => {
+    //         this.entitycorpList = [];
+    //         this.entitycorpList = res?.relationships;
+    //       })
+    // }
+    if(this.product == 'lauditor'){
+      this.httpservice.getFeaturesdata(URLUtils.getCalenderExternal).subscribe((res: any) => {
+        //this.corpList = res?.corporate;
+        this.corpList = [];
+        this.corpList = res?.relationships;
+        console.log('corpList',this.corpList)
+    })
+    }
+
     this.httpservice.getFeaturesdata(URLUtils.getRelationship).subscribe((res: any) => {
       this.entityList = [];
       this.entityList = res?.data?.relationships.filter((rel:any) => rel.type === 'entity');
@@ -193,6 +214,7 @@ export class RemindersCalenderComponent implements OnInit {
         });
       }
     })
+    
   }
   allDay(event: any) {
     //console.log(event.target.checked);
