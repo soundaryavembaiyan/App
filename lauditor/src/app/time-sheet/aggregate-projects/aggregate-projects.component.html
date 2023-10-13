@@ -125,7 +125,8 @@
                          <!-- <img src="assets/img/SORT.PNG" class="sortico" (click)="projectWeekSort('caseNo')"> -->
                         <th>Project</th>
                          <!-- <img src="assets/img/SORT.PNG" class="sortico" (click)="projectWeekSort('projectName')"> -->
-                        <th>Client Name </th>
+                        <th *ngIf="product == 'corporate'"> External Counsels Name </th>
+                        <th *ngIf="product != 'corporate'"> Client Name </th>
                         <!-- <img src="assets/img/SORT.PNG" class="sortico" (click)="projectWeekSort('clientNames')"> -->
                         <th>Team Member - Rate </th>
                         <th>Billable<br>(Hours)</th>
@@ -197,7 +198,9 @@
                      <tr style="border-top: 1px solid #0000003d;">
                         <th>Case Number </th>
                         <th>Project </th>
-                        <th>Client Name </th>
+                        <!-- <th>Client Name </th> -->
+                        <th *ngIf="product == 'corporate'"> External Counsels Name </th>
+                        <th *ngIf="product != 'corporate'"> Client Name </th>
                         <th>Team Member - Rate</th>
                         <th>Billable<br>(Hours)</th>
                         <th>Non - Billable<br>(Hours)</th>
