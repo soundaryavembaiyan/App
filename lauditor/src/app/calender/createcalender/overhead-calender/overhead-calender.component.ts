@@ -41,6 +41,7 @@ export class OverheadCalenderComponent implements OnInit {
   isSubmitted = false;
   minDate = new Date();
   entityList: any = [];
+  entitycorpList: any = [];
   selectedHours: any;
   selectedMinutes: any;
   increaseTodate: boolean = false;
@@ -58,6 +59,13 @@ export class OverheadCalenderComponent implements OnInit {
   showTime = true;
   selectedconsumer: any = [];
   conlist: any[]=[];
+
+
+  corpList: any = [];
+  selectedCorp:any =[];
+  
+  
+
 
   constructor(
     private httpservice: HttpService,
@@ -83,10 +91,13 @@ export class OverheadCalenderComponent implements OnInit {
           this.CalenderForm.controls['invitees_internal'].setValue('');
           this.CalenderForm.controls['invitees_consumer_external'].setValue('');
           this.CalenderForm.controls['invitees_external'].setValue('');
+          this.CalenderForm.controls['invitees_corporate'].setValue('');
           this.selectedconsumer = this.editInfo.invitees_consumer_external.map((item: any) => ({ "id": item.entityId, "name": item.tmName, "type": "consumer" }))
           this.selectedTeammembers = this.editInfo.invitees_internal;
           this.selectedClients = this.editInfo.invitees_external;
+          //this.selectedCorp = this.editInfo.invitees_external;
           this.selectedClients = this.selectedClients.map((item: any) => ({ "id": item.tmId, "name": item.tmName, "entityid": item.entityId }));
+          //this.selectedCorp = this.selectedCorp.map((item: any) => ({ "id": item.tmId, "name": item.tmName, "type": "corporate"}));
           this.getTimeZones();
           // this.addNotification();
           this.getTms();
@@ -121,6 +132,7 @@ export class OverheadCalenderComponent implements OnInit {
     description: [''],
     event_type: ['overhead'],
     invitees_external: [''],
+    invitees_corporate: [''],
     invitees_consumer_external: [''],
     invitees_internal: [''],
     notifications: [''],
@@ -199,9 +211,27 @@ export class OverheadCalenderComponent implements OnInit {
     })
   }
   getEntities() {
+
+    // if(this.product == 'corporate'){
+    //   this.httpservice.getFeaturesdata(URLUtils.getCalenderExternal).subscribe(
+    //       (res: any) => {
+    //         this.entitycorpList = [];
+    //         this.entitycorpList = res?.relationships;
+    //       })
+    // }
+    if(this.product == 'lauditor'){
+      this.httpservice.getFeaturesdata(URLUtils.getCalenderExternal).subscribe((res: any) => {
+        //this.corpList = res?.corporate;
+        this.corpList = [];
+        this.corpList = res?.relationships;
+        console.log('corpList',this.corpList)
+    })
+    }
+
     this.httpservice.getFeaturesdata(URLUtils.getRelationship).subscribe((res: any) => {
-      this.entityList = [];
+      //this.entityList = [];
       this.entityList = res?.data?.relationships.filter((rel:any) => rel.type === 'entity');
+      console.log('Entitylist',this.entityList)
       this.conlist = res?.data?.relationships.filter((rel:any) => rel.type === 'consumer');
       if (this.selectedconsumer.length > 0) {
         this.conlist = this.conlist.filter((el: any) => {
@@ -211,20 +241,50 @@ export class OverheadCalenderComponent implements OnInit {
         });
       }
     })
+
+  //   this.httpservice.getFeaturesdata(URLUtils.getCalenderExternal).subscribe((res: any) => {
+  //     //this.corpList = res?.relationships.filter((rel:any) => rel.type === 'corporate');
+  //     //this.corpList = res?.corporate;
+  //     this.corpList = [];
+  //     this.corpList = res?.relationships;
+  //     console.log('corpList',this.corpList)
+
+  //     // if (this.selectedCorp.length > 0) {
+  //     //   console.log('selectedCorp',this.selectedCorp)
+  //     //   this.corpList = this.corpList.filter((el: any) => {
+  //     //     return !this.selectedCorp.find((element: any) => {
+  //     //       return element.id === el.id;
+  //     //     });
+  //     //   });
+  //     // }
+  // })
+
   }
   getClients(id: any) {
     this.httpservice.sendGetRequest(URLUtils.getEntityTms(id)).subscribe((res: any) => {
       this.clientsList = [];
+      //this.corpList = [];
       this.clientsList = res?.users;
       this.clientsList.map((item: any) => item.entityid = id);
+      //this.corpList.map((item: any) => item.entityid = id);
       if (this.selectedClients.length > 0) {
         this.clientsList = this.clientsList.filter((el: any) => {
           return !this.selectedClients.find((element: any) => {
             return element.id === el.id;
           });
-        });
-      }
+        })
+      } 
+
+      // if (this.selectedCorp.length > 0) {
+      //   this.corpList = this.corpList.filter((el: any) => {
+      //     return !this.corpList.find((element: any) => {
+      //       return element.id === el.id;
+      //     });
+      //   })
+      // }
+
     })
+
   }
   addMinutesToTime(time: any, minsAdd: any) {
     function z(n: any) {
@@ -414,10 +474,23 @@ export class OverheadCalenderComponent implements OnInit {
   addClient() {
     let client = this.clientsList.find((d: any) => d.name === this.CalenderForm.value.invitees_external); //find index in your array
     this.selectedClients.push(client);
+    console.log('client',client)
+    console.log('selectedClients',this.selectedClients)
     let index = this.clientsList.findIndex((d: any) => d.id === client.id); //find index in your array
     this.clientsList.splice(index, 1);
     this.CalenderForm.controls['invitees_external'].setValue('');
   }
+
+  addCorp() {
+    let client = this.corpList.find((d: any) => d.name === this.CalenderForm.value.invitees_corporate); //find index in your array
+    this.selectedCorp.push(client);
+    console.log('cc-client',client)
+    console.log('selectedCorp',this.selectedCorp)
+    let index = this.corpList.findIndex((d: any) => d.id === client.id); //find index in your array
+    this.corpList.splice(index, 1);
+    this.CalenderForm.controls['invitees_corporate'].setValue('');
+  }
+
   removeClient(client: any) {
     let index = this.selectedClients.findIndex((d: any) => d.id === client.id); //find index in your array
     this.selectedClients.splice(index, 1);
@@ -433,9 +506,7 @@ export class OverheadCalenderComponent implements OnInit {
      if (index > -1) {
        this.conlist?.splice(index, 1);
        this.CalenderForm.controls['invitees_consumer_external'].setValue('');
-
-     }
-
+      }
     }
  }
  removeconsumerinvite(con: any) {
