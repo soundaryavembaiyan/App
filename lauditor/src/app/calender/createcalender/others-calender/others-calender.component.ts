@@ -50,6 +50,7 @@ export class OthersCalenderComponent implements OnInit {
   selectedClients: any = [];
   isSubmitted = false;
   entityList: any = [];
+  entitycorpList: any = [];
   product = environment.product;
   public editInfo: any = undefined;
   isValidNotification:boolean=false;
@@ -57,6 +58,9 @@ export class OthersCalenderComponent implements OnInit {
   showTime = true;
   selectedconsumer: any = [];
   conlist: any[]=[];
+
+  corpList: any = [];
+  selectedCorp:any =[];
 
 
   constructor(
@@ -196,6 +200,23 @@ export class OthersCalenderComponent implements OnInit {
     })
   }
   getEntities() {
+
+    // if(this.product == 'corporate'){
+    //   this.httpservice.getFeaturesdata(URLUtils.getCalenderExternal).subscribe(
+    //       (res: any) => {
+    //         this.entitycorpList = [];
+    //         this.entitycorpList = res?.relationships;
+    //       })
+    // }
+    if(this.product == 'lauditor'){
+      this.httpservice.getFeaturesdata(URLUtils.getCalenderExternal).subscribe((res: any) => {
+        //this.corpList = res?.corporate;
+        this.corpList = [];
+        this.corpList = res?.relationships;
+        console.log('corpList',this.corpList)
+    })
+    }
+    
     this.httpservice.getFeaturesdata(URLUtils.getRelationship).subscribe((res: any) => {
       this.entityList = [];
       this.entityList = res?.data?.relationships.filter((rel:any) => rel.type === 'entity');
@@ -208,6 +229,7 @@ export class OthersCalenderComponent implements OnInit {
         });
       }
     })
+    
   }
   getClients(id: any) {
     this.httpservice.sendGetRequest(URLUtils.getEntityTms(id)).subscribe((res: any) => {
