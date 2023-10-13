@@ -47,6 +47,7 @@ export class LegalMatterCalenderComponent implements OnInit {
   selectedDocs: any = [];
   isSubmitted = false;
   entityList: any = [];
+  entitycorpList: any = [];
   selectedMatterId: any;
   increaseTodate: boolean = false;
   displayDuration: boolean = true;
@@ -66,6 +67,10 @@ export class LegalMatterCalenderComponent implements OnInit {
   public selectedQuantity: any;
   public editInfo: any = undefined;
   public editTitle: any;
+
+  corpList: any = [];
+  selectedCorp:any =[];
+  
   constructor(private httpservice: HttpService,
     public fb: FormBuilder, private toast: ToastrService, 
     private confirmationDialogService: ConfirmationDialogService,
@@ -207,8 +212,27 @@ export class LegalMatterCalenderComponent implements OnInit {
     //   this.entityList = [];
     //   this.entityList = res?.entities;
     // })
+
+    // if(this.product == 'corporate'){
+    //   this.httpservice.getFeaturesdata(URLUtils.getCalenderExternal).subscribe(
+    //       (res: any) => {
+    //         this.entitycorpList = [];
+    //         this.entitycorpList = res?.relationships;
+    //       })
+    // }
+    if(this.product == 'lauditor'){
+      this.httpservice.getFeaturesdata(URLUtils.getCalenderExternal).subscribe((res: any) => {
+        //this.corpList = res?.corporate;
+        this.corpList = [];
+        this.corpList = res?.relationships;
+        console.log('corpList',this.corpList)
+    })
+    }
+    
     if (matter?.length > 0){
       this.entityList = matter[0]?.clients.filter((rel:any) => rel.type === 'entity');
+      // console.log('Entitylist',this.entityList)
+      // console.log('Matterlist',this.matterList)
       this.conlist = matter[0]?.clients.filter((rel:any) => rel.type === 'consumer');
 
     }
@@ -245,6 +269,7 @@ export class LegalMatterCalenderComponent implements OnInit {
       this.docsList = matter[0]?.documents;
       if (this.selectedDocs.length > 0) {
         this.docsList = this.docsList.filter((el: any) => {
+          console.log('this.doc', this.docsList)
           return !this.selectedDocs.find((element: any) => {
             return element.docid === el.docid;
           });
