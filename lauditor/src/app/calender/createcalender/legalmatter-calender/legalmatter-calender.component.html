@@ -242,7 +242,7 @@
                                 Members</label>
                             <div class="input-group court" id="judge">
                                 <input type="text" list="browsers"
-                                    name="browser" placeholder="Search team member"
+                                    name="browser" placeholder="Search Team Member"
                                     id="file-name" class="textbox form-control"
                                     formControlName="invitees_internal">
                                 <datalist id="browsers">
@@ -275,40 +275,55 @@
                 <div class="col-sm-12">
                     <div class="container">
                         <div class="form-group">
-                            <label for="meeting-link" class="fontbold">Add Entity</label>
+                            <label for="meeting-link" *ngIf="product != 'corporate'" class="fontbold">Add Entity</label>
+                            <label for="meeting-link" *ngIf="product == 'corporate'" class="fontbold">Add External Counsels</label>
                             <div class="input-group court" id="judge">
-                                <select id="select" class="textbox form-control"
-                                    (change)="onChangeEntity($event)">
+                                <select *ngIf="product != 'corporate'" id="select" class="textbox form-control" (change)="onChangeEntity($event)">
                                     <option>Please Select Entity</option>
-                                    <option *ngFor="let entity of entityList"
-                                        [value]="entity.id">{{entity.name}}
+                                    <option *ngFor="let entity of entityList" [value]="entity.id">{{entity.name}}
+                                    </option>
+                                </select>
+
+                                <select *ngIf="product == 'corporate'" id="select" class="textbox form-control" (change)="onChangeEntity($event)">
+                                    <option>Please Select External Counsel</option>
+                                    <option *ngFor="let entity of entitycorpList" [value]="entity.id">{{entity.name}}
                                     </option>
                                 </select>
                             </div>
-                            <div class="input-group court form-group" id="judge"
-                                *ngIf="clientsList.length"><!--*ngIf="clientsList.length>0"-->
-                                <input type="text" list="browsers-clients"
-                                    name="browser" placeholder="Search client"
-                                    id="file-name" class="textbox form-control"
-                                    formControlName="invitees_external">
+
+                            <!-- <div class="input-group court form-group" id="judge" *ngIf="clientsList"><!--*ngIf="clientsList.length>0"--
+                                <input type="text" list="browsers-clients" name="browser" placeholder="Search Client"
+                                    id="file-name" class="textbox form-control" formControlName="invitees_external">
                                 <datalist id="browsers-clients">
-                                    <option *ngFor="let opt of clientsList"
-                                        [value]="opt.name"></option>
+                                    <option *ngFor="let opt of clientsList" [value]="opt.name"></option>
                                 </datalist>
-                                <input type="button" class="btnfile" value="ADD"
-                                    (click)="addClient()">
+                                <input type="button" class="btnfile" value="ADD" (click)="addClient()">
+                            </div> -->
+
+                               <!-- *ngIf="product != 'corporate'" -->
+                              <div class="input-group court form-group" *ngIf="product != 'corporate' && clientsList" id="judge"><!--*ngIf="clientsList.length>0"-->
+                                <input type="text" list="browsers-clients" name="browser" placeholder="Search Client"
+                                         id="file-name" class="textbox form-control" formControlName="invitees_external">
+                                   <datalist id="browsers-clients">
+                                     <option *ngFor="let opt of clientsList" [value]="opt.name"></option>
+                                    </datalist>
+                                  <input type="button" class="btnfile" value="ADD" (click)="addClient()">
+                              </div>
+                               <!-- *ngIf="product == 'corporate'" -->
+                             <div class="input-group court form-group" *ngIf="product == 'corporate' && clientsList" id="judge"><!--*ngIf="clientsList.length>0"-->
+                                <input type="text" list="browsers-clients" name="browser" placeholder="Search External Counsel"
+                                       id="file-name" class="textbox form-control" formControlName="invitees_external">
+                                 <datalist id="browsers-clients">
+                                        <option *ngFor="let opt of clientsList" [value]="opt.name"></option>
+                                 </datalist>
+                                 <input type="button" class="btnfile" value="ADD" (click)="addClient()">
                             </div>
-                            <div class="form-group group-custom-align"
-                                *ngFor="let client of selectedClients">
-                                <div class="input-group multicheck court"
-                                    id="selectedgroup">
-                                    <div class="form-control textbox"
-                                        [innerHtml]="client.name"></div>
-                                    <i class="fa fa-regular fa-circle-xmark
-                                        calimg calitem input-group-append
-                                        sgroup"
-                                        aria-hidden="true"
-                                        (click)="removeClient(client)"></i>
+                            
+                            <div class="form-group group-custom-align" *ngFor="let client of selectedClients">
+                                <div class="input-group multicheck court" id="selectedgroup">
+                                    <div class="form-control textbox" [innerHtml]="client.name"></div>
+                                    <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup"
+                                        aria-hidden="true" (click)="removeClient(client)"></i>
                                 </div>
                             </div>
                         </div>
@@ -317,48 +332,50 @@
             </div>
         </div>
     </div>
-    <div class="row main main-width stepitem dashborder"
-        *ngIf="selectedMatterId">
-        <div class="col-xs-12 col-sm-12 col-md-6">
+
+<!-- <div class="row main main-width stepitem dashborder" *ngIf="selectedMatterId"> -->
+
+    <!-- Add Corporate & Individual & Doc field!!-->
+    <div class="row main main-width stepitem dashborder">
+        <!-- Add Corporate -->
+        <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="product == 'lauditor'">
             <div class="row containerbox containerboxone ">
                 <div class="col-sm-12">
                     <div class="container">
                         <div class="form-group">
-                            <label for="meeting-link" class="fontbold">Add
-                                Document</label>
+                            <label for="meeting-link" class="fontbold">Add Corporate</label>
                             <div class="input-group court" id="judge">
-                                <input type="text" list="browsers-docs"
-                                    name="browser" placeholder="Search Document"
-                                    id="file-name" class="textbox form-control"
-                                    formControlName="attachments">
-                                <datalist id="browsers-docs">
-                                    <option *ngFor="let opt of docsList"
-                                        [value]="opt.name"></option>
+                                <select id="select" class="textbox form-control" (change)="onChangeEntity($event)">
+                                    <option value="" hidden>Please Select Entity</option>
+                                    <option *ngFor="let entity of corpList" [value]="entity.id">{{entity.name}}
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="input-group court form-group" id="judge" *ngIf="corpList">
+                                <input type="text" list="browsers-clients" name="browser" placeholder="Search Corporate"
+                                    id="file-name" class="textbox form-control" formControlName="invitees_external">
+                                <datalist id="browsers-clients">
+                                    <option *ngFor="let opt of corpList" [value]="opt.name"></option>
                                 </datalist>
-                                <input type="button" class="btnfile"
-                                    value="Attach" (click)="addDoc()">
+                                <input type="button" class="btnfile" value="ADD" (click)="addClient()">
                             </div>
-                            <div class="form-group group-custom-align"
-                                *ngFor="let doc of selectedDocs">
-                                <div class="input-group multicheck court"
-                                    id="selectedgroup">
-                                    <div class="form-control textbox"
-                                        [innerHtml]="doc.name"></div>
-                                    <i class="fa fa-regular fa-circle-xmark
-                                        calimg calitem input-group-append
-                                        sgroup"
-                                        aria-hidden="true"
-                                        (click)="removeDoc(doc)"></i>
+
+                            <div class="form-group group-custom-align" *ngFor="let client of selectedCorp">
+                                <div class="input-group multicheck court" id="selectedgroup">
+                                    <div class="form-control textbox" [innerHtml]="client.name"></div>
+                                    <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup"
+                                        aria-hidden="true" (click)="removeClient(client)"></i>
                                 </div>
-                            </div>
-                            <div *ngIf="docsList && docsList.length==0">
-                                Documents are not available !!
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- Add Corporate ends here!-->
+
+        <!-- Add Individual field!!-->
         <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="product != 'corporate'">
             <div class="row containerbox containerboxone ">
                 <div class="col-sm-12">
@@ -395,7 +412,54 @@
                 </div>
             </div>
         </div>
+        <!-- Add Individual field ends here!!-->
+
+        <!-- Document list!-->
+        <div class="col-xs-12 col-sm-12 col-md-6">
+            <div class="row containerbox containerboxone" *ngIf="selectedMatterId">
+                <div class="col-sm-12">
+                    <div class="container">
+                        <div class="form-group">
+                            <label for="meeting-link" class="fontbold">Add
+                                Document</label>
+                            <div class="input-group court" id="judge">
+                                <input type="text" list="browsers-docs"
+                                    name="browser" placeholder="Search Document"
+                                    id="file-name" class="textbox form-control"
+                                    formControlName="attachments">
+                                <datalist id="browsers-docs">
+                                    <option *ngFor="let opt of docsList"
+                                        [value]="opt.name"></option>
+                                </datalist>
+                                <input type="button" class="btnfile"
+                                    value="Attach" (click)="addDoc()">
+                            </div>
+                            <div class="form-group group-custom-align"
+                                *ngFor="let doc of selectedDocs">
+                                <div class="input-group multicheck court"
+                                    id="selectedgroup">
+                                    <div class="form-control textbox"
+                                        [innerHtml]="doc.name"></div>
+                                    <i class="fa fa-regular fa-circle-xmark
+                                        calimg calitem input-group-append
+                                        sgroup"
+                                        aria-hidden="true"
+                                        (click)="removeDoc(doc)"></i>
+                                </div>
+                            </div>
+                            <!-- <div *ngIf="docsList && docsList.length==0">
+                                Documents are not available !!
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      <!-- Document list ends here!-->
+
     </div>
+    <!-- Add Corporate & Individual & Doc field ends here!!-->
+    
     <div class="dashborder">
         <div class="btnbox">
             <button type="reset" (click)="onReset()" class="btn btn-default btncancel btnrightitem">Cancel</button>
