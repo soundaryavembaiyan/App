@@ -148,7 +148,7 @@
                         <div class="form-group">
                             <label for="meeting-link" class="fontbold">Add Team Members</label>
                             <div class="input-group court" id="judge">
-                                <input type="text" list="browsers" name="browser" placeholder="Search team member"
+                                <input type="text" list="browsers" name="browser" placeholder="Search Team Member"
                                     id="file-name" class="textbox form-control" formControlName="invitees_internal">
                                 <datalist id="browsers">
                                     <option *ngFor="let opt of tmsList" [value]="opt.name"></option>
@@ -176,16 +176,23 @@
                             <label for="meeting-link" class="fontbold" *ngIf="product != 'content' && product != 'corporate'">Add Clients</label>
                             <label for="meeting-link" class="fontbold" *ngIf="product == 'content'">Add Customers</label>
                             <label for="meeting-link" class="fontbold" *ngIf="product == 'corporate'">Add External Counsels</label>
+
                             <div class="input-group court" id="judge">
-                                <select id="select" class="textbox form-control" (change)="onChangeEntity($event)">
+                                <select *ngIf="product != 'corporate'" id="select" class="textbox form-control" (change)="onChangeEntity($event)">
                                     <option>Please Select Entity</option>
                                     <option *ngFor="let entity of entityList" [value]="entity.id">{{entity.name}}
+                                    </option>
+                                </select>
+
+                                <select *ngIf="product == 'corporate'" id="select" class="textbox form-control" (change)="onChangeEntity($event)">
+                                    <option>Please Select External Counsel</option>
+                                    <option *ngFor="let entity of entitycorpList" [value]="entity.id">{{entity.name}}
                                     </option>
                                 </select>
                             </div>
 
                             <div class="input-group court form-group" id="judge" *ngIf="clientsList && product != 'corporate'"><!--*ngIf="clientsList.length>0"-->
-                                <input type="text" list="browsers-clients" name="browser" placeholder="Search client"
+                                <input type="text" list="browsers-clients" name="browser" placeholder="Search Client"
                                     id="file-name" class="textbox form-control" formControlName="invitees_external">
                                 <datalist id="browsers-clients">
                                     <option *ngFor="let opt of clientsList" [value]="opt.name"></option>
@@ -215,7 +222,49 @@
             </div>
         </div>
     </div>
+
+
+    <!-- Add Corporate & Add Individual field!!-->
     <div class="row main main-width stepitem dashborder" *ngIf="product != 'corporate' && product != 'connect'">
+        <!-- Add Corporate -->
+        <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="product == 'lauditor'">
+            <div class="row containerbox containerboxone ">
+                <div class="col-sm-12">
+                    <div class="container">
+                        <div class="form-group">
+                            <label for="meeting-link" class="fontbold">Add Corporate</label>
+                            <div class="input-group court" id="judge">
+                                <select id="select" class="textbox form-control" (change)="onChangeEntity($event)">
+                                    <option value="" hidden>Please Select Entity</option>
+                                    <option *ngFor="let entity of corpList" [value]="entity.id">{{entity.name}}
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="input-group court form-group" id="judge" *ngIf="corpList">
+                                <input type="text" list="browsers-clients" name="browser" placeholder="Search Corporate"
+                                    id="file-name" class="textbox form-control" formControlName="invitees_external">
+                                <datalist id="browsers-clients">
+                                    <option *ngFor="let opt of corpList" [value]="opt.name"></option>
+                                </datalist>
+                                <input type="button" class="btnfile" value="ADD" (click)="addClient()">
+                            </div>
+
+                            <div class="form-group group-custom-align" *ngFor="let client of selectedCorp">
+                                <div class="input-group multicheck court" id="selectedgroup">
+                                    <div class="form-control textbox" [innerHtml]="client.name"></div>
+                                    <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup"
+                                        aria-hidden="true" (click)="removeClient(client)"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Add Corporate ends here!-->
+
+        <!--- Add Individual-->
         <div class="col-xs-12 col-sm-12 col-md-6">
             <div class="row containerbox containerboxone ">
                 <div class="col-sm-12">
@@ -235,32 +284,21 @@
                                     (click)="addconsumerinvites()">
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xs-12 col-sm-12 col-md-6">
-            <div class="row containerbox containerboxone ">
-                <div class="col-sm-12">
-                    <div class="container">
-                        <div class="form-group group-custom-align"
-                                *ngFor="let con of selectedconsumer">
-                                <div class="input-group multicheck court"
-                                    id="selectedgroup">
-                                    <div class="form-control textbox"
-                                        [innerHtml]="con?.name"></div>
-                                    <i class="fa fa-regular fa-circle-xmark
-                                        calimg calitem input-group-append
-                                        sgroup"
-                                        aria-hidden="true"
-                                        (click)="removeconsumerinvite(con)"></i>
-                                </div>
+
+                        <div class="form-group group-custom-align"  *ngFor="let con of selectedconsumer">
+                            <div class="input-group multicheck court" id="selectedgroup">
+                                <div class="form-control textbox" [innerHtml]="con?.name"></div>
+                                <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup"
+                                    aria-hidden="true" (click)="removeconsumerinvite(con)"></i>
                             </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <!--- Add Individual ends here!-->
     </div>
+    <!-- Add Corporate & Add Individual field ends here!!-->
     <div class="dashborder">
         <div class="btnbox">
             <button type="reset" (click)="onReset()" class="btn btn-default btncancel btnrightitem">Cancel</button>
