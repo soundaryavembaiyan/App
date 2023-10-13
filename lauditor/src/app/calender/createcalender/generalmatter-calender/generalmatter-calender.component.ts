@@ -43,6 +43,7 @@ export class GeneralMatterCalenderComponent implements OnInit {
   selectedDocs: any = [];
   isSubmitted = false;
   entityList: any = [];
+  entitycorpList: any = [];
   selectedMatterId: any;
   selectedHours: any;
   selectedMinutes: any;
@@ -64,7 +65,12 @@ export class GeneralMatterCalenderComponent implements OnInit {
   product = environment.product;
   isValidNotification:boolean=false;
   conlist: any[] = [];
+  corplist:any[] =[];
   selectedconsumer: any = [];
+
+  corpList: any = [];
+  selectedCorp:any =[];
+  
   constructor(private httpservice: HttpService,
     public fb: FormBuilder, private toast: ToastrService, 
     private confirmationDialogService: ConfirmationDialogService, private calenderService: CalenderService,
@@ -94,6 +100,7 @@ export class GeneralMatterCalenderComponent implements OnInit {
           this.CalenderForm.controls['attachments'].setValue('');
           this.CalenderForm.controls['invitees_consumer_external'].setValue('');
           this.CalenderForm.controls['invitees_external'].setValue('');
+          this.CalenderForm.controls['invitees_corporate'].setValue('');
           this.selectedTeammembers = this.editInfo.invitees_internal;
           this.selectedDocs = this.editInfo.attachments;
           this.selectedClients = this.editInfo.invitees_external;
@@ -136,6 +143,7 @@ export class GeneralMatterCalenderComponent implements OnInit {
     invitees_external: [''],
     invitees_consumer_external: [''],
     invitees_internal: [''],
+    invitees_corporate: [''],
     attachments: [''],
     notifications: [''],
     addtimesheet: [true],
@@ -216,9 +224,26 @@ export class GeneralMatterCalenderComponent implements OnInit {
     //   this.entityList = res?.entities;
     // })
 
+    // if(this.product == 'corporate'){
+    //   this.httpservice.getFeaturesdata(URLUtils.getCalenderExternal).subscribe(
+    //       (res: any) => {
+    //         this.entitycorpList = [];
+    //         this.entitycorpList = res?.relationships;
+    //       })
+    // }
+    if(this.product == 'lauditor'){
+      this.httpservice.getFeaturesdata(URLUtils.getCalenderExternal).subscribe((res: any) => {
+        //this.corpList = res?.corporate;
+        this.corpList = [];
+        this.corpList = res?.relationships;
+        console.log('corpList',this.corpList)
+    })
+    }
+
     if (matter?.length > 0){
       this.entityList = matter[0]?.clients.filter((rel:any) => rel.type === 'entity');
       this.conlist = matter[0]?.clients.filter((rel:any) => rel.type === 'consumer');
+      //this.corplist = matter[0]?.corporate;
 
     }
     
@@ -234,6 +259,7 @@ export class GeneralMatterCalenderComponent implements OnInit {
     this.httpservice.sendGetRequest(URLUtils.getEntityTms(id)).subscribe((res: any) => {
       this.clientsList = [];
       this.clientsList = res?.users;
+      console.log('clientsList',this.clientsList)
       this.clientsList.map((item: any) => item.entityid = id);
       if (this.selectedClients.length > 0) {
         this.clientsList = this.clientsList.filter((el: any) => {
@@ -406,6 +432,17 @@ export class GeneralMatterCalenderComponent implements OnInit {
       }
     }
   }
+
+  addCorp() {
+    let client = this.corpList.find((d: any) => d.name === this.CalenderForm.value.invitees_corporate); //find index in your array
+    this.selectedCorp.push(client);
+    console.log('cc-client',client)
+    console.log('selectedCorp',this.selectedCorp)
+    let index = this.corpList.findIndex((d: any) => d.id === client.id); //find index in your array
+    this.corpList.splice(index, 1);
+    this.CalenderForm.controls['invitees_corporate'].setValue('');
+  }
+
   removeClient(client: any) {
     let index = this.selectedClients?.findIndex((d: any) => d.id === client.id); //find index in your array
     if (index > -1) {
