@@ -124,8 +124,14 @@ export class MatterGroupsComponent implements OnInit {
     }
   }
   removeGroup(group: any) {
-    if(this.isEdit &&  group.canDelete != undefined && group.canDelete == false){
-    this.confirmationDialogService.confirm('Alert', 'Clients are associated with this group. So you cannot delete this group', false, 'OK', 'Cancel', true)
+    if(this.isEdit && group.canDelete != undefined && group.canDelete == false){
+    if(this.product != 'corporate'){
+    this.confirmationDialogService.confirm('Alert', 'Clients are associated with this Group. So you cannot delete this group', false, 'OK', 'Cancel', true)
+    }
+    if(this.product == 'corporate'){
+      this.confirmationDialogService.confirm('Alert', 'External Counsels are associated with this Department. So you cannot delete this department', false, 'OK', 'Cancel', true)
+    }
+
     }
     if((this.isEdit && (group.canDelete==undefined || group.canDelete==true))|| (!this.isEdit)){
       this.isSaveEnable = true;
@@ -144,12 +150,13 @@ export class MatterGroupsComponent implements OnInit {
       let url = this.pathName == 'legalmatter' ? URLUtils.updateLegalAcls(this.editMatter.id) : URLUtils.updateGeneralAcls(this.editMatter.id);
       let data = { "group_acls": this.selectedGroups.map((obj: any) => obj.id) };
       //console.log('data',data)
-      this.confirmationDialogService.confirm('Confirmation', 'Are you sure do you want to update group(s) for ' + this.editMatter.title + ' matter ?', true, 'Yes', 'No')
+      if (this.product != 'corporate'){
+      this.confirmationDialogService.confirm('Confirmation', 'Are you sure do you want to update Group(s) for ' + this.editMatter.title + ' matter ?', true, 'Yes', 'No')
         .then((confirmed) => {
           if (confirmed) {
             this.httpservice.sendPutRequest(url, data).subscribe((res: any) => {
               if (!res.error) {
-                this.confirmationDialogService.confirm('Success', 'Congratulations! You have successfully updated group(s) for ' + this.editMatter.title, false, 'View Matter List', 'Cancel', true)
+                this.confirmationDialogService.confirm('Success', 'Congratulations! You have successfully updated Group(s) for ' + this.editMatter.title, false, 'View Matter List', 'Cancel', true)
                   .then((confirmed) => {
                     if (confirmed) {
                       this.router.navigate(['/matter/' + this.pathName + '/view']);
@@ -167,6 +174,34 @@ export class MatterGroupsComponent implements OnInit {
             );
           }
         })
+      }
+      if(this.product == 'corporate')
+      {
+        this.confirmationDialogService.confirm('Confirmation', 'Are you sure do you want to update Department(s) for ' + this.editMatter.title + ' matter ?', true, 'Yes', 'No')
+        .then((confirmed) => {
+          if (confirmed) {
+            this.httpservice.sendPutRequest(url, data).subscribe((res: any) => {
+              if (!res.error) {
+                this.confirmationDialogService.confirm('Success', 'Congratulations! You have successfully updated Department(s) for ' + this.editMatter.title, false, 'View Matter List', 'Cancel', true)
+                  .then((confirmed) => {
+                    if (confirmed) {
+                      this.router.navigate(['/matter/' + this.pathName + '/view']);
+                    }
+                  })
+              }
+            },
+            (error: HttpErrorResponse) => {
+              if (error.status === 401 || error.status === 403) {
+                const errorMessage = error.error.msg || 'Unauthorized';
+                this.toast.error(errorMessage);
+                console.log(error);
+              }
+            }
+            );
+          }
+        })
+      }
+
     } else {
       this.selectedGroupsEvent.emit(this.selectedGroups);
       console.log('data',this.selectedGroupsEvent)
