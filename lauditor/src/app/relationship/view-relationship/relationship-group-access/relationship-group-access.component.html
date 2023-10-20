@@ -45,8 +45,13 @@
                   <p class="alertparatxt">Confirm</p>
                 </div>
           </div>
-          <div class="alertext" style="height:130px;">
-            Are you sure you want to modify group access for
+          <div class="alertext" *ngIf="product != 'corporate'" style="height:130px;">
+            Are you sure you want to modify Group access for
+            <strong>{{reldata.name}}</strong>.
+          </div>
+
+          <div class="alertext" *ngIf="product == 'corporate'" style="height:130px;">
+            Are you sure you want to modify Department access for
             <strong>{{reldata.name}}</strong>.
           </div>
           <div class="alertbutton">
