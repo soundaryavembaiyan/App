@@ -106,9 +106,8 @@
             <div class="row containerbox formcontainer">
                 <div class="col-sm-12">
                     <div class="membersitem">
-                        <p class="teamclient">{{teamMembers.length +1 }}
-                            Team
-                            Members / {{clients.length}} Clients</p>
+                        <p class="teamclient" *ngIf="product != 'corporate'">{{teamMembers.length +1 }} Team Members / {{clients.length}} Clients</p>
+                        <p class="teamclient" *ngIf="product == 'corporate'">{{teamMembers.length +1 }} Team Members / {{clients.length}} External Counsels</p>
                     </div>
                     <!-- ends here -->
                 </div>
