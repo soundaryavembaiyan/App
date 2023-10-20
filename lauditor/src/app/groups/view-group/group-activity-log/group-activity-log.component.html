@@ -8,15 +8,22 @@
 				<div class="col-6">
 					<div class="form-group nameSet">
 						<label for="title" class="lable-size">Category:</label>
-						<select formControlName='category'
-                               class="form-select member-name-text nameSet">
+						<select formControlName='category' *ngIf="product != 'corporate'" class="form-select member-name-text nameSet">
 							<option *ngFor='let cat of categoryList'>
 								{{cat}}
 							</option>
 						</select>
+
+						<select formControlName='category' *ngIf="product == 'corporate'" class="form-select member-name-text nameSet">
+							<option *ngFor='let cat of categoryCorpList'>
+								{{cat}}
+							</option>
+						</select>
+
 					</div>
 					<div class="form-group nameSet">
-						<label for="title" class="lable-size">Client</label>
+						<label for="title" class="lable-size" *ngIf="product != 'corporate'">Client</label>
+						<label for="title" class="lable-size" *ngIf="product == 'corporate'">External Counsels</label>
 						<input type="text"
 							   formControlName="client"
 							   class=" text-size form-control group-name-text"
