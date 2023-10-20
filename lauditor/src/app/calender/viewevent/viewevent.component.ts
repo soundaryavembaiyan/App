@@ -8,6 +8,7 @@ import { CalenderService } from '../calender.service';
 import { ToastrService } from 'ngx-toastr';
 import { Pipe } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-viewevent',
@@ -29,6 +30,7 @@ export class ViewEventComponent implements OnInit {
   //events = ['overhead','others','reminders'];
   events = ['legal','general'];
   expanded: boolean = false;
+  product = environment.product;
 
   toggleContent(): void {
     this.expanded = !this.expanded;
@@ -79,7 +81,7 @@ export class ViewEventComponent implements OnInit {
               this.teamMembers.push(teamMem);
             }
           }
-          let external = this.eventInfo.invitees_external.concat(this.eventInfo.invitees_consumer_external)
+          let external = this.eventInfo.invitees_external.concat(this.eventInfo.invitees_consumer_external,this.eventInfo.invitees_corporate)
           let clientsList = external.map((person: any) => ({ "entName": person.entityName, "tmName": person.tmName, "rsvp": person.rsvp ,"tmId": person.tmId}));
           this.clients = [];
           //console.log('clients',this.clients)
