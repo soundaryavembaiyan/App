@@ -21,7 +21,7 @@
       </div>
       <div>
         <p class="" *ngIf="product != 'corporate'">Add Group Members</p>
-        <p class="" *ngIf="product == 'corporate'">Add Members</p>
+        <p class="" *ngIf="product == 'corporate'">Add Department Members</p>
       </div>
     </div>
     <div class="col-sm-2 col-xs-3 round-icon">
@@ -33,7 +33,7 @@
       </div>
       <div>
         <p class="" *ngIf="product != 'corporate'">Assign Group Head</p>
-        <p class="" *ngIf="product == 'corporate'">Add Department Head</p>
+        <p class="" *ngIf="product == 'corporate'">Assign Department Head</p>
       </div>
     </div>
     <div class="col-sm-3 col-xs-3">
@@ -59,14 +59,15 @@
               <div style="color: red;" *ngIf="error">{{error}}</div>
             <div *ngIf="submitted && f.name.errors"
                  class="invalid-feedback">
-              <div *ngIf="f.name.errors.required">Group name is required</div>
+              <div *ngIf="f.name.errors.required && product != 'corporate'">Group name is required</div>
+              <div *ngIf="f.name.errors.required && product == 'corporate'">Department name is required</div>
               <div *ngIf="error">{{error}}</div>
             </div>
           </div>
           <div class="form-group nameSet">
             <div class="input-group court">
               <div class="form-control textbox" *ngIf="product != 'corporate'">Add Group Members</div>
-              <div class="form-control textbox" *ngIf="product == 'corporate'">Add Members</div>
+              <div class="form-control textbox" *ngIf="product == 'corporate'">Add Department Members</div>
               <i class="fa fa-solid fa-plus calimg calitem input-group-append sgroup"
                  aria-hidden="true"
                  (click)="onSubmit(true)"></i>
@@ -122,10 +123,10 @@
 
      <a class="groups optionone compone addGroup"
          [class.active]="showMemList" *ngIf="product == 'corporate'"
-         (click)="switchToMlist();">Add Members</a>
+         (click)="switchToMlist();">Add Department Members</a>
       <a class="groups optiontwo comptwo"
          [class.active]="showSelMem" *ngIf="product == 'corporate'"
-         (click)="switchToSlist()">Selected Members</a>
+         (click)="switchToSlist()">Selected Department Members</a>
     </div>
     <!-- append div on click -->
     <div class="form-group " id="selectbx" *ngIf="showMemList">
@@ -274,7 +275,8 @@
               <div class="alertext">Congratulations!! 
                 You have successfully created {{successGrpName}}.</div>
               <div class="alertbutton">
-                <button class="btn btn-default alertbtn" (click)="successResp('add')">Add Groups</button>
+                <button class="btn btn-default alertbtn" *ngIf="product != 'corporate'" (click)="successResp('add')">Add Groups</button>
+                <button class="btn btn-default alertbtn" *ngIf="product == 'corporate'" (click)="successResp('add')">Add Departments</button>
                 <button class="btn btn-default alertbtn" (click)="successResp('view')">View Changes</button>
               </div>
           </div>
