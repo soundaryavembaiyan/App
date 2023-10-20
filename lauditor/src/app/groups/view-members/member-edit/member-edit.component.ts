@@ -25,7 +25,8 @@ export class MemberEditComponent implements OnInit {
                   "CanadianDollar(CAD)",
                   "SwissFranc(CHF)",
                   "KuwaitiDinar(KWD)",
-                  "BahrainiDinar(BHD)"]
+                  "BahrainiDinar(BHD)"],
+                  "IndianRupee(INR)"]
   
 
   constructor(private formBuilder: FormBuilder, private toast: ToastrService,
