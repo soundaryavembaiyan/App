@@ -77,7 +77,8 @@
             <div class="input-group group-custom-align court" id="search">
               <input type="text"
                      class="form-control textbox"
-                     placeholder="Search" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@,.]|^ /g,'')"
+                     placeholder="Search" 
+                     oninput="this.value = this.value.replace(/[^A-Za-z0-9 ]|^ /g,'')" 
                      [(ngModel)]="searchText"/>
               <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
 
@@ -94,7 +95,8 @@
           <div class="input-group group-custom-align court" id="search">
     
             <div class="input-group court" id="search">
-              <input type="text" placeholder="Search" [(ngModel)]="searchText" matInput oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@,.]|^ /g,'')"
+              <input type="text" placeholder="Search" [(ngModel)]="searchText" matInput 
+              oninput="this.value = this.value.replace(/[^A-Za-z0-9 ]|^ /g,'')"
               class="form-control textbox" ng-pattern="/^[a-zA-Z]*$/">
               <button id="btnadd" type="submit" class="input-group-append appendadd">Search</button>
             </div>
@@ -124,13 +126,13 @@
 
             <th *ngIf="activeTab != 'temporary'">
               <p class="thheadname"> Status</p>
-              <img src="assets/img/SORT.PNG" class="sortico">
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sortingFile('isAccepted')">
             </th>
             
             <th>
               <p class="thheadname" *ngIf="product != 'corporate'"> Groups</p>
               <p class="thheadname" *ngIf="product == 'corporate'"> Departments</p>
-              <img src="assets/img/SORT.PNG" class="sortico">
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sortingFile('groups')">
             </th>
             <th></th>
           </tr>
@@ -242,9 +244,9 @@
                     <div class="alertpara">
                         <p class="alertparatxt"> Success</p>
                     </div>
-                    <div class="alertext">Congratulations!! You have successfully modified group access for {{relationshipData.name}}.
-                    </div>                  
-                </div>
+                    <div class="alertext" *ngIf="product != 'corporate'">Congratulations!! You have successfully modified Group access for <strong>{{relationshipData.name}}</strong>.</div>                  
+                    <div class="alertext" *ngIf="product == 'corporate'">Congratulations!! You have successfully modified Department access for <strong>{{relationshipData.name}}</strong>.</div>                  
+                  </div>
             </div>
         </div>
     </div>
