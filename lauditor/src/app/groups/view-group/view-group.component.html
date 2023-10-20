@@ -9,8 +9,8 @@
                   <div class="input-group group-custom-align court" id="search">
                     <input type="text" *ngIf="product != 'corporate'"
                             class="form-control textbox"
-                            placeholder="Search Group"
-                            [(ngModel)]="searchText" />
+                            placeholder="Search Group" [(ngModel)]="searchText" 
+                            oninput="this.value = this.value.replace(/[^A-Za-z0-9 _+&@.,]|^ /g,'')"/>
 
                     <input type="text" *ngIf="product == 'corporate'"
                             class="form-control textbox"
@@ -29,7 +29,7 @@
           <tr class="theader">
             <th>
               <p class="thheadname" *ngIf="product != 'corporate'"> Group Name</p>
-              <p class="thheadname" *ngIf="product == 'corporate'"> Department Name</p>
+              <p class="thheadname" *ngIf="product == 'corporate'"> Departments Name</p>
               <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('name')">
             </th>
             <th>
@@ -233,11 +233,13 @@
                     <div class="alertpara">
                         <p class="alertparatxt"> Success</p>
                     </div>
-                    <div class="alertext">Congratulations!! You have successfully updated group members list of {{selectedGrpName}} group.
-                    </div>   
+
+                    <div class="alertext" *ngIf="product != 'corporate'">Congratulations!! You have successfully updated Group Members list of {{selectedGrpName}} Group.</div>
+                    <div class="alertext" *ngIf="product == 'corporate'">Congratulations!! You have successfully updated Department Members list of {{selectedGrpName}} Department.</div>   
+                    
                     <div class="center">
                       <button class="btn btn-primary  " (click)="closeModal('group-upmem-success')">OK</button>
-                  </div>                 
+                    </div>                 
                 </div>
             </div>
         </div>
