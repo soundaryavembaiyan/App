@@ -90,8 +90,8 @@
                 <label class="notify_mdg"> {{member.name}}</label>
                <span style="float: right;">
                  <!-- <img src="assets/img/mailnotif.svg" class="msgnotify1 mailicocls " > -->
-                <img src="assets/img/msgico.svg" class="msgnotify1  msgicocls" (click)="onMessageClick()">
-                <img src="assets/img/delete.svg" (click)="removeTeammember(member)" class="msgnotify1 delicocls ">
+                <img src="assets/img/msgico.svg" class="msgnotify1 msgicocls" (click)="onMessageClick()">
+                <img src="assets/img/delete.svg" *ngIf="i != 0" (click)="removeTeammember(member)" class="msgnotify1 delicocls">
               </span>
               </p>
             </div>
@@ -109,25 +109,22 @@
                   <input class="form-check-inpu calimg calitem input-group-append checkboxitem" type="checkbox" value=""
                     id="selectAllMembers" (change)="selectAllMembers($event)">
                 </div>
-
               </div>
             </div>
           </div>
-          <div class="form-group ">
-
+          <div class="form-group">
             <div class="input-group group-custom-align court" id="search">
-              <input type="text" class="form-control textbox" placeholder="Search team member"
+              <input type="text" class="form-control textbox" placeholder="Search Team Member"
                 [(ngModel)]="searchTextMembers" (keyup)="keyup('tm')" />
               <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
             </div>
           </div>
-          <div class="form-group " id="selectbx ">
+          <div class="form-group" id="selectbx">
             <div class="input-group group-custom-align court" id="search"
               *ngFor="let teammember of teammembersList |filter:searchTextMembers">
               <div class="multicheck form-control textbox">
                 <div class="callselect" [innerHtml]="teammember.name"></div>
-                <input class="form-check-inpu calimg calitem input-group-app
-                                            end checkboxitem" #inputE1 type="checkbox" id="flexCheckDefault"
+                <input class="form-check-inpu calimg calitem input-group-app end checkboxitem" #inputE1 type="checkbox" id="flexCheckDefault"
                   (change)="selectTeammember(teammember)">
               </div>
             </div>
@@ -148,8 +145,8 @@
                 <label class="notify_mdg"> {{member.name}}</label>
                 <span style="float: right;">
                 <!-- <img src="assets/img/mailnotif.svg" class="msgnotify1 mailicocls " > -->
-                <img src="assets/img/msgico.svg" class="msgnotify1  msgicocls" (click)="onMessageClick()">
-                <img src="assets/img/delete.svg" class="msgnotify1 delicocls " *ngIf="selectedClients.length != 1" (click)="removeClient(member)">
+                <img src="assets/img/msgico.svg" class="msgnotify1 msgicocls" (click)="onMessageClick()">
+                <img src="assets/img/delete.svg" class="msgnotify1 delicocls" *ngIf="selectedClients.length != 1" (click)="removeClient(member)">
               </span>
               </p>
             </div>
@@ -162,7 +159,7 @@
               <p class="form-control textbox msgitemcls">
                 <label class="notify_mdg"> {{member.name}}</label>
                 <span style="float: right;">
-                <img src="assets/img/msgico.svg" class="msgnotify1  msgicocls" (click)="onMessageClick()">
+                <img src="assets/img/msgico.svg" class="msgnotify1 msgicocls" (click)="onMessageClick()">
                 <img src="assets/img/delete.svg" class="msgnotify1 delicocls " *ngIf="selectedCorp.length != 1" (click)="removeClient(member)">
               </span>
               </p>
@@ -172,7 +169,8 @@
 
         <div class="dashedborder">
           <div class="col-4" style="margin-top: 15px;">
-            <h6>Assign Client(s)</h6>
+            <h6 *ngIf="product != 'corporate'">Assign Client(s)</h6>
+            <h6 *ngIf="product == 'corporate'">Assign External Counsel(s)</h6>
           </div>
           <div class="col-2">
             <div class="form-group" id="selectbx">
@@ -186,14 +184,19 @@
             </div>
           </div>
           <div class="form-group ">
-            <div class="input-group group-custom-align court" id="search">
-              <input type="text" class="form-control textbox" placeholder="Search client"
+            <div class="input-group group-custom-align court" id="search" *ngIf="product != 'corporate'">
+              <input type="text" class="form-control textbox" placeholder="Search Clients"
+                [(ngModel)]="searchTextClient" (keyup)="keyup('clnt')" />
+              <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
+            </div>
+            <div class="input-group group-custom-align court" id="search" *ngIf="product == 'corporate'">
+              <input type="text" class="form-control textbox" placeholder="Search External Counsels"
                 [(ngModel)]="searchTextClient" (keyup)="keyup('clnt')" />
               <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
             </div>
           </div>
-
-          <div class="form-group " id="selectbx"><!--*ngIf="product != 'corporate'"-->
+<!----  new  -->
+          <div class="form-group" id="selectbx">
             <div class="input-group group-custom-align court" id="search"
               *ngFor="let client of clientsList |filter:searchTextClient">
               <div class="multicheck form-control textbox">
@@ -205,7 +208,7 @@
             </div>
           </div>
 
-          <!-- <div class="form-group " id="selectbx" *ngIf="product == 'corporate'">
+          <!-- <div class="form-group" id="selectbx" *ngIf="product == 'corporate'">
             <div class="input-group group-custom-align court" id="search"
               *ngFor="let client of corporateList |filter:searchTextClient">
               <div class="multicheck form-control textbox">
@@ -216,6 +219,7 @@
               </div>
             </div>
           </div> -->
+<!----  new/////  -->
 
           <div class="btnbox">
             <button type="reset" class="btn btn-default btncancel btnrightitem" (click)="cancelItems()">Cancel</button>
@@ -228,26 +232,145 @@
     <div class="row" *ngIf="featureName == 'Timeline'">
       <div class="wrapper">
         <ul class="StepProgress">
-          <li class="StepProgress-item " *ngFor="let item of historyData">
+          <li class="StepProgress-item" *ngFor="let item of historyData">
+           
             <div class="lgalitem">
               <p class="pnumber pleagalsubitem">{{item.title}}</p>
               <p class="lgalsubitem">{{item.from_ts}}</p>
-              <p class="lgalsubitem" [ngClass]="!item.isNotesElipses? 'noteselipses' : '' ">{{item.notes}}</p>
             </div>
-            <div class="lgalitemright">
-              <img src="assets/img/editico.svg" class="editico" *ngIf="item.id != '' "
-                (click)="notes = item.notes;item.EditDesc=!item.EditDesc" [ngClass]="item.EditDesc? 'onActive' : '' ">
-              <img *ngIf="item.notes" src="assets/img/eyesico.svg" class="editico" (click)="item.isNotesElipses = !item.isNotesElipses" [ngClass]="item.isNotesElipses? 'onActive' : '' ">
-            </div>
-            <div class="c-align c-dec" *ngIf="item.EditDesc && item.id != '' ">
-              <textarea [(ngModel)]="notes" rows="3" cols="50" maxlength="1000"></textarea>
-              <div class="btnbox">
-                <button type="reset" class="btn btn-default btncancel"
-                  (click)="item.EditDesc=false;notes = ''">Cancel</button>
-                <button type="submit" class="btn btn-default btnsave"
-                  (click)="item.EditDesc=false;item.notes = notes;addNotes(item);">Save</button>
+
+            <!--Notes section-->
+
+            <div class="row pad1" *ngIf="item.id != '' ">
+
+              <!-- Notes Header -->
+              <p class="col-2 notesCls">Notes</p>
+              <!-- Toggle -->
+              <div class="col-3 addIcon imgSpace">
+                <label class="switch">
+                  <input type="checkbox" [(ngModel)]="toggleNote" (change)="changeEvent($event)">
+                  <span class="slider round"></span>
+                </label>
+
+                
+                    <!-- <section class="example-section">
+                      <mat-slide-toggle
+                          class="example-margin"
+                          [color]="color" [(ngModel)]="toggleNote"
+                          [checked]="checked">
+                      </mat-slide-toggle>
+                    </section> -->
+
+
               </div>
+              <!-- Toggle -->
+              <p class="col-4 notesCls cnCorp">Corporate Notes</p>
+              <!-- Notes Header -->
+
+              <!-- Notes ActionIcon(add,edit) -->
+              <!--Main Notes-->
+              <div class="col-1" *ngIf="!toggleNote">
+                <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!item.notes"
+                  (click)="notes = item.notes;item.AddDesc=!item.AddDesc" [ngClass]="item.AddDesc? 'onActive' : '' ">
+              
+                <img src="assets/img/editico.svg" class="col-1 addIcon" *ngIf="item.id != '' && item.notes"
+                  (click)="notes = item.notes;item.EditDesc=!item.EditDesc" [ngClass]="item.EditDesc? 'onActive' : ''">
+              </div>
+
+              <!--Corporate Notes-->
+              <div class="col-1" *ngIf="toggleNote">
+                <div *ngFor="let note of item?.notes_list">
+                <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!note.notes"
+                    (click)="notes = note.notes;note.AddDesc=!note.AddDesc" [ngClass]="note.AddDesc? 'onActive' : '' ">
+              </div></div>
+              <!-- Notes Actions(add,edit) -->
+
+            
+              <!-- Main notes View -->
+              <div *ngIf="!toggleNote">
+                <!--Edit textbox-->
+                <div class="c-align c-dec" *ngIf="item.AddDesc || item.EditDesc && item.id != '' ">
+                  <textarea [(ngModel)]="notes" rows="3" cols="50" maxlength="150"></textarea>
+                  <div class="btnbox">
+                    <button type="reset" class="btn btn-default btncancel"
+                      (click)="item.EditDesc=false; item.AddDesc=false; notes = ''">Cancel</button>
+                    <button type="submit" class="btn btn-default btnsave"
+                      (click)="item.EditDesc=false; item.AddDesc=false; item.notes = notes;addNotes(item);">Save</button>
+                  </div>
+                </div>
+            
+                <div *ngIf="!item.EditDesc">
+                <p class="lgalsubitem pad2 textNotes" [ngClass]="!item.isNotesElipses ? 'noteselipses' : ''">{{item?.notes}}</p>
+                <a *ngIf="item.notes" (click)="toggleNotesEllipsis(item)">
+                  <u class="readMore"><strong>{{!item.isNotesElipses ? 'Read More' : 'Read Less'}}</strong></u>
+                </a>
+               </div>
+                
+              </div>
+            
+              <!-- Corporate notes View-->
+              <div class="contDiv" *ngIf="toggleNote">
+                <div *ngFor="let note of item?.notes_list">
+                    <div class="row container colab">
+
+                      <div class="userprofile usrMove" >
+                        <p class="username" >{{note?.added_by[0]}} </p>
+                      </div> 
+                      <p class="adderName">{{note?.added_by}}</p>
+
+                      <!--Add && Edit textbox-->
+
+                      <div class="c-align c-dec" *ngIf="note.AddDesc && note.id != '' ">
+                        <textarea [(ngModel)]="notes" rows="3" cols="50" maxlength="152"></textarea>
+                        <div class="btnbox">
+                          <button type="reset" class="btn btn-default btncancel"
+                            (click)="note.EditDesc=false; note.AddDesc=false; notes = ''">Cancel</button>
+                          <button type="submit" class="btn btn-default btnsave"
+                            (click)="note.EditDesc=false; note.AddDesc=false; note.notes = notes;addCorpNotes(item,note);">Save</button>
+                        </div>
+                      </div>
+
+                      <div class="c-align c-dec" *ngIf="note.EditDesc && note.id != '' ">
+                        <textarea [(ngModel)]="notes" rows="3" cols="50" maxlength="152"></textarea>
+                        <div class="btnbox">
+                          <button type="reset" class="btn btn-default btncancel"
+                            (click)="note.EditDesc=false; note.AddDesc=false; notes = ''">Cancel</button>
+                          <button type="submit" class="btn btn-default btnsave"
+                            (click)="note.EditDesc=false; note.AddDesc=false; note.notes = notes;updateCorpNotes(item,note);">Save</button>
+                        </div>
+                      </div>
+                      <!--Add && Edit textbox-->
+
+                      <div *ngIf="!note.EditDesc">
+                      <p class="lgalsubitem textNotes" [ngClass]="!item.isNotesElipses ? 'noteselipses' : ''">
+                        {{note?.notes}}</p>
+                      <a *ngIf="item.notes" (click)="toggleNotesEllipsis(item)">
+                        <u class="readMore"><strong>{{!item.isNotesElipses ? 'Read More' : 'Read Less'}}</strong></u>
+                      </a> 
+                     </div>
+
+                      <!-- Corp Menu(edit,del) -->
+                      <div class="btnMove">
+                        <button class="btnMenu" id="btnMove" [matMenuTriggerFor]="menu">
+                          <i class="fa-solid fa-ellipsis-vertical" style="font-size:1.5rem;"></i>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                          <button mat-menu-item *ngIf="note.id != '' && note.notes"
+                          (click)="notes = note.notes;note.EditDesc=!note.EditDesc" 
+                          [ngClass]="note.EditDesc? 'onActive' : ''"> Edit</button>
+                         
+                          <button mat-menu-item (click)="deleteNotes(item,note)"
+                          > Delete </button>
+                        </mat-menu>
+                      </div>
+                      <!-- Corp Menu(edit,del) -->
+
+                    </div>
+                  </div> </div>
+                
             </div>
+
+            <!--Notes section-->
           </li>
         </ul>
       </div>
@@ -653,7 +776,7 @@
         </div>
   
       </div>
-      <div class=" row main stepitem  ">
+      <div class="row main stepitem  ">
         <div class="col-sm-12" *ngIf="editMetaFlag && !editDoc">
           <!-- button cancel and save -->
           <div class="btnbox">
@@ -688,37 +811,35 @@
               <p class="thheadname">Description</p>
               <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('description',selectedDocuments)">
             </th>
-            <th>
+            <!-- <th>
               <p class="thheadname">Tags</p>
               <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('tags',selectedDocuments)">
-            </th>
+            </th> -->
             <th></th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          <tr class="rone" *ngFor="let doc of selectedDocuments |filter:searchText">
+          <tr class="rone veiw-items" *ngFor="let doc of selectedDocuments |filter:searchText">
             <td *ngIf="isMergeEnable">
               <input type="checkbox" [(ngModel)]="doc.checked" #inputE4 class="larger" name="checkBox2"
                 (change)="selectMergeDocument(inputE4.checked,doc)">
             </td>
-            <td *ngIf="!isMergeEnable">
-            </td>
+            <td *ngIf="!isMergeEnable"></td>
             <td>{{doc.name}}</td>
             <td *ngIf="doc.addedBy">{{doc.addedBy}}</td>
-            <td *ngIf="doc.uploaded_by">{{doc.uploaded_by}}</td>
+            <!-- <td *ngIf="doc.uploaded_by">{{doc.uploaded_by}}</td> -->
             <td *ngIf="!(doc.addedBy || doc.uploaded_by)"></td>
             <td>{{doc.description}}</td>
             <td *ngIf="doc?.tags && doc.tags.length>0" [innerHTML]="doc?.tags[0]"></td>
-            <td *ngIf="!doc?.tags"></td>
-            <td>
-              <img src="assets/img/eyesico.svg" (click)="viewDocument(doc)">
+            <td *ngIf="!(doc?.tags)"></td>
+            <td><img src="assets/img/eyesico.svg" (click)="viewDocument(doc)"/></td>&nbsp;
+            <td (click)="documentDelete(doc)" *ngIf="data?.type == 'internal'">
+              <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup removedoc" aria-hidden="true"></i>
             </td>
-            <td>
-            <td (click)="documentDelete(doc)"><i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup removedoc"
-                aria-hidden="true"></i></td>
           </tr>
         </tbody>
+
       </table>
       <div class=" row main stepitem" *ngIf="isMergeEnable && selectedMergeDocuments?.length >=2">
         <div class="col-sm-12">
@@ -731,3 +852,5 @@
     </div>
   </div>
 </div>
+
+
