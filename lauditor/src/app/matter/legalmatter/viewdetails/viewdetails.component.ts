@@ -11,23 +11,24 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
+import flatpickr from 'flatpickr';
   
 
 
 @Component({
   selector: 'app-viewdetails',
   templateUrl: './viewdetails.component.html',
-  styleUrls: ['./viewdetails.component.scss']
+  styleUrls: ['./viewdetails.component.scss'],
 })
 export class ViewDetailsComponent implements OnInit {
   data: any;
   EditDesc = false;
+  AddDesc = false;
   notes: any;
   featureName: string = 'Timeline';
   selectedVal: string = 'TM'
   isVisibleInfo: boolean = false;
   clientsList: any;
-  historyData: any;
   selectedMembers: any;
   selectedClients: any;
   selectedCorp: any;
@@ -69,7 +70,22 @@ export class ViewDetailsComponent implements OnInit {
   product = environment.product;
   @Input() selectedOption:any;
   corporateList:  any = [];
-
+  isExpanded: boolean = false;
+  corpNotes:boolean = false;
+  isCorp: boolean = false;
+  isLauditor: boolean = false;
+  selectedNotes: string = "lauditor";
+  notes_list:any = [];
+  historyData1: any;
+  historyData:any = [];
+  toggleNote = false;
+  selectNote:any
+  toggleBool: boolean = true;
+  selectedButton :any;
+  color = 'primary';
+  checked = true;
+  disabled = true;
+  
 
   constructor(private matterService: MatterService, private httpservice: HttpService,
     private router: Router, private toast: ToastrService,
@@ -80,8 +96,9 @@ export class ViewDetailsComponent implements OnInit {
 
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.ownerName = localStorage.getItem('name');
+
     this.matterService.editLegalMatterObservable.subscribe((result: any) => {
       if (result) {
         this.data = result;
@@ -90,9 +107,20 @@ export class ViewDetailsComponent implements OnInit {
           offset: new Date().getTimezoneOffset()
         }
         this.httpservice.sendGetRequest(URLUtils.getLegalMatterviewDetail(args)).subscribe((res: any) => {
-          if (res) {
+          if (res.error == false) {
             this.historyData = res.history;
+            console.log('this.historyData', this.historyData)
+
+            this.notes_list = res.history?.notes_list;
+            console.log('notes_list', this.notes_list);
+
+              this.historyData.forEach((res: any) => {
+                //console.log(`Notes: ${res.notes_list}`);
+                console.log(`Notes:`, this.notes_list);
+              });
+            
           }
+
         });
       }
     });
@@ -103,8 +131,108 @@ export class ViewDetailsComponent implements OnInit {
       date_of_filling: []
     });
 
-    this. getCorporateData();
+    this.getCorporateData();
+    this.gethistoryData();
   }
+
+  changeEvent(event: any) {
+    if (event.target.checked) {
+        this.toggleBool= false;
+    }
+    else {
+        this.toggleBool= true;
+    }
+}
+
+enableDisableRule(id:any) {
+  this.selectedButton[id]= !this.selectedButton[id];
+}
+
+  // onClick(value: string) {
+  //   this.selectedNotes = value;
+  // }
+
+  toggleNotesEllipsis(item: any) {
+    item.isNotesElipses = !item.isNotesElipses;
+  }
+
+
+  gethistoryData(){
+    this.matterService.editLegalMatterObservable.subscribe((result: any) => {
+      if (result) {
+        this.data = result;
+        let args = {
+          id: result.id,
+          offset: new Date().getTimezoneOffset()
+        }
+        this.httpservice.sendGetRequest(URLUtils.getLegalMatterviewDetail(args)).subscribe((res: any) => {
+          if (res.error == false) {
+            this.historyData = res.history;
+            this.notes_list = res.history?.notes_list;
+
+              this.historyData.forEach((res: any) => {
+              }); 
+          }
+        });
+      }
+    });
+  }
+
+
+  addCorpNotes(item: any,note:any) {
+    let req = { "notes": this.notes }
+    // console.log(item)
+    this.httpservice.sendPutRequest(URLUtils.updateCorpNotes(item.id), req).subscribe(
+      (res: any) => {
+        // console.log('itemId',item.id);
+        // console.log('idRes',res);
+      });
+  }
+
+  updateCorpNotes(item: any,notes:any) {
+    let req = { 
+      "notes": this.notes,
+      "notes_id": notes.id
+     }
+    // console.log(item)
+    this.httpservice.sendPatchRequest(URLUtils.updateCorpNotes(item.id), req).subscribe(
+      (res: any) => {
+        if(!res.error)
+        this.toast.success(res.msg);
+        else
+        this.toast.error(res.msg);
+        // console.log('itemId',item.id);
+        // console.log('idRes',res);
+      });
+  }
+
+  deleteNotes(item:any,notes:any) {
+    //this.selectNote = note;
+    console.log('item',item)
+    console.log('notesId',notes.id)
+    let data = {
+      'notes_id': notes.id,
+      //'notes_id': this.notes_list?.id,
+    }
+    this.confirmationDialogService.confirm('Confirmation', ' Are you sure! Do you want to Delete this note?!', true, 'Yes', 'No')
+      .then((confirmed) => {
+        if (confirmed) {
+          this.httpservice.sendDeleteRequestwithObj(URLUtils.deleteCorpNotes(item.id),data).subscribe((res: any) => {
+            if (!res.error) {
+              if (confirmed) {
+                this.toast.success(res.msg);
+                this.gethistoryData();
+              }
+              else {
+                this.toast.error(res.msg);
+              }
+            }
+          });
+        }
+      })
+  }
+
+
   get f() {
     return this.documentDetail.controls;
   }
@@ -139,13 +267,14 @@ export class ViewDetailsComponent implements OnInit {
         (res: any) => {
           if (res) {
             this.selectedMembers = res.members;
+            this.selectedMembers.unshift(this.data.owner)
             this.membersLength = res.members.length;
             this.selectedClients = res.clients;
             this.selectedCorp = res.corporate;
             this.clientsLength = res.clients.length;
             this.selectedVal == 'TM' ? this.getTmData() : this.getClientsData();
-            console.log('seleClientsView', this.selectedClients)
-            console.log('seleCopView', this.selectedCorp)
+            // console.log('seleClientsView', this.selectedClients)
+            // console.log('seleCopView', this.selectedCorp)
           }
         });
     }
@@ -164,6 +293,7 @@ export class ViewDetailsComponent implements OnInit {
   }
   onClick(val: string) {
     this.selectedVal = val;
+    this.selectedNotes = val;
   }
   getTmData() {
     let grps = this.data.groups.map((obj: any) => obj.id);
@@ -171,8 +301,9 @@ export class ViewDetailsComponent implements OnInit {
       { 'group_acls': grps, 'attachment_type': 'members' }).subscribe(
         (res: any) => {
           this.teammembersList = res['members'];
+          //console.log(this.teammembersList)
           let index = this.teammembersList.findIndex((d: any) => d.name === this.ownerName); //find index in your array
-          this.teammembersList.splice(index, 1);
+          //this.teammembersList.splice(index, 1); 
           this.teammembersList = this.teammembersList.filter((el: any) => {
             return !this.selectedMembers.find((element: any) => {
               return element.id === el.id;
@@ -181,7 +312,7 @@ export class ViewDetailsComponent implements OnInit {
         });
   }
   getClientsData() {
-    let grps = this.data.groups.map((obj: any) => obj.id);
+    let grps = this.data.groups?.map((obj: any) => obj.id);
     this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements,
       { 'group_acls': grps, 'attachment_type': 'clients' }).subscribe(
         (res: any) => {
@@ -201,11 +332,15 @@ export class ViewDetailsComponent implements OnInit {
       ).subscribe(
           (res: any) => {
                   this.corporateList = res['corporate'];
-                  this.corporateList = this.corporateList.filter((el: any) => {
-                    return !this.selectedClients.find((element: any) => {
-                      return element.id === el.id;
+                  if(this.selectedClients && this.selectedClients.length > 0){
+                    this.corporateList = this.corporateList.filter((el: any) => {
+                      return !this.selectedClients.find((element: any) => {
+                        return element.id === el.id;
+                      });
                     });
-                  });
+
+                  }
+                  
                   //console.log('corporateList',this.corporateList)
           }
           )
@@ -215,7 +350,7 @@ export class ViewDetailsComponent implements OnInit {
     this.selectedMembers.push(group);
     let index = this.teammembersList.findIndex((d: any) => d.id === group.id); //find index in your array
     this.teammembersList.splice(index, 1);
-    if (this.teammembersList.length == 1) {
+    if (this.teammembersList.length == 0) {
       let checkbox = document.getElementById('selectAllMembers') as HTMLInputElement | null;
       if (checkbox != null)
         checkbox.checked = true;
@@ -287,6 +422,7 @@ export class ViewDetailsComponent implements OnInit {
       this.selectedClients = [];
     }
   }
+
   removeTeammember(group: any) {
     this.isSaveEnableTM = false;
     this.confirmationDialogService.confirm('Alert', 'Are you sure you want to remove access for ' + group.name + ' ?', true, 'Yes', 'No')
@@ -294,7 +430,9 @@ export class ViewDetailsComponent implements OnInit {
         if (confirmed) {
           let index = this.selectedMembers.findIndex((d: any) => d.id === group.id); //find index in your array
           this.selectedMembers.splice(index, 1);
+          //console.log('sms',this.selectedMembers)
           this.teammembersList.push(group);
+          //console.log('tm',this.teammembersList)
           if (this.selectedMembers.length == 0 || this.teammembersList.length == 1) {
             let checkbox = document.getElementById('selectAllMembers') as HTMLInputElement | null;
             if (checkbox != null)
@@ -303,6 +441,7 @@ export class ViewDetailsComponent implements OnInit {
         }
       })
   }
+  
   removeClient(group: any) {
     this.isSaveEnableClient = false;
     this.confirmationDialogService.confirm('Alert', 'Are you sure you want to remove access for ' + group.name + ' ?', true, 'Yes', 'No')
@@ -319,13 +458,19 @@ export class ViewDetailsComponent implements OnInit {
         }
       })
   }
+
   addNotes(item: any) {
     var req = { "notes": this.notes }
+    // console.log(item)
     this.httpservice.sendPutRequest(URLUtils.updateEventNotes(item.id), req).subscribe(
       (res: any) => {
-        //console.log(res);
+        // console.log('itemId',item.id);
+        // console.log('idRes',res);
       });
   }
+
+
+
   documentDelete(document: any) {
     let index = this.selectedDocuments.findIndex((d: any) => d.docid === document.docid);
     this.selectedDocuments.splice(index, 1);
@@ -339,6 +484,7 @@ export class ViewDetailsComponent implements OnInit {
       'clients': this.selectedClients,
       'members': this.selectedMembers
     }
+    console.log('data',data)
     this.httpservice.sendPutRequest(URLUtils.updateLegalHistoryMembers(this.data.id), data).subscribe(
       (res: any) => {
         this.onFeatureClick('T&C');
