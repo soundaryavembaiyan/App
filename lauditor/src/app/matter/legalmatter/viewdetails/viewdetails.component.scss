@@ -601,3 +601,214 @@ button:focus {
   .onActive{
 	filter: invert(0.5) sepia(1) saturate(5) hue-rotate(129deg);
   }
+
+ tr.veiw-items {
+
+    li {
+        height: 30px;
+        line-height: 30px;
+
+        a {
+            height: 30px;
+            line-height: 20px;
+
+        }
+    }
+
+    .custom-dropdown {
+        inset: 0px auto auto -119px !important;
+        //background: #F0F0F0;
+        padding: unset;
+    }
+}
+
+//  tr.veiw-items:hover {
+//     background:#003A5C;
+//     color:#fff;
+//     .actionbtn {
+//         background: #fff !important;
+//         color:#111;
+//         border: none;
+
+//     }
+
+// }
+.notesCls {
+    color: #00B3A7;
+    font-size: 18px;
+    font-weight: 900;
+}
+.cnCorp{
+    text-align: center;
+    float: center;
+}
+
+.addIcon {
+    width: 25px;
+    height: 25px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.noteselipses {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .imgSpace, switch{
+    margin-right: 40px;
+  }
+
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 33px;
+    //margin-left: -5px;
+  }
+  
+  .switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #004d87;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+
+  .slider1 {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #029509;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #004d87;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #004d87;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+    // border-radius: 50%;
+    // height: 90%;
+    // width: 50%;
+    // margin-left: -1px;
+    // margin-bottom: -2px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }
+  
+  .noteselipses {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px; /* Set the maximum width you desire */
+  }
+  .readMore{
+    color:#00498E; 
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+  }
+  .pad1{
+    padding-top: 15px;
+  }
+  .pad2{
+    padding-top: -10px;
+  }
+  .colab{
+    border: 10px solid #fff;
+    width: auto;
+    height: 100%;
+    border-radius: 3px;
+    background: #fff;
+
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    padding: 16px;
+    //height: 170px;
+    //text-align: center;
+    //background-color: white;
+    position: relative;
+    display: block;
+    margin-top: 15px;
+
+  }
+  .textNotes{
+    font-size: 1rem;
+    margin-top: -10px; 
+    //color:blue
+  }
+  .contDiv{
+    margin-left: -10px;
+  }
+  .btnMove{
+    line-height: 12px;
+    width: 18px;
+    font-size: 8pt;
+    font-family: tahoma;
+    margin-top: 6px;
+    margin-right: 2px;
+    position:absolute;
+    top:0;
+    right:0;
+  }
+  .btnMenu{
+    background-color: transparent;
+  }
+  .adderName{
+    font-weight: 900;
+    font-size: 1.2rem;
+    color: #05438C;
+    margin-left: 65px;
+  }
+  p.username {
+    cursor: pointer;
+}
+.usrMove{
+    font-size: 8pt;
+    font-family: tahoma;
+    margin-top: 2.5px;
+    margin-right: 2px;
+    position: absolute;
+    top: 0;
+}
