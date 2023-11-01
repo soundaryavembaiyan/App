@@ -12,6 +12,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
 import flatpickr from 'flatpickr';
+import { ThemePalette } from '@angular/material/core';
   
 
 
@@ -76,16 +77,20 @@ export class ViewDetailsComponent implements OnInit {
   isLauditor: boolean = false;
   selectedNotes: string = "lauditor";
   notes_list:any = [];
+  noteList:any = [];
   historyData1: any;
   historyData:any = [];
   toggleNote = false;
+  toggleCorpNote = false;
   selectNote:any
   toggleBool: boolean = true;
   selectedButton :any;
-  color = 'primary';
+  //color = 'primary';
   checked = true;
   disabled = true;
-  
+  isChecked: string = 'mainNote' // Assuming you want to store a string value
+  //selectedValue: string;
+  color: ThemePalette = "primary";
 
   constructor(private matterService: MatterService, private httpservice: HttpService,
     private router: Router, private toast: ToastrService,
@@ -95,9 +100,14 @@ export class ViewDetailsComponent implements OnInit {
     private fb: FormBuilder) {
 
   }
-
+  
   ngOnInit() {
     this.ownerName = localStorage.getItem('name');
+
+    //this.selectedValue= 'mainNote';
+    //console.log('sv',this.selectedValue)
+
+
 
     this.matterService.editLegalMatterObservable.subscribe((result: any) => {
       if (result) {
@@ -112,7 +122,10 @@ export class ViewDetailsComponent implements OnInit {
             console.log('this.historyData', this.historyData)
 
             this.notes_list = res.history?.notes_list;
-            console.log('notes_list', this.notes_list);
+            //debugger
+
+            this.noteList = res.history?.notes_list;
+            console.log('noteList', this.noteList);
 
               this.historyData.forEach((res: any) => {
                 //console.log(`Notes: ${res.notes_list}`);
@@ -135,27 +148,13 @@ export class ViewDetailsComponent implements OnInit {
     this.gethistoryData();
   }
 
-  changeEvent(event: any) {
-    if (event.target.checked) {
-        this.toggleBool= false;
-    }
-    else {
-        this.toggleBool= true;
-    }
-}
 
-enableDisableRule(id:any) {
-  this.selectedButton[id]= !this.selectedButton[id];
-}
-
-  // onClick(value: string) {
-  //   this.selectedNotes = value;
-  // }
-
-  toggleNotesEllipsis(item: any) {
-    item.isNotesElipses = !item.isNotesElipses;
+  eventCheck(event: any) {
+    this.toggleNote = event.target.checked;
+    console.log('eve',event.target.checked)
+    console.log('tN', this.toggleNote)
+    this.toggleNote = !this.toggleNote;
   }
-
 
   gethistoryData(){
     this.matterService.editLegalMatterObservable.subscribe((result: any) => {
@@ -169,6 +168,7 @@ enableDisableRule(id:any) {
           if (res.error == false) {
             this.historyData = res.history;
             this.notes_list = res.history?.notes_list;
+            //console.log('nl',this.notes_list)
 
               this.historyData.forEach((res: any) => {
               }); 
@@ -178,14 +178,33 @@ enableDisableRule(id:any) {
     });
   }
 
-
-  addCorpNotes(item: any,note:any) {
-    let req = { "notes": this.notes }
+  addNotes(item: any) {
+    var req = { "notes": this.notes }
     // console.log(item)
-    this.httpservice.sendPutRequest(URLUtils.updateCorpNotes(item.id), req).subscribe(
+    this.httpservice.sendPutRequest(URLUtils.updateEventNotes(item.id), req).subscribe(
       (res: any) => {
         // console.log('itemId',item.id);
         // console.log('idRes',res);
+        if(!res.error)
+        this.toast.success(res.msg);
+        else
+        this.toast.error(res.msg);
+      });
+  }
+  
+  addCorpNotes(item:any, notes: any) {
+    let req = { "notes": this.notes }
+    // console.log(item)
+    this.httpservice.sendPostRequest(URLUtils.updateCorpNotes(item.id), req).subscribe(
+      (res: any) => {
+        // console.log('itemId',item.id);
+        // console.log('idRes',res);
+        if(!res.error){
+        this.toast.success(res.msg); 
+        this.gethistoryData();
+      }
+        else
+        this.toast.error(res.msg);
       });
   }
 
@@ -203,6 +222,13 @@ enableDisableRule(id:any) {
         this.toast.error(res.msg);
         // console.log('itemId',item.id);
         // console.log('idRes',res);
+      },
+      (error: HttpErrorResponse) => {
+        if (error.status === 400 || error.status === 401 || error.status === 403) {
+          const errorMessage = error.error.msg || 'Unauthorized';
+          this.toast.error(errorMessage);
+          console.log(error);
+        }
       });
   }
 
@@ -227,11 +253,23 @@ enableDisableRule(id:any) {
                 this.toast.error(res.msg);
               }
             }
-          });
+          },
+          (error: HttpErrorResponse) => {
+            if (error.status === 400 || error.status === 401 || error.status === 403) {
+              const errorMessage = error.error.msg || 'Unauthorized';
+              this.toast.error(errorMessage);
+              console.log(error);
+            }
+          }
+          );
         }
       })
   }
 
+  
+  toggleNotesEllipsis(item: any) {
+    item.isNotesElipses = !item.isNotesElipses;
+  }
 
   get f() {
     return this.documentDetail.controls;
@@ -458,18 +496,6 @@ enableDisableRule(id:any) {
         }
       })
   }
-
-  addNotes(item: any) {
-    var req = { "notes": this.notes }
-    // console.log(item)
-    this.httpservice.sendPutRequest(URLUtils.updateEventNotes(item.id), req).subscribe(
-      (res: any) => {
-        // console.log('itemId',item.id);
-        // console.log('idRes',res);
-      });
-  }
-
-
 
   documentDelete(document: any) {
     let index = this.selectedDocuments.findIndex((d: any) => d.docid === document.docid);
