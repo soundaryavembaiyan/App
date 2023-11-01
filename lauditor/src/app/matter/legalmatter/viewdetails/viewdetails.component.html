@@ -1,535 +1,605 @@
 <div class="row main  stepitem ">
-  <div class="row view-matter">
-    <div class="col-12">
-      <div class="row">
+    <div class="row view-matter">
+      <div class="col-12">
+        <div class="row">
+          <!-- client code  -->
+          <div class="col-6">
+            <div class="case_title">Matter Details - {{data?.title}}</div>
+            <ul class="nav nav-pills mb-3 btnaction float-left " id="pills-tab" role="tablist">
+              <li class="nav-item">
+                <button id="High" name="priority" class="selectprior optionhigh active" id="pills-home-tab"
+                  data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home"
+                  aria-selected="true" (click)="onFeatureClick('Timeline')">Timeline</button>
+              </li>
+              <li class="nav-item">
+                <button id="Medium" name="priority" class="selectprior optionaling" id="pills-profile-tab"
+                  data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab"
+                  aria-controls="pills-profile" aria-selected="false"
+                  (click)="onFeatureClick('Document');">Document(s)</button>
+              </li>
+              <li class="nav-item" *ngIf="product != 'corporate' && data?.type == 'internal'">
+                <button id="Low" name="priority" class=" selectprior optionlow" id="pills-contact-tab"
+                  data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab"
+                  aria-controls="pills-contact" aria-selected="false" (click)="onFeatureClick('T&C')">Team Member(s) and
+                  Client(s)</button>
+              </li>
+              <li class="nav-item" *ngIf="product == 'corporate' && data?.type == 'internal'">
+                <button id="Low" name="priority" class=" selectprior optionlow" id="pills-contact-tab"
+                  data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab"
+                  aria-controls="pills-contact" aria-selected="false" (click)="onFeatureClick('T&C')">Team Member(s) and
+                  External Counsel(s)</button>
+              </li>
+            </ul>
+  
+          </div>
+          <div class="col-6" *ngIf="featureName == 'Document'">
+            <div class="form-group float-right">
+              <div class="input-group court" id="search">
+                <input type="text" class="form-control textbox" placeholder="Search Documents" [(ngModel)]="searchText" (keyup)="keyup('doc')" />
+                <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
+              </div>
+            </div>
+  
+          </div>
+  
+        </div>
+  
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-6">
+      <div class="row" *ngIf="featureName == 'T&C'">
         <!-- client code  -->
         <div class="col-6">
-          <div class="case_title">Matter Details - {{data?.title}}</div>
           <ul class="nav nav-pills mb-3 btnaction float-left " id="pills-tab" role="tablist">
             <li class="nav-item">
-              <button id="High" name="priority" class="selectprior optionhigh active" id="pills-home-tab"
+              <button id="High" name="priority" class="selectprior optionhigh active" id="pills-home-tab" [ngClass]="{'active':selectedVal=='TM'}"
                 data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home"
-                aria-selected="true" (click)="onFeatureClick('Timeline')">Timeline</button>
+                aria-selected="true" (click)="onClick('TM');onFeatureClick('T&C');">Team Member(s)</button>
             </li>
-            <li class="nav-item">
-              <button id="Medium" name="priority" class="selectprior optionaling" id="pills-profile-tab"
+  
+            <li class="nav-item" *ngIf="product != 'corporate'">
+              <button id="Medium" name="priority" class="selectprior optionaling" id="pills-profile-tab" [ngClass]="{'active':selectedVal=='Clients'}"
                 data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab"
-                aria-controls="pills-profile" aria-selected="false"
-                (click)="onFeatureClick('Document');">Document(s)</button>
+                aria-controls="pills-profile" aria-selected="false" (click)="onClick('Clients');onFeatureClick('T&C');">Client(s)</button>
             </li>
-            <li class="nav-item" *ngIf="product != 'corporate' && data?.type == 'internal'">
-              <button id="Low" name="priority" class=" selectprior optionlow" id="pills-contact-tab"
-                data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab"
-                aria-controls="pills-contact" aria-selected="false" (click)="onFeatureClick('T&C')">Team Member(s) and
-                Client(s)</button>
+            <li class="nav-item" *ngIf="product == 'corporate'">
+              <button id="Medium" name="priority" class="selectprior optionaling" id="pills-profile-tab" [ngClass]="{'active':selectedVal=='Clients'}"
+                data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab"
+                aria-controls="pills-profile" aria-selected="false" (click)="onClick('Clients');onFeatureClick('T&C');">External Counsel(s)</button>
             </li>
-            <li class="nav-item" *ngIf="product == 'corporate' && data?.type == 'internal'">
-              <button id="Low" name="priority" class=" selectprior optionlow" id="pills-contact-tab"
-                data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab"
-                aria-controls="pills-contact" aria-selected="false" (click)="onFeatureClick('T&C')">Team Member(s) and
-                External Counsel(s)</button>
+  
+          </ul>
+          <ul>
+            <li class="nav-item">
+              <button id="Medium" name="priority" class="selectprior optionaling active" id="pills-profile-tab"
+                data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab"
+                aria-controls="pills-profile" aria-selected="true">
+                <span *ngIf="selectedVal=='TM'">Add Team Member</span>
+                <span *ngIf="selectedVal=='Clients' && product != 'corporate'">Add Client</span>
+                <span *ngIf="selectedVal=='Clients' && product == 'corporate'">Add External Counsel</span>
+              </button>
             </li>
           </ul>
-
         </div>
-        <div class="col-6" *ngIf="featureName == 'Document'">
-          <div class="form-group float-right">
-            <div class="input-group court" id="search">
-              <input type="text" class="form-control textbox" placeholder="Search Documents" [(ngModel)]="searchText" (keyup)="keyup('doc')" />
-              <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-  </div>
-  <div class="col-xs-12 col-sm-12 col-md-6">
-    <div class="row" *ngIf="featureName == 'T&C'">
-      <!-- client code  -->
-      <div class="col-6">
-        <ul class="nav nav-pills mb-3 btnaction float-left " id="pills-tab" role="tablist">
-          <li class="nav-item">
-            <button id="High" name="priority" class="selectprior optionhigh active" id="pills-home-tab" [ngClass]="{'active':selectedVal=='TM'}"
-              data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home"
-              aria-selected="true" (click)="onClick('TM');onFeatureClick('T&C');">Team Member(s)</button>
-          </li>
-
-          <li class="nav-item" *ngIf="product != 'corporate'">
-            <button id="Medium" name="priority" class="selectprior optionaling" id="pills-profile-tab" [ngClass]="{'active':selectedVal=='Clients'}"
-              data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab"
-              aria-controls="pills-profile" aria-selected="false" (click)="onClick('Clients');onFeatureClick('T&C');">Client(s)</button>
-          </li>
-          <li class="nav-item" *ngIf="product == 'corporate'">
-            <button id="Medium" name="priority" class="selectprior optionaling" id="pills-profile-tab" [ngClass]="{'active':selectedVal=='Clients'}"
-              data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab"
-              aria-controls="pills-profile" aria-selected="false" (click)="onClick('Clients');onFeatureClick('T&C');">External Counsel(s)</button>
-          </li>
-
-        </ul>
-        <ul>
-          <li class="nav-item">
-            <button id="Medium" name="priority" class="selectprior optionaling active" id="pills-profile-tab"
-              data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab"
-              aria-controls="pills-profile" aria-selected="true">
-              <span *ngIf="selectedVal=='TM'">Add Team Member</span>
-              <span *ngIf="selectedVal=='Clients' && product != 'corporate'">Add Client</span>
-              <span *ngIf="selectedVal=='Clients' && product == 'corporate'">Add External Counsel</span>
-            </button>
-          </li>
-        </ul>
-      </div>
-      <div *ngIf="selectedVal == 'TM'">
-        <div *ngFor="let member of selectedMembers;let i=index;">
-          <div class="form-group msgicofile">
-            <div class="input-group court" id="court">
-              <p class="form-control textbox msgitemcls">
-                <img *ngIf="i==0" src="assets/img/tree.svg" class="notfiy_tree">
-                <label class="notify_mdg"> {{member.name}}</label>
-               <span style="float: right;">
-                 <!-- <img src="assets/img/mailnotif.svg" class="msgnotify1 mailicocls " > -->
-                <img src="assets/img/msgico.svg" class="msgnotify1 msgicocls" (click)="onMessageClick()">
-                <img src="assets/img/delete.svg" *ngIf="i != 0" (click)="removeTeammember(member)" class="msgnotify1 delicocls">
-              </span>
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="dashedborder">
-          <div class="col-4" style="margin-top: 15px;">
-            <h6>Assign Team Member(s)</h6>
-          </div>
-          <div class="col-4">
-            <div class="form-group" id="selectbx">
-              <div class="input-group court" id="search">
-                <div class="multicheck form-control textbox">
-                  <label class="callselect">Select All</label>
-                  <input class="form-check-inpu calimg calitem input-group-append checkboxitem" type="checkbox" value=""
-                    id="selectAllMembers" (change)="selectAllMembers($event)">
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="input-group group-custom-align court" id="search">
-              <input type="text" class="form-control textbox" placeholder="Search Team Member"
-                [(ngModel)]="searchTextMembers" (keyup)="keyup('tm')" />
-              <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
-            </div>
-          </div>
-          <div class="form-group" id="selectbx">
-            <div class="input-group group-custom-align court" id="search"
-              *ngFor="let teammember of teammembersList |filter:searchTextMembers">
-              <div class="multicheck form-control textbox">
-                <div class="callselect" [innerHtml]="teammember.name"></div>
-                <input class="form-check-inpu calimg calitem input-group-app end checkboxitem" #inputE1 type="checkbox" id="flexCheckDefault"
-                  (change)="selectTeammember(teammember)">
-              </div>
-            </div>
-          </div>
-          <div class="btnbox">
-            <button type="reset" class="btn btn-default btncancel btnrightitem" (click)="cancelItems()">Cancel</button>
-            <button type="submit" class="btn btn-primary btnsave savecls" (click)="saveItems('members')"
-              [disabled]="isSaveEnableTM">Save</button>
-          </div>
-        </div>
-      </div>
-      <div *ngIf="selectedVal == 'Clients'">
-
-        <div *ngFor="let member of selectedClients;let i=index;">
-          <div class="form-group msgicofile">
-            <div class="input-group court" id="court">
-              <p class="form-control textbox msgitemcls">
-                <label class="notify_mdg"> {{member.name}}</label>
-                <span style="float: right;">
-                <!-- <img src="assets/img/mailnotif.svg" class="msgnotify1 mailicocls " > -->
-                <img src="assets/img/msgico.svg" class="msgnotify1 msgicocls" (click)="onMessageClick()">
-                <img src="assets/img/delete.svg" class="msgnotify1 delicocls" *ngIf="selectedClients.length != 1" (click)="removeClient(member)">
-              </span>
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div *ngFor="let member of selectedCorp;let i=index;">
-          <div class="form-group msgicofile">
-            <div class="input-group court" id="court">
-              <p class="form-control textbox msgitemcls">
-                <label class="notify_mdg"> {{member.name}}</label>
-                <span style="float: right;">
-                <img src="assets/img/msgico.svg" class="msgnotify1 msgicocls" (click)="onMessageClick()">
-                <img src="assets/img/delete.svg" class="msgnotify1 delicocls " *ngIf="selectedCorp.length != 1" (click)="removeClient(member)">
-              </span>
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="dashedborder">
-          <div class="col-4" style="margin-top: 15px;">
-            <h6 *ngIf="product != 'corporate'">Assign Client(s)</h6>
-            <h6 *ngIf="product == 'corporate'">Assign External Counsel(s)</h6>
-          </div>
-          <div class="col-2">
-            <div class="form-group" id="selectbx">
-              <div class="input-group court" id="search">
-                <div class="multicheck form-control textbox">
-                  <label class="callselect">SelectAll</label>
-                  <input class="form-check-inpu calimg calitem input-group-append checkboxitem" type="checkbox" value=""
-                    id="selectAllClients" (change)="selectAllClients($event)">
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="form-group ">
-            <div class="input-group group-custom-align court" id="search" *ngIf="product != 'corporate'">
-              <input type="text" class="form-control textbox" placeholder="Search Clients"
-                [(ngModel)]="searchTextClient" (keyup)="keyup('clnt')" />
-              <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
-            </div>
-            <div class="input-group group-custom-align court" id="search" *ngIf="product == 'corporate'">
-              <input type="text" class="form-control textbox" placeholder="Search External Counsels"
-                [(ngModel)]="searchTextClient" (keyup)="keyup('clnt')" />
-              <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
-            </div>
-          </div>
-<!----  new  -->
-          <div class="form-group" id="selectbx">
-            <div class="input-group group-custom-align court" id="search"
-              *ngFor="let client of clientsList |filter:searchTextClient">
-              <div class="multicheck form-control textbox">
-                <div class="callselect" [innerHtml]="client.name"></div>
-                <input class="form-check-inpu calimg calitem input-group-app
-                                            end checkboxitem" #inputE2 type="checkbox" id="flexCheckDefault"
-                  (change)="selectClient(client)">
-              </div>
-            </div>
-          </div>
-
-          <!-- <div class="form-group" id="selectbx" *ngIf="product == 'corporate'">
-            <div class="input-group group-custom-align court" id="search"
-              *ngFor="let client of corporateList |filter:searchTextClient">
-              <div class="multicheck form-control textbox">
-                <div class="callselect" [innerHtml]="client.name"></div>
-                <input class="form-check-inpu calimg calitem input-group-app
-                                            end checkboxitem" #inputE2 type="checkbox" id="flexCheckDefault"
-                  (change)="selectCorporate(client)">
-              </div>
-            </div>
-          </div> -->
-<!----  new/////  -->
-
-          <div class="btnbox">
-            <button type="reset" class="btn btn-default btncancel btnrightitem" (click)="cancelItems()">Cancel</button>
-            <button type="submit" class="btn btn-primary btnsave savecls" (click)="saveItems('clients')"
-              [disabled]="isSaveEnableClient">Save</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row" *ngIf="featureName == 'Timeline'">
-      <div class="wrapper">
-        <ul class="StepProgress">
-          <li class="StepProgress-item" *ngFor="let item of historyData">
-           
-            <div class="lgalitem">
-              <p class="pnumber pleagalsubitem">{{item.title}}</p>
-              <p class="lgalsubitem">{{item.from_ts}}</p>
-            </div>
-
-            <!--Notes section-->
-
-            <div class="row pad1" *ngIf="item.id != '' ">
-
-              <!-- Notes Header -->
-              <p class="col-2 notesCls">Notes</p>
-              <!-- Toggle -->
-              <div class="col-3 addIcon imgSpace">
-                <label class="switch">
-                  <input type="checkbox" [(ngModel)]="toggleNote" (change)="changeEvent($event)">
-                  <span class="slider round"></span>
-                </label>
-
-                
-                    <!-- <section class="example-section">
-                      <mat-slide-toggle
-                          class="example-margin"
-                          [color]="color" [(ngModel)]="toggleNote"
-                          [checked]="checked">
-                      </mat-slide-toggle>
-                    </section> -->
-
-
-              </div>
-              <!-- Toggle -->
-              <p class="col-4 notesCls cnCorp">Corporate Notes</p>
-              <!-- Notes Header -->
-
-              <!-- Notes ActionIcon(add,edit) -->
-              <!--Main Notes-->
-              <div class="col-1" *ngIf="!toggleNote">
-                <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!item.notes"
-                  (click)="notes = item.notes;item.AddDesc=!item.AddDesc" [ngClass]="item.AddDesc? 'onActive' : '' ">
-              
-                <img src="assets/img/editico.svg" class="col-1 addIcon" *ngIf="item.id != '' && item.notes"
-                  (click)="notes = item.notes;item.EditDesc=!item.EditDesc" [ngClass]="item.EditDesc? 'onActive' : ''">
-              </div>
-
-              <!--Corporate Notes-->
-              <div class="col-1" *ngIf="toggleNote">
-                <div *ngFor="let note of item?.notes_list">
-                <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!note.notes"
-                    (click)="notes = note.notes;note.AddDesc=!note.AddDesc" [ngClass]="note.AddDesc? 'onActive' : '' ">
-              </div></div>
-              <!-- Notes Actions(add,edit) -->
-
-            
-              <!-- Main notes View -->
-              <div *ngIf="!toggleNote">
-                <!--Edit textbox-->
-                <div class="c-align c-dec" *ngIf="item.AddDesc || item.EditDesc && item.id != '' ">
-                  <textarea [(ngModel)]="notes" rows="3" cols="50" maxlength="150"></textarea>
-                  <div class="btnbox">
-                    <button type="reset" class="btn btn-default btncancel"
-                      (click)="item.EditDesc=false; item.AddDesc=false; notes = ''">Cancel</button>
-                    <button type="submit" class="btn btn-default btnsave"
-                      (click)="item.EditDesc=false; item.AddDesc=false; item.notes = notes;addNotes(item);">Save</button>
-                  </div>
-                </div>
-            
-                <div *ngIf="!item.EditDesc">
-                <p class="lgalsubitem pad2 textNotes" [ngClass]="!item.isNotesElipses ? 'noteselipses' : ''">{{item?.notes}}</p>
-                <a *ngIf="item.notes" (click)="toggleNotesEllipsis(item)">
-                  <u class="readMore"><strong>{{!item.isNotesElipses ? 'Read More' : 'Read Less'}}</strong></u>
-                </a>
-               </div>
-                
-              </div>
-            
-              <!-- Corporate notes View-->
-              <div class="contDiv" *ngIf="toggleNote">
-                <div *ngFor="let note of item?.notes_list">
-                    <div class="row container colab">
-
-                      <div class="userprofile usrMove" >
-                        <p class="username" >{{note?.added_by[0]}} </p>
-                      </div> 
-                      <p class="adderName">{{note?.added_by}}</p>
-
-                      <!--Add && Edit textbox-->
-
-                      <div class="c-align c-dec" *ngIf="note.AddDesc && note.id != '' ">
-                        <textarea [(ngModel)]="notes" rows="3" cols="50" maxlength="152"></textarea>
-                        <div class="btnbox">
-                          <button type="reset" class="btn btn-default btncancel"
-                            (click)="note.EditDesc=false; note.AddDesc=false; notes = ''">Cancel</button>
-                          <button type="submit" class="btn btn-default btnsave"
-                            (click)="note.EditDesc=false; note.AddDesc=false; note.notes = notes;addCorpNotes(item,note);">Save</button>
-                        </div>
-                      </div>
-
-                      <div class="c-align c-dec" *ngIf="note.EditDesc && note.id != '' ">
-                        <textarea [(ngModel)]="notes" rows="3" cols="50" maxlength="152"></textarea>
-                        <div class="btnbox">
-                          <button type="reset" class="btn btn-default btncancel"
-                            (click)="note.EditDesc=false; note.AddDesc=false; notes = ''">Cancel</button>
-                          <button type="submit" class="btn btn-default btnsave"
-                            (click)="note.EditDesc=false; note.AddDesc=false; note.notes = notes;updateCorpNotes(item,note);">Save</button>
-                        </div>
-                      </div>
-                      <!--Add && Edit textbox-->
-
-                      <div *ngIf="!note.EditDesc">
-                      <p class="lgalsubitem textNotes" [ngClass]="!item.isNotesElipses ? 'noteselipses' : ''">
-                        {{note?.notes}}</p>
-                      <a *ngIf="item.notes" (click)="toggleNotesEllipsis(item)">
-                        <u class="readMore"><strong>{{!item.isNotesElipses ? 'Read More' : 'Read Less'}}</strong></u>
-                      </a> 
-                     </div>
-
-                      <!-- Corp Menu(edit,del) -->
-                      <div class="btnMove">
-                        <button class="btnMenu" id="btnMove" [matMenuTriggerFor]="menu">
-                          <i class="fa-solid fa-ellipsis-vertical" style="font-size:1.5rem;"></i>
-                        </button>
-                        <mat-menu #menu="matMenu">
-                          <button mat-menu-item *ngIf="note.id != '' && note.notes"
-                          (click)="notes = note.notes;note.EditDesc=!note.EditDesc" 
-                          [ngClass]="note.EditDesc? 'onActive' : ''"> Edit</button>
-                         
-                          <button mat-menu-item (click)="deleteNotes(item,note)"
-                          > Delete </button>
-                        </mat-menu>
-                      </div>
-                      <!-- Corp Menu(edit,del) -->
-
-                    </div>
-                  </div> </div>
-                
-            </div>
-
-            <!--Notes section-->
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="featureName != 'Document'">
-    <!-- component right side -->
-    <div class="row containerbox">
-      <div class="col-sm-12">
-        <div class="container">
-          <div class="row inforowaling">
-            <!-- arrow toggel begin-->
-            <div class="col-sm-1 arrowcolumn" [ngClass]="isVisibleInfo? 'poschng' : '' ">
-              <div class="infocontainerleft">
-                <p class="arrowtoggel" id="btntgl" (click)="isVisibleInfo=!isVisibleInfo">
-                  <img src="assets/img/arrowdown.svg" class="slidearrowtgl" >
+        <div *ngIf="selectedVal == 'TM'">
+          <div *ngFor="let member of selectedMembers;let i=index;">
+            <div class="form-group msgicofile">
+              <div class="input-group court" id="court">
+                <p class="form-control textbox msgitemcls">
+                  <img *ngIf="i==0" src="assets/img/tree.svg" class="notfiy_tree">
+                  <label class="notify_mdg"> {{member.name}}</label>
+                 <span style="float: right;">
+                   <!-- <img src="assets/img/mailnotif.svg" class="msgnotify1 mailicocls " > -->
+                  <img src="assets/img/msgico.svg" class="msgnotify1 msgicocls" (click)="onMessageClick()">
+                  <img src="assets/img/delete.svg" *ngIf="i != 0" (click)="removeTeammember(member)" class="msgnotify1 delicocls">
+                </span>
                 </p>
               </div>
             </div>
-            <!-- arrow toggel end -->
-            <!-- form summary compoenent -->
-            <div *ngIf="!isVisibleInfo" class="col-sm-11 infoconalign">
-              <div class="infocontainer" id="formtglfiv" style="">
-                <div class="row summarycontainer">
-                  <div class="col-sm-6">
-                    <p class="psize">Summary</p>
-                  </div>
-                  <!-- <div class="col-sm-6">
-                    <div class="hearingimg">
-                      <img src="assets/img/formcalendor.svg" class="formcal">
-                    </div>
-                    <div class="itemhearing">
-                      <p class="hearing">Hearing </p>
-                      <p class="hearingdate">Mar 30 2022</p>
-                    </div>
-                  </div> -->
-                </div>
-                <!-- for edit form 1 castitle -->
-                <div class="form-group">
-                  <div class="row summarycontainer">
-                    <div class="col-sm-6">
-                      <label for="title" class="editcase">Case Title <span class="mandate">*</span>
-                      </label>
-                      <div class='editable' id='txt1'>{{data?.title}}</div>
-                    </div>
-                    <div class="col-sm-4" *ngIf="data?.type == 'internal'">
-                      <input type='button' class="btn btn-primary float-right" id='but_enable' value='Edit'
-                         (click)="matterInfoEdit()">
-                    </div>
+          </div>
+          <div class="dashedborder">
+            <div class="col-4" style="margin-top: 15px;">
+              <h6>Assign Team Member(s)</h6>
+            </div>
+            <div class="col-4">
+              <div class="form-group" id="selectbx">
+                <div class="input-group court" id="search">
+                  <div class="multicheck form-control textbox">
+                    <label class="callselect">Select All</label>
+                    <input class="form-check-inpu calimg calitem input-group-append checkboxitem" type="checkbox" value=""
+                      id="selectAllMembers" (change)="selectAllMembers($event)">
                   </div>
                 </div>
-                <!-- for edit summary case number -->
-                <div class="form-group summarycitem">
-                  <label for="title" class="editcase">Case Number <span class="mandate">*</span>
-                  </label>
-                  <div class='editable cnumber'>{{data?.caseNumber}}</div>
-                </div>
-                <!-- for edit summary case type -->
-                <div class="form-group summarycitem">
-                  <label for="title" class="editcase">Case Type </label>
-                  <div class='editable cnumber'>{{data?.caseType}}</div>
-                </div>
-                <!-- for edit summary court -->
-                <div class="form-group summarycitem">
-                  <label for="title" class="editcase">Court </label>
-                  <div class='editable cnumber'>{{data?.courtName}}</div>
-                </div>
-                <!-- for edit summary date of filling-->
-                <div class="form-group summarycitem">
-                  <label for="title" class="editcase">Date of Filing </label>
-                  <div class='editable cnumber'>{{data?.date_of_filling}}</div>
-                </div>
-                <!-- for edit summary Description-->
-                <div class="form-group summarycitem">
-                  <label for="title" class="editcase">Description </label>
-                  <div class='editable cnumber'>{{data?.description}}</div>
-                </div>
-                <!-- for edit summary matter-->
-                <div class="form-group summarycitem">
-                  <label for="title" class="editcase">Matter Tags </label>
-                  <div class='editable cnumber'>2021 - 2022</div>
-                </div>
-                <!-- for edit summary matter-->
-                <div class="form-group Judges summarycitem">
-                  <label for="title" class="editcase"> Judges </label>
-                  <div class='editable cnumber'>{{data?.judges}}</div>
-                </div>
-                <!-- for edit summary status-->
-                <div class="form-group Judges summarycitem">
-                  <div class="statusprior">
-                    <label for="title" class="editcase"> Status </label>
-                    <div class='editable cnumber'>{{data?.status}}</div>
-                  </div>
-                  <div class="statusprior">
-                    <label for="title" class="editcase"> Priority </label>
-                    <div class='editable cnumber'>{{data?.priority}}</div>
-                  </div>
-                </div>
-                <!-- for edit summary matter-->
-                <div *ngFor="let adv of data?.opponentAdvocates">
-                <div class="form-group Judges summarycitem" >
-                  <label for="title" class="editcase"> Name</label>
-                  <div class='editable cnumber'>{{adv.name}}</div>
-                </div>
-                <!-- for edit summary email-->
-                <div class="form-group Judges summarycitem" >
-                  <label for="title" class="editcase"> Email</label>
-                  <div class='editable cnumber'>{{adv.email}}</div>
-                </div>
-                <!-- for edit summary phone number-->
-                <div class="form-group Judges summarycitem" >
-                  <label for="title" class="editcase"> Phone Number</label>
-                  <div class='editable cnumber'>{{adv.phone}}</div>
-                </div>
-              </div>
               </div>
             </div>
-            <!-- form summary compoenent ends -->
+            <div class="form-group">
+              <div class="input-group group-custom-align court" id="search">
+                <input type="text" class="form-control textbox" placeholder="Search Team Member"
+                  [(ngModel)]="searchTextMembers" (keyup)="keyup('tm')" />
+                <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
+              </div>
+            </div>
+            <div class="form-group" id="selectbx">
+              <div class="input-group group-custom-align court" id="search"
+                *ngFor="let teammember of teammembersList |filter:searchTextMembers">
+                <div class="multicheck form-control textbox">
+                  <div class="callselect" [innerHtml]="teammember.name"></div>
+                  <input class="form-check-inpu calimg calitem input-group-app end checkboxitem" #inputE1 type="checkbox" id="flexCheckDefault"
+                    (change)="selectTeammember(teammember)">
+                </div>
+              </div>
+            </div>
+            <div class="btnbox">
+              <button type="reset" class="btn btn-default btncancel btnrightitem" (click)="cancelItems()">Cancel</button>
+              <button type="submit" class="btn btn-primary btnsave savecls" (click)="saveItems('members')"
+                [disabled]="isSaveEnableTM">Save</button>
+            </div>
           </div>
         </div>
-        <!-- ends here -->
+        <div *ngIf="selectedVal == 'Clients'">
+  
+          <div *ngFor="let member of selectedClients;let i=index;">
+            <div class="form-group msgicofile">
+              <div class="input-group court" id="court">
+                <p class="form-control textbox msgitemcls">
+                  <label class="notify_mdg"> {{member.name}}</label>
+                  <span style="float: right;">
+                  <!-- <img src="assets/img/mailnotif.svg" class="msgnotify1 mailicocls " > -->
+                  <img src="assets/img/msgico.svg" class="msgnotify1 msgicocls" (click)="onMessageClick()">
+                  <img src="assets/img/delete.svg" class="msgnotify1 delicocls" *ngIf="selectedClients.length != 1" (click)="removeClient(member)">
+                </span>
+                </p>
+              </div>
+            </div>
+          </div>
+  
+          <div *ngFor="let member of selectedCorp;let i=index;">
+            <div class="form-group msgicofile">
+              <div class="input-group court" id="court">
+                <p class="form-control textbox msgitemcls">
+                  <label class="notify_mdg"> {{member.name}}</label>
+                  <span style="float: right;">
+                  <img src="assets/img/msgico.svg" class="msgnotify1 msgicocls" (click)="onMessageClick()">
+                  <img src="assets/img/delete.svg" class="msgnotify1 delicocls " *ngIf="selectedCorp.length != 1" (click)="removeClient(member)">
+                </span>
+                </p>
+              </div>
+            </div>
+          </div>
+  
+          <div class="dashedborder">
+            <div class="col-4" style="margin-top: 15px;">
+              <h6 *ngIf="product != 'corporate'">Assign Client(s)</h6>
+              <h6 *ngIf="product == 'corporate'">Assign External Counsel(s)</h6>
+            </div>
+            <div class="col-2">
+              <div class="form-group" id="selectbx">
+                <div class="input-group court" id="search">
+                  <div class="multicheck form-control textbox">
+                    <label class="callselect">SelectAll</label>
+                    <input class="form-check-inpu calimg calitem input-group-append checkboxitem" type="checkbox" value=""
+                      id="selectAllClients" (change)="selectAllClients($event)">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group ">
+              <div class="input-group group-custom-align court" id="search" *ngIf="product != 'corporate'">
+                <input type="text" class="form-control textbox" placeholder="Search Clients"
+                  [(ngModel)]="searchTextClient" (keyup)="keyup('clnt')" />
+                <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
+              </div>
+              <div class="input-group group-custom-align court" id="search" *ngIf="product == 'corporate'">
+                <input type="text" class="form-control textbox" placeholder="Search External Counsels"
+                  [(ngModel)]="searchTextClient" (keyup)="keyup('clnt')" />
+                <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
+              </div>
+            </div>
+  <!----  new  -->
+            <div class="form-group" id="selectbx">
+              <div class="input-group group-custom-align court" id="search"
+                *ngFor="let client of clientsList |filter:searchTextClient">
+                <div class="multicheck form-control textbox">
+                  <div class="callselect" [innerHtml]="client.name"></div>
+                  <input class="form-check-inpu calimg calitem input-group-app
+                                              end checkboxitem" #inputE2 type="checkbox" id="flexCheckDefault"
+                    (change)="selectClient(client)">
+                </div>
+              </div>
+            </div>
+  
+            <!-- <div class="form-group" id="selectbx" *ngIf="product == 'corporate'">
+              <div class="input-group group-custom-align court" id="search"
+                *ngFor="let client of corporateList |filter:searchTextClient">
+                <div class="multicheck form-control textbox">
+                  <div class="callselect" [innerHtml]="client.name"></div>
+                  <input class="form-check-inpu calimg calitem input-group-app
+                                              end checkboxitem" #inputE2 type="checkbox" id="flexCheckDefault"
+                    (change)="selectCorporate(client)">
+                </div>
+              </div>
+            </div> -->
+  <!----  new/////  -->
+  
+            <div class="btnbox">
+              <button type="reset" class="btn btn-default btncancel btnrightitem" (click)="cancelItems()">Cancel</button>
+              <button type="submit" class="btn btn-primary btnsave savecls" (click)="saveItems('clients')"
+                [disabled]="isSaveEnableClient">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" *ngIf="featureName == 'Timeline'">
+        <div class="wrapper">
+          <ul class="StepProgress">
+            <li class="StepProgress-item" *ngFor="let item of historyData">
+             
+              <div class="lgalitem">
+                <p class="pnumber pleagalsubitem">{{item.title}}</p>
+                <p class="lgalsubitem">{{item.from_ts}}</p>
+              </div>
+  
+              <!--Notes section-->
+  
+              <div class="row pad1" *ngIf="item.id != '' ">
+  
+                <mat-radio-group [(ngModel)]="isChecked">
+                    <mat-radio-button class="col-2 notesCls" id="mainNote" value="mainNote">Notes</mat-radio-button>
+                    <mat-radio-button class="col-4 notesCls cnCorp" id="corpNote" value="corpNote">Corporate Notes</mat-radio-button>
+                  </mat-radio-group>
+                 <!-- <p>selected op: {{isChecked}}</p> -->
+
+                <!-- Notes Header -->
+                <!-- <p class="col-2 notesCls">Notes</p> -->
+
+                <!-- Toggle -->
+                <div class="col-3 addIcon imgSpace">
+                  <!-- <label class="switch">
+                    <input type="checkbox" [(ngModel)]="toggleNote">
+                    <span class="slider round"></span>
+                  </label> -->
+  
+                  
+                      <!-- <section class="example-section">
+                        <mat-slide-toggle
+                            class="example-margin"
+                            [color]="color" [(ngModel)]="toggleNote"
+                            [checked]="checked">
+                        </mat-slide-toggle>
+                      </section> -->
+                </div>
+                <!-- Toggle -->
+
+                <!-- <p class="col-4 notesCls cnCorp">Corporate Notes</p> -->
+                <!-- Notes Header -->
+  
+                <!--Main Notes Action(add,edit)-->
+                <div class="col-1" *ngIf="isChecked === 'mainNote'">
+                  <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!item.notes"
+                    (click)="notes = item.notes;item.AddDesc=!item.AddDesc" [ngClass]="item.AddDesc? 'onActive' : '' ">
+                
+                  <img src="assets/img/editico.svg" class="col-1 addIcon" *ngIf="item.id != '' && item.notes"
+                    (click)="notes = item.notes;item.EditDesc=!item.EditDesc" [ngClass]="item.EditDesc? 'onActive' : ''">
+                </div>
+                <!--Main Notes Action(add,edit)-->
+  
+                <!--Corporate Notes Action(add)-->
+                <div class="col-1" *ngIf="isChecked === 'corpNote'">
+                  <!-- <div *ngFor="let note of item?.notes_list">
+                  <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!note.notes"
+                      (click)="notes = note.notes;note.AddDesc=!note.AddDesc" [ngClass]="note.AddDesc? 'onActive' : '' ">
+                </div> -->
+
+                <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="item?.notes_list == ''"
+                (click)="notes = item?.notes_list.notes;item?.notes_list.AddDesc=!item?.notes_list.AddDesc" [ngClass]="item?.notes_list?.AddDesc? 'onActive' : '' ">
+                </div>
+                <!--Corporate Notes Action(add)-->
+  
+              
+                <!-- Main notes View -->
+                <div *ngIf="isChecked === 'mainNote'">
+                  <!--Edit textbox-->
+                  <div class="c-align c-dec" *ngIf="item.AddDesc || item.EditDesc && item.id != '' ">
+                    <textarea [(ngModel)]="notes" rows="3" cols="50" maxlength="150"></textarea>
+                    <div class="btnbox">
+                      <button type="reset" class="btn btn-default btncancel"
+                        (click)="item.EditDesc=false; item.AddDesc=false; notes = ''">Cancel</button>
+                      <button type="submit" class="btn btn-default btnsave"
+                        (click)="item.EditDesc=false; item.AddDesc=false; item.notes = notes;addNotes(item);">Save</button>
+                    </div>
+                  </div>
+              
+                  <div *ngIf="!item.EditDesc">
+                  <p class="lgalsubitem pad2 textNotes" [ngClass]="!item.isNotesElipses ? 'noteselipses' : ''">{{item?.notes}}</p>
+                  <a *ngIf="item.notes" (click)="toggleNotesEllipsis(item)">
+                    <u class="readMore"><strong>{{!item.isNotesElipses ? 'Read More' : 'Read Less'}}</strong></u>
+                  </a>
+                 </div>
+                  
+                </div>
+              
+                <!-- Corporate notes View-->
+                <div class="contDiv" *ngIf="isChecked === 'corpNote'">
+
+                     <!--Textbox for Corp. notes add-->
+                    <div class="c-align c-dec" *ngIf="item?.notes_list.AddDesc && item?.notes_list ==''">
+                        <textarea [(ngModel)]="notes" rows="3" cols="50" maxlength="152"></textarea>
+                        <div class="btnbox">
+                          <button type="reset" class="btn btn-default btncancel"
+                            (click)="item?.notes_list.EditDesc=false; item?.notes_list.AddDesc=false; notes = ''">Cancel</button>
+                          <button type="submit" class="btn btn-default btnsave"
+                            (click)="item?.notes_list.EditDesc=false; item?.notes_list.AddDesc=false; item?.notes_list.notes = notes;addCorpNotes(item,item.notes_list);">Save</button>
+                        </div>
+                      </div>
+                     <!--Textbox for Corp. notes add-->
+
+
+                  <div *ngFor="let note of item?.notes_list">
+                      <div class="row container colab">
+  
+                        <div class="userprofile usrMove" >
+                          <p class="username" >{{note?.added_by[0]}} </p>
+                        </div> 
+                        <p class="adderName">{{note?.added_by}}</p>
+  
+                        <!--Add && Edit textbox-->
+                        <!-- <div class="c-align c-dec" *ngIf="note.AddDesc && note.id != '' ">
+                          <textarea [(ngModel)]="notes" rows="3" cols="50" maxlength="152"></textarea>
+                          <div class="btnbox">
+                            <button type="reset" class="btn btn-default btncancel"
+                              (click)="note.EditDesc=false; note.AddDesc=false; notes = ''">Cancel</button>
+                            <button type="submit" class="btn btn-default btnsave"
+                              (click)="note.EditDesc=false; note.AddDesc=false; note.notes = notes;addCorpNotes(item,note);">Save</button>
+                          </div>
+                        </div> -->
+                        <!--Add && Edit textbox-->
+  
+                        <div class="c-align c-dec" *ngIf="note.EditDesc && note.id != '' ">
+                          <textarea [(ngModel)]="notes" rows="3" cols="50" maxlength="152"></textarea>
+                          <div class="btnbox">
+                            <button type="reset" class="btn btn-default btncancel"
+                              (click)="note.EditDesc=false; note.AddDesc=false; notes = ''">Cancel</button>
+                            <button type="submit" class="btn btn-default btnsave"
+                              (click)="note.EditDesc=false; note.AddDesc=false; note.notes = notes;updateCorpNotes(item,note);">Save</button>
+                          </div>
+                        </div>
+                        <!--Add && Edit textbox-->
+  
+                        <div *ngIf="!note.EditDesc">
+                        <p class="lgalsubitem textNotes" [ngClass]="!item.isNotesElipses ? 'noteselipses' : ''">
+                          {{note?.notes}}</p>
+                        <a *ngIf="item.notes" (click)="toggleNotesEllipsis(item)">
+                          <u class="readMore"><strong>{{!item.isNotesElipses ? 'Read More' : 'Read Less'}}</strong></u>
+                        </a> 
+                       </div>
+  
+                        <!-- Corp Menu(edit,del) -->
+                        <div class="btnMove">
+                          <button class="btnMenu" id="btnMove" [matMenuTriggerFor]="menu">
+                            <i class="fa-solid fa-ellipsis-vertical" style="font-size:1.5rem;"></i>
+                          </button>
+                          <mat-menu #menu="matMenu">
+                            <button mat-menu-item *ngIf="note.id != '' && note.notes"
+                            (click)="notes = note.notes;note.EditDesc=!note.EditDesc" 
+                            [ngClass]="note.EditDesc? 'onActive' : ''"> Edit</button>
+                           
+                            <button mat-menu-item (click)="deleteNotes(item,note)"
+                            > Delete </button>
+                          </mat-menu>
+                        </div>
+                        <!-- Corp Menu(edit,del) -->
+  
+                      </div>
+                    </div> 
+                </div>
+                  
+              </div>
+  
+              <!--Notes section-->
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="row " *ngIf="featureName == 'Document'">
-    <div class="col-6">
-      <ul class="nav nav-pills mb-3 btnaction float-left " id="pills-tab" role="tablist">
-        <li class="nav-item" *ngIf="data?.type == 'internal'">
-          <button id="High" name="priority" class="selectprior optionhigh" id="pills-home-tab" data-bs-toggle="pill"
-            data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="false"
-            [ngClass]="isNewDocument? 'active' : '' "
-            (click)="onFeatureClick('Document');isNewDocument= !isNewDocument;AddExistingSelected = true;UploadDocSelected=false;">Add New
-            +</button>
-        </li>
-      </ul>
+    <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="featureName != 'Document'">
+      <!-- component right side -->
+      <div class="row containerbox">
+        <div class="col-sm-12">
+          <div class="container">
+            <div class="row inforowaling">
+              <!-- arrow toggel begin-->
+              <div class="col-sm-1 arrowcolumn" [ngClass]="isVisibleInfo? 'poschng' : '' ">
+                <div class="infocontainerleft">
+                  <p class="arrowtoggel" id="btntgl" (click)="isVisibleInfo=!isVisibleInfo">
+                    <img src="assets/img/arrowdown.svg" class="slidearrowtgl" >
+                  </p>
+                </div>
+              </div>
+              <!-- arrow toggel end -->
+              <!-- form summary compoenent -->
+              <div *ngIf="!isVisibleInfo" class="col-sm-11 infoconalign">
+                <div class="infocontainer" id="formtglfiv" style="">
+                  <div class="row summarycontainer">
+                    <div class="col-sm-6">
+                      <p class="psize">Summary</p>
+                    </div>
+                    <!-- <div class="col-sm-6">
+                      <div class="hearingimg">
+                        <img src="assets/img/formcalendor.svg" class="formcal">
+                      </div>
+                      <div class="itemhearing">
+                        <p class="hearing">Hearing </p>
+                        <p class="hearingdate">Mar 30 2022</p>
+                      </div>
+                    </div> -->
+                  </div>
+                  <!-- for edit form 1 castitle -->
+                  <div class="form-group">
+                    <div class="row summarycontainer">
+                      <div class="col-sm-6">
+                        <label for="title" class="editcase">Case Title <span class="mandate">*</span>
+                        </label>
+                        <div class='editable' id='txt1'>{{data?.title}}</div>
+                      </div>
+                      <div class="col-sm-4" *ngIf="data?.type == 'internal'">
+                        <input type='button' class="btn btn-primary float-right" id='but_enable' value='Edit'
+                           (click)="matterInfoEdit()">
+                      </div>
+                    </div>
+                  </div>
+                  <!-- for edit summary case number -->
+                  <div class="form-group summarycitem">
+                    <label for="title" class="editcase">Case Number <span class="mandate">*</span>
+                    </label>
+                    <div class='editable cnumber'>{{data?.caseNumber}}</div>
+                  </div>
+                  <!-- for edit summary case type -->
+                  <div class="form-group summarycitem">
+                    <label for="title" class="editcase">Case Type </label>
+                    <div class='editable cnumber'>{{data?.caseType}}</div>
+                  </div>
+                  <!-- for edit summary court -->
+                  <div class="form-group summarycitem">
+                    <label for="title" class="editcase">Court </label>
+                    <div class='editable cnumber'>{{data?.courtName}}</div>
+                  </div>
+                  <!-- for edit summary date of filling-->
+                  <div class="form-group summarycitem">
+                    <label for="title" class="editcase">Date of Filing </label>
+                    <div class='editable cnumber'>{{data?.date_of_filling}}</div>
+                  </div>
+                  <!-- for edit summary Description-->
+                  <div class="form-group summarycitem">
+                    <label for="title" class="editcase">Description </label>
+                    <div class='editable cnumber'>{{data?.description}}</div>
+                  </div>
+                  <!-- for edit summary matter-->
+                  <div class="form-group summarycitem">
+                    <label for="title" class="editcase">Matter Tags </label>
+                    <div class='editable cnumber'>2021 - 2022</div>
+                  </div>
+                  <!-- for edit summary matter-->
+                  <div class="form-group Judges summarycitem">
+                    <label for="title" class="editcase"> Judges </label>
+                    <div class='editable cnumber'>{{data?.judges}}</div>
+                  </div>
+                  <!-- for edit summary status-->
+                  <div class="form-group Judges summarycitem">
+                    <div class="statusprior">
+                      <label for="title" class="editcase"> Status </label>
+                      <div class='editable cnumber'>{{data?.status}}</div>
+                    </div>
+                    <div class="statusprior">
+                      <label for="title" class="editcase"> Priority </label>
+                      <div class='editable cnumber'>{{data?.priority}}</div>
+                    </div>
+                  </div>
+                  <!-- for edit summary matter-->
+                  <div *ngFor="let adv of data?.opponentAdvocates">
+                  <div class="form-group Judges summarycitem" >
+                    <label for="title" class="editcase"> Name</label>
+                    <div class='editable cnumber'>{{adv.name}}</div>
+                  </div>
+                  <!-- for edit summary email-->
+                  <div class="form-group Judges summarycitem" >
+                    <label for="title" class="editcase"> Email</label>
+                    <div class='editable cnumber'>{{adv.email}}</div>
+                  </div>
+                  <!-- for edit summary phone number-->
+                  <div class="form-group Judges summarycitem" >
+                    <label for="title" class="editcase"> Phone Number</label>
+                    <div class='editable cnumber'>{{adv.phone}}</div>
+                  </div>
+                </div>
+                </div>
+              </div>
+              <!-- form summary compoenent ends -->
+            </div>
+          </div>
+          <!-- ends here -->
+        </div>
+      </div>
     </div>
-    <div class="col-6"></div>
-  </div>
-  <div class="row" *ngIf="featureName == 'Document'">
-    <div class="col-6" *ngIf="isNewDocument">
-      <h5>Attach Document(s)</h5>
-      <ul class="nav nav-pills mb-3 btnaction float-left " id="pills-tab" role="tablist">
-        <li class="nav-item">
-          <button id="High" name="priority" class="selectprior optionhigh active" [ngClass]="{'active':AddExistingSelected}" id="pills-home-tab"
-            data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home"
-            aria-selected="true" (click)="AddExistingSelected=true;UploadDocSelected=false">Add Existing</button>
-        </li>
-        <li class="nav-item" *ngIf ="product !='corporate'">
-          <button id="Medium" name="priority" class="selectprior optionaling" [ngClass]="{'active':UploadDocSelected}" id="pills-profile-tab"
-            data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile"
-            aria-selected="false" (click)="UploadDocSelected=true;AddExistingSelected=false">Upload New</button>
-        </li>
-      </ul>
+    <div class="row " *ngIf="featureName == 'Document'">
+      <div class="col-6">
+        <ul class="nav nav-pills mb-3 btnaction float-left " id="pills-tab" role="tablist">
+          <li class="nav-item" *ngIf="data?.type == 'internal'">
+            <button id="High" name="priority" class="selectprior optionhigh" id="pills-home-tab" data-bs-toggle="pill"
+              data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="false"
+              [ngClass]="isNewDocument? 'active' : '' "
+              (click)="onFeatureClick('Document');isNewDocument= !isNewDocument;AddExistingSelected = true;UploadDocSelected=false;">Add New
+              +</button>
+          </li>
+        </ul>
+      </div>
+      <div class="col-6"></div>
     </div>
-    <div class="compswitch" *ngIf="isNewDocument && AddExistingSelected">
-      <div class="row">
-        <div class="col-5">
-          <h6 style="color: #0B5A9A;font-weight: bold;">Selected Document(s)</h6>
-          <div><!-- *ngIf="selectedDocuments?.length>0" -->
+    <div class="row" *ngIf="featureName == 'Document'">
+      <div class="col-6" *ngIf="isNewDocument">
+        <h5>Attach Document(s)</h5>
+        <ul class="nav nav-pills mb-3 btnaction float-left " id="pills-tab" role="tablist">
+          <li class="nav-item">
+            <button id="High" name="priority" class="selectprior optionhigh active" [ngClass]="{'active':AddExistingSelected}" id="pills-home-tab"
+              data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home"
+              aria-selected="true" (click)="AddExistingSelected=true;UploadDocSelected=false">Add Existing</button>
+          </li>
+          <li class="nav-item" *ngIf ="product !='corporate'">
+            <button id="Medium" name="priority" class="selectprior optionaling" [ngClass]="{'active':UploadDocSelected}" id="pills-profile-tab"
+              data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile"
+              aria-selected="false" (click)="UploadDocSelected=true;AddExistingSelected=false">Upload New</button>
+          </li>
+        </ul>
+      </div>
+      <div class="compswitch" *ngIf="isNewDocument && AddExistingSelected">
+        <div class="row">
+          <div class="col-5">
+            <h6 style="color: #0B5A9A;font-weight: bold;">Selected Document(s)</h6>
+            <div><!-- *ngIf="selectedDocuments?.length>0" -->
+              <table class="table table-borderless tblgrid">
+                <thead>
+                  <tr class="theader">
+                    <th>
+                      <p class="thheadname" style="color: #0B5A9A;">Name</p>
+                    </th>
+                    <th>
+                      <p class="thheadname" style="color: #0B5A9A;">Description</p>
+                    </th>
+                    <th>
+                      <p class="thheadname" style="color: #0B5A9A;">Tags</p>
+                    </th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="rone" *ngFor="let document of selectedDocuments">
+                    <td>{{document.name}}</td>
+                    <td>{{document.description}}</td>
+                    <td *ngIf="document?.tags && document.tags.length>0" [innerHTML]="document?.tags[0]"></td>
+                    <td *ngIf="!(document?.tags?.length>0)"></td>
+                    <td ><i class="fa fa-regular fa-circle-xmark calimg input-group-append sgroup" aria-hidden="true"
+                      (click)="removeDocument(document)"></i></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-1"></div>
+  
+          <div class="col-6">
+            <div class="col-3">
+              <h6 style="color: #0B5A9A;font-weight: bold;">Uploaded Document(s)</h6>
+            </div>
+            <div class="col-3" style="float: right">
+              <div class="form-group" id="selectbx">
+                <div class="input-group court" id="search" style="margin-left: -53px;margin-top: -48px;">
+                  <div class="multicheck form-control textbox" style="border: none;background: white;">
+                    <label class="callselect">SelectAll</label>
+                    <input class="form-check-inpu calimg calitem input-group-append checkboxitem" type="checkbox" value=""
+                      id="selectAll" (change)="selectAll($event)">
+                  </div>
+                </div>
+              </div>
+            </div>
             <table class="table table-borderless tblgrid">
               <thead>
                 <tr class="theader">
@@ -546,311 +616,266 @@
                 </tr>
               </thead>
               <tbody>
-                <tr class="rone" *ngFor="let document of selectedDocuments">
+                <tr class="rone" *ngFor="let document of documentsList |filter:searchText">
                   <td>{{document.name}}</td>
                   <td>{{document.description}}</td>
                   <td *ngIf="document?.tags && document.tags.length>0" [innerHTML]="document?.tags[0]"></td>
                   <td *ngIf="!(document?.tags?.length>0)"></td>
-                  <td ><i class="fa fa-regular fa-circle-xmark calimg input-group-append sgroup" aria-hidden="true"
-                    (click)="removeDocument(document)"></i></td>
+                  <td ><input class="" type="checkbox" id="flexCheckDefault"
+  (change)="selectDocument(document)"></td>
                 </tr>
               </tbody>
             </table>
           </div>
-        </div>
-        <div class="col-1"></div>
-
-        <div class="col-6">
-          <div class="col-3">
-            <h6 style="color: #0B5A9A;font-weight: bold;">Uploaded Document(s)</h6>
+          <div class="btnbox">
+            <button type="reset" class="btn btn-default btncancel btnrightitem"
+              (click)="cancelDocuments()">Cancel</button>
+            <button type="submit" class="btn btn-primary btnsave savecls" (click)="saveDocuments()">Submit</button>
+  
           </div>
-          <div class="col-3" style="float: right">
-            <div class="form-group" id="selectbx">
-              <div class="input-group court" id="search" style="margin-left: -53px;margin-top: -48px;">
-                <div class="multicheck form-control textbox" style="border: none;background: white;">
-                  <label class="callselect">SelectAll</label>
-                  <input class="form-check-inpu calimg calitem input-group-append checkboxitem" type="checkbox" value=""
-                    id="selectAll" (change)="selectAll($event)">
-                </div>
-              </div>
-            </div>
-          </div>
-          <table class="table table-borderless tblgrid">
-            <thead>
-              <tr class="theader">
-                <th>
-                  <p class="thheadname" style="color: #0B5A9A;">Name</p>
-                </th>
-                <th>
-                  <p class="thheadname" style="color: #0B5A9A;">Description</p>
-                </th>
-                <th>
-                  <p class="thheadname" style="color: #0B5A9A;">Tags</p>
-                </th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="rone" *ngFor="let document of documentsList |filter:searchText">
-                <td>{{document.name}}</td>
-                <td>{{document.description}}</td>
-                <td *ngIf="document?.tags && document.tags.length>0" [innerHTML]="document?.tags[0]"></td>
-                <td *ngIf="!(document?.tags?.length>0)"></td>
-                <td ><input class="" type="checkbox" id="flexCheckDefault"
-(change)="selectDocument(document)"></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="btnbox">
-          <button type="reset" class="btn btn-default btncancel btnrightitem"
-            (click)="cancelDocuments()">Cancel</button>
-          <button type="submit" class="btn btn-primary btnsave savecls" (click)="saveDocuments()">Submit</button>
-
         </div>
       </div>
-    </div>
-    <div class="row" *ngIf="isNewDocument && UploadDocSelected">
-      <div *ngIf="DragAndDropView">
-      <div class="col-2"></div>
-      <div class="col-8">
-        <ngx-file-drop [dropZoneClassName] = "'customcss'" [contentClassName]="'customcss1'" dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)" (onFileOver)="fileOver($event)"
-          (onFileLeave)="fileLeave($event)" class="customcss1">
-          <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
-            Drag and Drop Documents to upload
-            <button class="brwsebutton" type="button" (click)="openFileSelector()">Browse</button>
-          </ng-template>
-        </ngx-file-drop>
-      </div>
-      <div class="row" *ngIf="uploadedDocs.length>0">
-        <div class="col-6" *ngFor="let item of uploadedDocs;let i=index">
-            <div #itemlist class="documents-list ng-item" > {{item.name}}
-              <div class="icon-list">
-                <div class="icons"><i class="fa  fa-times-circle" style="color:red"
-                    (click)="removeNewDocument(item,i)"></i>
-                </div>
-              </div>
-            </div>
+      <div class="row" *ngIf="isNewDocument && UploadDocSelected">
+        <div *ngIf="DragAndDropView">
+        <div class="col-2"></div>
+        <div class="col-8">
+          <ngx-file-drop [dropZoneClassName] = "'customcss'" [contentClassName]="'customcss1'" dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)" (onFileOver)="fileOver($event)"
+            (onFileLeave)="fileLeave($event)" class="customcss1">
+            <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+              Drag and Drop Documents to upload
+              <button class="brwsebutton" type="button" (click)="openFileSelector()">Browse</button>
+            </ng-template>
+          </ngx-file-drop>
         </div>
-      </div>
-        <div class="btnbox nextclass">
-          <button type="reset" class="btn btn-default btncancel" (click)="onUploadCancel()">Cancel</button>
-          <button type="submit" class="btn btn-default btnsave savecls" [ngClass]="{'disabled':uploadedDocs.length==0 }" (click)="DragAndDropView=false">Next</button>
-        </div>
-    </div>
-    <div *ngIf="!DragAndDropView">
-      <div class="col-12 main-width">
-        <label for="title" style="color:#00498E; margin: 20px 0;" class="fontbold">Selected document(s)</label>
-        <div class="row">
-          <div class="col-6">
-            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-              <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
-              <label class="btn btn-outline-primary" for="btnradio1" (click)="docEnable('enable')">Enable Download</label>
-  
-              <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
-              <label class="btn btn-outline-primary" for="btnradio2" (click)="docEnable('disable')">Disable
-                Download</label>
-            </div>
-  
-          </div>
-          <div class="col-6 width-align-upload">
-            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-              <input type="radio" class="btn-check" name="btnradio1" id="btnradio3" autocomplete="off">
-              <label class="btn btn-outline-primary" for="btnradio3" (click)="filterDoc('editMeta')">Edit Metadeta</label>
-  
-              <input type="radio" class="btn-check" name="btnradio1" id="btnradio4" autocomplete="off">
-              <label class="btn btn-outline-primary" for="btnradio4" (click)="filterDoc('addTags')">Add Tags</label>
-            </div>
-            <div *ngIf="!editMetaFlag" class="selectAll float-right"> Select All <input class="inputEl" #inputEl
-                type="checkbox" (change)="checkAllItem(inputEl.checked)"></div>
-          </div>
-          <div class="codeAlign">
-            <div class="cod" *ngFor="let item of uploadedDocs;let i = index">
-  
-              <div #itemlist class="documents-list ng-item" [ngClass]="{'active': selectedIdx == i}"> {{item.name}}
+        <div class="row" *ngIf="uploadedDocs.length>0">
+          <div class="col-6" *ngFor="let item of uploadedDocs;let i=index">
+              <div #itemlist class="documents-list ng-item" > {{item.name}}
                 <div class="icon-list">
-                  <div class="icons" *ngIf="editMetaFlag && editMetaData"> <i (click)="editDocument(item,i)"
-                      class="fa fa-edit"></i></div>
-                  <div class="icons" *ngIf="!editMetaFlag"><input type="checkbox" [checked]="item.checked"
-                      (click)="checkedItem(item)"></div>
-                  <div class="icons" [ngClass]="{'disable':!downloadDisabled }"><i class="fa fa-download"
-                     ></i></div>
-                  <div class="icons"><i class="fa  fa-times-circle" style="color:red" (click)="removeNewDocument(item,i)"></i>
+                  <div class="icons"><i class="fa  fa-times-circle" style="color:red"
+                      (click)="removeNewDocument(item,i)"></i>
                   </div>
                 </div>
               </div>
-  
-            </div>
-  
-          </div>
-          <div *ngIf="editDoc">
-            <hr class="new3">
-            <form [formGroup]="documentDetail" (ngSubmit)="onSubmit()">
-              <div class="col-12 ">
-                <div class="row">
-                  <div class="col-6">
-                    <div class="form-group">
-                      <label for="documentName" class="fontbold">Document Name <span class="mandate">*</span>
-                      </label>
-                      <input type="text" class="form-control textbox" id="documentName"
-                        name="documentName" formControlName="name"
-                        [ngClass]="{'is-invalid':submitted && f.name.errors}">
-                      <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
-                        <div *ngIf="f.name.errors.required">Document Name is required</div>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="title" class="fontbold"> Expiration Date</label>
-                      <mat-form-field appearance="fill" class="form-group">
-                        <input matInput [matDatepicker]="disableTyping"    formControlName="date_of_filling" name="date_of_filling"
-                          class="form-control "  readonly>
-                          <mat-datepicker-toggle matSuffix [for]="disableTyping">
-                          </mat-datepicker-toggle>
-                          <mat-datepicker #disableTyping></mat-datepicker>
-                      </mat-form-field>
-                      
-                    </div>
-                    <div class="form-group">
-                      <label for="filling date" class="fontbold">Description</label> <!--<span class="mandate">*</span>-->
-                      <textarea rows="4" cols="50" class="form-control textbox"
-                        formControlName="description" name="description"></textarea>
-                      <!-- 
-                        [ngClass]="{'is-invalid':submitted && f.description.errors}" maxlength="300"
-                        <div *ngIf="submitted && f.description.errors" class="invalid-feedback">
-                        <div *ngIf="f.description.errors.required">description is required</div>
-                      </div> -->
-                      <div class="count-div">
-                        <div class="count-text" *ngIf="f.description">{{f.description.value.length}}/300</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="btnbox">
-                <button type="button" class="btn btn-default btncancel" (click)="onReset()">Cancel</button>
-                <button type="submit" class="btn btn-default btnsave savecls">Save</button>
-  
-              </div>
-            </form>
-          </div>
-          <div class="row metadata">
-            <div class="col-3"></div>
-            <div *ngIf="!editMetaFlag" class="col-6">
-              <div class=" name-set">
-                <div class="tags">
-                  <div class="tags-width float-right"><button class="btn btn-primary" (click)="addvalue()">ADD</button></div>
-                </div>
-  
-                <div *ngFor="let value of values; let i = index">
-                  <div class="col-12">
-                    <div class="row">
-                      <div class="col-5">
-                        <div class="form-group name-set">
-                          <label for="title" class="fontbold tab-margin">Tag Type </label>
-                          <input type="text" [(ngModel)]="value.tagtype" #name="ngModel" name="tags{{ i }}"
-                            class="form-control textbox" id="caseType">
-                        </div>
-                      </div>
-                      <div class="col-5">
-                        <div class="form-group name-set">
-                          <label for="title" class="fontbold tab-margin">Tags </label>
-                          <input type="text" [(ngModel)]="value.tag" #name="ngModel" name="tags{{ i }}"
-                            class="form-control textbox" id="caseType">
-                        </div>
-                      </div>
-                      <div class="col-1">
-                        <label for="title" class="fontbold tab-margin"> </label>
-                        <div (click)="removevalue(i)"><i class="fa  fa-times-circle" aria-hidden="true"></i></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="btnbox">
-                <button type="reset" class="btn btn-default btncancel" (click)="onResetTags()">Cancel</button>
-                <button type="submit" class="btn btn-default btnsave" (click)="submit()">Save</button>
-              </div>
-            </div>
-            <div class="col-3"></div>
           </div>
         </div>
-  
-      </div>
-      <div class="row main stepitem  ">
-        <div class="col-sm-12" *ngIf="editMetaFlag && !editDoc">
-          <!-- button cancel and save -->
-          <div class="btnbox">
+          <div class="btnbox nextclass">
             <button type="reset" class="btn btn-default btncancel" (click)="onUploadCancel()">Cancel</button>
-            <button type="submit" class="btn btn-default btnsave savecls uploadClass" 
-              (click)="saveUploadedDocuments()">Save & Upload</button>
-  
+            <button type="submit" class="btn btn-default btnsave savecls" [ngClass]="{'disabled':uploadedDocs.length==0 }" (click)="DragAndDropView=false">Next</button>
+          </div>
+      </div>
+      <div *ngIf="!DragAndDropView">
+        <div class="col-12 main-width">
+          <label for="title" style="color:#00498E; margin: 20px 0;" class="fontbold">Selected document(s)</label>
+          <div class="row">
+            <div class="col-6">
+              <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+                <label class="btn btn-outline-primary" for="btnradio1" (click)="docEnable('enable')">Enable Download</label>
+    
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btnradio2" (click)="docEnable('disable')">Disable
+                  Download</label>
+              </div>
+    
+            </div>
+            <div class="col-6 width-align-upload">
+              <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" class="btn-check" name="btnradio1" id="btnradio3" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btnradio3" (click)="filterDoc('editMeta')">Edit Metadeta</label>
+    
+                <input type="radio" class="btn-check" name="btnradio1" id="btnradio4" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btnradio4" (click)="filterDoc('addTags')">Add Tags</label>
+              </div>
+              <div *ngIf="!editMetaFlag" class="selectAll float-right"> Select All <input class="inputEl" #inputEl
+                  type="checkbox" (change)="checkAllItem(inputEl.checked)"></div>
+            </div>
+            <div class="codeAlign">
+              <div class="cod" *ngFor="let item of uploadedDocs;let i = index">
+    
+                <div #itemlist class="documents-list ng-item" [ngClass]="{'active': selectedIdx == i}"> {{item.name}}
+                  <div class="icon-list">
+                    <div class="icons" *ngIf="editMetaFlag && editMetaData"> <i (click)="editDocument(item,i)"
+                        class="fa fa-edit"></i></div>
+                    <div class="icons" *ngIf="!editMetaFlag"><input type="checkbox" [checked]="item.checked"
+                        (click)="checkedItem(item)"></div>
+                    <div class="icons" [ngClass]="{'disable':!downloadDisabled }"><i class="fa fa-download"
+                       ></i></div>
+                    <div class="icons"><i class="fa  fa-times-circle" style="color:red" (click)="removeNewDocument(item,i)"></i>
+                    </div>
+                  </div>
+                </div>
+    
+              </div>
+    
+            </div>
+            <div *ngIf="editDoc">
+              <hr class="new3">
+              <form [formGroup]="documentDetail" (ngSubmit)="onSubmit()">
+                <div class="col-12 ">
+                  <div class="row">
+                    <div class="col-6">
+                      <div class="form-group">
+                        <label for="documentName" class="fontbold">Document Name <span class="mandate">*</span>
+                        </label>
+                        <input type="text" class="form-control textbox" id="documentName"
+                          name="documentName" formControlName="name"
+                          [ngClass]="{'is-invalid':submitted && f.name.errors}">
+                        <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+                          <div *ngIf="f.name.errors.required">Document Name is required</div>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="title" class="fontbold"> Expiration Date</label>
+                        <mat-form-field appearance="fill" class="form-group">
+                          <input matInput [matDatepicker]="disableTyping"    formControlName="date_of_filling" name="date_of_filling"
+                            class="form-control "  readonly>
+                            <mat-datepicker-toggle matSuffix [for]="disableTyping">
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #disableTyping></mat-datepicker>
+                        </mat-form-field>
+                        
+                      </div>
+                      <div class="form-group">
+                        <label for="filling date" class="fontbold">Description</label> <!--<span class="mandate">*</span>-->
+                        <textarea rows="4" cols="50" class="form-control textbox"
+                          formControlName="description" name="description"></textarea>
+                        <!-- 
+                          [ngClass]="{'is-invalid':submitted && f.description.errors}" maxlength="300"
+                          <div *ngIf="submitted && f.description.errors" class="invalid-feedback">
+                          <div *ngIf="f.description.errors.required">description is required</div>
+                        </div> -->
+                        <div class="count-div">
+                          <div class="count-text" *ngIf="f.description">{{f.description.value.length}}/300</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="btnbox">
+                  <button type="button" class="btn btn-default btncancel" (click)="onReset()">Cancel</button>
+                  <button type="submit" class="btn btn-default btnsave savecls">Save</button>
+    
+                </div>
+              </form>
+            </div>
+            <div class="row metadata">
+              <div class="col-3"></div>
+              <div *ngIf="!editMetaFlag" class="col-6">
+                <div class=" name-set">
+                  <div class="tags">
+                    <div class="tags-width float-right"><button class="btn btn-primary" (click)="addvalue()">ADD</button></div>
+                  </div>
+    
+                  <div *ngFor="let value of values; let i = index">
+                    <div class="col-12">
+                      <div class="row">
+                        <div class="col-5">
+                          <div class="form-group name-set">
+                            <label for="title" class="fontbold tab-margin">Tag Type </label>
+                            <input type="text" [(ngModel)]="value.tagtype" #name="ngModel" name="tags{{ i }}"
+                              class="form-control textbox" id="caseType">
+                          </div>
+                        </div>
+                        <div class="col-5">
+                          <div class="form-group name-set">
+                            <label for="title" class="fontbold tab-margin">Tags </label>
+                            <input type="text" [(ngModel)]="value.tag" #name="ngModel" name="tags{{ i }}"
+                              class="form-control textbox" id="caseType">
+                          </div>
+                        </div>
+                        <div class="col-1">
+                          <label for="title" class="fontbold tab-margin"> </label>
+                          <div (click)="removevalue(i)"><i class="fa  fa-times-circle" aria-hidden="true"></i></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="btnbox">
+                  <button type="reset" class="btn btn-default btncancel" (click)="onResetTags()">Cancel</button>
+                  <button type="submit" class="btn btn-default btnsave" (click)="submit()">Save</button>
+                </div>
+              </div>
+              <div class="col-3"></div>
+            </div>
+          </div>
+    
+        </div>
+        <div class="row main stepitem  ">
+          <div class="col-sm-12" *ngIf="editMetaFlag && !editDoc">
+            <!-- button cancel and save -->
+            <div class="btnbox">
+              <button type="reset" class="btn btn-default btncancel" (click)="onUploadCancel()">Cancel</button>
+              <button type="submit" class="btn btn-default btnsave savecls uploadClass" 
+                (click)="saveUploadedDocuments()">Save & Upload</button>
+    
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    </div>
-    <div *ngIf="!isNewDocument">
-      <!-- <button id="High" name="priority" class="selectprior optionhigh test-m" id="pills-home-tab" data-bs-toggle="pill"
-        data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="false"
-        [ngClass]="isMergeEnable? 'active' : '' " (click)="isMergeEnable= !isMergeEnable;onMergeClick()">Merge</button> -->
-      <br />
-      <input *ngIf="isMergeEnable" type="checkbox" id="mergeSelectAll" #inputE3 class="larger" name="checkBox2" (change)="CheckAllOptions(inputE3.checked)">
-      <table class="table table-borderless tblgrid">
-        <thead>
-          <tr class="theader">
-            <th></th>
-            <th>
-              <p class="thheadname">Document Name</p>
-              <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('name',selectedDocuments)">
-            </th>
-            <th>
-              <p class="thheadname">Added By</p>
-              <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('addedBy',selectedDocuments)">
-            </th>
-            <th>
-              <p class="thheadname">Description</p>
-              <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('description',selectedDocuments)">
-            </th>
-            <!-- <th>
-              <p class="thheadname">Tags</p>
-              <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('tags',selectedDocuments)">
-            </th> -->
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="rone veiw-items" *ngFor="let doc of selectedDocuments |filter:searchText">
-            <td *ngIf="isMergeEnable">
-              <input type="checkbox" [(ngModel)]="doc.checked" #inputE4 class="larger" name="checkBox2"
-                (change)="selectMergeDocument(inputE4.checked,doc)">
-            </td>
-            <td *ngIf="!isMergeEnable"></td>
-            <td>{{doc.name}}</td>
-            <td *ngIf="doc.addedBy">{{doc.addedBy}}</td>
-            <!-- <td *ngIf="doc.uploaded_by">{{doc.uploaded_by}}</td> -->
-            <td *ngIf="!(doc.addedBy || doc.uploaded_by)"></td>
-            <td>{{doc.description}}</td>
-            <td *ngIf="doc?.tags && doc.tags.length>0" [innerHTML]="doc?.tags[0]"></td>
-            <td *ngIf="!(doc?.tags)"></td>
-            <td><img src="assets/img/eyesico.svg" (click)="viewDocument(doc)"/></td>&nbsp;
-            <td (click)="documentDelete(doc)" *ngIf="data?.type == 'internal'">
-              <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup removedoc" aria-hidden="true"></i>
-            </td>
-          </tr>
-        </tbody>
-
-      </table>
-      <div class=" row main stepitem" *ngIf="isMergeEnable && selectedMergeDocuments?.length >=2">
-        <div class="col-sm-12">
-          <div class="btnbox">
-            <button type="reset" class="btn btn-default btncancel" (click)="onMergeCancel()">Cancel</button>
-            <button type="submit" class="btn btn-default btnsave savecls" (click)="mergeDoc()">Merge</button>
+      </div>
+      <div *ngIf="!isNewDocument">
+        <!-- <button id="High" name="priority" class="selectprior optionhigh test-m" id="pills-home-tab" data-bs-toggle="pill"
+          data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="false"
+          [ngClass]="isMergeEnable? 'active' : '' " (click)="isMergeEnable= !isMergeEnable;onMergeClick()">Merge</button> -->
+        <br />
+        <input *ngIf="isMergeEnable" type="checkbox" id="mergeSelectAll" #inputE3 class="larger" name="checkBox2" (change)="CheckAllOptions(inputE3.checked)">
+        <table class="table table-borderless tblgrid">
+          <thead>
+            <tr class="theader">
+              <th></th>
+              <th>
+                <p class="thheadname">Document Name</p>
+                <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('name',selectedDocuments)">
+              </th>
+              <th>
+                <p class="thheadname">Added By</p>
+                <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('addedBy',selectedDocuments)">
+              </th>
+              <th>
+                <p class="thheadname">Description</p>
+                <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('description',selectedDocuments)">
+              </th>
+              <!-- <th>
+                <p class="thheadname">Tags</p>
+                <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('tags',selectedDocuments)">
+              </th> -->
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="rone veiw-items" *ngFor="let doc of selectedDocuments |filter:searchText">
+              <td *ngIf="isMergeEnable">
+                <input type="checkbox" [(ngModel)]="doc.checked" #inputE4 class="larger" name="checkBox2"
+                  (change)="selectMergeDocument(inputE4.checked,doc)">
+              </td>
+              <td *ngIf="!isMergeEnable"></td>
+              <td>{{doc.name}}</td>
+              <td *ngIf="doc.addedBy">{{doc.addedBy}}</td>
+              <!-- <td *ngIf="doc.uploaded_by">{{doc.uploaded_by}}</td> -->
+              <td *ngIf="!(doc.addedBy || doc.uploaded_by)"></td>
+              <td>{{doc.description}}</td>
+              <td *ngIf="doc?.tags && doc.tags.length>0" [innerHTML]="doc?.tags[0]"></td>
+              <td *ngIf="!(doc?.tags)"></td>
+              <td><img src="assets/img/eyesico.svg" (click)="viewDocument(doc)"/></td>&nbsp;
+              <td (click)="documentDelete(doc)" *ngIf="data?.type == 'internal'">
+                <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup removedoc" aria-hidden="true"></i>
+              </td>
+            </tr>
+          </tbody>
+  
+        </table>
+        <div class=" row main stepitem" *ngIf="isMergeEnable && selectedMergeDocuments?.length >=2">
+          <div class="col-sm-12">
+            <div class="btnbox">
+              <button type="reset" class="btn btn-default btncancel" (click)="onMergeCancel()">Cancel</button>
+              <button type="submit" class="btn btn-default btnsave savecls" (click)="mergeDoc()">Merge</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-
-
+  
+  
