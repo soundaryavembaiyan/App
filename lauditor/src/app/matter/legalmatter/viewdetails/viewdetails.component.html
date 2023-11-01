@@ -243,17 +243,21 @@
   
               <div class="row pad1" *ngIf="item.id != '' ">
   
+                <div class="radBtn">
                 <mat-radio-group [(ngModel)]="isChecked">
-                    <mat-radio-button class="col-2 notesCls" id="mainNote" value="mainNote">Notes</mat-radio-button>
-                    <mat-radio-button class="col-4 notesCls cnCorp" id="corpNote" value="corpNote">Corporate Notes</mat-radio-button>
-                  </mat-radio-group>
+                    <mat-radio-button  id="mainNote" value="mainNote">Notes</mat-radio-button>
+                    <mat-radio-button  id="corpNote" value="corpNote">Corporate Notes</mat-radio-button>
+                </mat-radio-group>
                  <!-- <p>selected op: {{isChecked}}</p> -->
+                </div>
 
                 <!-- Notes Header -->
+
                 <!-- <p class="col-2 notesCls">Notes</p> -->
 
                 <!-- Toggle -->
-                <div class="col-3 addIcon imgSpace">
+
+                <!-- <div class="col-3 addIcon imgSpace"> -->
                   <!-- <label class="switch">
                     <input type="checkbox" [(ngModel)]="toggleNote">
                     <span class="slider round"></span>
@@ -267,13 +271,15 @@
                             [checked]="checked">
                         </mat-slide-toggle>
                       </section> -->
-                </div>
+                <!-- </div> -->
+
                 <!-- Toggle -->
 
                 <!-- <p class="col-4 notesCls cnCorp">Corporate Notes</p> -->
+
                 <!-- Notes Header -->
   
-                <!--Main Notes Action(add,edit)-->
+                <!--Main Notes Action Icon(add,edit)-->
                 <div class="col-1" *ngIf="isChecked === 'mainNote'">
                   <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!item.notes"
                     (click)="notes = item.notes;item.AddDesc=!item.AddDesc" [ngClass]="item.AddDesc? 'onActive' : '' ">
@@ -281,24 +287,23 @@
                   <img src="assets/img/editico.svg" class="col-1 addIcon" *ngIf="item.id != '' && item.notes"
                     (click)="notes = item.notes;item.EditDesc=!item.EditDesc" [ngClass]="item.EditDesc? 'onActive' : ''">
                 </div>
-                <!--Main Notes Action(add,edit)-->
+                <!--Main Notes Action Icon(add,edit)-->
   
-                <!--Corporate Notes Action(add)-->
+                <!--Corporate Notes Action Icon(add)-->
                 <div class="col-1" *ngIf="isChecked === 'corpNote'">
                   <!-- <div *ngFor="let note of item?.notes_list">
                   <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!note.notes"
                       (click)="notes = note.notes;note.AddDesc=!note.AddDesc" [ngClass]="note.AddDesc? 'onActive' : '' ">
                 </div> -->
-
                 <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="item?.notes_list == ''"
                 (click)="notes = item?.notes_list.notes;item?.notes_list.AddDesc=!item?.notes_list.AddDesc" [ngClass]="item?.notes_list?.AddDesc? 'onActive' : '' ">
                 </div>
-                <!--Corporate Notes Action(add)-->
+                <!--Corporate Notes Action Icon(add)-->
   
               
                 <!-- Main notes View -->
                 <div *ngIf="isChecked === 'mainNote'">
-                  <!--Edit textbox-->
+                  <!--Edit Textbox-->
                   <div class="c-align c-dec" *ngIf="item.AddDesc || item.EditDesc && item.id != '' ">
                     <textarea [(ngModel)]="notes" rows="3" cols="50" maxlength="150"></textarea>
                     <div class="btnbox">
@@ -308,6 +313,7 @@
                         (click)="item.EditDesc=false; item.AddDesc=false; item.notes = notes;addNotes(item);">Save</button>
                     </div>
                   </div>
+                  <!--Edit Textbox-->
               
                   <div *ngIf="!item.EditDesc">
                   <p class="lgalsubitem pad2 textNotes" [ngClass]="!item.isNotesElipses ? 'noteselipses' : ''">{{item?.notes}}</p>
@@ -315,13 +321,13 @@
                     <u class="readMore"><strong>{{!item.isNotesElipses ? 'Read More' : 'Read Less'}}</strong></u>
                   </a>
                  </div>
-                  
                 </div>
+                <!-- Main notes View -->
               
                 <!-- Corporate notes View-->
                 <div class="contDiv" *ngIf="isChecked === 'corpNote'">
 
-                     <!--Textbox for Corp. notes add-->
+                     <!--Add Textbox for Corp. notes -->
                     <div class="c-align c-dec" *ngIf="item?.notes_list.AddDesc && item?.notes_list ==''">
                         <textarea [(ngModel)]="notes" rows="3" cols="50" maxlength="152"></textarea>
                         <div class="btnbox">
@@ -331,7 +337,7 @@
                             (click)="item?.notes_list.EditDesc=false; item?.notes_list.AddDesc=false; item?.notes_list.notes = notes;addCorpNotes(item,item.notes_list);">Save</button>
                         </div>
                       </div>
-                     <!--Textbox for Corp. notes add-->
+                     <!--Add Textbox for Corp. notes -->
 
 
                   <div *ngFor="let note of item?.notes_list">
@@ -342,7 +348,7 @@
                         </div> 
                         <p class="adderName">{{note?.added_by}}</p>
   
-                        <!--Add && Edit textbox-->
+                        <!--Add && Edit textbox oldooo-->
                         <!-- <div class="c-align c-dec" *ngIf="note.AddDesc && note.id != '' ">
                           <textarea [(ngModel)]="notes" rows="3" cols="50" maxlength="152"></textarea>
                           <div class="btnbox">
@@ -352,8 +358,9 @@
                               (click)="note.EditDesc=false; note.AddDesc=false; note.notes = notes;addCorpNotes(item,note);">Save</button>
                           </div>
                         </div> -->
-                        <!--Add && Edit textbox-->
+                        <!--Add && Edit textbox oldooo-->
   
+                        <!--Corp. note Edit textbox-->
                         <div class="c-align c-dec" *ngIf="note.EditDesc && note.id != '' ">
                           <textarea [(ngModel)]="notes" rows="3" cols="50" maxlength="152"></textarea>
                           <div class="btnbox">
@@ -363,15 +370,15 @@
                               (click)="note.EditDesc=false; note.AddDesc=false; note.notes = notes;updateCorpNotes(item,note);">Save</button>
                           </div>
                         </div>
-                        <!--Add && Edit textbox-->
+                        <!--Corp. note Edit textbox-->
   
                         <div *ngIf="!note.EditDesc">
-                        <p class="lgalsubitem textNotes" [ngClass]="!item.isNotesElipses ? 'noteselipses' : ''">
-                          {{note?.notes}}</p>
-                        <a *ngIf="item.notes" (click)="toggleNotesEllipsis(item)">
-                          <u class="readMore"><strong>{{!item.isNotesElipses ? 'Read More' : 'Read Less'}}</strong></u>
-                        </a> 
-                       </div>
+                            <p class="lgalsubitem textNotes" [ngClass]="!item.isNotesElipses ? 'noteselipses' : ''">
+                                {{note?.notes}}</p>
+                            <a *ngIf="item.notes" (click)="toggleNotesEllipsis(item)">
+                                <u class="readMore"><strong>{{!item.isNotesElipses ? 'Read More' : 'Read Less'}}</strong></u>
+                            </a>
+                        </div>
   
                         <!-- Corp Menu(edit,del) -->
                         <div class="btnMove">
@@ -392,6 +399,7 @@
                       </div>
                     </div> 
                 </div>
+                <!-- Corporate notes View-->
                   
               </div>
   
