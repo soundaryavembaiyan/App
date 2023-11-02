@@ -15,7 +15,6 @@ import flatpickr from 'flatpickr';
 import { ThemePalette } from '@angular/material/core';
   
 
-
 @Component({
   selector: 'app-viewdetails',
   templateUrl: './viewdetails.component.html',
@@ -91,6 +90,7 @@ export class ViewDetailsComponent implements OnInit {
   isChecked: string = 'mainNote' // Assuming you want to store a string value
   //selectedValue: string;
   color: ThemePalette = "primary";
+  form: any; 
 
   constructor(private matterService: MatterService, private httpservice: HttpService,
     private router: Router, private toast: ToastrService,
@@ -104,10 +104,9 @@ export class ViewDetailsComponent implements OnInit {
   ngOnInit() {
     this.ownerName = localStorage.getItem('name');
 
-    //this.selectedValue= 'mainNote';
-    //console.log('sv',this.selectedValue)
-
-
+    this.form = this.fb.group({
+      notes: ['', Validators.required] 
+    });
 
     this.matterService.editLegalMatterObservable.subscribe((result: any) => {
       if (result) {
@@ -145,7 +144,7 @@ export class ViewDetailsComponent implements OnInit {
     });
 
     this.getCorporateData();
-    this.gethistoryData();
+    //this.gethistoryData();
   }
 
 
@@ -179,63 +178,99 @@ export class ViewDetailsComponent implements OnInit {
   }
 
   addNotes(item: any) {
-    var req = { "notes": this.notes }
-    // console.log(item)
-    this.httpservice.sendPutRequest(URLUtils.updateEventNotes(item.id), req).subscribe(
-      (res: any) => {
-        // console.log('itemId',item.id);
-        // console.log('idRes',res);
-        if(!res.error)
-        this.toast.success(res.msg);
-        else
-        this.toast.error(res.msg);
-      });
+
+    this.submitted = true;
+    item.AddDesc=true
+    item.EditDesc=true
+    
+    // if(this.submitted = true){
+    //   this.toast.success('HELLO');
+    // }
+
+    if (this.form.valid && this.notes.length > 0) {
+      var req = { "notes": this.notes }
+      // console.log(item)
+      this.httpservice.sendPutRequest(URLUtils.updateEventNotes(item.id), req).subscribe(
+        (res: any) => {
+          // console.log('itemId',item.id);
+          // console.log('idRes',res);
+          if (!res.error)
+            this.toast.success(res.msg);
+          else
+            this.toast.error(res.msg);
+        });
+        item.AddDesc=false
+        item.EditDesc=false
+    }
+    
+    //
   }
   
-  addCorpNotes(item:any, notes: any) {
-    let req = { "notes": this.notes }
-    // console.log(item)
-    this.httpservice.sendPostRequest(URLUtils.updateCorpNotes(item.id), req).subscribe(
-      (res: any) => {
-        // console.log('itemId',item.id);
-        // console.log('idRes',res);
-        if(!res.error){
-        this.toast.success(res.msg); 
-        this.gethistoryData();
+  addCorpNotes(item: any, notes: any) {
+
+    this.submitted = true;
+    item.notes_list.AddDesc = true
+
+    if (this.form.valid && this.notes.length != 0) {
+      let req = { "notes": this.notes }
+      //console.log(item)
+      console.log('Bef-ITEM', item.notes_list.length + 1);
+
+      if (item.notes_list.length + 1 > 5) {
+        this.toast.error("Only 5 Notes are permitted for Corporate Notes");
+        return
       }
-        else
-        this.toast.error(res.msg);
-      });
+
+      this.httpservice.sendPostRequest(URLUtils.updateCorpNotes(item.id), req).subscribe(
+        (res: any) => {
+          // console.log('itemId',item.id);
+          //console.log('ITEM', item);
+          if (!res.error) {
+            this.toast.success(res.msg);
+            this.gethistoryData();
+          }
+          else
+            this.toast.error(res.msg);
+        });
+      item.notes_list.AddDesc = false
+    }
   }
 
-  updateCorpNotes(item: any,notes:any) {
-    let req = { 
-      "notes": this.notes,
-      "notes_id": notes.id
-     }
-    // console.log(item)
-    this.httpservice.sendPatchRequest(URLUtils.updateCorpNotes(item.id), req).subscribe(
-      (res: any) => {
-        if(!res.error)
-        this.toast.success(res.msg);
-        else
-        this.toast.error(res.msg);
-        // console.log('itemId',item.id);
-        // console.log('idRes',res);
-      },
-      (error: HttpErrorResponse) => {
-        if (error.status === 400 || error.status === 401 || error.status === 403) {
-          const errorMessage = error.error.msg || 'Unauthorized';
-          this.toast.error(errorMessage);
-          console.log(error);
-        }
-      });
+  updateCorpNotes(item: any, notes: any) {
+
+    this.submitted = true;
+    item.EditDesc = true
+
+    if (this.form.valid && this.notes.length != 0) {
+      let req = {
+        "notes": this.notes,
+        "notes_id": notes.id
+      }
+      // console.log(item)
+      this.httpservice.sendPatchRequest(URLUtils.updateCorpNotes(item.id), req).subscribe(
+        (res: any) => {
+          if (!res.error)
+            this.toast.success(res.msg);
+          else
+            this.toast.error(res.msg);
+          // console.log('itemId',item.id);
+          // console.log('idRes',res);
+        },
+        (error: HttpErrorResponse) => {
+          if (error.status === 400 || error.status === 401 || error.status === 403) {
+            const errorMessage = error.error.msg || 'Unauthorized';
+            this.toast.error(errorMessage);
+            //console.log(error);
+          }
+        });
+      item.EditDesc = false
+    }
   }
 
   deleteNotes(item:any,notes:any) {
     //this.selectNote = note;
-    console.log('item',item)
-    console.log('notesId',notes.id)
+    // console.log('item',item)
+    // console.log('notesId',notes.id)
     let data = {
       'notes_id': notes.id,
       //'notes_id': this.notes_list?.id,
@@ -258,7 +293,7 @@ export class ViewDetailsComponent implements OnInit {
             if (error.status === 400 || error.status === 401 || error.status === 403) {
               const errorMessage = error.error.msg || 'Unauthorized';
               this.toast.error(errorMessage);
-              console.log(error);
+              //console.log(error);
             }
           }
           );
