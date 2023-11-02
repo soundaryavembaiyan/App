@@ -644,10 +644,12 @@ button:focus {
 }
 
 .addIcon {
-    width: 25px;
-    height: 25px;
+    width: 28px;
+    height: 28px;
     font-weight: 700;
     cursor: pointer;
+    margin-right: 25px;
+    margin-top: 14px;
 }
 
 .noteselipses {
@@ -820,3 +822,47 @@ button:focus {
     position: absolute;
     top: 0;
 }
+
+.radBtn{
+    margin-left: -20px;
+}
+
+
+#parent {
+    display: flex;
+}
+
+#narrow {
+    //width: 200px;
+}
+
+#wide {
+    flex: 1;
+}
+
+.smallRadio, mat-radio-button {
+    color: #00b3a7 !important;
+    font-size: 19px;
+    margin-top: 20px;
+    font-weight: 900;
+    font-family: "gill";
+}
+
+.errorStyle {
+    color: red;
+    font-size: 16px;
+    font-weight: 800;
+}
+// @media (min-width: 700px){
+//     .smallRadio, mat-radio-button {
+//         color: #00b3a7 !important;
+//         font-size: 14px;
+//         margin-top: 18px;
+//         font-weight: 900;
+//         font-family: "gill";
+//     }
+// }
+
+// @media only screen and (min-width: 768px) and (max-width: 1024px)  {
+//      
+// }
