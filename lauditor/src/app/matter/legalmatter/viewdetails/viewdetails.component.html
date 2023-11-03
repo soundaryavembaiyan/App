@@ -229,7 +229,7 @@
           </div>
         </div>
       </div>
-      <div class="row" *ngIf="featureName == 'Timeline'">
+      <div class="row scrolly" *ngIf="featureName == 'Timeline'">
         <div class="wrapper">
           <ul class="StepProgress">
             <li class="StepProgress-item" *ngFor="let item of historyData">
@@ -253,17 +253,17 @@
                  <!-- <p>selected op: {{isChecked}}</p> -->
                 
                 <!--Add, Edit Main Notes Action-->
-                <div  id="narrow" *ngIf="isChecked === 'mainNote'">
+                <div  id="narrow" *ngIf="isChecked === 'mainNote' && product != 'corporate'">
                   <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!item.notes" matTooltip="Click To Add Notes"
                     (click)="notes = item.notes;item.AddDesc=!item.AddDesc;submitted = false;" [ngClass]="item.AddDesc? 'onActive' : '' ">
                 
-                  <img src="assets/img/editico.svg" class="col-1 addIcon" *ngIf="item.id != ''" matTooltip="Click To Edit Notes"
-                    (click)="notes = item.notes;item.EditDesc=!item.EditDesc;submitted = false;" [ngClass]="item.EditDesc? 'onActive' : ''">
+                  <!-- <img src="assets/img/editico.svg" class="col-1 addIcon" *ngIf="item.id != ''" matTooltip="Click To Edit Notes"
+                    (click)="notes = item.notes;item.EditDesc=!item.EditDesc;submitted = false;" [ngClass]="item.EditDesc? 'onActive' : ''"> -->
                 </div>
                 <!--Add, Edit Main Notes Action-->
   
-                <!--Add Corporate Notes Action-->
-                <div id="narrow" *ngIf="isChecked === 'corpNote'">
+                <!--Add Corporate Notes Action -->
+                <div id="narrow" *ngIf="isChecked === 'corpNote' && product == 'corporate'">
                   <!-- <div *ngFor="let note of item?.notes_list">
                   <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!note.notes"
                       (click)="notes = note.notes;note.AddDesc=!note.AddDesc" [ngClass]="note.AddDesc? 'onActive' : '' ">
@@ -277,11 +277,12 @@
   
               
                 <!-- Main notes View -->
-                <div *ngIf="isChecked === 'mainNote'">
+                <div class="contDiv" *ngIf="isChecked === 'mainNote'">
+
                   <!--Add, Edit Textbox-->
                   <div class="c-align c-dec" *ngIf="item.AddDesc || item.EditDesc && item.id != ''">
                     <form [formGroup]="form">
-                      <textarea formControlName="notes" [(ngModel)]="notes" rows="3" cols="50" maxlength="150" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@,.]|^ /g,'')"></textarea>
+                      <textarea formControlName="notes" [(ngModel)]="notes" rows="3" cols="50" maxlength="150" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@!$%*|+=?`~<>,. ]|^ /g,'')"></textarea>
                       <div *ngIf="form.get('notes').errors && submitted" class="errorStyle">
                         <div *ngIf="form.get('notes').errors.required">Note is required</div>
                       </div>
@@ -294,26 +295,42 @@
                         (click)="item.EditDesc=false; item.AddDesc=false; item.notes = notes;addNotes(item);">Save</button>
                     </div>
                   </div>
-
-                  
                   <!--Add, Edit Textbox-->
-              
-                  <div *ngIf="!item.EditDesc">
+
+                  <!-- Indication message for !notes -->
+                  <div *ngIf="!item.AddDesc && !item.notes">
+                    <p class="indication"> <strong>No notes added in this section.</strong></p>
+                  </div>
+
+                  <div class="row container colab" *ngIf="!item.EditDesc && item.notes">
                   <p class="lgalsubitem pad2 textNotes" [ngClass]="!item.isNotesElipses ? 'noteselipses' : ''">{{item?.notes}}</p>
-                  <a *ngIf="item.notes" (click)="toggleNotesEllipsis(item)">
+
+                  <a (click)="toggleNotesEllipsis(item)"><!--*ngIf="item.notes"-->
                     <u class="readMore"><strong>{{!item.isNotesElipses ? 'Read More' : 'Read Less'}}</strong></u>
                   </a>
+
+                  <div class="btnMove" *ngIf="product != 'corporate'">
+                    <img src="assets/img/editico.svg" class="btnMenu editoo" id="btnMove" *ngIf="item.id != ''" matTooltip="Click To Edit Notes"
+                    (click)="notes = item.notes;item.EditDesc=!item.EditDesc;submitted = false;" [ngClass]="item.EditDesc? 'onActive' : ''">
+                  </div>
+
                  </div>
+
                 </div>
                 <!-- Main notes View -->
               
                 <!-- Corporate notes View-->
                 <div class="contDiv" *ngIf="isChecked === 'corpNote'">
 
+                  <!-- Indication message for !notes -->
+                  <div *ngIf="item?.notes_list == '' && !item?.notes_list.AddDesc">
+                    <p class="indication"> <strong>No notes added in this section.</strong></p>
+                  </div>
+
                      <!--Add Textbox for Corp. notes -->
                     <div class="c-align c-dec" *ngIf="item?.notes_list.AddDesc">
                       <form [formGroup]="form">
-                        <textarea formControlName="notes" [(ngModel)]="notes" rows="3" cols="50" maxlength="152" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@,.]|^ /g,'')"></textarea>
+                        <textarea formControlName="notes" [(ngModel)]="notes" rows="3" cols="50" maxlength="152" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@!$%*|+=?`~<>,. ]|^ /g,'')"></textarea>
                         <div *ngIf="form.get('notes').errors && submitted" class="errorStyle">
                           <div *ngIf="form.get('notes').errors.required">Note is required</div>
                         </div>
@@ -325,7 +342,7 @@
                           <button type="submit" class="btn btn-default btnsave"
                             (click)="item?.notes_list.EditDesc=false; item?.notes_list.AddDesc=false; item?.notes_list.notes = notes;addCorpNotes(item,item.notes_list);">Save</button>
                         </div>
-                      </div>
+                    </div>
                      <!--Add Textbox for Corp. notes -->
 
                   <div *ngFor="let note of item?.notes_list">
@@ -335,6 +352,7 @@
                           <p class="username" >{{note?.added_by[0]}} </p>
                         </div> 
                         <p class="adderName">{{note?.added_by}}</p>
+                        <p class="addOn">{{note?.add_on}}</p>
   
                         <!--Add && Edit textbox oldooo-->
                         <!-- <div class="c-align c-dec" *ngIf="note.AddDesc && note.id != '' ">
@@ -351,7 +369,7 @@
                         <!--Corp. note Edit textbox-->
                         <div class="c-align c-dec" *ngIf="note.EditDesc && note.id != '' ">
                           <form [formGroup]="form">
-                           <textarea formControlName="notes" [(ngModel)]="notes" rows="3" cols="50" maxlength="152" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@,.]|^ /g,'')"></textarea>
+                           <textarea formControlName="notes" [(ngModel)]="notes" rows="3" cols="50" maxlength="152" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@!$%*|+=?`~<>,. ]|^ /g,'')"></textarea>
                             <div *ngIf="form.get('notes').errors && submitted" class="errorStyle">
                                <div *ngIf="form.get('notes').errors.required">Note is required</div>
                             </div>
@@ -369,13 +387,13 @@
                         <div *ngIf="!note.EditDesc">
                             <p class="lgalsubitem textNotes" [ngClass]="!item.isNotesElipses ? 'noteselipses' : ''">
                                 {{note?.notes}}</p>
-                            <a *ngIf="item.notes" (click)="toggleNotesEllipsis(item)">
+                            <a (click)="toggleNotesEllipsis(item)"><!--*ngIf="item.notes"-->
                                 <u class="readMore"><strong>{{!item.isNotesElipses ? 'Read More' : 'Read Less'}}</strong></u>
                             </a>
                         </div>
   
                         <!-- Corp Menu(edit,del) -->
-                        <div class="btnMove">
+                        <div class="btnMove" *ngIf="product == 'corporate'">
                           <button class="btnMenu" id="btnMove" [matMenuTriggerFor]="menu">
                             <i class="fa-solid fa-ellipsis-vertical" style="font-size:1.5rem;"></i>
                           </button>
@@ -391,7 +409,7 @@
                         <!-- Corp Menu(edit,del) -->
   
                       </div>
-                    </div> 
+                  </div> 
                 </div>
                 <!-- Corporate notes View-->
                   
@@ -878,6 +896,6 @@
         </div>
       </div>
     </div>
-  </div>
+</div>
   
   
