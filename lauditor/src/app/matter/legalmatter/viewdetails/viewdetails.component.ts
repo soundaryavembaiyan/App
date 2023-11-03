@@ -84,11 +84,9 @@ export class ViewDetailsComponent implements OnInit {
   selectNote:any
   toggleBool: boolean = true;
   selectedButton :any;
-  //color = 'primary';
   checked = true;
   disabled = true;
-  isChecked: string = 'mainNote' // Assuming you want to store a string value
-  //selectedValue: string;
+  isChecked: string = 'mainNote' 
   color: ThemePalette = "primary";
   form: any; 
 
@@ -118,21 +116,17 @@ export class ViewDetailsComponent implements OnInit {
         this.httpservice.sendGetRequest(URLUtils.getLegalMatterviewDetail(args)).subscribe((res: any) => {
           if (res.error == false) {
             this.historyData = res.history;
-            console.log('this.historyData', this.historyData)
+            //console.log('this.historyData', this.historyData)
 
             this.notes_list = res.history?.notes_list;
-            //debugger
-
-            this.noteList = res.history?.notes_list;
-            console.log('noteList', this.noteList);
+            //this.noteList = res.history?.notes_list;
+            //console.log('noteList', this.noteList);
 
               this.historyData.forEach((res: any) => {
                 //console.log(`Notes: ${res.notes_list}`);
-                console.log(`Notes:`, this.notes_list);
+                //console.log(`Notes:`, this.notes_list);
               });
-            
           }
-
         });
       }
     });
@@ -301,7 +295,6 @@ export class ViewDetailsComponent implements OnInit {
       })
   }
 
-  
   toggleNotesEllipsis(item: any) {
     item.isNotesElipses = !item.isNotesElipses;
   }
