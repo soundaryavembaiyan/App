@@ -7,14 +7,13 @@ import { Component, Input, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { environment } from 'src/environments/environment';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
-  
 
 @Component({
   selector: 'app-viewlegalmatter',
   templateUrl: './viewlegalmatter.component.html',
-  styleUrls: ['./viewlegalmatter.component.scss']
+  styleUrls: ['./viewlegalmatter.component.scss'],
 })
 export class ViewlegalmatterComponent implements OnInit {
   @Input() data: any;
@@ -32,9 +31,12 @@ export class ViewlegalmatterComponent implements OnInit {
     { name: "External Matters", value: 2 }
   ];
   selectedOption: any;
+
+  itemsPerPage: number = 10; // Initialize with the number of items per page
+  currentPage: number = 1;
   
 
-  constructor(private httpservice: HttpService, private matterService: MatterService, 
+  constructor(private httpservice: HttpService, private http: HttpClient, private matterService: MatterService, 
     private router: Router, private toast: ToastrService,
     private confirmationDialogService: ConfirmationDialogService) { }
 
@@ -56,13 +58,12 @@ export class ViewlegalmatterComponent implements OnInit {
       this.blockUI.stop()
     })
   }
-   
 
   onOptionSelect(event: any) {
     this.selectedOption = event.target.value;
     // Perform additional actions based on the selected option
     // For example, you can call a function or update other variables
-    console.log('Selected option:', this.selectedOption);
+    //console.log('Selected option:', this.selectedOption);
     // Your additional actions here
     if(this.selectedOption=="External Matters"){
       this.getExternalMatters()
@@ -72,8 +73,6 @@ export class ViewlegalmatterComponent implements OnInit {
 
     }
   }
-
-
   
   getDocuments(id: any) {
     this.httpservice.sendGetRequest(URLUtils.legalHistoryDocuments(id)).subscribe(
@@ -114,6 +113,11 @@ export class ViewlegalmatterComponent implements OnInit {
     const legal = { ...legalMatter, type: type };
     this.matterService.editLegalMatter(legal);
     this.router.navigate(['/matter/legalmatter/viewDetails'])
+    
+    if(this.product == 'corporate' && this.selectedOption !='External Matters'){
+    this.router.navigate(['/matter/legalmatter/externalviewDetails'])
+    }
+   
   }
   onMouseOver(grps: any) {
     let newList = [...grps]
@@ -147,6 +151,7 @@ export class ViewlegalmatterComponent implements OnInit {
             "members": legalMatter.members.map((obj: any) => ({ "id": obj.id })),
             //"owner": legalMatter.owner.map((obj: any) => ({ "id": obj.id, "name": obj.name })),
             "owner": legalMatter.owner,
+            "tags":legalMatter.tags,
             "documents": legalMatter.documents?.map((obj: any) => ({
               "docid": obj.docid,
               "doctype": obj.doctype,
@@ -203,6 +208,5 @@ delete (legalMatter: any) {
         });
       }
     })
-
 }
 }
