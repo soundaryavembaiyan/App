@@ -12,6 +12,7 @@ import { NgxFileDropEntry } from 'ngx-file-drop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
+import { ThemePalette } from '@angular/material/core';
  
 
 
@@ -28,7 +29,7 @@ export class GeneralViewDetailsComponent implements OnInit {
   selectedVal: string = 'TM'
   isVisibleInfo: boolean = false;
   clientsList: any;
-  historyData: any;
+  //historyData: any;
   selectedMembers: any;
   selectedClients: any;
   selectedDocuments: any = [];
@@ -69,6 +70,25 @@ export class GeneralViewDetailsComponent implements OnInit {
   isNotesElipses:boolean=false;
   corporateList:  any = [];
   product = environment.product;
+  selectedCorp: any;
+  corpNotes:boolean = false;
+  isCorp: boolean = false;
+  isLauditor: boolean = false;
+  selectedNotes: string = "lauditor";
+  notes_list:any = [];
+  noteList:any = [];
+  historyData1: any;
+  historyData:any = [];
+  toggleNote = false;
+  toggleCorpNote = false;
+  selectNote:any
+  toggleBool: boolean = true;
+  selectedButton :any;
+  checked = true;
+  disabled = true;
+  isChecked: string = 'mainNote' 
+  color: ThemePalette = "primary";
+  form: any; 
 
   constructor(private matterService: MatterService, private httpservice: HttpService,
     private router: Router, private toast: ToastrService, 
@@ -81,6 +101,11 @@ export class GeneralViewDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.ownerName = localStorage.getItem('name');
+
+    this.form = this.fb.group({
+      notes: ['', Validators.required] 
+    });
+
     this.matterService.editGeneralMatterObservable.subscribe((result: any) => {
       if (result) {
         this.data = result;
@@ -91,10 +116,20 @@ export class GeneralViewDetailsComponent implements OnInit {
         this.httpservice.sendGetRequest(URLUtils.getGeneralHistory(args)).subscribe((res: any) => {
           if (res) {
             this.historyData = res.history;
+
+            this.notes_list = res.history?.notes_list;
+            //this.noteList = res.history?.notes_list;
+            //console.log('noteList', this.noteList);
+
+              this.historyData.forEach((res: any) => {
+                //console.log(`Notes: ${res.notes_list}`);
+                //console.log(`Notes:`, this.notes_list);
+              });
           }
         });
       }
     });
+
 
     this.documentDetail = this.fb.group({
       name: ['', Validators.required],
@@ -104,6 +139,164 @@ export class GeneralViewDetailsComponent implements OnInit {
 
     this. getCorporateData();
   }
+
+  eventCheck(event: any) {
+    this.toggleNote = event.target.checked;
+    console.log('eve',event.target.checked)
+    console.log('tN', this.toggleNote)
+    this.toggleNote = !this.toggleNote;
+  }
+
+  gethistoryData(){
+    this.matterService.editLegalMatterObservable.subscribe((result: any) => {
+      if (result) {
+        this.data = result;
+        let args = {
+          id: result.id,
+          offset: new Date().getTimezoneOffset()
+        }
+        this.httpservice.sendGetRequest(URLUtils.getGeneralHistory(args)).subscribe((res: any) => {
+          if (res.error == false) {
+            this.historyData = res.history;
+            this.notes_list = res.history?.notes_list;
+            //console.log('nl',this.notes_list)
+
+              this.historyData.forEach((res: any) => {
+              }); 
+          }
+        });
+      }
+    });
+  }
+
+  addNotes(item: any) {
+
+    this.submitted = true;
+    item.AddDesc=true
+    item.EditDesc=true
+    
+    // if(this.submitted = true){
+    //   this.toast.success('HELLO');
+    // }
+
+    if (this.form.valid && this.notes.length > 0) {
+      var req = { "notes": this.notes }
+      // console.log(item)
+      this.httpservice.sendPutRequest(URLUtils.updateEventNotes(item.id), req).subscribe(
+        (res: any) => {
+          // console.log('itemId',item.id);
+          // console.log('idRes',res);
+          if (!res.error)
+            this.toast.success(res.msg);
+          else
+            this.toast.error(res.msg);
+        });
+        item.AddDesc=false
+        item.EditDesc=false
+    }
+    
+    //
+  }
+
+  addCorpNotes(item: any, notes: any) {
+
+    this.submitted = true;
+    item.notes_list.AddDesc = true
+
+    if (this.form.valid && this.notes.length != 0) {
+      let req = { "notes": this.notes }
+      //console.log(item)
+      console.log('Bef-ITEM', item.notes_list.length + 1);
+
+      if (item.notes_list.length + 1 > 5) {
+        this.toast.error("Only 5 Notes are permitted for Corporate Notes");
+        return
+      }
+
+      this.httpservice.sendPostRequest(URLUtils.updateCorpNotes(item.id), req).subscribe(
+        (res: any) => {
+          // console.log('itemId',item.id);
+          //console.log('ITEM', item);
+          if (!res.error) {
+            this.toast.success(res.msg);
+            this.gethistoryData();
+          }
+          else
+            this.toast.error(res.msg);
+        });
+      item.notes_list.AddDesc = false
+    }
+  }
+
+  updateCorpNotes(item: any, notes: any) {
+
+    this.submitted = true;
+    item.EditDesc = true
+
+    if (this.form.valid && this.notes.length != 0) {
+      let req = {
+        "notes": this.notes,
+        "notes_id": notes.id
+      }
+      // console.log(item)
+      this.httpservice.sendPatchRequest(URLUtils.updateCorpNotes(item.id), req).subscribe(
+        (res: any) => {
+          if (!res.error)
+            this.toast.success(res.msg);
+          else
+            this.toast.error(res.msg);
+          // console.log('itemId',item.id);
+          // console.log('idRes',res);
+        },
+        (error: HttpErrorResponse) => {
+          if (error.status === 400 || error.status === 401 || error.status === 403) {
+            const errorMessage = error.error.msg || 'Unauthorized';
+            this.toast.error(errorMessage);
+            //console.log(error);
+          }
+        });
+      item.EditDesc = false
+    }
+  }
+
+  deleteNotes(item:any,notes:any) {
+    //this.selectNote = note;
+    // console.log('item',item)
+    // console.log('notesId',notes.id)
+    let data = {
+      'notes_id': notes.id,
+      //'notes_id': this.notes_list?.id,
+    }
+    this.confirmationDialogService.confirm('Confirmation', ' Are you sure! Do you want to Delete this note?!', true, 'Yes', 'No')
+      .then((confirmed) => {
+        if (confirmed) {
+          this.httpservice.sendDeleteRequestwithObj(URLUtils.deleteCorpNotes(item.id),data).subscribe((res: any) => {
+            if (!res.error) {
+              if (confirmed) {
+                this.toast.success(res.msg);
+                this.gethistoryData();
+              }
+              else {
+                this.toast.error(res.msg);
+              }
+            }
+          },
+          (error: HttpErrorResponse) => {
+            if (error.status === 400 || error.status === 401 || error.status === 403) {
+              const errorMessage = error.error.msg || 'Unauthorized';
+              this.toast.error(errorMessage);
+              //console.log(error);
+            }
+          }
+          );
+        }
+      })
+  }
+
+  toggleNotesEllipsis(item: any) {
+    item.isNotesElipses = !item.isNotesElipses;
+  }
+
   get f() {
     return this.documentDetail.controls;
   }
@@ -138,8 +331,10 @@ export class GeneralViewDetailsComponent implements OnInit {
         (res: any) => {
           if (res) {
             this.selectedMembers = res.members;
+            this.selectedMembers.unshift(this.data.owner);
             this.membersLength = res.members.length;
             this.selectedClients = res.clients;
+            this.selectedCorp = res.corporate;
             this.clientsLength = res.clients.length;
             this.selectedVal == 'TM' ? this.getTmData() : this.getClientsData();
           }
@@ -168,7 +363,7 @@ export class GeneralViewDetailsComponent implements OnInit {
         (res: any) => {
           this.teammembersList = res['members'];
           let index = this.teammembersList.findIndex((d: any) => d.name === this.ownerName); //find index in your array
-          this.teammembersList.splice(index, 1);
+          //this.teammembersList.splice(index, 1);
           this.teammembersList = this.teammembersList.filter((el: any) => {
             return !this.selectedMembers.find((element: any) => {
               return element.id === el.id;
@@ -176,18 +371,35 @@ export class GeneralViewDetailsComponent implements OnInit {
           });
         });
   }
+
   getClientsData() {
-    let grps = this.data.groups.map((obj: any) => obj.id);
-    this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements,
-      { 'group_acls': grps, 'attachment_type': 'clients' }).subscribe(
+    let grps = this.data.groups?.map((obj: any) => obj.id);
+    var payload
+    if(this.product == 'corporate'){
+       payload =  { 'group_acls': grps, 'attachment_type': 'corporate', 'product': 'corporate' }
+    }
+    else{
+       payload =  { 'group_acls': grps, 'attachment_type': 'clients' }
+    }
+    this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, payload).subscribe(
         (res: any) => {
-          this.clientsList = res['clients'];
-          this.clientsList = this.clientsList.filter((el: any) => {
-            return !this.selectedClients.find((element: any) => {
-              return element.id === el.id;
+          if(this.product == 'corporate'){
+          this.clientsList = res['corporate'];
+          }
+          else{
+            this.clientsList = res['clients'];
+          }
+          //console.log('cl',this.clientsList)
+          if(this.selectedClients && this.selectedClients.length > 0){
+            this.clientsList = this.clientsList.filter((el: any) => {
+              return !this.selectedClients.find((element: any) => {
+                return element.id === el.id;
+              });
             });
-          });
+
+          }
         });
+        
   }
   getCorporateData(){
     let grps = this.data.groups.map((obj: any) => obj.id);
@@ -201,7 +413,7 @@ export class GeneralViewDetailsComponent implements OnInit {
                       return element.id === el.id;
                     });
                   });
-                  console.log('corporateList',this.corporateList)
+                  //console.log('corporateList',this.corporateList)
           }
           )
   }
@@ -211,7 +423,7 @@ export class GeneralViewDetailsComponent implements OnInit {
     this.selectedMembers.push(group);
     let index = this.teammembersList.findIndex((d: any) => d.id === group.id); //find index in your array
     this.teammembersList.splice(index, 1);
-    if (this.teammembersList.length == 1) {
+    if (this.teammembersList.length == 0) {
       let checkbox = document.getElementById('selectAllMembers') as HTMLInputElement | null;
       if (checkbox != null)
         checkbox.checked = true;
@@ -237,7 +449,7 @@ export class GeneralViewDetailsComponent implements OnInit {
         if (checkbox != null)
             checkbox.checked = true;
     }
-    console.log("Corp selected clients "+JSON.stringify(this.selectedClients));
+    //console.log("Corp selected clients "+JSON.stringify(this.selectedClients));
 }
   selectAllMembers(event: any) {
     this.isSaveEnableTM=false;
@@ -258,7 +470,7 @@ export class GeneralViewDetailsComponent implements OnInit {
       }
     } else {
       this.teammembersList = this.selectedMembers.concat(this.teammembersList);
-      this.selectedMembers = [];
+      this.selectedMembers = [this.data.owner];
     }
   }
   selectAllClients(event: any) {
@@ -318,13 +530,7 @@ export class GeneralViewDetailsComponent implements OnInit {
   onMergeClick(){
     this.onFeatureClick('Document');
   }
-  addNotes(item:any) {
-    var req = { "notes": this.notes }
-    this.httpservice.sendPutRequest(URLUtils.updateEventNotes(item.id), req).subscribe(
-      (res: any) => {
-        //console.log(res);
-      });
-  }
+
   documentDelete(document: any) {
     let index = this.selectedDocuments.findIndex((d: any) => d.docid === document.docid);
     this.selectedDocuments.splice(index, 1);
@@ -334,6 +540,9 @@ export class GeneralViewDetailsComponent implements OnInit {
       });
   }
   saveItems(val: any) {
+    let index = this.selectedMembers.findIndex((d: any) => d.id === this.data?.owner?.id); //find index in your array
+    this.selectedMembers.splice(index, 1);
+
     let data = {
       'clients': this.selectedClients,
       'members': this.selectedMembers
@@ -347,7 +556,7 @@ export class GeneralViewDetailsComponent implements OnInit {
         if (error.status === 401 || error.status === 403) {
           const errorMessage = error.error.msg || 'Unauthorized';
           this.toast.error(errorMessage);
-          console.log(error);
+          //console.log(error);
         }
       }
     )
@@ -471,7 +680,7 @@ export class GeneralViewDetailsComponent implements OnInit {
         if (error.status === 401 || error.status === 403) {
           const errorMessage = error.error.msg || 'Unauthorized';
           this.toast.error(errorMessage);
-          console.log(error);
+          //console.log(error);
         }
       });
   }
@@ -670,7 +879,7 @@ export class GeneralViewDetailsComponent implements OnInit {
           if (error.status === 401 || error.status === 403) {
             const errorMessage = error.error.msg || 'Unauthorized';
             this.toast.error(errorMessage);
-            console.log(error);
+            //console.log(error);
           }
         }
       );
