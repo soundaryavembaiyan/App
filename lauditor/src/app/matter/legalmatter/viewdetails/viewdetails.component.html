@@ -250,10 +250,11 @@
                     <mat-radio-button color="primary" id="corpNote" value="corpNote" style="margin: 20px;"> <p class="smallRadio">Corporate Notes</p></mat-radio-button>
                 </mat-radio-group> 
               </div>
+              
                  <!-- <p>selected op: {{isChecked}}</p> -->
                 
                 <!--Add, Edit Main Notes Action-->
-                <div  id="narrow" *ngIf="isChecked === 'mainNote' && product != 'corporate'">
+                <div  id="narrow" *ngIf="isChecked === 'mainNote' && data?.type == 'internal'">
                   <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!item.notes" matTooltip="Click To Add Notes"
                     (click)="notes = item.notes;item.AddDesc=!item.AddDesc;submitted = false;" [ngClass]="item.AddDesc? 'onActive' : '' ">
                 
@@ -263,7 +264,7 @@
                 <!--Add, Edit Main Notes Action-->
   
                 <!--Add Corporate Notes Action -->
-                <div id="narrow" *ngIf="isChecked === 'corpNote' && product == 'corporate'">
+                <div id="narrow" *ngIf="isChecked === 'corpNote' && data?.type != 'internal'">
                   <!-- <div *ngFor="let note of item?.notes_list">
                   <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!note.notes"
                       (click)="notes = note.notes;note.AddDesc=!note.AddDesc" [ngClass]="note.AddDesc? 'onActive' : '' ">
@@ -298,7 +299,7 @@
                   <!--Add, Edit Textbox-->
 
                   <!-- Indication message for !notes -->
-                  <div *ngIf="!item.AddDesc && !item.notes">
+                  <div *ngIf="!item.AddDesc && !item.notes && data?.type != 'internal'">
                     <p class="indication"> <strong>No notes added in this section.</strong></p>
                   </div>
 
@@ -309,7 +310,8 @@
                     <u class="readMore"><strong>{{!item.isNotesElipses ? 'Read More' : 'Read Less'}}</strong></u>
                   </a>
 
-                  <div class="btnMove" *ngIf="product != 'corporate'">
+                  <!-- Edit icon for mainNotes-->
+                  <div class="btnMove" *ngIf="data?.type == 'internal'">
                     <img src="assets/img/editico.svg" class="btnMenu editoo" id="btnMove" *ngIf="item.id != ''" matTooltip="Click To Edit Notes"
                     (click)="notes = item.notes;item.EditDesc=!item.EditDesc;submitted = false;" [ngClass]="item.EditDesc? 'onActive' : ''">
                   </div>
@@ -393,7 +395,7 @@
                         </div>
   
                         <!-- Corp Menu(edit,del) -->
-                        <div class="btnMove" *ngIf="product == 'corporate'">
+                        <div class="btnMove" *ngIf="product == 'corporate' && data?.type != 'internal'">
                           <button class="btnMenu" id="btnMove" [matMenuTriggerFor]="menu">
                             <i class="fa-solid fa-ellipsis-vertical" style="font-size:1.5rem;"></i>
                           </button>
