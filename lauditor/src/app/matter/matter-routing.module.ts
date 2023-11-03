@@ -15,6 +15,8 @@ import { MatterInfoComponent } from './legalmatter/createlegalmatter/matter-info
 import { CreategeneralmatterComponent } from './genaralmatter/creategeneralmatter/creategeneralmatter.component';
 import { GeneralMatterInfoComponent } from './genaralmatter/creategeneralmatter/general-matter-info/general-matter-info.component';
 import { GeneralViewDetailsComponent } from './genaralmatter/generalviewdetails/generalviewdetails.component';
+import { ExternalviewdetailsComponent } from './legalmatter/externalviewdetails/externalviewdetails.component';
+import { GeneralinternalviewdetailsComponent } from './genaralmatter/generalinternalviewdetails/generalinternalviewdetails.component';
 
 
 
@@ -46,6 +48,9 @@ const routes: Routes = [
             { path: 'matter/generalmatter/view/external', component: ExternalmatterComponent },
             { path: 'external', component: ExternalmatterComponent },
             { path: 'internal', component: InternalmatterComponent },
+            //Internal matters View Details
+            { path: 'legalmatter/externalviewDetails', component: ExternalviewdetailsComponent },
+            { path: 'generalmatter/generalinternalviewdetails', component: GeneralinternalviewdetailsComponent },
 
          
         ]
