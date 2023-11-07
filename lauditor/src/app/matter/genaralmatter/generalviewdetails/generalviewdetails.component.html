@@ -262,7 +262,7 @@
                <!-- <p>selected op: {{isChecked}}</p> -->
               
               <!--Add, Edit Main Notes Action-->
-              <div  id="narrow" *ngIf="isChecked === 'mainNote' && product != 'corporate'">
+              <div  id="narrow" *ngIf="isChecked === 'mainNote' && data?.type == 'internal'">
                 <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!item.notes" matTooltip="Click To Add Notes"
                   (click)="notes = item.notes;item.AddDesc=!item.AddDesc;submitted = false;" [ngClass]="item.AddDesc? 'onActive' : '' ">
               
@@ -271,14 +271,14 @@
               </div>
               <!--Add, Edit Main Notes Action-->
 
-              <!--Add Corporate Notes Action-->
-              <div id="narrow" *ngIf="isChecked === 'corpNote' && product == 'corporate'">
+              <!--Add Corporate Notes Action -->
+              <div id="narrow" *ngIf="isChecked === 'corpNote' && data?.type != 'internal'">
                 <!-- <div *ngFor="let note of item?.notes_list">
                 <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!note.notes"
                     (click)="notes = note.notes;note.AddDesc=!note.AddDesc" [ngClass]="note.AddDesc? 'onActive' : '' ">
               </div> -->
-              <img src="assets/img/+Add1.svg" class="col-1 addIcon" matTooltip="Click To Add Corporate Notes" *ngIf="item.notes_list.length != 5"
-              (click)="notes = item?.notes_list.notes;item?.notes_list.AddDesc=!item?.notes_list.AddDesc;submitted = false;" [ngClass]="item?.notes_list?.AddDesc? 'onActive' : '' ">
+              <img src="assets/img/+Add1.svg" class="col-1 addIcon" matTooltip="Click To Add Corporate Notes" 
+              (click)="notes = item?.notes_list.notes;item?.notes_list.AddDesc=!item?.notes_list.AddDesc;submitted = false;" [ngClass]="item?.notes_list?.AddDesc? 'onActive' : '' "><!-- *ngIf="item.notes_list.length != 5" -->
               </div>
             
            </div>
@@ -287,6 +287,7 @@
             
               <!-- Main notes View -->
               <div class="contDiv" *ngIf="isChecked === 'mainNote'">
+
                 <!--Add, Edit Textbox-->
                 <div class="c-align c-dec" *ngIf="item.AddDesc || item.EditDesc && item.id != ''">
                   <form [formGroup]="form">
@@ -304,19 +305,21 @@
                   </div>
                 </div>
                 <!--Add, Edit Textbox-->
-            
-                  <!-- Indication message for !notes -->
-                  <div *ngIf="!item.AddDesc && !item.notes">
-                    <p class="indication"> <strong>No notes added in this Section.!!!</strong></p>
-                  </div>
-                                  
+
+                <!-- Indication message for !notes -->
+                <div *ngIf="!item.AddDesc && !item.notes">
+                  <p class="indication"> <strong>No notes added in this section.</strong></p>
+                </div>
+
                 <div class="row container colab" *ngIf="!item.EditDesc && item.notes">
                 <p class="lgalsubitem pad2 textNotes" [ngClass]="!item.isNotesElipses ? 'noteselipses' : ''">{{item?.notes}}</p>
+
                 <a (click)="toggleNotesEllipsis(item)"><!--*ngIf="item.notes"-->
                   <u class="readMore"><strong>{{!item.isNotesElipses ? 'Read More' : 'Read Less'}}</strong></u>
                 </a>
 
-                <div class="btnMove" *ngIf="product != 'corporate'">
+                <!-- Edit icon for mainNotes-->
+                <div class="btnMove" *ngIf="data?.type == 'internal'">
                   <img src="assets/img/editico.svg" class="btnMenu editoo" id="btnMove" *ngIf="item.id != ''" matTooltip="Click To Edit Notes"
                   (click)="notes = item.notes;item.EditDesc=!item.EditDesc;submitted = false;" [ngClass]="item.EditDesc? 'onActive' : ''">
                 </div>
@@ -331,7 +334,7 @@
 
                 <!-- Indication message for !notes -->
                 <div *ngIf="item?.notes_list == '' && !item?.notes_list.AddDesc">
-                  <p class="indication"> <strong>No notes added in this Section.!!!</strong></p>
+                  <p class="indication"> <strong>No notes added in this section.</strong></p>
                 </div>
 
                    <!--Add Textbox for Corp. notes -->
@@ -349,10 +352,10 @@
                         <button type="submit" class="btn btn-default btnsave"
                           (click)="item?.notes_list.EditDesc=false; item?.notes_list.AddDesc=false; item?.notes_list.notes = notes;addCorpNotes(item,item.notes_list);">Save</button>
                       </div>
-                    </div>
+                  </div>
                    <!--Add Textbox for Corp. notes -->
 
-                <div *ngFor="let note of item?.notes_list">
+                <div *ngFor="let note of item?.notes_list;let i = index">
                     <div class="row container colab">
 
                       <div class="userprofile usrMove" >
@@ -391,16 +394,25 @@
 
                       <!--Corp. note Edit textbox-->
 
-                      <div *ngIf="!note.EditDesc">
+                      <!-- <div *ngIf="!note.EditDesc">
                           <p class="lgalsubitem textNotes" [ngClass]="!item.isNotesElipses ? 'noteselipses' : ''">
                               {{note?.notes}}</p>
-                          <a (click)="toggleNotesEllipsis(item)"><!--*ngIf="item.notes"-->
+                          <a (click)="toggleNotesEllipsis(item)"><!--*ngIf="item.notes"--
                               <u class="readMore"><strong>{{!item.isNotesElipses ? 'Read More' : 'Read Less'}}</strong></u>
                           </a>
-                      </div>
+                      </div> -->
+
+                      <div *ngIf="!note.EditDesc">
+                        <p id="limitTextHeight" [ngClass]="{'limitTextHeight': !isReadMore[i]}">
+                          {{ note?.notes }}
+                        </p>
+                        <a class="readMore"  (click)="toggleReadMore(i)">
+                          <u>{{ isReadMore[i] ? 'Read Less' : 'Read More' }}</u>
+                        </a>
+                     </div>
 
                       <!-- Corp Menu(edit,del) -->
-                      <div class="btnMove" *ngIf="product == 'corporate'">
+                      <div class="btnMove" *ngIf="product == 'corporate' && data?.type != 'internal'">
                         <button class="btnMenu" id="btnMove" [matMenuTriggerFor]="menu">
                           <i class="fa-solid fa-ellipsis-vertical" style="font-size:1.5rem;"></i>
                         </button>
@@ -416,7 +428,7 @@
                       <!-- Corp Menu(edit,del) -->
 
                     </div>
-                  </div> 
+                </div> 
               </div>
               <!-- Corporate notes View-->
                 
