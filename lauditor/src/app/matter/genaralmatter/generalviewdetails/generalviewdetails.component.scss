@@ -874,3 +874,13 @@ button:focus {
     /* padding: 20px; */
     margin-top: 12px;
 }
+.limitTextHeight {
+    height: 20px;
+    overflow: hidden;
+    font-size: 1rem;
+    font-weight: 900;
+}
+#limitTextHeight{
+font-size: 1rem;
+font-weight: 900;
+}
