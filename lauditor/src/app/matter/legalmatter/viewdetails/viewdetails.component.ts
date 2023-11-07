@@ -89,6 +89,8 @@ export class ViewDetailsComponent implements OnInit {
   isChecked: string = 'mainNote' 
   color: ThemePalette = "primary";
   form: any; 
+  isReadMore: boolean[] = [];
+  
 
   constructor(private matterService: MatterService, private httpservice: HttpService,
     private router: Router, private toast: ToastrService,
@@ -208,10 +210,10 @@ export class ViewDetailsComponent implements OnInit {
     if (this.form.valid && this.notes.length != 0) {
       let req = { "notes": this.notes }
       //console.log(item)
-      console.log('Bef-ITEM', item.notes_list.length + 1);
+      //console.log('Bef-ITEM', item.notes_list.length + 1);
 
       if (item.notes_list.length + 1 > 5) {
-        this.toast.error("Only 5 Notes are permitted for Corporate Notes");
+        this.toast.error("Corporate Notes only allow 5 Notes.");
         return
       }
 
@@ -221,6 +223,7 @@ export class ViewDetailsComponent implements OnInit {
           //console.log('ITEM', item);
           if (!res.error) {
             this.toast.success(res.msg);
+            item.AddDesc = true
             this.gethistoryData();
           }
           else
@@ -248,10 +251,12 @@ export class ViewDetailsComponent implements OnInit {
           else
             this.toast.error(res.msg);
           // console.log('itemId',item.id);
-          // console.log('idRes',res);
+           console.log('idRes',res);
         },
         (error: HttpErrorResponse) => {
           if (error.status === 400 || error.status === 401 || error.status === 403) {
+            //this.notes = !this.notes
+            this.gethistoryData();
             const errorMessage = error.error.msg || 'Unauthorized';
             this.toast.error(errorMessage);
             //console.log(error);
@@ -295,9 +300,18 @@ export class ViewDetailsComponent implements OnInit {
       })
   }
 
+  //main notes
   toggleNotesEllipsis(item: any) {
+    console.log('iii',item)
     item.isNotesElipses = !item.isNotesElipses;
   }
+
+  //corp Notes
+  toggleReadMore(index: number) {
+    this.isReadMore[index] = !this.isReadMore[index];
+  }
+
+
 
   get f() {
     return this.documentDetail.controls;
