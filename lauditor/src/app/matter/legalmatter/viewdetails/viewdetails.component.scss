@@ -908,3 +908,20 @@ button:focus {
 font-size: 1rem;
 font-weight: 900;
 }
+.plusBtn{     
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;        
+}
+
+.editBtn{     
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden; 
+    width: 40px;
+    margin-left: -10px;       
+}
