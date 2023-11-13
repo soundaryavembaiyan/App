@@ -89,6 +89,9 @@ export class GeneralViewDetailsComponent implements OnInit {
   isChecked: string = 'mainNote' 
   color: ThemePalette = "primary";
   form: any; 
+  isReadMore: boolean[] = [];
+  isButtonClicked = false;
+  
 
   constructor(private matterService: MatterService, private httpservice: HttpService,
     private router: Router, private toast: ToastrService, 
@@ -140,6 +143,11 @@ export class GeneralViewDetailsComponent implements OnInit {
     this. getCorporateData();
   }
 
+  onAdd() {
+    // this.AddDesc = true;
+    this.isButtonClicked = true;
+   }
+   
   eventCheck(event: any) {
     this.toggleNote = event.target.checked;
     console.log('eve',event.target.checked)
@@ -148,7 +156,7 @@ export class GeneralViewDetailsComponent implements OnInit {
   }
 
   gethistoryData(){
-    this.matterService.editLegalMatterObservable.subscribe((result: any) => {
+    this.matterService.editGeneralMatterObservable.subscribe((result: any) => {
       if (result) {
         this.data = result;
         let args = {
@@ -206,10 +214,10 @@ export class GeneralViewDetailsComponent implements OnInit {
     if (this.form.valid && this.notes.length != 0) {
       let req = { "notes": this.notes }
       //console.log(item)
-      console.log('Bef-ITEM', item.notes_list.length + 1);
+      //console.log('Bef-ITEM', item.notes_list.length + 1);
 
       if (item.notes_list.length + 1 > 5) {
-        this.toast.error("Only 5 Notes are permitted for Corporate Notes");
+        this.toast.error("Corporate Notes only allow 5 Notes.");
         return
       }
 
@@ -219,6 +227,7 @@ export class GeneralViewDetailsComponent implements OnInit {
           //console.log('ITEM', item);
           if (!res.error) {
             this.toast.success(res.msg);
+            item.AddDesc = true
             this.gethistoryData();
           }
           else
@@ -250,6 +259,7 @@ export class GeneralViewDetailsComponent implements OnInit {
         },
         (error: HttpErrorResponse) => {
           if (error.status === 400 || error.status === 401 || error.status === 403) {
+            this.gethistoryData();
             const errorMessage = error.error.msg || 'Unauthorized';
             this.toast.error(errorMessage);
             //console.log(error);
@@ -293,8 +303,14 @@ export class GeneralViewDetailsComponent implements OnInit {
       })
   }
 
+  //Main notes
   toggleNotesEllipsis(item: any) {
     item.isNotesElipses = !item.isNotesElipses;
+  }
+
+  //Corp notes
+  toggleReadMore(index: number) {
+    this.isReadMore[index] = !this.isReadMore[index];
   }
 
   get f() {
