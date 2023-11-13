@@ -90,6 +90,7 @@ export class ViewDetailsComponent implements OnInit {
   color: ThemePalette = "primary";
   form: any; 
   isReadMore: boolean[] = [];
+  isButtonClicked = false;
   
 
   constructor(private matterService: MatterService, private httpservice: HttpService,
@@ -143,6 +144,10 @@ export class ViewDetailsComponent implements OnInit {
     //this.gethistoryData();
   }
 
+  onAdd() {
+   // this.AddDesc = true;
+   this.isButtonClicked = true;
+  }
 
   eventCheck(event: any) {
     this.toggleNote = event.target.checked;
