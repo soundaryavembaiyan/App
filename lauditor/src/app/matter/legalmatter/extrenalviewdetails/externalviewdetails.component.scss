@@ -884,3 +884,20 @@ button:focus {
 .padTop{
     padding-top: 15px;
 }
+.plusBtn{     
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;        
+}
+
+.editBtn{     
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden; 
+    width: 40px;
+    margin-left: -10px;       
+}
