@@ -1,4 +1,6 @@
 
+<!--  Corporate Internal Matters  -->
+
 <div class="row main  stepitem ">
     <div class="row view-matter">
       <div class="col-12">
@@ -283,8 +285,12 @@
                 </div>
                 <!--Add, Edit Main Notes Action-->
                 <div id="narrow">
-                  <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!item.notes" matTooltip="Click To Add Notes"
-                    (click)="notes = item.notes;item.AddDesc=!item.AddDesc;submitted = false;" [ngClass]="item.AddDesc? 'onActive' : '' ">
+                  <!-- <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!item.notes" matTooltip="Click To Add Notes"
+                    (click)="notes = item.notes;item.AddDesc=!item.AddDesc;submitted = false;" [ngClass]="item.AddDesc? 'onActive' : '' "> -->
+                    <button class="plusBtn" (click)="onAdd();notes = item.notes;item.AddDesc=!item.AddDesc;submitted = false;" [disabled]="isButtonClicked">
+                      <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!item.notes" 
+                       matTooltip="Click To Add Notes" [ngClass]="item?.AddDesc? 'onActive' : ''">
+                    </button>
                 </div>
                 <!--Add, Edit Main Notes Action-->
               </div>
@@ -302,14 +308,12 @@
                   
                     <div class="btnbox">
                       <button type="reset" class="btn btn-default btncancel"
-                        (click)="item.EditDesc=false; item.AddDesc=false; notes = ''">Cancel</button>
+                        (click)="item.EditDesc=false; item.AddDesc=false; notes = '';isButtonClicked=false;">Cancel</button>
                       <button type="submit" class="btn btn-default btnsave"
-                        (click)="item.EditDesc=false; item.AddDesc=false; item.notes = notes;addNotes(item);">Save</button>
+                        (click)="item.EditDesc=false; item.AddDesc=false; item.notes = notes;addNotes(item);isButtonClicked=false;">Save</button>
                     </div>
                   </div>
                   <!--Add, Edit Textbox-->
-
-
 
                   <div class="row container colab" *ngIf="!item.EditDesc && item.notes">
 
@@ -320,8 +324,12 @@
                   </a>
 
                   <div class="btnMove">
-                    <img src="assets/img/editico.svg" class="btnMenu editoo" id="btnMove" *ngIf="item.id != ''" matTooltip="Click To Edit Notes"
-                    (click)="notes = item.notes;item.EditDesc=!item.EditDesc;submitted = false;" [ngClass]="item.EditDesc? 'onActive' : ''">
+                    <!-- <img src="assets/img/editico.svg" class="btnMenu editoo" id="btnMove" *ngIf="item.id != ''" matTooltip="Click To Edit Notes"
+                    (click)="notes = item.notes;item.EditDesc=!item.EditDesc;submitted = false;" [ngClass]="item.EditDesc? 'onActive' : ''"> -->
+                    <button class="editBtn" (click)="onAdd();notes = item.notes;item.EditDesc=!item.EditDesc;submitted = false;" [disabled]="isButtonClicked">
+                      <img src="assets/img/editico.svg" class="btnMenu editoo" id="btnMove" *ngIf="item.id != ''"
+                       matTooltip="Click To Edit Notes" [ngClass]="item.EditDesc ? 'onActive' : ''">
+                    </button>
                   </div>
 
                   </div>
