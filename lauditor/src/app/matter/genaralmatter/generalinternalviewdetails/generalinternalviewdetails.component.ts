@@ -1,4 +1,3 @@
-
 import { DocumentService } from './../../../document/document.service';
 import { ConfirmationDialogService } from './../../../confirmation-dialog/confirmation-dialog.service';
 import { HttpService } from 'src/app/services/http.service';
@@ -88,6 +87,7 @@ export class GeneralinternalviewdetailsComponent implements OnInit {
     isChecked: string = 'mainNote' 
     color: ThemePalette = "primary";
     form: any; 
+    isButtonClicked = false;
   
     constructor(private matterService: MatterService, private httpservice: HttpService,
       private router: Router, private toast: ToastrService, 
@@ -139,6 +139,11 @@ export class GeneralinternalviewdetailsComponent implements OnInit {
       this. getCorporateData();
     }
   
+    onAdd() {
+      // this.AddDesc = true;
+      this.isButtonClicked = true;
+     }
+     
     eventCheck(event: any) {
       this.toggleNote = event.target.checked;
       console.log('eve',event.target.checked)
