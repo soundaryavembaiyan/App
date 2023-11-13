@@ -254,21 +254,25 @@
                  <!-- <p>selected op: {{isChecked}}</p> -->
                 
                 <!--Add, Edit Main Notes Action-->
-                <div  id="narrow" *ngIf="isChecked === 'mainNote' && data?.type == 'internal'">
-                  <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!item.notes" matTooltip="Click To Add Notes"
-                    (click)="notes = item.notes;item.AddDesc=!item.AddDesc;submitted = false;" [ngClass]="item.AddDesc? 'onActive' : ''">
-
+                <div id="narrow" *ngIf="isChecked === 'mainNote' && data?.type == 'internal'">
+                  <!-- <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!item.notes" matTooltip="Click To Add Notes"
+                         (click)="notes = item.notes;item.AddDesc=!item.AddDesc;
+                          submitted = false;onAdd();notes = ''" [ngClass]="item.AddDesc? 'onActive' : ''"> -->
+                  <button class="plusBtn" (click)="onAdd();notes = item.notes; item.AddDesc = !item.AddDesc; submitted = false;" [disabled]="isButtonClicked">
+                    <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!item.notes" 
+                     matTooltip="Click To Add Notes" [ngClass]="item.AddDesc ? 'onActive' : ''">
+                  </button>
                 </div>
                 <!--Add, Edit Main Notes Action-->
   
                 <!--Add Corporate Notes Action -->
                 <div id="narrow" *ngIf="isChecked === 'corpNote' && data?.type != 'internal'">
-                  <!-- <div *ngFor="let note of item?.notes_list">
-                  <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!note.notes"
-                      (click)="notes = note.notes;note.AddDesc=!note.AddDesc" [ngClass]="note.AddDesc? 'onActive' : '' ">
-                </div> -->
-                <img src="assets/img/+Add1.svg" class="col-1 addIcon" matTooltip="Click To Add Corporate Notes"
-                (click)="notes = item?.notes_list.notes;item?.notes_list.AddDesc=!item?.notes_list.AddDesc;submitted = false;" [ngClass]="item?.notes_list?.AddDesc? 'onActive' : '' "><!-- *ngIf="item.notes_list.length != 5" -->
+                <!-- <img src="assets/img/+Add1.svg" class="col-1 addIcon" matTooltip="Click To Add Corporate Notes"
+                (click)="notes = item?.notes_list.notes;item?.notes_list.AddDesc=!item?.notes_list.AddDesc;submitted = false;" [ngClass]="item?.notes_list?.AddDesc? 'onActive' : '' "><!--*ngIf="item.notes_list.length != 5" -->
+                <button class="plusBtn" (click)="onAdd();notes = item?.notes_list.notes;item?.notes_list.AddDesc=!item?.notes_list.AddDesc;submitted = false;" [disabled]="isButtonClicked">
+                  <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!item.notes" 
+                   matTooltip="Click To Add Corporate Notes" [ngClass]="item?.notes_list?.AddDesc? 'onActive' : ''">
+                </button>
                 </div>
               
              </div>
@@ -289,9 +293,9 @@
                   
                     <div class="btnbox">
                       <button type="reset" class="btn btn-default btncancel"
-                        (click)="item.EditDesc=false; item.AddDesc=false; notes = ''">Cancel</button>
+                        (click)="item.EditDesc=false; item.AddDesc=false; notes = ''; isButtonClicked=false;">Cancel</button>
                       <button type="submit" class="btn btn-default btnsave"
-                        (click)="item.EditDesc=false; item.AddDesc=false; item.notes = notes;addNotes(item);">Save</button>
+                        (click)="item.EditDesc=false; item.AddDesc=false; isButtonClicked=false; item.notes = notes;addNotes(item);">Save</button>
                     </div>
                   </div>
                   <!--Add, Edit Textbox-->
@@ -310,8 +314,12 @@
 
                   <!-- Edit icon for mainNotes-->
                   <div class="btnMove" *ngIf="data?.type == 'internal'">
-                    <img src="assets/img/editico.svg" class="btnMenu editoo" id="btnMove" *ngIf="item.id != ''" matTooltip="Click To Edit Notes"
-                    (click)="notes = item.notes;item.EditDesc=!item.EditDesc;submitted = false;" [ngClass]="item.EditDesc? 'onActive' : ''">
+                    <!-- <img src="assets/img/editico.svg" class="btnMenu editoo" id="btnMove" *ngIf="item.id != ''" matTooltip="Click To Edit Notes"
+                    (click)="notes = item.notes;item.EditDesc=!item.EditDesc;submitted = false;" [ngClass]="item.EditDesc? 'onActive' : ''"> -->
+                    <button class="editBtn" (click)="onAdd();notes = item.notes;item.EditDesc=!item.EditDesc;submitted = false;" [disabled]="isButtonClicked">
+                      <img src="assets/img/editico.svg" class="btnMenu editoo" id="btnMove" *ngIf="item.id != ''"
+                       matTooltip="Click To Edit Notes" [ngClass]="item.EditDesc ? 'onActive' : ''">
+                    </button>
                   </div>
 
                  </div>
@@ -338,9 +346,9 @@
 
                         <div class="btnbox">
                           <button type="reset" class="btn btn-default btncancel"
-                            (click)="item?.notes_list.EditDesc=false; item?.notes_list.AddDesc=false; notes = ''">Cancel</button>
+                            (click)="item?.notes_list.EditDesc=false; item?.notes_list.AddDesc=false; notes = '';isButtonClicked=false;">Cancel</button>
                           <button type="submit" class="btn btn-default btnsave"
-                            (click)="item?.notes_list.EditDesc=false; item?.notes_list.AddDesc=false; item?.notes_list.notes = notes;addCorpNotes(item,item.notes_list);">Save</button>
+                            (click)="item?.notes_list.EditDesc=false; item?.notes_list.AddDesc=false; item?.notes_list.notes = notes;addCorpNotes(item,item.notes_list);isButtonClicked=false;">Save</button>
                         </div>
                     </div>
                      <!--Add Textbox for Corp. notes -->
@@ -376,9 +384,9 @@
                         </form>
                           <div class="btnbox">
                             <button type="reset" class="btn btn-default btncancel"
-                              (click)="note.EditDesc=false; note.AddDesc=false; notes = ''">Cancel</button>
+                              (click)="note.EditDesc=false; note.AddDesc=false; notes = '';isButtonClicked=false;">Cancel</button>
                             <button type="submit" class="btn btn-default btnsave"
-                              (click)="note.EditDesc=false; note.AddDesc=false; note.notes = notes;updateCorpNotes(item,note);">Save</button>
+                              (click)="note.EditDesc=false; note.AddDesc=false; note.notes = notes;updateCorpNotes(item,note);isButtonClicked=false;">Save</button>
                           </div>
                         </div>
 
@@ -417,12 +425,13 @@
                           <button class="btnMenu" id="btnMove" [matMenuTriggerFor]="menu">
                             <i class="fa-solid fa-ellipsis-vertical" style="font-size:1.5rem;"></i>
                           </button>
+
                           <mat-menu #menu="matMenu">
                             <button mat-menu-item *ngIf="note.id != '' && note.notes"
-                            (click)="notes = note.notes;note.EditDesc=!note.EditDesc" 
+                            (click)="notes = note.notes;note.EditDesc=!note.EditDesc;onAdd();" [disabled]="isButtonClicked" 
                             [ngClass]="note.EditDesc? 'onActive' : ''"> Edit</button>
                            
-                            <button mat-menu-item (click)="deleteNotes(item,note)"
+                            <button mat-menu-item (click)="deleteNotes(item,note);" [disabled]="isButtonClicked"
                             > Delete </button>
                           </mat-menu>
                         </div>
