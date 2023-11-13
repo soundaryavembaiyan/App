@@ -89,6 +89,7 @@ export class ExternalviewdetailsComponent implements OnInit {
     isChecked: string = 'mainNote' 
     color: ThemePalette = "primary";
     form: any; 
+    isButtonClicked = false;
   
     constructor(private matterService: MatterService, private httpservice: HttpService,
       private router: Router, private toast: ToastrService,
@@ -141,7 +142,11 @@ export class ExternalviewdetailsComponent implements OnInit {
       //this.gethistoryData();
     }
   
-  
+    onAdd() {
+      // this.AddDesc = true;
+      this.isButtonClicked = true;
+     }
+     
     eventCheck(event: any) {
       this.toggleNote = event.target.checked;
       console.log('eve',event.target.checked)
