@@ -10,6 +10,7 @@ import { EditMetadataComponent } from './edit-metadata/edit-metadata.component';
 import { MergePdfComponent } from './merge-pdf/merge-pdf.component';
 import { PdfDocumentMergeComponent } from './pdf-document-merge/pdf-document-merge.component';
 import { WaterMarkComponent } from './water-mark/water-mark.component';
+import { CreateDocumentComponent } from './createdocument/createdocument.component';
 
 
 
@@ -26,6 +27,7 @@ const routes: Routes = [
             { path: 'upload/:filter', component: DocumentUploadComponent },
             { path: 'view/:filter', component: DocumentViewComponent },
             { path: 'pdfmergedoc/:filter', component: PdfDocumentMergeComponent },
+            { path: 'create/:filter', component: CreateDocumentComponent },
             { path: 'watermark', component: WaterMarkComponent },
             { path: 'editmetadata', component: EditMetadataComponent },
             { path: 'deletepages', component: DeletePagesComponent },

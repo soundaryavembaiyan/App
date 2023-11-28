@@ -1,0 +1,59 @@
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-6">
+
+        <div class="col-xs-6"> 
+            <p class="docName">New Document </p>
+        
+            <button class="menuBtn1" mat-button [matMenuTriggerFor]="menu1">File<i class="fa fa-angle-down" style="font-size:15px;" aria-hidden="true"></i></button>
+            <mat-menu class="matFile" #menu1="matMenu">
+                <button mat-menu-item>New</button>
+                <button mat-menu-item>Open</button>
+                <button mat-menu-item>Save</button>
+            </mat-menu>
+
+            <button class="menuBtn2" mat-button [matMenuTriggerFor]="menu2">Insert<i class="fa fa-angle-down" style="font-size:15px;" aria-hidden="true"></i></button>
+            <mat-menu class="matInsert" #menu2="matMenu">
+                <button mat-menu-item>Overview</button>
+                <button mat-menu-item>Section</button>
+                <button mat-menu-item>Sub Section</button>
+                <button mat-menu-item>Sub Sub Section</button>
+                <button mat-menu-item>Paragraph</button>
+                <button mat-menu-item>Page Break</button>
+            </mat-menu>
+        </div>
+        
+        <div class="form-group">
+            <label for="title" class="lableTitle">Title</label>
+            <input type="text" class="text-size form-control createDoc" name="title">
+        </div>
+
+        <div class="form-group">
+            <label for="title" class="lableTitle">Author</label>
+            <input type="text" class="text-size form-control createDoc" name="title">
+        </div>
+
+        <div class="form-group">
+            <label for="title" class="lableTitle">Created</label>
+            <input type="text" class="text-size form-control createDoc" name="title">
+        </div>
+    </div>
+
+
+    <div class="col-xs-12 col-sm-12 col-md-6">
+        <div class="row containerbox">
+            <div class="col-sm-12">
+                <div class="container">
+                    <div class="row inforowaling">
+                        <div class="col-sm-1 arrowcolumn">
+                            <div class="infocontainerleft">
+                                <!-- <p class="arrowtoggel" id="btntgl">
+                  <img src="assets/img/arrowdown.svg" class="slidearrowtgl" >
+                </p> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

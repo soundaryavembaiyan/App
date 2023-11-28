@@ -1,71 +1,85 @@
 .optionone {
-    font-size: 16px;
-    display: inline-block;
-    font-weight: 600;
-    vertical-align: middle;
-    padding: 7px 22px 7px 22px;
-    color: #000;
-    cursor: pointer;
-    background: #eeeeee;
-    text-align: center;
-    width: auto;
-    border-radius: none;
+  font-size: 16px;
+  display: inline-block;
+  font-weight: 600;
+  vertical-align: middle;
+  padding: 7px 22px 7px 22px;
+  color: #000;
+  cursor: pointer;
+  background: #eeeeee;
+  text-align: center;
+  width: auto;
+  border-radius: none;
 }
 .doc-option{
-    height: 43px;
-    line-height: 30px;
-    font-size: 16px;
-    display: inline-block;
-    font-weight: 600;
-    vertical-align: middle;
-    padding: 7px 22px 7px 22px;
-    color: #000;
-    cursor: pointer;
-    background: #eeeeee;
-    text-align: center;
-    width: auto;
-    /* border-radius: 5px; */
-    //border-right: 1px solid #111;
-    &.view,&.client {
-        border-top-left-radius: 5px ;
-        border-bottom-left-radius: 5px ;
-    }
-    &.firms {
+  height: 43px;
+  line-height: 30px;
+  font-size: 16px;
+  display: inline-block;
+  font-weight: 600;
+  vertical-align: middle;
+  padding: 7px 22px 7px 22px;
+  color: #000;
+  cursor: pointer;
+  background: #eeeeee;
+  text-align: center;
+  width: auto;
+  /* border-radius: 5px; */
+  //border-right: 1px solid #111;
+  &.client {
       border-top-left-radius: 5px ;
       border-bottom-left-radius: 5px ;
+  }
+  &.view {
+    border-top-left-radius: 0px ;
+    border-bottom-left-radius: 0px ;
+  }
+  &.create{
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
+  // &.create:active,
+  // &.create:focus{
+  //   background: #00b3a7 !important;
+  //   color: #fff;
+  // }
+  &.firms {
+    border-top-left-radius: 5px ;
+    border-bottom-left-radius: 5px ;
+    border-top-right-radius: 5px ;
+    border-bottom-right-radius: 5px ;
+    background: #00b3a7 !important;
+    color: #fff;
+  }
+  &.mergepdf,&.firm {
       border-top-right-radius: 5px ;
       border-bottom-right-radius: 5px ;
-      background: #00b3a7 !important;
-      color: #fff;
-    }
-    &.mergepdf,&.firm {
-        border-top-right-radius: 5px ;
-        border-bottom-right-radius: 5px ;
-    }
- 
+  }
+
 }
 .arrowitem{
-  background:#f8f8f8 ;
+background:#f8f8f8 ;
 }
 .arrowitem .fa {
-  background: #00498e;
-  color: #fff;
-  padding: 10px;
+background: #00498e;
+color: #fff;
+padding: 10px;
 
 }
 .doc-option.active{
-  background: #00b3a7 !important;
-  color: #fff;
+background: #00b3a7 !important;
+color: #fff;
 }
 .documents {
-  .cswitchtwo {
-      padding-top: 30px !important
-  }
+.cswitchtwo {
+    padding-top: 30px !important
+}
 
-  .headertop {
-      height: 190px;
-  }
+.headertop {
+    height: 190px;
+}
 }
 .form-check-input {
-  width: 1em !important;
+width: 1em !important;
 }
+

@@ -22,7 +22,7 @@ export class DocumentComponent implements OnInit {
     this.router.events.subscribe((val) => {
       if (val instanceof NavigationEnd) {
         //console.log("val " + val);
-        if (val.urlAfterRedirects.indexOf('/view') > -1 || val.urlAfterRedirects.indexOf('/upload') > -1 || val.urlAfterRedirects.indexOf('/mergepdf') > -1) {
+        if (val.urlAfterRedirects.indexOf('/view') > -1 || val.urlAfterRedirects.indexOf('/upload') > -1 || val.urlAfterRedirects.indexOf('/mergepdf') > -1 || val.urlAfterRedirects.indexOf('/create') > -1) {
           this.isHeader = true;
         } else {
           this.isHeader = false;

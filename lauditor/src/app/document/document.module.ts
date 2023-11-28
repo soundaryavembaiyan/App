@@ -12,10 +12,12 @@ import { DocumentRoutingModule } from './document.routing.module';
 import { MergePdfComponent } from './merge-pdf/merge-pdf.component';
 import { DocumentUploadComponent } from './document-upload/document-upload.component';
 import { DocumentViewComponent } from './document-view/document-view.component';
+import { CreateDocumentComponent } from './createdocument/createdocument.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import {MatMenuModule} from '@angular/material/menu';
 import { AutocompleteLibModule } from 'angular-ng-autocomplete';
 import { ToastrModule } from 'ngx-toastr';
 import { NgxDocViewerModule } from 'ngx-doc-viewer';
@@ -33,6 +35,7 @@ import { SharedModule } from '../shared/shared.module';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 // import { BrowserModule } from '@angular/platform-browser';
 @NgModule({
     imports: [
@@ -57,6 +60,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
         Ng2SearchPipeModule,
         NgxPaginationModule,
         MatPaginatorModule ,
+        NgxSpinnerModule,
+        MatMenuModule
     ],
     declarations: [
         DocumentComponent,
@@ -69,6 +74,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
         DeletePagesComponent,
         AddShortTextComponent,
         AddCustomPagesComponent,
+        CreateDocumentComponent
     ],
     exports: [
         DocumentViewComponent,

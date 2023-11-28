@@ -1,0 +1,106 @@
+.containerbox {
+    width: 100%;
+}
+
+.infocontainerleft {
+    height: 97%;
+    width: 36px;
+    min-height: 933px;
+    background: #c9c9c9;
+    opacity: 1;
+    margin-bottom: 20px;
+    margin-top: -28px;
+    margin-left: -27px;
+    display: inline-block;
+}
+
+@media screen and (min-width: 1280px)  {
+    .infocontainerleft {
+        margin-left: -18px;
+    }
+}
+@media screen and (min-width: 3840px)   {
+    .infocontainerleft {
+        margin-left: -20px;
+    }
+}
+
+.docName {
+    color: #00498E;
+    font-size: 23px;
+    font-weight: 800;
+    margin-left: 15px;
+    margin-top: 10px;
+}
+
+.createDoc {
+    // background: #EEEEEE;
+    // border: none;
+    border-radius: 10px;
+    border: 1px solid #CED4DA;
+    background: #EEE;
+    width: 90%;
+    height: 46px;
+    font-size: 22px;
+    margin-left: 15px;
+}
+
+.lableTitle {
+    color: #212529;
+    font-size: 21px;
+    font-weight: 900;
+    margin-left: 15px;
+    letter-spacing: 0.72px;
+}
+
+.text-size {
+    font-size: 17px !important;
+}
+.menuBtn1{
+    float: right;
+    margin: 20px;
+    margin-top: -40px;
+    margin-right: 99px;
+    border: none;
+    width: 60px;
+    height: 30px;
+    font-weight: 900;
+    font-size: 20px;
+    border-radius: 3px;
+    padding: 3px;
+}
+.menuBtn2{
+    float: right;
+    margin: 20px;
+    margin-top: -50px;
+    margin-right: 25px;
+    border: none;
+    width: 70px;
+    height: 30px;
+    font-weight: 900;
+    font-size: 20px;
+    border-radius: 3px;
+    padding: 3px;
+}
+
+.downA {
+    width: 10px;
+}
+
+::ng-deep .matFile {
+    width: 130px;
+    height: 150px;
+}
+
+/* Hide scrollbar*/
+::ng-deep .matFile::-webkit-scrollbar {
+    display: none; /*Chrome, Safari and Opera*/
+}
+::ng-deep .matFile {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+::ng-deep .matInsert {
+    //height: 150px;
+}

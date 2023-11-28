@@ -36,7 +36,7 @@ export class URLUtils {
     static getNewClients = `/v3/dashboard/new-clients`
     static getDashboardRelations = `/v3/dashboard/relationships`
     static getExternalCounsels = '/v3/dashboard/external-counsels'
-  
+    
     static postDocumentsClient = '/v3/document/upload'
     static postDocumentsFirm = '/v3/documents/firm'
     static MergePdfDocumentsClient = '/v3/mergepdf'
@@ -47,6 +47,7 @@ export class URLUtils {
     static getCountry='/countries'
     static getGeneralExternalMatter = '/v3/sharedgeneral'
     static getLegalExternalMatter = '/v3/sharedlegal'
+
     
 
     // Profile
@@ -310,6 +311,9 @@ export class URLUtils {
     static relationshipSearchEntities = `/v2/relationship/search/entity`
     static relationshipSearchCorporate = `/v2/relationship/search/corporate`
     static relationshipSearchLauditor = '/v2/relationship/search/lauditor'
+    static relationshipAllList(product: any) {
+        return `/v2/relationship/search/${product}`
+    }
 
     // Relationship Requests
     static relationshipEntityRequest = `/v2/relationship/request/entity`
@@ -447,6 +451,8 @@ export class URLUtils {
     static getCalendarList(args: any) {
         return `/v3/events/${args.offset}/${args.currentPage}`
     }
+    static getCalenderExternal = `/v3/corporate/list`
+
     static createEvent = `/v3/events`
     static getEntityTms(id: any) {
         return `/related/entities/tms/` + id
@@ -462,9 +468,17 @@ export class URLUtils {
         return `/v3/event/${args.eventId}`
     }
 
+    //Notes
     static updateEventNotes(id: any) {
-        return `/event/notes/` + id;
+        return `/event/notes/${id}`;
     }
+    static updateCorpNotes(id: any) {
+        return `/v3/notes/${id}`;
+    }
+    static deleteCorpNotes(id: any) {
+        return `/v3/notes/` + id;
+    }
+
     //Invoice
     static Invoice = '/v3/invoice'
     static InvoiceWithId(id: any) {
