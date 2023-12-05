@@ -6,19 +6,21 @@
         
             <button class="menuBtn1" mat-button [matMenuTriggerFor]="menu1">File<i class="fa fa-angle-down" style="font-size:15px;" aria-hidden="true"></i></button>
             <mat-menu class="matFile" #menu1="matMenu">
-                <button mat-menu-item>New</button>
-                <button mat-menu-item>Open</button>
-                <button mat-menu-item>Save</button>
+                <button mat-menu-item><img class="fileImg" src="assets/img/new.svg"/>&nbsp;New</button>
+                <button mat-menu-item><img class="fileImg" src="assets/img/open.svg"/>&nbsp;Open</button>
+                <button mat-menu-item><img class="fileImg" src="assets/img/save.svg"/>&nbsp;Save</button>
             </mat-menu>
 
             <button class="menuBtn2" mat-button [matMenuTriggerFor]="menu2">Insert<i class="fa fa-angle-down" style="font-size:15px;" aria-hidden="true"></i></button>
-            <mat-menu class="matInsert" #menu2="matMenu">
-                <button mat-menu-item>Overview</button>
-                <button mat-menu-item>Section</button>
-                <button mat-menu-item>Sub Section</button>
-                <button mat-menu-item>Sub Sub Section</button>
-                <button mat-menu-item>Paragraph</button>
-                <button mat-menu-item>Page Break</button>
+            <mat-menu class="matInsert" #menu2="matMenu" xPosition="before">
+                <button mat-menu-item (click)="addOn()"><img class="imgoverView" src="assets/img/overview.svg"/>Overview</button>
+                <button mat-menu-item><img class="imgsecView" src="assets/img/section.svg"/>&nbsp;&nbsp;Section</button>
+                <button mat-menu-item><img class="imgView" src="assets/img/subsection.svg"/>&nbsp;Sub-Section 1</button>
+                <button mat-menu-item><img class="imgView" src="assets/img/subsection.svg"/>&nbsp;Sub-Section 2</button>
+                <button mat-menu-item><img class="imgView" src="assets/img/paragraph.svg"/>&nbsp;Paragraph</button>
+                <button mat-menu-item><img class="imgView" src="assets/img/unord.svg"/>&nbsp;Unordered list</button>
+                <button mat-menu-item><img class="imgView" src="assets/img/order.svg"/>&nbsp;Ordered list</button>
+                <button mat-menu-item><img class="imgPort" src="assets/img/pagebreak.svg"/>Page Break</button>
             </mat-menu>
         </div>
         
@@ -34,11 +36,21 @@
 
         <div class="form-group">
             <label for="title" class="lableTitle">Created</label>
-            <input type="text" class="text-size form-control createDoc" name="title">
+            <input type="text" class="text-size form-control createDoc" name="title" disabled>
         </div>
-    </div>
 
+        
+        <div class="form-group" id="narrow"><!-- *ngIf="isOverview" -->            
+            <label for="title" class="lableTitle" style="padding-right:5px">Overview</label> 
+             <input maxlength="50" (ngModelChange)="hypenUpdate($event)" [(ngModel)]="overviewTitle" class="overviewTitle" type="text" disabled/>
+            <img (click)="openDialogAll()" class="expand" src="assets/img/expand.svg"/>
+            <i class="fa fa-times close" aria-hidden="true" (click)="isOverview = !isOverview; overview = ''; overviewTitle =''"></i>
+            <textarea [(ngModel)]="overview" class="text-size form-control textareaDoc" rows="3" cols="50" maxlength="150" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@!$%*|+=?`~<>,. ]|^ /g,'')"></textarea>
+       </div>
+      
+   </div>
 
+<!------    Right Preview    -->
     <div class="col-xs-12 col-sm-12 col-md-6">
         <div class="row containerbox">
             <div class="col-sm-12">
@@ -57,3 +69,7 @@
         </div>
     </div>
 </div> 
+
+
+
+<!-- <app-dialog-box (oversubmitted)="addData($event)"> </app-dialog-box> -->
