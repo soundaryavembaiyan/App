@@ -14,12 +14,13 @@
     display: inline-block;
 }
 
-@media screen and (min-width: 1280px)  {
+@media screen and (min-width: 1280px) {
     .infocontainerleft {
         margin-left: -18px;
     }
 }
-@media screen and (min-width: 3840px)   {
+
+@media screen and (min-width: 3840px) {
     .infocontainerleft {
         margin-left: -20px;
     }
@@ -56,7 +57,8 @@
 .text-size {
     font-size: 17px !important;
 }
-.menuBtn1{
+
+.menuBtn1 {
     float: right;
     margin: 20px;
     margin-top: -40px;
@@ -69,7 +71,8 @@
     border-radius: 3px;
     padding: 3px;
 }
-.menuBtn2{
+
+.menuBtn2 {
     float: right;
     margin: 20px;
     margin-top: -50px;
@@ -88,45 +91,60 @@
 }
 
 ::ng-deep .matFile {
-    width: 130px;
-    height: 150px;
+    // width: 130px;
+    // height: 150px;
+}
+
+::ng-deep .mat-menu-item {
+    max-height: 300px;
+    overflow: scroll;
 }
 
 /* Hide scrollbar*/
 ::ng-deep .matFile::-webkit-scrollbar {
-    display: none; /*Chrome, Safari and Opera*/
+    display: none;
+    /*Chrome, Safari and Opera*/
 }
+
 ::ng-deep .matFile {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
 }
 
 ::ng-deep .matInsert {
-    height: 150px;
+    //height: 150px;
 }
-.fileImg{
+
+.fileImg {
     width: 26px;
     height: 25px;
 }
-.imgView{
+
+.imgView {
     width: 30px;
     height: 26px;
 }
-.imgPort{
+
+.imgPort {
     width: 40px;
     height: 36px;
     margin-left: -5px;
 }
-.imgoverView{
+
+.imgoverView {
     width: 35px;
     height: 28px;
     margin-left: -5px;
 }
-.imgsecView{
+
+.imgsecView {
     width: 23px;
     height: 28px;
 }
-.textareaDoc{
+
+.textareaDoc {
     border-radius: 10px;
     border: 1px solid #CED4DA;
     background: #EEE;
@@ -134,33 +152,36 @@
     font-size: 22px;
     margin-left: 15px;
 }
-.close{
-        float: right;
-        border: none;
-        width: 60px;
-        height: 30px;
-        font-weight: 900;
-        font-size: 20px;
-        border-radius: 3px;
-        padding: 3px;
-        margin-right: 10px;
+
+.close {
+    float: right;
+    border: none;
+    width: 60px;
+    height: 30px;
+    font-weight: 900;
+    font-size: 20px;
+    border-radius: 3px;
+    padding: 3px;
+    margin-right: 10px;
 }
-.expand{
+
+.expand {
     float: right;
     padding: 3px;
     margin-bottom: -30px;
     margin-right: 80px;
-    cursor:pointer;
+    cursor: pointer;
 }
 
 //Styles for Dialog..
 
-.overviewText{
+.overviewText {
     float: left;
     padding: 10px;
     margin: 10px;
     margin-left: 0px;
 }
+
 // .overedText{
 //     font-size: 27px;
 //     margin-left: 5px;
@@ -171,21 +192,24 @@
     float: right;
     //margin-top: -82px;
     //padding: 20px;
-  }
+}
+
 // .xClose{
 //     margin-right: 100px;
 //     margin-top: 30px;
 // }
-.overviewDialog{
+.overviewDialog {
     padding: 10px;
     margin-left: 10px;
 }
-.overviewSave{
+
+.overviewSave {
     float: right;
     margin-right: 50px;
     margin-top: 20px;
 }
-.overviewTitle{
+
+.overviewTitle {
     border: none;
     //width: 320px;
     width: 338px;
@@ -194,4 +218,57 @@
     font-size: 21px;
     font-weight: 900;
     background-color: transparent;
- }
+
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+}
+
+//  .overviewTitle{
+//     display: inline-block;
+//     //width: 300px;
+//     white-space: nowrap;
+//     overflow: hidden !important;
+//     text-overflow: ellipsis;
+//  }
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+    .close {
+        //margin-top: -60px;
+        margin-right: -15px;
+    }
+
+    .expand {
+        float: right;
+        padding: 3px;
+        margin-top: -1px;
+        margin-right: 50px;
+        cursor: pointer;
+    }
+
+    .overviewTitle {
+        font-size: 1rem;
+        width: auto;
+    }
+}
+
+.overRoll {
+    height: 933px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+textarea {
+    overflow-y: scroll;
+    height: 100px;
+    resize: none;
+}
+
+.subsec {
+    margin-left: 17px;
+}
+
+.subsubsec {
+    margin-left: 35px;
+}
