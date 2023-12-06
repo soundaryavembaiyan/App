@@ -12,7 +12,6 @@ import { DocumentRoutingModule } from './document.routing.module';
 import { MergePdfComponent } from './merge-pdf/merge-pdf.component';
 import { DocumentUploadComponent } from './document-upload/document-upload.component';
 import { DocumentViewComponent } from './document-view/document-view.component';
-import { CreateDocumentComponent } from './createdocument/createdocument.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -36,6 +35,8 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+import {MatCardModule} from '@angular/material/card';
+import {CreateDocumentComponent, DialogBoxComponent, SubSection1BoxComponent, SubSection2BoxComponent, ParagraphBoxComponent } from './createdocument/createdocument.component';
 // import { BrowserModule } from '@angular/platform-browser';
 @NgModule({
     imports: [
@@ -49,6 +50,7 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
         MatDatepickerModule,
         MatNativeDateModule,
         MatFormFieldModule,
+        MatCardModule,
         MatInputModule,
         AutocompleteLibModule,
         NgxDocViewerModule,
@@ -74,7 +76,12 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
         DeletePagesComponent,
         AddShortTextComponent,
         AddCustomPagesComponent,
-        CreateDocumentComponent
+        CreateDocumentComponent,
+        DialogBoxComponent,
+        SubSection1BoxComponent, 
+        SubSection2BoxComponent, 
+        ParagraphBoxComponent
+         
     ],
     exports: [
         DocumentViewComponent,
