@@ -57,6 +57,7 @@ import {MatNativeDateModule, MatRippleModule} from '@angular/material/core';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { NgxSpinnerModule } from 'ngx-spinner';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatSelectModule} from '@angular/material/select';
 import {MatSidenavModule} from '@angular/material/sidenav';
@@ -73,6 +74,8 @@ import {OverlayModule} from '@angular/cdk/overlay';
 import {CdkMenuModule} from '@angular/cdk/menu';
 import {DialogModule} from '@angular/cdk/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+
+import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 // import { MessagesComponent } from './messages/messages.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { ConfirmationDialogService } from './confirmation-dialog/confirmation-dialog.service';
@@ -100,6 +103,7 @@ import { CreateinvoiceComponent } from './invoice/createinvoice/createinvoice.co
 import { PreviewComponent } from './invoice/preview/preview.component';
 import { DatepickerModule } from 'ngx-bootstrap/datepicker';
 import { PaymentComponent } from './payment/payment.component';
+import { CreateDocumentComponent, DialogBoxComponent, ParagraphBoxComponent, SectionBoxComponent, SubSection1BoxComponent, SubSection2BoxComponent } from './document/createdocument/createdocument.component';
 
 
 @NgModule({
@@ -126,7 +130,13 @@ import { PaymentComponent } from './payment/payment.component';
       CreateinvoiceComponent,
       PreviewComponent,
       PaymentComponent,
-
+      //CreateDocumentComponent,
+      //DialogBoxComponent,
+      SectionBoxComponent,
+      //SubSection1BoxComponent, 
+      //SubSection2BoxComponent, 
+      //ParagraphBoxComponent
+      
        
    ],
   imports: [
@@ -135,6 +145,7 @@ import { PaymentComponent } from './payment/payment.component';
     AppRoutingModule,
     RouterModule,
     FormsModule,
+    NgxSpinnerModule,
     ReactiveFormsModule,
     ToastrModule.forRoot(),
      BrowserAnimationsModule,
@@ -206,10 +217,13 @@ import { PaymentComponent } from './payment/payment.component';
     NgxPaginationModule,
     AuditTrailsModule
   ],
-  providers: [HttpClient,ConfirmationDialogService,BsDatepickerConfig,EditCalenderDialogService],
+  providers: [HttpClient,ConfirmationDialogService,BsDatepickerConfig,EditCalenderDialogService, 
+    { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { hasBackdrop: false } }
+  ],
   bootstrap: [AppComponent],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
   ],
+  
 })
 export class AppModule { }
