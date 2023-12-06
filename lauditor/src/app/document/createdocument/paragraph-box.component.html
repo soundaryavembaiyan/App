@@ -1,1 +1,30 @@
 
+<!-- PARAGRAPH -->
+<div class="overviewDialog" *ngIf="paragraphDialog">
+    <!-- <div class="overviewText"> 
+        <h1 class="overedText" mat-dialog-title>Overview</h1>
+    </div> -->
+    <div class="closeDialog">
+        <i class="fa fa-times xClose" (click)="closeDialog()" aria-hidden="true"></i>
+    </div>
+
+    <div class="openDialog">
+        <div class="form-group">
+            <label for="title" class="lableTitle">Paragraph Title</label>
+            <input type="text" maxlength="50" (ngModelChange)="prependHyphen($event)" [(ngModel)]="paragraphTitle" class="text-size form-control createDoc" name="title">
+        </div>
+
+        <div class="form-group">
+            <label for="title" class="lableTitle">Text</label>
+            <textarea  [(ngModel)]="paragraph" class="text-size form-control textareaDoc" rows="3" cols="50"
+             oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@!$%*|+=?`~<>,. ]|^ /g,'')"></textarea>
+        </div>
+
+        <div class="overviewSave">
+        <!-- <button type="reset" class="btn btn-default btncancel" (click)="closeDialog()">Cancel</button> -->
+        <button type="submit" (click)="save()" class="btn btn-default btnsave savecls">Save</button> 
+      </div>
+
+    </div>
+    
+</div>
