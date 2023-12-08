@@ -1,1 +1,35 @@
 
+<!-- ORDERED LISTS -->
+<div class="overviewDialog" *ngIf="orderlistDialog">
+    <form [formGroup]="orderlistForm">
+    <div class="closeDialog">
+        <i class="fa fa-times xClose" (click)="closeDialog()" aria-hidden="true"></i>
+    </div>
+
+    <div class="openDialog">
+        <div class="form-group">
+            <label for="title" class="lableTitle">Ordered List Title</label>
+            <input formControlName="orderlistTitle" [(ngModel)]="orderlistTitle" type="text" maxlength="50" (ngModelChange)="prependHyphen($event)" class="text-size form-control createDoc" name="title">
+        </div>
+
+        <div class="form-group">
+        <label for="title" class="lableTitle">List Items</label>
+
+            <div class="container-fluid listRoll" formArrayName="orderListItems">
+              <!-- <div class="oderAlign" *ngFor="let item of orderListItems.controls; let i = index" [formGroupName]="i"> -->
+                <div class="oderAlign" *ngFor="let item of orderlistForm.get('orderListItems').controls; let i = index" [formGroupName]="i">
+                <input formControlName="orderlist" type="text" class="text-size form-control createDoc" /> <!-- [(ngModel)]="orderlist" Removed-->
+              </div>
+            </div>
+            <div><img class="addBtn" (click)="addorderList()" src="assets/img/addnotes.svg" /> <p class="addMore">Add More</p></div>
+          
+        </div>
+
+        <div class="overviewSave">
+        <!-- <button type="reset" class="btn btn-default btncancel" (click)="closeDialog()">Cancel</button> -->
+        <button type="submit" (click)="save()" class="btn btn-default btnsave savecls">Save</button> 
+      </div>
+
+    </div></form>
+    
+</div>
