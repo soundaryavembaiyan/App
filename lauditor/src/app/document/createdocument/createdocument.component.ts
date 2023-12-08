@@ -22,6 +22,7 @@ import { environment } from 'src/environments/environment';
 export class CreateDocumentComponent {
   product = environment.product;
   myForm:any;
+  isDisabled: boolean = true;
 
   overview:any;
   overviewTitle:any;
@@ -48,6 +49,19 @@ export class CreateDocumentComponent {
   isParagraph:boolean = false;
   paragraphDialog: boolean = true;
 
+  orderlist:any;
+  orderlistTitle:any;
+  isOrderlist:boolean = false;
+  orderlistDialog: boolean = true;
+
+  unorderlist:any;
+  unorderlistTitle:any;
+  isunOrderlist:boolean = false;
+  unorderlistDialog: boolean = true;
+
+  //orderListItems: string[] = [''];
+  orderListItems: any;
+  unorderListItems: any;
 
   constructor(private router: Router,  private fb: FormBuilder, private httpservice: HttpService, private toast: ToastrService, private documentService: DocumentService,
     private modalService: ModalService, public sanitizer: DomSanitizer, public dialog: MatDialog) {
@@ -55,8 +69,71 @@ export class CreateDocumentComponent {
   }
 
   ngOnInit() {
-   
+    this.myForm = this.fb.group({
+      overview: ['', Validators.required],
+      overviewTitle: ['', Validators.required],
+      section: ['', Validators.required],
+      sectionTitle: ['', Validators.required],
+      subsection: ['', Validators.required],
+      subsectionTitle: ['', Validators.required],
+      subsubsection: ['', Validators.required],
+      subsubsectionTitle: ['', Validators.required],
+      paragraph: ['', Validators.required],
+      paragraphTitle: ['', Validators.required],
+
+      orderlist: ['', Validators.required],
+      orderlistTitle: ['', Validators.required],
+      orderListItems: this.fb.array([this.createorderItem()]),
+
+      unorderlist: ['', Validators.required],
+      unorderlistTitle: ['', Validators.required],
+      unorderListItems: this.fb.array([this.createunorderItem()]),
+
+  });
+
+
+  this.orderListItems = this.myForm.get('orderListItems') as FormArray;
+  this.unorderListItems = this.myForm.get('unorderListItems') as FormArray;
+  
   }
+
+
+  //UNORDERED LIST ACTIONS
+  addorderList(): void {
+    this.orderListItems = this.myForm.get('orderListItems') as FormArray;
+    this.orderListItems.push(this.createorderItem());
+  }
+
+  createorderItem(): FormGroup {
+    return this.fb.group({
+      orderlist: [''] 
+    });
+  }
+
+  removeorderList(i: number) {
+    const orderListItemsArray = this.orderListItems as FormArray;
+    orderListItemsArray.removeAt(i);
+  }
+
+//UNORDERED LIST ACTIONS
+  addunorderList(): void {
+    this.unorderListItems = this.myForm.get('unorderListItems') as FormArray;
+    this.unorderListItems.push(this.createunorderItem());
+  }
+
+  createunorderItem(): FormGroup {
+    return this.fb.group({
+      unorderlist: [''] 
+    });
+  }
+
+  removeunorderList(i: number) {
+    const unorderListItemsArray = this.unorderListItems as FormArray;
+    unorderListItemsArray.removeAt(i);
+  }
+
+
+
 
   overviewOn() {
     this.isOverview = true
@@ -78,7 +155,15 @@ export class CreateDocumentComponent {
     this.isParagraph = true
   }
 
+  orderlistOn(){
+    this.isOrderlist = true
+  }
 
+  unorderlistOn(){
+    this.isunOrderlist = true
+  }
+
+  //Dialog boxes!!!
   openOverviewDialog() {
     this.overviewDialog = true;
     const dialogRef = this.dialog.open(DialogBoxComponent, {
@@ -174,6 +259,78 @@ export class CreateDocumentComponent {
     });
   }
 
+  openOrderlistDialog() {
+    this.orderlistDialog = true;
+    const dialogRef = this.dialog.open(OrderedlistBoxComponent, {
+      width: '700px',
+      height: '500px',
+      data: {
+        orderlist: this.orderlist,
+        orderlistTitle: this.orderlistTitle,
+        orderListItems:this.orderListItems
+      }
+    });
+    //console.log('orderListItems',this.orderListItems)
+
+    // dialogRef.afterClosed().subscribe((result: { orderlist: string, orderlistTitle: string, orderListItems: any }) => {
+    //   if (result) {
+    //     this.orderlist = result.orderlist;
+    //     this.orderlistTitle = result.orderlistTitle;
+    //     //this.orderListItems = result.orderListItems;
+    //     this.orderListItems = this.fb.array(result.orderListItems);
+    //   }
+    // });
+
+    dialogRef.afterClosed().subscribe((result: { orderlist: string, orderlistTitle: string, orderListItems: any }) => {
+      if (result) {
+        this.orderlist = result.orderlist;
+        this.orderlistTitle = result.orderlistTitle;
+    
+        const formArrayControls = result.orderListItems.map((item: any) => this.fb.group({ orderlist: item.orderlist }));
+        
+        if (this.orderListItems) {
+          this.orderListItems.clear(); // Clear existing items before pushing new ones
+          formArrayControls.forEach((control: any) => {
+            this.orderListItems.push(control); // Push each control to the FormArray
+          });
+        } else {
+          this.orderListItems = this.fb.array(formArrayControls); // Initialize FormArray 
+        }
+      }
+    });
+  }
+
+  openunOrderlistDialog() {
+    this.unorderlistDialog = true;
+    const dialogRef = this.dialog.open(UnorderedlistBoxComponent, {
+      width: '700px',
+      height: '500px',
+      data: {
+        unorderlist: this.unorderlist,
+        unorderlistTitle: this.unorderlistTitle,
+        unorderListItems:this.unorderListItems
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result: { unorderlist: string, unorderlistTitle: string, unorderListItems: any }) => {
+      if (result) {
+        this.unorderlist = result.unorderlist;
+        this.unorderlistTitle = result.unorderlistTitle;
+    
+        const formArrayControls = result.unorderListItems.map((item: any) => this.fb.group({ unorderlist: item.unorderlist }));
+        
+        if (this.unorderListItems) {
+          this.unorderListItems.clear(); // Clear existing items before pushing new ones
+          formArrayControls.forEach((control: any) => {
+            this.unorderListItems.push(control); // Push each control to the FormArray
+          });
+        } else {
+          this.unorderListItems = this.fb.array(formArrayControls); // Initialize FormArray 
+        }
+      }
+    });
+  }
+
   hypenUpdate(newTitle: string) {
     if (newTitle && !newTitle.startsWith(' ')) {
       this.overviewTitle = '' + newTitle; 
@@ -183,7 +340,6 @@ export class CreateDocumentComponent {
   }
   
 }
-
 
 
 @Component({
@@ -197,6 +353,7 @@ export class CreateDocumentComponent {
 export class DialogBoxComponent {
   dialog: any;
   name: any;
+  overviewForm:any;
 
   overview:any;
   overviewTitle:any;
@@ -206,14 +363,22 @@ export class DialogBoxComponent {
   //@Output() oversubmitted = new EventEmitter();
 
   constructor(
-    public dialogRef: MatDialogRef<DialogBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { overview: string, overviewTitle: string}
-  ) {
+    public dialogRef: MatDialogRef<DialogBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { overview: string, overviewTitle: string},
+    private fb: FormBuilder ) {
     //this.overview = data[0];
     this.overview = data.overview;
     this.overviewTitle = data.overviewTitle
   }
 
   ngOnInit() {
+
+    this.overviewForm = this.fb.group({
+      overviewTitle: ['', Validators.required],
+      overview: ['', Validators.required],
+    });
+  
+    //console.log('this.overview',this.overviewForm)
+
     if (this.overviewTitle && this.overviewTitle.startsWith('-')) {
       this.overviewTitle = this.overviewTitle.substring(2); // Remove the hyphen & space
     }
@@ -237,6 +402,8 @@ export class DialogBoxComponent {
       overview: this.overview,
       overviewTitle: this.overviewTitle
     };
+    console.log('overview',this.overview)
+    console.log('overviewTitle',this.overviewTitle)
     this.dialogRef.close(data); 
   }
 
@@ -269,6 +436,7 @@ export class DialogBoxComponent {
 export class SectionBoxComponent {
   dialog: any;
   name: any;
+  sectionForm:any
 
   section:any;
   sectionTitle:any;
@@ -278,7 +446,8 @@ export class SectionBoxComponent {
   //@Output() oversubmitted = new EventEmitter();
 
   constructor(
-    public dialogRef: MatDialogRef<SectionBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { section: string, sectionTitle: string }
+    public dialogRef: MatDialogRef<SectionBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { section: string, sectionTitle: string },
+    private fb: FormBuilder 
   ) {
     //this.overview = data[0];
     this.section = data.section;
@@ -286,6 +455,12 @@ export class SectionBoxComponent {
   }
 
   ngOnInit() {
+
+    this.sectionForm = this.fb.group({
+      sectionTitle: ['', Validators.required],
+      section: ['', Validators.required],
+    });
+
     if (this.sectionTitle && this.sectionTitle.startsWith('-')) {
       this.sectionTitle = this.sectionTitle.substring(2); // Remove the hyphen & space
     }
@@ -332,6 +507,7 @@ export class SectionBoxComponent {
 export class SubSection1BoxComponent {
   dialog: any;
   name: any;
+  subsectionForm:any;
 
   subsection:any;
   subsectionTitle:any;
@@ -341,7 +517,8 @@ export class SubSection1BoxComponent {
   //@Output() oversubmitted = new EventEmitter();
 
   constructor(
-    public dialogRef: MatDialogRef<SubSection1BoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { subsection: string, subsectionTitle: string }
+    public dialogRef: MatDialogRef<SubSection1BoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { subsection: string, subsectionTitle: string },
+    private fb: FormBuilder 
   ) {
     //this.overview = data[0];
     this.subsection = data.subsection;
@@ -349,6 +526,11 @@ export class SubSection1BoxComponent {
   }
 
   ngOnInit() {
+    this.subsectionForm = this.fb.group({
+      subsectionTitle: ['', Validators.required],
+      subsection: ['', Validators.required],
+    });
+
     if (this.subsectionTitle && this.subsectionTitle.startsWith('-')) {
       this.subsectionTitle = this.subsectionTitle.substring(2); // Remove the hyphen & space
     }
@@ -395,6 +577,7 @@ export class SubSection1BoxComponent {
 export class SubSection2BoxComponent {
   dialog: any;
   name: any;
+  subsubsectionForm:any;
 
   subsubsection:any;
   subsubsectionTitle:any;
@@ -404,7 +587,8 @@ export class SubSection2BoxComponent {
   //@Output() oversubmitted = new EventEmitter();
 
   constructor(
-    public dialogRef: MatDialogRef<SubSection2BoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { subsubsection: string, subsubsectionTitle: string }
+    public dialogRef: MatDialogRef<SubSection2BoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { subsubsection: string, subsubsectionTitle: string },
+    private fb: FormBuilder 
   ) {
     //this.overview = data[0];
     this.subsubsection = data.subsubsection;
@@ -412,6 +596,11 @@ export class SubSection2BoxComponent {
   }
 
   ngOnInit() {
+    this.subsubsectionForm = this.fb.group({
+      subsubsectionTitle: ['', Validators.required],
+      subsubsection: ['', Validators.required],
+    });
+
     if (this.subsubsectionTitle && this.subsubsectionTitle.startsWith('-')) {
       this.subsubsectionTitle = this.subsubsectionTitle.substring(2); // Remove the hyphen & space
     }
@@ -459,6 +648,7 @@ export class SubSection2BoxComponent {
 export class ParagraphBoxComponent {
   dialog: any;
   name: any;
+  paragraphForm:any;
 
   paragraph:any;
   paragraphTitle:any;
@@ -468,7 +658,8 @@ export class ParagraphBoxComponent {
   //@Output() oversubmitted = new EventEmitter();
 
   constructor(
-    public dialogRef: MatDialogRef<ParagraphBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { paragraph: string, paragraphTitle: string }
+    public dialogRef: MatDialogRef<ParagraphBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { paragraph: string, paragraphTitle: string },
+    private fb: FormBuilder 
   ) {
     //this.overview = data[0];
     this.paragraph = data.paragraph;
@@ -476,6 +667,11 @@ export class ParagraphBoxComponent {
   }
 
   ngOnInit() {
+    this.paragraphForm = this.fb.group({
+      paragraphTitle: ['', Validators.required],
+      paragraph: ['', Validators.required],
+    });
+
     if (this.paragraphTitle && this.paragraphTitle.startsWith('-')) {
       this.paragraphTitle = this.paragraphTitle.substring(2); // Remove the hyphen & space
     }
@@ -506,6 +702,221 @@ export class ParagraphBoxComponent {
   prependHyphen(newTitle: string) {
     if (newTitle && !newTitle.startsWith(' ')) {
       this.paragraphTitle = '' + newTitle; 
+    }
+  }
+
+}
+
+@Component({
+  selector: 'app-orderedlist-box',
+  templateUrl: './orderedlist-box.component.html',
+  styleUrls: ['./createdocument.component.scss'],
+  //standalone: true,
+})
+
+@Injectable()
+export class OrderedlistBoxComponent {
+  dialog: any;
+  name: any;
+  orderlistForm:any;
+
+  orderlist:any;
+  orderlistTitle:any;
+  isOrderlist:boolean = false;
+  orderlistDialog: boolean = true;
+
+  @Input() orderListItems: FormArray;
+  //orderListItems: string[] = [];
+  childOrderListItems: any;
+
+  constructor(
+    public dialogRef: MatDialogRef<OrderedlistBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { orderlist: string, orderlistTitle: string, orderListItems: FormArray },
+    private fb: FormBuilder 
+  ) {
+    //this.overview = data[0];
+    this.orderlist = data.orderlist;
+    this.orderlistTitle = data.orderlistTitle;
+   this.orderListItems = data.orderListItems;
+  }
+
+
+  ngOnInit() {
+    this.orderlistForm = this.fb.group({
+      orderlistTitle: ['', Validators.required],
+      orderlist: ['', Validators.required],
+
+      //orderListItems: this.fb.array([this.createItem()]),
+      orderListItems: this.orderListItems
+
+    });
+  
+    //this.orderListItems = this.orderlistForm.get('orderListItems') as FormArray;
+
+    if (this.orderListItems) {
+      this.orderListItems = this.fb.array([...this.orderListItems.controls]); // Make a copy of orderListItems
+    } else {
+      this.orderListItems = this.fb.array([]);
+    }
+    
+    if (Array.isArray(this.data.orderListItems.controls)) {
+      this.orderListItems = this.data.orderListItems as FormArray;
+    } else {
+      // If the data doesn't match the expected structure, create a new FormArray
+      this.orderListItems = this.fb.array([]);
+    }
+    //console.log('OOOorderListItems',this.orderListItems)
+
+    if (this.orderlistTitle && this.orderlistTitle.startsWith('-')) {
+      this.orderlistTitle = this.orderlistTitle.substring(2); // Remove the hyphen & space
+    }
+
+  }
+
+
+  addorderList(): void {
+    this.orderListItems = this.orderlistForm.get('orderListItems') as FormArray;
+    this.orderListItems.push(this.createunorderItem());
+  }
+  createunorderItem(): FormGroup {
+    return this.fb.group({
+      orderlist: [''] // Initialize with an empty value
+    });
+  }
+
+
+  save(){
+    //for Hypen
+    if (this.orderlistTitle && !this.orderlistTitle.startsWith('-')) {
+      this.orderlistTitle = '- ' + this.orderlistTitle;
+    }
+    
+    const orderListItemsData = this.orderListItems.value;
+    const data = {
+      orderlist: this.orderlist,
+      orderlistTitle: this.orderlistTitle,
+      orderListItems: orderListItemsData
+    };
+    this.dialogRef.close(data); 
+  }
+
+  closeDialog() {
+    this.dialogRef.close()
+  }
+
+  onInputChange(event: Event) {
+    const target = event.target as HTMLTextAreaElement;
+    this.orderlist = target.value; // Overview to parent textarea
+  }
+
+  prependHyphen(newTitle: string) {
+    if (newTitle && !newTitle.startsWith(' ')) {
+      this.orderlistTitle = '' + newTitle; 
+    }
+  }
+
+}
+
+@Component({
+  selector: 'app-unorderedlist-box',
+  templateUrl: './unorderedlist-box.component.html',
+  styleUrls: ['./createdocument.component.scss'],
+  //standalone: true,
+})
+
+@Injectable()
+export class UnorderedlistBoxComponent {
+  dialog: any;
+  name: any;
+  unorderlistForm:any;
+
+  unorderlist:any;
+  unorderlistTitle:any;
+  isunOrderlist:boolean = false;
+  unorderlistDialog: boolean = true;
+
+  @Input() unorderListItems: FormArray;
+
+  constructor(
+    public dialogRef: MatDialogRef<UnorderedlistBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { unorderlist: string, unorderlistTitle: string, unorderListItems: FormArray },
+    private fb: FormBuilder 
+  ) {
+    this.unorderlist = data.unorderlist;
+    this.unorderlistTitle = data.unorderlistTitle;
+   this.unorderListItems = data.unorderListItems;
+  }
+
+
+  ngOnInit() {
+    this.unorderlistForm = this.fb.group({
+      orderlistTitle: ['', Validators.required],
+      orderlist: ['', Validators.required],
+
+      //orderListItems: this.fb.array([this.createItem()]),
+      unorderListItems: this.unorderListItems
+
+    });
+  
+    //this.orderListItems = this.orderlistForm.get('orderListItems') as FormArray;
+
+    if (this.unorderListItems) {
+      this.unorderListItems = this.fb.array([...this.unorderListItems.controls]); // Make a copy of orderListItems
+    } else {
+      this.unorderListItems = this.fb.array([]);
+    }
+    
+    if (Array.isArray(this.data.unorderListItems.controls)) {
+      this.unorderListItems = this.data.unorderListItems as FormArray;
+    } else {
+      // If the data doesn't match the expected structure, create a new FormArray
+      this.unorderListItems = this.fb.array([]);
+    }
+    //console.log('OOOorderListItems',this.orderListItems)
+
+    if (this.unorderlistTitle && this.unorderlistTitle.startsWith('-')) {
+      this.unorderlistTitle = this.unorderlistTitle.substring(2); // Remove the hyphen & space
+    }
+
+  }
+
+
+  addunorderList(): void {
+    this.unorderListItems = this.unorderlistForm.get('unorderListItems') as FormArray;
+    this.unorderListItems.push(this.createunorderItem());
+  }
+  createunorderItem(): FormGroup {
+    return this.fb.group({
+      unorderlist: [''] // Initialize with an empty value
+    });
+  }
+
+
+  save(){
+    //for Hypen
+    if (this.unorderlistTitle && !this.unorderlistTitle.startsWith('-')) {
+      this.unorderlistTitle = '- ' + this.unorderlistTitle;
+    }
+    
+    const unorderListItemsData = this.unorderListItems.value;
+    const data = {
+      unorderlist: this.unorderlist,
+      unorderlistTitle: this.unorderlistTitle,
+      unorderListItems: unorderListItemsData
+    };
+    this.dialogRef.close(data); 
+  }
+
+  closeDialog() {
+    this.dialogRef.close()
+  }
+
+  onInputChange(event: Event) {
+    const target = event.target as HTMLTextAreaElement;
+    this.unorderlist = target.value; // Overview to parent textarea
+  }
+
+  prependHyphen(newTitle: string) {
+    if (newTitle && !newTitle.startsWith(' ')) {
+      this.unorderlistTitle = '' + newTitle; 
     }
   }
 
