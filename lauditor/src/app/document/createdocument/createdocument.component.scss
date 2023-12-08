@@ -239,6 +239,17 @@
         margin-right: -15px;
     }
 
+    .delIcon{
+        font-size: 18px;
+        margin-top: -33px;
+        //margin-right: -28px;
+        margin-right: -40px;
+    }
+
+    .createDoc{
+        width: 85%;
+    }
+
     .expand {
         float: right;
         padding: 3px;
@@ -271,4 +282,38 @@ textarea {
 
 .subsubsec {
     margin-left: 35px;
+}
+.addBtn{
+    width: 25px;
+    margin-left: 15px;
+    margin-bottom: -20px;
+    height: 20px;
+    cursor: pointer;
+}
+.addMore{
+    font-size: 1.2rem;
+    color: #004d87;
+    margin-top: -13px;
+    margin-left: 48px;
+    font-weight: 900;
+}
+.oderAlign{
+    margin-bottom: 10px;
+}
+
+.listRoll {
+    //overflow-y: auto;
+}
+
+.delIcon{
+    float: right;
+    border: none;
+    cursor: pointer;
+    width: 60px;
+    height: 30px;
+    font-weight: 900;
+    font-size: 20px;
+    border-radius: 3px;
+    margin-top: -36px;
+    margin-right: -18px;
 }
