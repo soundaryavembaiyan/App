@@ -63,6 +63,9 @@ export class CreateDocumentComponent {
   orderListItems: any;
   unorderListItems: any;
 
+  count = 1;
+  taskTitle = '';
+
   constructor(private router: Router,  private fb: FormBuilder, private httpservice: HttpService, private toast: ToastrService, private documentService: DocumentService,
     private modalService: ModalService, public sanitizer: DomSanitizer, public dialog: MatDialog) {
 
@@ -97,7 +100,11 @@ export class CreateDocumentComponent {
   
   }
 
-
+  countOf(){
+    this.count++;
+    console.log('count', this.count)
+  }
+  
   //UNORDERED LIST ACTIONS
   addorderList(): void {
     this.orderListItems = this.myForm.get('orderListItems') as FormArray;
