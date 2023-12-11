@@ -1,9 +1,9 @@
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-6 overRoll">
-        <!-- <form [formGroup]="myForm"> -->
+        <form [formGroup]="myForm">
 
         <div class="col-xs-6"> 
-            <p class="docName">New Document </p>
+            <p class="docName">Untitled document</p>
         
             <button class="menuBtn1" mat-button [matMenuTriggerFor]="menu1">File<i class="fa fa-angle-down" style="font-size:15px;" aria-hidden="true"></i></button>
             <mat-menu class="matFile" #menu1="matMenu">
@@ -21,8 +21,8 @@
                 <button mat-menu-item (click)="subsectionOn()"><img class="imgView" src="assets/img/subsection.svg"/>&nbsp;Sub-Section 1</button>
                 <button mat-menu-item (click)="subsubsectionOn()"><img class="imgView" src="assets/img/subsection.svg"/>&nbsp;Sub-Section 2</button>
                 <button mat-menu-item (click)="paragraphOn()"><img class="imgView" src="assets/img/paragraph.svg"/>&nbsp;Paragraph</button>
-                <button mat-menu-item><img class="imgView" src="assets/img/unord.svg"/>&nbsp;Unordered list</button>
-                <button mat-menu-item><img class="imgView" src="assets/img/order.svg"/>&nbsp;Ordered list</button>
+                <button mat-menu-item (click)="orderlistOn()"><img class="imgView" src="assets/img/order.svg"/>&nbsp;Ordered list</button>
+                <button mat-menu-item (click)="unorderlistOn()"><img class="imgView" src="assets/img/unord.svg"/>&nbsp;Unordered list</button>
                 <button mat-menu-item><img class="imgPort" src="assets/img/pagebreak.svg"/>Page Break</button>
             </mat-menu>
 
@@ -46,76 +46,108 @@
         <!-- OVERVIEW -->
         <div class="form-group" id="narrow" *ngIf="isOverview"><!-- *ngIf="isOverview" -->            
             <label for="title" class="lableTitle" style="padding-right:5px">Overview</label> 
-            <input maxlength="50" (ngModelChange)="hypenUpdate($event)" [(ngModel)]="overviewTitle" class="overviewTitle" type="text" disabled/>
+            <input formControlName="overviewTitle" maxlength="50" (ngModelChange)="hypenUpdate($event)" [(ngModel)]="overviewTitle" class="overviewTitle" type="text" [disabled]="isDisabled"/>
             <img (click)="openOverviewDialog()" class="expand" src="assets/img/expand.svg"/>
             <i class="fa fa-times close" aria-hidden="true" (click)="isOverview = !isOverview; overview = ''; overviewTitle =''"></i>
-            <textarea [(ngModel)]="overview" class="text-size form-control textareaDoc" rows="3" cols="50" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@!$%*|+=?`~<>,. ]|^ /g,'')"></textarea>
+            <textarea formControlName="overview" [(ngModel)]="overview" class="text-size form-control textareaDoc" rows="3" cols="50" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@!$%*|+=?`~<>,. ]|^ /g,'')"></textarea>
        </div>
         
        <!-- SECTION -->
        <div class="form-group" id="narrow" *ngIf="isSection">         
         <label for="title" class="lableTitle" style="padding-right:5px">Section</label> 
-        <input maxlength="50" (ngModelChange)="hypenUpdate($event)" [(ngModel)]="sectionTitle" class="overviewTitle" type="text" disabled/>
+        <input formControlName="sectionTitle" maxlength="50" (ngModelChange)="hypenUpdate($event)" [(ngModel)]="sectionTitle" class="overviewTitle" type="text" [disabled]="isDisabled"/>
         <img (click)="openSectionDialog()" class="expand" src="assets/img/expand.svg"/>
         <i class="fa fa-times close" aria-hidden="true" (click)="isSection = !isSection; section = ''; sectionTitle =''"></i>
-        <textarea [(ngModel)]="section" class="text-size form-control textareaDoc" rows="3" cols="50" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@!$%*|+=?`~<>,. ]|^ /g,'')"></textarea>
+        <textarea formControlName="section" [(ngModel)]="section" class="text-size form-control textareaDoc" rows="3" cols="50" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@!$%*|+=?`~<>,. ]|^ /g,'')"></textarea>
       </div>
     
       <!-- SUB SECTION -->
       <div class="form-group subsec" id="narrow" *ngIf="issubSection">            
         <label for="title" class="lableTitle" style="padding-right:5px">Sub Section 1</label> 
-        <input maxlength="50" (ngModelChange)="hypenUpdate($event)" [(ngModel)]="subsectionTitle" class="overviewTitle" type="text" disabled/>
+        <input formControlName="subsectionTitle" maxlength="50" (ngModelChange)="hypenUpdate($event)" [(ngModel)]="subsectionTitle" class="overviewTitle" type="text" [disabled]="isDisabled"/>
         <img (click)="opensubSectionDialog()" class="expand" src="assets/img/expand.svg"/>
         <i class="fa fa-times close" aria-hidden="true" (click)="issubSection = !issubSection; subsection = ''; subsectionTitle =''"></i>
-        <textarea [(ngModel)]="subsection" class="text-size form-control textareaDoc" rows="3" cols="50" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@!$%*|+=?`~<>,. ]|^ /g,'')"></textarea>
+        <textarea formControlName="subsection" [(ngModel)]="subsection" class="text-size form-control textareaDoc" rows="3" cols="50" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@!$%*|+=?`~<>,. ]|^ /g,'')"></textarea>
       </div>
 
       <!-- SUB SUB SECTION -->
       <div class="form-group subsubsec" id="narrow" *ngIf="issubsubSection">            
         <label for="title" class="lableTitle" style="padding-right:5px">Sub Section 2</label> 
-        <input maxlength="50" (ngModelChange)="hypenUpdate($event)" [(ngModel)]="subsubsectionTitle" class="overviewTitle" type="text" disabled/>
+        <input formControlName="subsubsectionTitle" maxlength="50" (ngModelChange)="hypenUpdate($event)" [(ngModel)]="subsubsectionTitle" class="overviewTitle" type="text" [disabled]="isDisabled"/>
         <img (click)="opensubsubSectionDialog()" class="expand" src="assets/img/expand.svg"/>
         <i class="fa fa-times close" aria-hidden="true" (click)="issubsubSection = !issubsubSection; subsubsection = ''; subsubsectionTitle =''"></i>
-        <textarea [(ngModel)]="subsubsection" class="text-size form-control textareaDoc" rows="3" cols="50" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@!$%*|+=?`~<>,. ]|^ /g,'')"></textarea>
+        <textarea formControlName="subsubsection" [(ngModel)]="subsubsection" class="text-size form-control textareaDoc" rows="3" cols="50" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@!$%*|+=?`~<>,. ]|^ /g,'')"></textarea>
       </div>
               
       <!-- PARAGRAPH -->
       <div class="form-group" id="narrow" *ngIf="isParagraph">        
         <label for="title" class="lableTitle" style="padding-right:5px">Paragraph</label> 
-        <input maxlength="50" (ngModelChange)="hypenUpdate($event)" [(ngModel)]="paragraphTitle" class="overviewTitle" type="text" disabled/>
+        <input formControlName="paragraphTitle" maxlength="50" (ngModelChange)="hypenUpdate($event)" [(ngModel)]="paragraphTitle" class="overviewTitle" type="text" [disabled]="isDisabled"/>
         <img (click)="openParagraphDialog()" class="expand" src="assets/img/expand.svg"/>
         <i class="fa fa-times close" aria-hidden="true" (click)="isParagraph = !isParagraph; paragraph = ''; paragraphTitle =''"></i>
-        <textarea [(ngModel)]="paragraph" class="text-size form-control textareaDoc" rows="3" cols="50" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@!$%*|+=?`~<>,. ]|^ /g,'')"></textarea>
+        <textarea formControlName="paragraph" [(ngModel)]="paragraph" class="text-size form-control textareaDoc" rows="3" cols="50" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@!$%*|+=?`~<>,. ]|^ /g,'')"></textarea>
       </div>
             
-      <!-- ORDERED LISTS -->
-      <!-- <div class="form-group" id="narrow" *ngIf="isParagraph">           
-        <label for="title" class="lableTitle" style="padding-right:5px">Paragraph</label> 
-        <input maxlength="50" (ngModelChange)="hypenUpdate($event)" [(ngModel)]="paragraphTitle" class="overviewTitle" type="text" disabled/>
-        <img (click)="openParagraphDialog()" class="expand" src="assets/img/expand.svg"/>
-        <i class="fa fa-times close" aria-hidden="true" (click)="isParagraph = !isParagraph; paragraph = ''; paragraphTitle =''"></i>
-        <textarea [(ngModel)]="paragraph" class="text-size form-control textareaDoc" rows="3" cols="50" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@!$%*|+=?`~<>,. ]|^ /g,'')"></textarea>
-      </div> -->
+      <!-- ORDERED LISTS *ngIf="isOrderlist" -->
+    <div class="form-group" id="narrow" *ngIf="isOrderlist">
+        <label for="title" class="lableTitle" style="padding-right:5px">Ordered List</label>
+        <input formControlName="orderlistTitle" [(ngModel)]="orderlistTitle" maxlength="50" (ngModelChange)="hypenUpdate($event)" class="overviewTitle" type="text" [disabled]="isDisabled" />
+        <!-- <img (click)="openOrderlistDialog()" class="expand" src="assets/img/expand.svg" /> -->
+        <i class="fa fa-times close" aria-hidden="true" (click)="isOrderlist = !isOrderlist; orderlist = ''; orderlistTitle =''"></i>
+        
+        <div formArrayName="orderListItems">
+            <div class="oderAlign" *ngFor="let item of orderListItems.controls; let i = index;" [formGroupName]="i">
+                <input formControlName="orderlist" type="text" class="text-size form-control createDoc"/> 
+                <i class="fa-solid fa-trash delIcon" (click)="removeorderList(i)"></i>
+            </div>
+        </div>
+    
+        <div><img class="addBtn" (click)="addorderList()" src="assets/img/addnotes.svg" /> <p class="addMore">Add More</p></div>
+    </div>
 
-      
+    <!-- UNORDERED LISTS -->
+    <div class="form-group" id="narrow" *ngIf="isunOrderlist">
+        <label for="title" class="lableTitle" style="padding-right:5px">Unordered List</label>
+        <input formControlName="unorderlistTitle" [(ngModel)]="unorderlistTitle" maxlength="50" (ngModelChange)="hypenUpdate($event)" class="overviewTitle" type="text" [disabled]="isDisabled" />
+        <!-- <img (click)="openunOrderlistDialog()" class="expand" src="assets/img/expand.svg" /> -->
+        <i class="fa fa-times close" aria-hidden="true" (click)="isunOrderlist = !isunOrderlist; unorderlist = ''; unorderlistTitle =''"></i>
+        
+        <div formArrayName="unorderListItems">
+            <div class="oderAlign" *ngFor="let item of unorderListItems.controls; let i = index" [formGroupName]="i">
+                <input formControlName="unorderlist" type="text" class="text-size form-control createDoc" /> 
+                <i class="fa-solid fa-trash delIcon" (click)="removeunorderList(i)"></i>
+            </div>
+        </div>
+    
+        <div><img class="addBtn" (click)="addunorderList()" src="assets/img/addnotes.svg" /> <p class="addMore">Add More</p></div>
+    </div>
 
-    <!-- </form> -->
+     <!-- PAGE BREAK -->
+      <!-- <button (click)="countOf()">Count</button>
+      <p>{{count}}</p> -->
+
+    </form>
    </div>
    
 
 
 <!------    Right Preview    -->
     <div class="col-xs-12 col-sm-12 col-md-6">
+        <div class="container">
+            <p class="preview">Preview</p>
+            <p ><img class="eyeco" src="assets/img/eyesico.svg"></p>
+        </div>
+
         <div class="row containerbox">
             <div class="col-sm-12">
                 <div class="container">
                     <div class="row inforowaling">
                         <div class="col-sm-1 arrowcolumn">
+
                             <div class="infocontainerleft">
-                                <!-- <p class="arrowtoggel" id="btntgl">
-                  <img src="assets/img/arrowdown.svg" class="slidearrowtgl" >
-                </p> -->
+                                
                             </div>
+
                         </div>
                     </div>
                 </div>
