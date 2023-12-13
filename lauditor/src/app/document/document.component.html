@@ -1,41 +1,41 @@
 
 
-<div  *ngIf="isHeader"class="container-fluid documents">
-  <div class="row">
-    <div class="row main headertop" id="blueFlag" [ngStyle]="{'display':isDisplay?'block':'none'}">
-      <div class="col-sm-12 compswitch ">
-        <div class="switch  cswitch" *ngIf="!isFromEmail">
-          <a href="javascript:void(0);" class="docOption doc-option create" routerLink="/documents/create/client">Create</a>
+  <div  *ngIf="isHeader"class="container-fluid documents">
+    <div class="row">
+      <div class="row main headertop" id="blueFlag" [ngStyle]="{'display':isDisplay?'block':'none'}">
+        <div class="col-sm-12 compswitch ">
+          <div class="switch  cswitch" *ngIf="!isFromEmail">
+            <a href="javascript:void(0);" class="docOption doc-option create" routerLink="/documents/create/client">Create</a>
 
-          <a href="javascript:void(0);" class="docOption doc-option view" routerLink="/documents/view/client" *ngIf="product != 'corporate'">View</a>
-          <a href="javascript:void(0);" class="docOption doc-option view" routerLink="/documents/view/firm" *ngIf="product == 'corporate'">View</a>
-          <!-- CSS Styles based on Product for Upload Button-->
-          <a href="javascript:void(0);" class="docOption doc-option upload mergepdf" routerLink="/documents/upload/client" *ngIf="product == 'connect'">Upload</a>
-          <a href="javascript:void(0);" class="docOption doc-option upload" routerLink="/documents/upload/client" *ngIf="product == 'content' || product == 'lauditor'">Upload</a>
-          <a href="javascript:void(0);" class="docOption doc-option upload" routerLink="/documents/upload/firm" *ngIf="product == 'corporate'">Upload</a>
-          <!--//////////////-->
-          <a href="javascript:void(0);" class="docOption doc-option mergepdf pdfmergedoc" routerLink="/documents/mergepdf/client" *ngIf="product != 'connect' && product != 'corporate'">Merge PDF</a>
-          <a href="javascript:void(0);" class="docOption doc-option mergepdf pdfmergedoc" routerLink="/documents/mergepdf/firm" *ngIf="product == 'corporate'">Merge PDF</a>
-        </div>
+            <a href="javascript:void(0);" class="docOption doc-option view" routerLink="/documents/view/client" *ngIf="product != 'corporate'">View</a>
+            <a href="javascript:void(0);" class="docOption doc-option view" routerLink="/documents/view/firm" *ngIf="product == 'corporate'">View</a>
+            <!-- CSS Styles based on Product for Upload Button-->
+            <a href="javascript:void(0);" class="docOption doc-option upload mergepdf" routerLink="/documents/upload/client" *ngIf="product == 'connect'">Upload</a>
+            <a href="javascript:void(0);" class="docOption doc-option upload" routerLink="/documents/upload/client" *ngIf="product == 'content' || product == 'lauditor'">Upload</a>
+            <a href="javascript:void(0);" class="docOption doc-option upload" routerLink="/documents/upload/firm" *ngIf="product == 'corporate'">Upload</a>
+            <!--//////////////-->
+            <a href="javascript:void(0);" class="docOption doc-option mergepdf pdfmergedoc" routerLink="/documents/mergepdf/client" *ngIf="product != 'connect' && product != 'corporate'">Merge PDF</a>
+            <a href="javascript:void(0);" class="docOption doc-option mergepdf pdfmergedoc" routerLink="/documents/mergepdf/firm" *ngIf="product == 'corporate'">Merge PDF</a>
+          </div>
 
-        <div class="switch  cswitch cswitchtwo">
-          <!-- Product condition for label-->
-          <a href="javascript:void(0);" class="details doc-option  client " (click)="gotoDetail('client')" *ngIf="product != 'content' && product != 'corporate'">Client</a>
-          <a href="javascript:void(0);" class="details doc-option  client " (click)="gotoDetail('client')" *ngIf="product == 'content'">Customer</a>
-          <!-- <a href="javascript:void(0);" class="details doc-option  client " (click)="gotoDetail('client')" *ngIf="product == 'corporate'">Internal</a> -->
+          <div class="switch  cswitch cswitchtwo">
+            <!-- Product condition for label-->
+            <a href="javascript:void(0);" class="details doc-option  client " (click)="gotoDetail('client')" *ngIf="product != 'content' && product != 'corporate'">Client</a>
+            <a href="javascript:void(0);" class="details doc-option  client " (click)="gotoDetail('client')" *ngIf="product == 'content'">Customer</a>
+            <!-- <a href="javascript:void(0);" class="details doc-option  client " (click)="gotoDetail('client')" *ngIf="product == 'corporate'">Internal</a> -->
 
-          <a href="javascript:void(0);" class=" details doc-option  firm" (click)="gotoDetail('firm')" *ngIf="product != 'corporate'">Firm</a>
-          <a href="javascript:void(0);" class=" details doc-option  firms" (click)="gotoDetail('firm')" *ngIf="product == 'corporate'">Internal</a>
-          <!-- Product condition for label ends here..-->
+            <a href="javascript:void(0);" class=" details doc-option  firm" (click)="gotoDetail('firm')" *ngIf="product != 'corporate'">Firm</a>
+            <a href="javascript:void(0);" class=" details doc-option  firms" (click)="gotoDetail('firm')" *ngIf="product == 'corporate'">Internal</a>
+            <!-- Product condition for label ends here..-->
+          </div>
         </div>
       </div>
+      <div class="arrowitem" (click)="hideAndShow()">
+        <i *ngIf="isDisplay"class="fa fa-light fa-chevron-up"></i>
+        <i *ngIf="!isDisplay" class="fa fa-light fa-chevron-down"></i>
+        <!-- <img *ngIf="!isDisplay" src="assets/img/arrowdown.svg" class="slideico">
+        <img  *ngIf="isDisplay"src="assets/img/arrowup.svg" class="slideico"> -->
+      </div>
     </div>
-    <div class="arrowitem" (click)="hideAndShow()">
-      <i *ngIf="isDisplay"class="fa fa-light fa-chevron-up"></i>
-      <i *ngIf="!isDisplay" class="fa fa-light fa-chevron-down"></i>
-      <!-- <img *ngIf="!isDisplay" src="assets/img/arrowdown.svg" class="slideico">
-      <img  *ngIf="isDisplay"src="assets/img/arrowup.svg" class="slideico"> -->
-    </div>
-  </div>
 </div>
 <router-outlet (activate)="onActivate($event)" ></router-outlet>
