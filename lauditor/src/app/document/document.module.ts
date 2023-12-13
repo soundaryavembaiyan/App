@@ -37,6 +37,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import {MatCardModule} from '@angular/material/card';
 import {CreateDocumentComponent, DialogBoxComponent, SubSection1BoxComponent, SubSection2BoxComponent, ParagraphBoxComponent, OrderedlistBoxComponent, UnorderedlistBoxComponent } from './createdocument/createdocument.component';
+import {MatIconModule} from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 // import { BrowserModule } from '@angular/platform-browser';
 @NgModule({
     imports: [
@@ -63,7 +65,9 @@ import {CreateDocumentComponent, DialogBoxComponent, SubSection1BoxComponent, Su
         NgxPaginationModule,
         MatPaginatorModule ,
         NgxSpinnerModule,
-        MatMenuModule
+        MatMenuModule,
+        MatIconModule,
+        MatTooltipModule
     ],
     declarations: [
         DocumentComponent,
