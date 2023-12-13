@@ -47,8 +47,23 @@ export class URLUtils {
     static getCountry='/countries'
     static getGeneralExternalMatter = '/v3/sharedgeneral'
     static getLegalExternalMatter = '/v3/sharedlegal'
-
     
+    //LATEX 
+    static savedoc = '/v1/document'
+    //static savedocofid = '/v1/document/page/'
+    
+    static savedocID(args: any) {
+        return `/v1/document/page/${args}`;
+    }
+
+    static updateDoc(args: any) {
+        return `/v1/document/page/${args}`;
+    }
+
+    static getPreview(args: any) {
+        return `/v1/document/openview/${args}`;
+    }
+
 
     // Profile
     static getProfile = `/profile`
@@ -101,6 +116,14 @@ export class URLUtils {
         return `/v3/auditlogs/${args.id}`
     }
     static deleteDocument = '/v3/document/delete'
+    static encryptDoc(id:any){
+        return `/v3/document/encrypt/${id}`
+    }
+    static decryptDoc(id:any) {
+        return `/v3/document/decrypt/${id}`
+    }
+    static decryptFile= `/v3/decrypt`
+    
     // partners
     static getPartners = `/partners`
     static addPartners = `/partners/add`
