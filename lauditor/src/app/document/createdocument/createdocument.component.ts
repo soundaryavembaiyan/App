@@ -1,6 +1,6 @@
 import { Component, Inject, Injectable, Input, Output, OnInit, EventEmitter, ViewChild, ElementRef, Renderer2, AfterViewInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { ModalService } from 'src/app/model/model.service';
 import { HttpService } from 'src/app/services/http.service';
@@ -70,7 +70,8 @@ export class CreateDocumentComponent {
   unorderListItems: any;
 
   isPageBreak: boolean = false;
-  title: any;
+  pdfURL: any;
+  //title: any;
 
   constructor(private router: Router, private fb: FormBuilder, private httpservice: HttpService,
     private toast: ToastrService, private documentService: DocumentService,
@@ -106,13 +107,10 @@ export class CreateDocumentComponent {
 
     });
 
-
     this.orderListItems = this.myForm.get('orderListItems') as FormArray;
     this.unorderListItems = this.myForm.get('unorderListItems') as FormArray;
 
   }
-
-
 
   // updateTitle(newTitle: string) {
   //   this.taskTitle = newTitle;
@@ -124,49 +122,99 @@ export class CreateDocumentComponent {
 
   }
 
+  onSubmit(){
+    console.log('Form controls',this.myForm.value);
+  }
+
+
   saveDoc() {
+    const formValues = this.myForm.value;
+    //console.log('Form values:', formValues);
+
+    //Form data controls
+    const payload = {
+    title : this.myForm.value.title,
+    author : this.myForm.value.author,
+
+    overview: this.myForm.value.overview,
+    overviewTitle: this.myForm.value.overviewTitle,
+
+    section: this.myForm.value.section,
+    sectionTitle: this.myForm.value.sectionTitle,
+
+    subsection: this.myForm.value.subsection,
+    subsectionTitle: this.myForm.value.subsectionTitle,
+
+    subsubsection: this.myForm.value.subsubsection,
+    subsubsectionTitle: this.myForm.value.subsubsectionTitle,
+
+    paragraph: this.myForm.value.paragraph,
+    paragraphTitle: this.myForm.value.paragraphTitle,
+    
+    // orderlist: this.myForm.value.orderlist,
+    // orderlistTitle: this.myForm.value.orderlistTitle,
+    orderListItems: this.myForm.value.orderListItems,
+
+    // unorderlist: this.myForm.value.unorderlist,
+    // unorderlistTitle: this.myForm.value.unorderlistTitle,
+    unorderListItems: this.myForm.value.unorderListItems,
+    }
+    console.log('PayloadForm Values:', payload);
+
     //FIRST API
     let req = { "documentname": this.myForm.value.title };
     this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
       (res: any) => {
-        console.log('firstAPI call:', res);
+        //console.log('firstAPI call:', res);
         const documentId = res.id;
-        console.log('FirstAPI call ID:', documentId);
+        console.log('DocID:', documentId);
      //SECOND API
-     let reqq = { "document": "document", "page": "1" };
+     let reqq = { "document": "document", "page": 1 };
      this.httpservice.sendPostLatexRequest(URLUtils.savedocID(documentId), reqq).subscribe(
           (ress: any) => {
-            console.log('secondAPI call:', ress);
+            //console.log('secondAPI call:', ress);
           },
           (error: any) => {
-            console.error('If Error 1:', error);
-          }
-        );
-      }
-    );
-  }
-  getPreview() {
-    let req = { "documentname": "docname" };
-    this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
-      (res: any) => {
-        //Preview API from docID
-        this.httpservice.sendGetLatexPDFRequest(URLUtils.getPreview(res.id)).subscribe(
-          (ress: any) => {
-            //console.log('API call:', ress);
+            //console.error('If Error 1:', error);
           }
         );
       }
     );
   }
 
-  uploadDoc() {
+  getPreview() {
+    let req = { "documentname": this.myForm.value.title };
+    this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
+      (res: any) => {
+        const previewId = res.id;
+        console.log('Preview ID from Doc:', previewId);
+        //Preview API from docID
+        this.httpservice.sendGetLatexPDFRequest(URLUtils.getPreview(previewId)).subscribe(
+          (ress: any) => {
+            console.log('PreviewData:', ress);
+          },
+          (error: any) => {
+            console.error('PreviewError:', error);
+          }
+        );
+      }
+    );
+
+    // const url = URL.createObjectURL(Blob);
+    // this.pdfURL = this.sanitizer.bypassSecurityTrustResourceUrl(url)
+
+  }
+
+  
+
+  updateDoc() {
     //FIRST API
     let req = { "documentname": this.myForm.value.title };
     this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
       (res: any) => {
      //SECOND API
-     let reqq = { "document": "document", "page": "1" };
-     this.httpservice.sendPostLatexRequest(URLUtils.savedocID(res.id), reqq).subscribe(
+     let reqq = { "document": "document", "page": 1 };
+     this.httpservice.sendPatchLatexRequest(URLUtils.savedocID(res.id), reqq).subscribe(
           (ress: any) => {
             //console.log('secondAPI call:', ress);
           },
@@ -178,6 +226,9 @@ export class CreateDocumentComponent {
     );
   }
 
+  uploadDoc(){
+
+  }
   downloadDoc() {
 
   }
