@@ -91,7 +91,7 @@
       <!-- ORDERED LISTS *ngIf="isOrderlist" -->
     <div class="form-group" id="narrow" *ngIf="isOrderlist">
         <label for="title" class="lableTitle" style="padding-right:5px">Ordered List</label>
-        <input formControlName="orderlistTitle" [(ngModel)]="orderlistTitle" maxlength="50" (ngModelChange)="hypenUpdate($event)" class="overviewTitle" type="text" [disabled]="isDisabled" />
+        <!-- <input formControlName="orderlistTitle" [(ngModel)]="orderlistTitle" maxlength="50" (ngModelChange)="hypenUpdate($event)" class="overviewTitle" type="text" [disabled]="isDisabled" /> -->
         <!-- <img (click)="openOrderlistDialog()" class="expand" src="assets/img/expand.svg" /> -->
         <i class="fa fa-times close" aria-hidden="true" (click)="isOrderlist = !isOrderlist; orderlist = ''; orderlistTitle =''"></i>
         
@@ -108,7 +108,7 @@
     <!-- UNORDERED LISTS -->
     <div class="form-group" id="narrow" *ngIf="isunOrderlist">
         <label for="title" class="lableTitle" style="padding-right:5px">Unordered List</label>
-        <input formControlName="unorderlistTitle" [(ngModel)]="unorderlistTitle" maxlength="50" (ngModelChange)="hypenUpdate($event)" class="overviewTitle" type="text" [disabled]="isDisabled" />
+        <!-- <input formControlName="unorderlistTitle" [(ngModel)]="unorderlistTitle" maxlength="50" (ngModelChange)="hypenUpdate($event)" class="overviewTitle" type="text" [disabled]="isDisabled" /> -->
         <!-- <img (click)="openunOrderlistDialog()" class="expand" src="assets/img/expand.svg" /> -->
         <i class="fa fa-times close" aria-hidden="true" (click)="isunOrderlist = !isunOrderlist; unorderlist = ''; unorderlistTitle =''"></i>
         
@@ -145,10 +145,8 @@
                 <div class="container">
                     <div class="row inforowaling">
                         <div class="col-sm-1 arrowcolumn">
-
                             <div class="infocontainerleft">
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -157,7 +155,7 @@
 
         <div class="iframeStyle">
             <!-- <p>O: {{overviewTitle}}</p> -->
-            <iframe height="100%" width="100%" class="responsive-iframe" [src]="pdfURL" frameborder="0">
+            <iframe height="100%" width="100%" class="responsive-iframe" [src]="pdfSrc" frameborder="0">
                 <div class="form-group">
                 </div>
             </iframe>
