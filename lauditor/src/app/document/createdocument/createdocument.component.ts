@@ -71,7 +71,9 @@ export class CreateDocumentComponent {
 
   isPageBreak: boolean = false;
   pdfURL: any;
+  pdfSrc: any;
   //title: any;
+  documentId: string | null = null;
 
   constructor(private router: Router, private fb: FormBuilder, private httpservice: HttpService,
     private toast: ToastrService, private documentService: DocumentService,
@@ -127,85 +129,191 @@ export class CreateDocumentComponent {
   }
 
 
+  // saveDoc() {
+  //   const formValues = this.myForm.value;
+  //   console.log('Form values:', formValues);
+
+  //   //Form data controls
+  //   const payload = {
+  //   title : this.myForm.value.title,
+  //   author : this.myForm.value.author,
+
+  //   overview: this.myForm.value.overview,
+  //   overviewTitle: this.myForm.value.overviewTitle,
+
+  //   section: this.myForm.value.section,
+  //   sectionTitle: this.myForm.value.sectionTitle,
+
+  //   subsection: this.myForm.value.subsection,
+  //   subsectionTitle: this.myForm.value.subsectionTitle,
+
+  //   subsubsection: this.myForm.value.subsubsection,
+  //   subsubsectionTitle: this.myForm.value.subsubsectionTitle,
+
+  //   paragraph: this.myForm.value.paragraph,
+  //   paragraphTitle: this.myForm.value.paragraphTitle,
+    
+  //   // orderlist: this.myForm.value.orderlist,
+  //   // orderlistTitle: this.myForm.value.orderlistTitle,
+  //   orderListItems: this.myForm.value.orderListItems,
+
+  //   // unorderlist: this.myForm.value.unorderlist,
+  //   // unorderlistTitle: this.myForm.value.unorderlistTitle,
+  //   unorderListItems: this.myForm.value.unorderListItems,
+  //   }
+  //   console.log('PayloadForm Values:', payload);
+
+  //   //FIRST API
+  //   let req = { "documentname": this.myForm.value.title };
+  //   this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
+  //     (res: any) => {
+  //       //console.log('firstAPI call:', res);
+  //       const documentId = res.id;
+  //       console.log('DocID:', documentId);
+  //    //SECOND API
+  //    let reqq = { "document": "document", "page": 1 };
+  //    this.httpservice.sendPostLatexRequest(URLUtils.savedocID(documentId), reqq).subscribe(
+  //         (ress: any) => {
+  //           //console.log('secondAPI call:', ress);
+  //         },
+  //         (error: any) => {
+  //           //console.error('If Error 1:', error);
+  //         }
+  //       );
+  //     }
+  //   );
+  // }
+
+  // getPreview() {
+  //   this.httpservice.sendGetLatexPDFRequest(URLUtils.getPreview('id')).subscribe(
+  //     (ress: any) => {
+  //       console.log('PreviewData:', ress);
+  //     },
+  //     (error: any) => {
+  //       console.error('PreviewError:', error);
+  //     }
+  //   );
+
+  //   // let req = { "documentname": this.myForm.value.title };
+  //   // this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
+  //   //   (res: any) => {
+  //   //     const previewId = res.id;
+  //   //     console.log('Preview ID from Doc:', previewId);
+  //   //     //Preview API from docID
+  //   //     this.httpservice.sendGetLatexPDFRequest(URLUtils.getPreview(previewId)).subscribe(
+  //   //       (ress: any) => {
+  //   //         console.log('PreviewData:', ress);
+  //   //       },
+  //   //       (error: any) => {
+  //   //         console.error('PreviewError:', error);
+  //   //       }
+  //   //     );
+  //   //   }
+  //   // );
+
+   
+  //     // this.httpservice.sendGetRequest(URLUtils.viewDocuments(item)).subscribe((res: any) => {
+  //     //     if(this.allowedFileTypes.includes(item.content_type)){
+  //     //         this.spinnerService.show()
+  //     //         this.httpservice.sendPostDocRequest(this.docapi,{'url':res.data.url}).subscribe((ans:any)=>{
+  //     //             const blob = new Blob([ans], { type: 'application/pdf' });
+  //     //             // Create a URL for the Blob
+  //     //             const url = URL.createObjectURL(blob);
+  //     //             this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(url)
+  //     //             this.spinnerService.hide()
+  //     //         })
+              
+
+  //     //     } else {
+  //     //         this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(res.data.url);
+  //     //     }
+  //     // });
+  //     // this.pdfSrc = item.filename;
+
+
+  //   // const url = URL.createObjectURL(Blob);
+  //   // this.pdfURL = this.sanitizer.bypassSecurityTrustResourceUrl(url)
+
+  // }
+
   saveDoc() {
+
     const formValues = this.myForm.value;
-    //console.log('Form values:', formValues);
+    console.log('Form values:', formValues);
 
     //Form data controls
     const payload = {
-    title : this.myForm.value.title,
-    author : this.myForm.value.author,
+      title: this.myForm.value.title,
+      author: this.myForm.value.author,
 
-    overview: this.myForm.value.overview,
-    overviewTitle: this.myForm.value.overviewTitle,
+      overview: this.myForm.value.overview,
+      overviewTitle: this.myForm.value.overviewTitle,
 
-    section: this.myForm.value.section,
-    sectionTitle: this.myForm.value.sectionTitle,
+      section: this.myForm.value.section,
+      sectionTitle: this.myForm.value.sectionTitle,
 
-    subsection: this.myForm.value.subsection,
-    subsectionTitle: this.myForm.value.subsectionTitle,
+      subsection: this.myForm.value.subsection,
+      subsectionTitle: this.myForm.value.subsectionTitle,
 
-    subsubsection: this.myForm.value.subsubsection,
-    subsubsectionTitle: this.myForm.value.subsubsectionTitle,
+      subsubsection: this.myForm.value.subsubsection,
+      subsubsectionTitle: this.myForm.value.subsubsectionTitle,
 
-    paragraph: this.myForm.value.paragraph,
-    paragraphTitle: this.myForm.value.paragraphTitle,
-    
-    // orderlist: this.myForm.value.orderlist,
-    // orderlistTitle: this.myForm.value.orderlistTitle,
-    orderListItems: this.myForm.value.orderListItems,
+      paragraph: this.myForm.value.paragraph,
+      paragraphTitle: this.myForm.value.paragraphTitle,
 
-    // unorderlist: this.myForm.value.unorderlist,
-    // unorderlistTitle: this.myForm.value.unorderlistTitle,
-    unorderListItems: this.myForm.value.unorderListItems,
+      orderListItems: this.myForm.value.orderListItems,
+      unorderListItems: this.myForm.value.unorderListItems,
     }
     console.log('PayloadForm Values:', payload);
 
     //FIRST API
-    let req = { "documentname": this.myForm.value.title };
-    this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
-      (res: any) => {
-        //console.log('firstAPI call:', res);
-        const documentId = res.id;
-        console.log('DocID:', documentId);
-     //SECOND API
-     let reqq = { "document": "document", "page": 1 };
-     this.httpservice.sendPostLatexRequest(URLUtils.savedocID(documentId), reqq).subscribe(
-          (ress: any) => {
-            //console.log('secondAPI call:', ress);
-          },
-          (error: any) => {
-            //console.error('If Error 1:', error);
-          }
-        );
-      }
-    );
+      let req = { "documentname": this.myForm.value.title };
+      this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
+        (res: any) => {
+          const documentId = res.id;
+          console.log('DocID:', documentId);
+          
+          this.documentId = documentId;
+          this.docidSave(documentId); //secondAPI call
+        },
+        (error: any) => {
+          // console.error('If Error 1:', error);
+        }
+      );
   }
 
-  getPreview() {
-    let req = { "documentname": this.myForm.value.title };
-    this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
-      (res: any) => {
-        const previewId = res.id;
-        console.log('Preview ID from Doc:', previewId);
-        //Preview API from docID
-        this.httpservice.sendGetLatexPDFRequest(URLUtils.getPreview(previewId)).subscribe(
-          (ress: any) => {
-            console.log('PreviewData:', ress);
-          },
-          (error: any) => {
-            console.error('PreviewError:', error);
-          }
-        );
-      }
+  docidSave(documentId: string) {
+    //SECOND API
+    // let reqq = { "document": "document", "page": 1 };
+    let currentDate = new Date().toString(); // Get current date/time
+    let latexDocument = `\\documentclass{article}\\usepackage{geometry}\\geometry{a4paper,total={170mm,257mm},left=20mm,top=20mm,}<ltk>\\title{New Document}<ltk>\\author{Author}<ltk>\\date{${currentDate}}<ltk>\\begin{document}<ltk>\\maketitle<ltk>\\abstract{}`;
+    let reqq = {
+      "document": latexDocument,
+      "page": 1
+    };
+    this.httpservice.sendPostLatexRequest(URLUtils.savedocID(documentId), reqq).subscribe(
+      (ress: any) => {
+        console.log('secondAPI call:', ress);
+      },
     );
-
-    // const url = URL.createObjectURL(Blob);
-    // this.pdfURL = this.sanitizer.bypassSecurityTrustResourceUrl(url)
-
   }
-
   
+  getPreview() {
+    //PREVIEW API
+    if (this.documentId === '' || this.documentId === null) {
+      this.toast.error("Please create a document")//If user clicks the previewIcon directly.
+    } 
+    else {
+      this.httpservice.sendGetLatexPDFRequest(URLUtils.getPreview(this.documentId)).subscribe(
+        (ress: any) => {
+          console.log('PreviewData:', ress);
+        },
+        (error: any) => {
+          console.error('PreviewError:', error);
+        }
+      );
+    }
+  }
 
   updateDoc() {
     //FIRST API
