@@ -10,6 +10,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, FormControl, FormGroup, FormArray, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
+import * as jspdf from 'jspdf';
+import html2canvas from 'html2canvas';
 
 
 @Component({
@@ -23,6 +25,7 @@ export class CreateDocumentComponent {
 
   @ViewChild('content', { static: false })
   content!: ElementRef;
+  @ViewChild('pdfContent') pdfContent!: ElementRef;
 
   product = environment.product;
   myForm: any;
@@ -111,7 +114,6 @@ export class CreateDocumentComponent {
 
     this.orderListItems = this.myForm.get('orderListItems') as FormArray;
     this.unorderListItems = this.myForm.get('unorderListItems') as FormArray;
-
   }
 
   // updateTitle(newTitle: string) {
@@ -121,13 +123,38 @@ export class CreateDocumentComponent {
   newDoc() {
     this.myForm.reset();
     this.router.navigate(['/documents/create/client'])
-
   }
 
   onSubmit(){
     console.log('Form controls',this.myForm.value);
   }
 
+  //Generate and Download the pdf what it is as!!!
+  generatePdf() {
+    // const content = this.pdfContent.nativeElement;
+
+    // html2canvas(content).then(canvas => {
+    //   const imgData = canvas.toDataURL('image/png');
+    //   const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+    //   const imgProps = pdf.getImageProperties(imgData);
+    //   const pdfWidth = pdf.internal.pageSize.getWidth();
+    //   const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+    //   pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+    //   // Get form values and dynamically add them to the PDF
+    //   const formData = this.myForm.value;
+    //   let yPos = pdfHeight + 10;
+
+    //   Object.keys(formData).forEach(key => {
+    //     const value = formData[key];
+    //     pdf.text(`Field: ${key}, Value: ${value}`, 10, yPos);
+    //     yPos += 10; // Increment the y-position for the next line
+    //   });
+
+    //   pdf.save('form_data.pdf');
+    // });
+  }
 
   // saveDoc() {
   //   const formValues = this.myForm.value;
@@ -282,31 +309,123 @@ export class CreateDocumentComponent {
       );
   }
 
+  // docidSave(documentId: string) {
+  //   //SECOND API
+  //   // let reqq = { "document": "document", "page": 1 };
+  //   let title = this.myForm.value.title;
+  //   let author = this.myForm.value.author;
+  //   let currentDate = new Date().toString(); // Get current date/time
+  //   let overview = this.myForm.value.overview;
+  //   let overviewTitle = this.myForm.value.overviewTitle;
+  //   let section = this.myForm.value.section;
+  //   let sectionTitle = this.myForm.value.sectionTitle;
+  //   let subsection = this.myForm.value.subsection;
+  //   let subsectionTitle = this.myForm.value.subsectionTitle;
+  //   let subsubsection = this.myForm.value.subsubsection;
+  //   let subsubsectionTitle = this.myForm.value.subsubsectionTitle;
+  //   let paragraph = this.myForm.value.paragraph;
+  //   let paragraphTitle=  this.myForm.value.paragraphTitle;
+  //   let orderListItems = this.myForm.value.orderListItems;
+  //   let unorderListItems = this.myForm.value.unorderListItems;
+
+  //   let latexDocument = `\\documentclass{article}\\usepackage{geometry}\\geometry{a4paper,total={170mm,257mm},left=20mm,top=20mm,}<ltk>\\title{${title}}<ltk>\\author{${author}}<ltk>\\date{${currentDate}}<ltk>\\begin{document}<ltk>\\maketitle{${overviewTitle}}<ltk>\\maketitle<ltk>\\abstract{}`;
+
+  //   let reqq = {
+  //     "document": latexDocument,
+  //     "page": 1
+  //   };
+  //   this.httpservice.sendPostLatexRequest(URLUtils.savedocID(documentId), reqq).subscribe(
+  //     (ress: any) => {
+  //       //console.log('secondAPI call:', ress);
+  //     },
+  //   );
+  // }
+  
+
   docidSave(documentId: string) {
-    //SECOND API
-    // let reqq = { "document": "document", "page": 1 };
-    let currentDate = new Date().toString(); // Get current date/time
-    let latexDocument = `\\documentclass{article}\\usepackage{geometry}\\geometry{a4paper,total={170mm,257mm},left=20mm,top=20mm,}<ltk>\\title{New Document}<ltk>\\author{Author}<ltk>\\date{${currentDate}}<ltk>\\begin{document}<ltk>\\maketitle<ltk>\\abstract{}`;
+    let title = this.myForm.value.title || 'Default Title';
+    let author = this.myForm.value.author || 'Anonymous';
+    let currentDate = new Date().toDateString();
+    let overview = this.myForm.value.overview || 'Overview content';
+    let overviewTitle = this.myForm.value.overviewTitle || 'Overview Title';
+    let section = this.myForm.value.section || 'Section content';
+    let sectionTitle = this.myForm.value.sectionTitle || 'Section Title';
+    let subsection = this.myForm.value.subsection || 'Subsection content';
+    let subsectionTitle = this.myForm.value.subsectionTitle || 'Subsection Title';
+    let subsubsection = this.myForm.value.subsubsection || 'Subsubsection content';
+    let subsubsectionTitle = this.myForm.value.subsubsectionTitle || 'Subsubsection Title';
+    let paragraph = this.myForm.value.paragraph || 'Paragraph content';
+    let paragraphTitle = this.myForm.value.paragraphTitle || 'Paragraph Title';
+    let orderListItems = this.myForm.value.orderListItems || ['Item 1', 'Item 2', 'Item 3'];
+    let unorderListItems = this.myForm.value.unorderListItems || ['Item A', 'Item B', 'Item C'];
+  
+    let orderedList = orderListItems.map((item: string) => `\\item ${item}`).join('\n');
+    let unorderedList = unorderListItems.map((item: string) => `\\item ${item}`).join('\n');
+  
+    let latexDocument = `
+  \\documentclass{article}
+  \\usepackage{geometry}
+  \\geometry{a4paper,total={170mm,257mm},left=20mm,top=20mm}
+  
+  \\title{${title}}
+  \\author{${author}}
+  \\date{${currentDate}}
+  
+  \\begin{document}
+  \\maketitle
+
+  \\begin{abstract}
+  \\end{abstract}
+  
+  \\section*{${overviewTitle}}
+  ${overview}
+  \\section*{${sectionTitle}}
+  ${section}
+  \\subsection*{${subsectionTitle}}
+  ${subsection}
+  \\subsubsection*{${subsubsectionTitle}}
+  ${subsubsection}
+  \\paragraph*{${paragraphTitle}}
+  ${paragraph}
+  
+  \\begin{itemize}
+      ${orderedList}
+  \\end{itemize}
+  
+  \\begin{itemize}
+      ${unorderedList}
+  \\end{itemize}
+  
+  \\end{document}
+    `;
+  
     let reqq = {
       "document": latexDocument,
       "page": 1
     };
+  
     this.httpservice.sendPostLatexRequest(URLUtils.savedocID(documentId), reqq).subscribe(
       (ress: any) => {
-        console.log('secondAPI call:', ress);
+        // Handle the response if needed
       },
+      (error: any) => {
+        // Handle errors if any
+      }
     );
   }
+
   
   getPreview() {
     //PREVIEW API
     if (this.documentId === '' || this.documentId === null) {
-      this.toast.error("Please create a document")//If user clicks the previewIcon directly.
+      this.toast.error("Please create & save the document")//If user clicks the previewIcon directly.
     } 
     else {
       this.httpservice.sendGetLatexPDFRequest(URLUtils.getPreview(this.documentId)).subscribe(
         (ress: any) => {
-          console.log('PreviewData:', ress);
+          const blob = new Blob([ress], { type: 'application/pdf' });
+          const url = URL.createObjectURL(blob); // Create a URL for the Blob
+          this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(url);
         },
         (error: any) => {
           console.error('PreviewError:', error);
