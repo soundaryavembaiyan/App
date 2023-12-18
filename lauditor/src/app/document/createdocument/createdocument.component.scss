@@ -345,10 +345,26 @@ textarea {
     height: 25px;
     width: 45px;
 }
-.eyeco{
-    margin-top: -46px;
-    cursor: pointer;
-    float: right;
-    height: 25px;
-    width: 45px;
+.page-break {
+  width: 100%;
+  box-sizing: border-box;
+}
+.iframeStyle{
+    background-color: rgb(217, 242, 250);
+    width: 95%;
+    height: 93%;
+    margin-top: -920px;
+    margin-left: 27px;
+}
+// these styles are only for safari browser!!!
+@media not all and (min-resolution:.001dpcm) {
+    @supports (-webkit-appearance: none) {
+        .menuBtn1,.menuBtn2 {
+            background: #EFEFEF;
+        }
+        .menuBtn2 {
+            width: 73px;
+            margin-right: 21px;
+        }
+    }
 }
