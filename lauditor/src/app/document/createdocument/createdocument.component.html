@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-6 overRoll">
+    <div class="col-xs-12 col-sm-12 col-md-6 overRoll" #pdfContent> 
         <form [formGroup]="myForm">
 
         <div class="col-xs-6"> 
@@ -123,7 +123,7 @@
     </div>
 
      <!-- PAGE BREAK -->
-    <div class="form-group" id="narrow"><!-- *ngIf="isPageBreak" -->
+    <div class="form-group" id="narrow" *ngIf="!isPageBreak"><!-- *ngIf="isPageBreak" -->
         <div class="page-break content" #content></div>
     </div>
 
@@ -152,6 +152,7 @@
                 </div>
             </div>
         </div>
+
 
         <div class="iframeStyle">
             <!-- <p>O: {{overviewTitle}}</p> -->
