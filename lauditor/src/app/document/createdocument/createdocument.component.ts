@@ -238,8 +238,8 @@ export class CreateDocumentComponent {
           // console.error('If Error 1:', error);
         }
       );
-    }
-    else {
+     }
+     else {
       let title = this.myForm.value.title;
       let author = this.myForm.value.author;
       let currentDate = new Date().toDateString();
@@ -296,10 +296,11 @@ export class CreateDocumentComponent {
       this.httpservice.sendPostLatexRequest(URLUtils.savedocID(this.documentId), reqq).subscribe(
         (res: any) => {
           const documentId = res.id;
-          this.documentIdx = documentId;
+          //this.documentIdx = documentId;
           this.docidUpdate(documentId); //thirdAPI methodcall
         }
       );
+
     }
   }
 
@@ -365,7 +366,8 @@ export class CreateDocumentComponent {
     //SECONDAPI 
     this.httpservice.sendPostLatexRequest(URLUtils.savedocID(documentId), reqq).subscribe(
       (ress: any) => {
-
+        //this.toast.success(ress.message)
+        this.toast.success("Document created successfully!")
       },
       (error: any) => {
       }
@@ -433,6 +435,7 @@ export class CreateDocumentComponent {
     this.httpservice.sendPatchLatexRequest(URLUtils.updateDoc(documentId), reqq).subscribe(
       (ress: any) => {
         console.log('ressof3:',ress);
+        this.toast.success("Document updated successfully!")
       },
       (error: any) => {
       }
