@@ -9,7 +9,7 @@
     background: #c9c9c9;
     opacity: 1;
     margin-bottom: 20px;
-    margin-top: -28px;
+    margin-top: -73px;
     margin-left: -27px;
     display: inline-block;
 }
@@ -345,16 +345,19 @@ textarea {
     height: 25px;
     width: 45px;
 }
+
 .page-break {
   width: 100%;
   box-sizing: border-box;
 }
 .iframeStyle{
-    background-color: rgb(217, 242, 250);
+    //background-color: rgb(217, 242, 250);
     width: 95%;
     height: 93%;
     margin-top: -920px;
     margin-left: 27px;
+    // position: relative;
+    // position: absolute;
 }
 // these styles are only for safari browser!!!
 @media not all and (min-resolution:.001dpcm) {
