@@ -122,6 +122,7 @@ export class CreateDocumentComponent {
   //   this.taskTitle = newTitle;
   //   console.log('taskTitle', this.taskTitle)
   // }
+
   newDoc() {
     this.myForm.reset();
     this.isOverview = false;
@@ -195,7 +196,6 @@ export class CreateDocumentComponent {
   // }
 
   saveDoc() {
-
     const formValues = this.myForm.value;
     console.log('Form values:', formValues);
 
@@ -300,7 +300,6 @@ export class CreateDocumentComponent {
           this.docidUpdate(documentId); //thirdAPI methodcall
         }
       );
-
     }
   }
 
@@ -459,25 +458,6 @@ export class CreateDocumentComponent {
         }
       );
     }
-  }
-
-  updateDoc() {
-    //FIRST API
-    let req = { "documentname": this.myForm.value.title };
-    this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
-      (res: any) => {
-        //SECOND API
-        let reqq = { "document": "document", "page": 1 };
-        this.httpservice.sendPatchLatexRequest(URLUtils.savedocID(res.id), reqq).subscribe(
-          (ress: any) => {
-            //console.log('secondAPI call:', ress);
-          },
-          (error: any) => {
-            console.error('If Error 1:', error);
-          }
-        );
-      }
-    );
   }
 
   uploadDoc() {
@@ -733,13 +713,14 @@ export class CreateDocumentComponent {
     });
   }
 
-  hypenUpdate(newTitle: string) {
-    if (newTitle && !newTitle.startsWith(' ')) {
-      this.overviewTitle = '' + newTitle;
-    } else {
-      this.overviewTitle = newTitle;
-    }
-  }
+  // hypenUpdate(newTitle: string) {
+  //   if (newTitle && !newTitle.startsWith(' ')) {
+  //     this.overviewTitle = '' + newTitle;
+  //     this.sectionTitle = '' + newTitle;
+  //   } else {
+  //     this.overviewTitle = newTitle;
+  //   }
+  // }
 
 }
 
@@ -796,9 +777,9 @@ export class DialogBoxComponent {
     //this.dialogRef.close(this.overview);
 
     //for Hypen
-    if (this.overviewTitle && !this.overviewTitle.startsWith('-')) {
-      this.overviewTitle = '- ' + this.overviewTitle;
-    }
+    // if (this.overviewTitle && !this.overviewTitle.startsWith('-')) {
+    //   this.overviewTitle = '- ' + this.overviewTitle;
+    // }
     const data = {
       overview: this.overview,
       overviewTitle: this.overviewTitle
@@ -869,9 +850,9 @@ export class SectionBoxComponent {
 
   save() {
     //for Hypen
-    if (this.sectionTitle && !this.sectionTitle.startsWith('-')) {
-      this.sectionTitle = '- ' + this.sectionTitle;
-    }
+    // if (this.sectionTitle && !this.sectionTitle.startsWith('-')) {
+    //   this.sectionTitle = '- ' + this.sectionTitle;
+    // }
     const data = {
       section: this.section,
       sectionTitle: this.sectionTitle
@@ -938,9 +919,9 @@ export class SubSection1BoxComponent {
 
   save() {
     //for Hypen
-    if (this.subsectionTitle && !this.subsectionTitle.startsWith('-')) {
-      this.subsectionTitle = '- ' + this.subsectionTitle;
-    }
+    // if (this.subsectionTitle && !this.subsectionTitle.startsWith('-')) {
+    //   this.subsectionTitle = '- ' + this.subsectionTitle;
+    // }
     const data = {
       subsection: this.subsection,
       subsectionTitle: this.subsectionTitle
@@ -1007,9 +988,9 @@ export class SubSection2BoxComponent {
 
   save() {
     //for Hypen
-    if (this.subsubsectionTitle && !this.subsubsectionTitle.startsWith('-')) {
-      this.subsubsectionTitle = '- ' + this.subsubsectionTitle;
-    }
+    // if (this.subsubsectionTitle && !this.subsubsectionTitle.startsWith('-')) {
+    //   this.subsubsectionTitle = '- ' + this.subsubsectionTitle;
+    // }
     const data = {
       subsubsection: this.subsubsection,
       subsubsectionTitle: this.subsubsectionTitle
@@ -1077,14 +1058,15 @@ export class ParagraphBoxComponent {
 
   save() {
     //for Hypen
-    if (this.paragraphTitle && !this.paragraphTitle.startsWith('-')) {
-      this.paragraphTitle = '- ' + this.paragraphTitle;
-    }
+    // if (this.paragraphTitle && !this.paragraphTitle.startsWith('-')) {
+    //   this.paragraphTitle = '- ' + this.paragraphTitle;
+    // }
     const data = {
       paragraph: this.paragraph,
       paragraphTitle: this.paragraphTitle
     };
     this.dialogRef.close(data);
+    console.log('paraData',data)
   }
 
   closeDialog() {
@@ -1182,9 +1164,9 @@ export class OrderedlistBoxComponent {
 
   save() {
     //for Hypen
-    if (this.orderlistTitle && !this.orderlistTitle.startsWith('-')) {
-      this.orderlistTitle = '- ' + this.orderlistTitle;
-    }
+    // if (this.orderlistTitle && !this.orderlistTitle.startsWith('-')) {
+    //   this.orderlistTitle = '- ' + this.orderlistTitle;
+    // }
 
     const orderListItemsData = this.orderListItems.value;
     const data = {
@@ -1287,9 +1269,9 @@ export class UnorderedlistBoxComponent {
 
   save() {
     //for Hypen
-    if (this.unorderlistTitle && !this.unorderlistTitle.startsWith('-')) {
-      this.unorderlistTitle = '- ' + this.unorderlistTitle;
-    }
+    // if (this.unorderlistTitle && !this.unorderlistTitle.startsWith('-')) {
+    //   this.unorderlistTitle = '- ' + this.unorderlistTitle;
+    // }
 
     const unorderListItemsData = this.unorderListItems.value;
     const data = {
