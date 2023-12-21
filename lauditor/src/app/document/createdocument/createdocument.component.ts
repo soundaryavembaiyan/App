@@ -116,6 +116,13 @@ export class CreateDocumentComponent {
     this.orderListItems = this.myForm.get('orderListItems') as FormArray;
     this.unorderListItems = this.myForm.get('unorderListItems') as FormArray;
 
+    this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
+      (res: any) => {
+       
+        console.log('openRes:', res);
+      }
+    );
+
   }
 
   // updateTitle(newTitle: string) {
@@ -463,9 +470,16 @@ export class CreateDocumentComponent {
   uploadDoc() {
 
   }
-  downloadDoc() {
-
-  }
+  // downloadDoc() {
+  //   let reqq ={ "documentname" : this.documentname }
+  //   this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(this.documentId), reqq).subscribe(
+  //     (res: any) => {
+  //       const documentId = res.id;
+  //       //this.documentIdx = documentId;
+  //       this.docidSave(documentId); //thirdAPI methodcall
+  //     }
+  //   );
+  // }
 
   //UNORDERED LIST ACTIONS
   addorderList(): void {
@@ -516,7 +530,6 @@ export class CreateDocumentComponent {
     }
   }
 
-
   overviewOn() {
     this.isOverview = true
   }
@@ -546,6 +559,42 @@ export class CreateDocumentComponent {
   }
 
   //Dialog boxes!!!
+  openDocumentDialog() {
+    const dialogRef = this.dialog.open(OpendialogBoxComponent, {
+      width: '600px',
+      height: '330px',
+      data: {
+        // overview: this.overview,
+        // overviewTitle: this.overviewTitle
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result: { overview: string, overviewTitle: string }) => {
+      if (result) {
+        // this.overview = result.overview;
+        // this.overviewTitle = result.overviewTitle;
+      }
+    });
+  }
+
+  downloadDialog() {
+    const dialogRef = this.dialog.open(DownloadBoxComponent, {
+      width: '500px',
+      height: '200px',
+      data: {
+        // overview: this.overview,
+        // overviewTitle: this.overviewTitle
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result: {  }) => {
+      if (result) {
+        // this.overview = result.overview;
+        // this.overviewTitle = result.overviewTitle;
+      }
+    });
+  }
+
   openOverviewDialog() {
     this.overviewDialog = true;
     const dialogRef = this.dialog.open(DialogBoxComponent, {
@@ -723,6 +772,7 @@ export class CreateDocumentComponent {
   // }
 
 }
+
 
 
 @Component({
@@ -1297,4 +1347,138 @@ export class UnorderedlistBoxComponent {
     }
   }
 
+}
+
+
+@Component({
+  selector: 'app-opendialog-box',
+  templateUrl: './opendialog-box.component.html',
+  styleUrls: ['./createdocument.component.scss'],
+})
+
+@Injectable()
+export class OpendialogBoxComponent {
+  dialog: any;
+  name: any;
+
+  documents: any []=[];
+  pdfSrc:any;
+  documentId: any;
+  documento: any;
+
+  constructor(
+    public dialogRef: MatDialogRef<OpendialogBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { overview: string, overviewTitle: string },
+    private httpservice: HttpService, private toast: ToastrService, public sanitizer: DomSanitizer, private fb: FormBuilder) {
+    // //this.overview = data[0];
+    // this.overview = data.overview;
+    // this.overviewTitle = data.overviewTitle
+  }
+
+  ngOnInit() {
+
+    this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
+      (res: any) => {
+       this.documents = res;
+       console.log('openDRes:', res);
+      },
+      (error: any) => {
+        console.error('PreviewError:', error);
+      }
+    );
+
+  }
+
+  openFile() {
+    //Get OpenAPI 
+    this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
+      (res: any) => {
+        this.documents = res;
+        console.log('openDRes:', res);
+        console.log('documentId:', res.docid);
+
+        const documentId = res.docid;
+        console.log('openDocID:', documentId);
+        this.documentId = documentId;
+        this.docidSave(documentId);
+      },
+      (error: any) => {
+        console.error('PreviewError:', error);
+      }
+    );
+  }
+
+  //ID FROM OPEN DOCUMENT
+  docidSave(documentId: string) {
+    //Get OpenFileAPI 
+    this.httpservice.sendGetLatexRequest(URLUtils.opendocID(documentId)).subscribe(
+      (ress: any) => {
+        console.log('resssss:', ress);
+        //this.toast.success("Document created successfully!")
+      },
+      (error: any) => {
+        console.error('If Error 1:', error);
+      }
+    );
+  }
+
+  closeDialog() {
+    this.dialogRef.close()
+  }
+}
+
+@Component({
+  selector: 'app-download-box',
+  templateUrl: './download-box.component.html',
+  styleUrls: ['./createdocument.component.scss'],
+})
+
+@Injectable()
+export class DownloadBoxComponent {
+
+  documentId: any;
+  documentname: any;
+  myForm:any;
+
+  constructor(
+    public dialogRef: MatDialogRef<DownloadBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { },
+    private httpservice: HttpService, private toast: ToastrService, public sanitizer: DomSanitizer, private fb: FormBuilder) {
+
+  }
+
+  ngOnInit() {
+    // this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
+    //   (res: any) => {
+    //    this.documents = res;
+    //    console.log('openDRes:', res);
+    //   },
+    //   (error: any) => {
+    //     console.error('PreviewError:', error);
+    //   }
+    // );
+  }
+
+  downloadDoc() {
+    let req = { "documentname": "documentname" };
+    //FIRST API
+    this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
+      (res: any) => {
+        const documentId = res.id;
+        console.log('DocID:', documentId);
+        this.documentId = documentId;
+        //Download docAPI
+        let reqq ={ "documentname" : this.myForm.value.documentname }
+        console.log('reqq:', reqq);
+        this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(this.documentId), reqq).subscribe(
+          (res: any) => {
+            console.log('Dres:', res);
+            this.toast.success(res.message)
+          }
+        );
+      }
+    );
+  }
+
+  closeDialog() {
+    this.dialogRef.close()
+  }
 }
