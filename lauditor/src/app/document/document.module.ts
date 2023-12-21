@@ -36,9 +36,10 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import {MatCardModule} from '@angular/material/card';
-import {CreateDocumentComponent, DialogBoxComponent, SubSection1BoxComponent, SubSection2BoxComponent, ParagraphBoxComponent, OrderedlistBoxComponent, UnorderedlistBoxComponent } from './createdocument/createdocument.component';
+import {CreateDocumentComponent, DialogBoxComponent, SubSection1BoxComponent, SubSection2BoxComponent, ParagraphBoxComponent, OrderedlistBoxComponent, UnorderedlistBoxComponent, OpendialogBoxComponent, DownloadBoxComponent } from './createdocument/createdocument.component';
 import {MatIconModule} from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import {MatButtonModule} from '@angular/material/button';
 // import { BrowserModule } from '@angular/platform-browser';
 @NgModule({
     imports: [
@@ -67,7 +68,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         NgxSpinnerModule,
         MatMenuModule,
         MatIconModule,
-        MatTooltipModule
+        MatTooltipModule,
+        MatButtonModule
     ],
     declarations: [
         DocumentComponent,
@@ -86,7 +88,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         SubSection2BoxComponent, 
         ParagraphBoxComponent,
         OrderedlistBoxComponent,
-        UnorderedlistBoxComponent
+        UnorderedlistBoxComponent,
+        OpendialogBoxComponent,
+        DownloadBoxComponent
          
     ],
     exports: [
