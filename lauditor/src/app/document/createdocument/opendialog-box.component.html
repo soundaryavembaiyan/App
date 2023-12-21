@@ -1,1 +1,47 @@
 
+<!-- OVERVIEW -->
+<div class="overviewDialog">
+    <!-- <div class="overviewText"> 
+        <h1 class="overedText" mat-dialog-title>Document Browse</h1>
+    </div> -->
+    <form >
+    <div class="closeDialog">
+        <i class="fa fa-times closeBtn" (click)="closeDialog()" aria-hidden="true"></i>
+    </div>
+
+    <div class="openDialog">
+        <div class="form-group">
+            <label for="title" class="lableTitle overedText">Document Browse</label>
+            <!-- <input formControlName="overviewTitle" type="text" maxlength="50" (ngModelChange)="prependHyphen($event)" [(ngModel)]="overviewTitle" class="text-size form-control createDoc" name="title"> -->
+        </div>
+
+        <div class="form-group">
+           <table  class="table table-borderless tblgrid">
+                <thead>
+                  <tr class="theader">
+                    <th><p class="thheadname headStyle">File name</p></th>
+                    <th><p class="thheadname headStyle">Last modified</p></th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr class="" *ngFor="let d of documents">
+                      <td><i class="fa fa-file" aria-hidden="true"></i> <u style="cursor: pointer;" (click)="openFile()"> {{d.documentname}} </u></td>
+                      <td>{{d.updatedon?.$date}}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- <div class="overviewSave">
+        <!-- <button type="reset" class="btn btn-default btncancel" (click)="closeDialog()">Cancel</button> --
+        <button type="submit" (click)="save()" class="btn btn-default btnsave savecls">Save</button> 
+      </div> -->
+
+    </div>
+    </form>
+    
+</div>
+
+
+<!-- <app-createdocument [data]="overview"></app-createdocument> -->
