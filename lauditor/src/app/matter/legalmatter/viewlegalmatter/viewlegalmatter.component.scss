@@ -84,3 +84,53 @@ tr.veiw-items {
 	margin-left: 0;
 	width: 100%;
 }
+
+// only for safari browser!!!
+@media not all and (min-resolution: 0.001dpcm) {
+    .dropdown {
+           //display: block;
+           position: static;
+       }
+   }
+   
+   a.dropdown-item {
+       text-align: end;
+       cursor: pointer;
+   
+       &:hover {
+           background: #00498e !important;
+       }
+   }
+   
+   ul.dropdown-menu.custom-dropdown.show {
+       padding: unset;
+   }
+   
+   button.btn.btn-secondary.dropdown-toggle {
+       width: 50%;
+       text-align: left;
+       background: #eee !important;
+       color: #111;
+       border: none;
+       margin-top: 100px;
+       float: right;
+   }
+   .dropdown-select.filter {
+       width: 40%;
+       float: right;
+   }
+   
+   .dropdown-select {
+       select {
+           width: 100%;
+           height: 40px;
+           background: #eeeeee;
+           border: none;
+           padding-left: 10px;
+           border-radius: 5px;
+       }
+   }
+   .dropdown-list .textbox {
+       width: 100%;
+       border: none;
+   }
