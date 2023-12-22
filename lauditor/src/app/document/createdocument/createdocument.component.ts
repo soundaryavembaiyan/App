@@ -115,13 +115,12 @@ export class CreateDocumentComponent {
 
     this.orderListItems = this.myForm.get('orderListItems') as FormArray;
     this.unorderListItems = this.myForm.get('unorderListItems') as FormArray;
-
-    this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
-      (res: any) => {
+    // this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
+    //   (res: any) => {
        
-        console.log('openRes:', res);
-      }
-    );
+    //     console.log('openRes:', res);
+    //   }
+    // );
 
   }
 
@@ -372,8 +371,8 @@ export class CreateDocumentComponent {
     //SECONDAPI 
     this.httpservice.sendPostLatexRequest(URLUtils.savedocID(documentId), reqq).subscribe(
       (ress: any) => {
-        //this.toast.success(ress.message)
-        this.toast.success("Document created successfully!")
+        this.toast.success(ress.message)
+        //this.toast.success("Document created successfully!")
       },
       (error: any) => {
       }
@@ -441,7 +440,8 @@ export class CreateDocumentComponent {
     this.httpservice.sendPatchLatexRequest(URLUtils.updateDoc(documentId), reqq).subscribe(
       (ress: any) => {
         console.log('ressof3:',ress);
-        this.toast.success("Document updated successfully!")
+        this.toast.success(ress.message)
+        //this.toast.success("Document updated successfully!")
       },
       (error: any) => {
       }
@@ -450,7 +450,8 @@ export class CreateDocumentComponent {
 
   getPreview() {
     //PREVIEW API
-    if (this.documentId === '' || this.documentId === null) {
+    console.log('pre',this.documentId)
+    if (this.documentId == '' || this.documentId == null) {
       this.toast.error("Please create & save the document") //If user clicks the previewIcon directly.
     }
     else {
