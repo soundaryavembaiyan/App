@@ -3,15 +3,16 @@
         <form [formGroup]="myForm">
 
         <div class="col-xs-6"> 
+            <!-- <p class="docName">Untitled document</p> -->
             <p class="docName">Untitled document</p>
             <!-- FILE -->
             <button class="menuBtn1" mat-button [matMenuTriggerFor]="menu1">File<i class="fa fa-angle-down" aria-hidden="true"></i></button>
             <mat-menu class="matFile" #menu1="matMenu">
                 <button mat-menu-item (click)="newDoc()"><img class="fileImg" src="assets/img/new.svg"/>&nbsp;New</button>
-                <button mat-menu-item><img class="fileImg" src="assets/img/open.svg"/>&nbsp;Open</button>
+                <button mat-menu-item (click)="openDocumentDialog()"><img class="fileImg" src="assets/img/open.svg"/>&nbsp;Open</button>
                 <button mat-menu-item (click)="saveDoc()"><img class="fileImg" src="assets/img/save.svg"/>&nbsp;Save</button>
                 <!-- <button mat-menu-item (click)="uploadDoc()"><img class="fileImg" src="assets/img/upload.svg"/>&nbsp;Upload</button> -->
-                <button mat-menu-item (click)="downloadDoc()"><img class="fileImg" src="assets/img/downloadFile.svg"/>&nbsp;Download</button>
+                <button mat-menu-item (click)="downloadDialog()"><img class="fileImg" src="assets/img/downloadFile.svg"/>&nbsp;Download</button>
             </mat-menu>
             <!-- INSERT -->
             <button class="menuBtn2" mat-button [matMenuTriggerFor]="menu2">Insert<i class="fa fa-angle-down" aria-hidden="true"></i></button>
@@ -139,7 +140,6 @@
             <p><img (click)="getPreview()" class="eyeco" src="assets/img/eyesico.svg"></p>
         </div>
 
-
         <div class="row containerbox">
             <div class="col-sm-12">
                 <div class="container">
@@ -152,7 +152,6 @@
                 </div>
             </div>
         </div>
-
 
         <div class="iframeStyle">
             <!-- <p>O: {{overviewTitle}}</p> -->
