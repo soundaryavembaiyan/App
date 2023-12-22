@@ -201,6 +201,17 @@ export class CreateDocumentComponent {
   //   );
   // }
 
+getDocument(){
+  let req = { "documentname": this.myForm.value.title };
+      //FIRST API
+      this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
+        (res: any) => {
+          const documentId = res.id;
+          this.documentId = documentId;
+          //this.docidSave(documentId); //secondAPI methodcall
+        }
+      );
+}
   saveDoc() {
     const formValues = this.myForm.value;
     console.log('Form values:', formValues);
@@ -460,6 +471,7 @@ export class CreateDocumentComponent {
           const blob = new Blob([ress], { type: 'application/pdf' });
           const url = URL.createObjectURL(blob); //Create a URL for the Blob
           this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+          this.getDocument()
         },
         (error: any) => {
           console.error('PreviewError:', error);
@@ -1439,40 +1451,42 @@ export class DownloadBoxComponent {
   documentId: any;
   documentname: any;
   myForm:any;
+  @Input() title: any;
 
   constructor(
-    public dialogRef: MatDialogRef<DownloadBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { },
+    public dialogRef: MatDialogRef<DownloadBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { documentname: string, },
     private httpservice: HttpService, private toast: ToastrService, public sanitizer: DomSanitizer, private fb: FormBuilder) {
-
+      this.documentname = data.documentname;
   }
 
   ngOnInit() {
-    // this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
-    //   (res: any) => {
-    //    this.documents = res;
-    //    console.log('openDRes:', res);
-    //   },
-    //   (error: any) => {
-    //     console.error('PreviewError:', error);
-    //   }
-    // );
+    this.myForm = this.fb.group({
+      documentname: ['', Validators.required],
+    });
+
+    console.log('downloadBox form',this.myForm)
   }
 
   downloadDoc() {
+
+    console.log('22downloadBox form',this.myForm.value.documentname)
+
+    //FIRST_API - For get the basedocID
     let req = { "documentname": "documentname" };
-    //FIRST API
     this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
       (res: any) => {
-        const documentId = res.id;
-        console.log('DocID:', documentId);
-        this.documentId = documentId;
-        //Download docAPI
-        let reqq ={ "documentname" : this.myForm.value.documentname }
-        console.log('reqq:', reqq);
-        this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(this.documentId), reqq).subscribe(
+        //SECOND_API - DownloadAPI(duplicate)
+        let reqq = { "documentname": this.myForm.value.documentname }
+        console.log('2reqqqform',reqq)
+        this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(res.id), reqq).subscribe(
           (res: any) => {
-            console.log('Dres:', res);
-            this.toast.success(res.message)
+            this.toast.success(res.message);
+            this.dialogRef.close()
+            //THIRD_API - Get Downloaded docs
+            this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
+              (res: any) => {
+              }
+            );
           }
         );
       }
