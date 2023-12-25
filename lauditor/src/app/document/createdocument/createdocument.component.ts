@@ -429,16 +429,6 @@ getDocument(){
   uploadDoc() {
 
   }
-  // downloadDoc() {
-  //   let reqq ={ "documentname" : this.documentname }
-  //   this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(this.documentId), reqq).subscribe(
-  //     (res: any) => {
-  //       const documentId = res.id;
-  //       //this.documentIdx = documentId;
-  //       this.docidSave(documentId); //thirdAPI methodcall
-  //     }
-  //   );
-  // }
 
   //UNORDERED LIST ACTIONS
   addorderList(): void {
