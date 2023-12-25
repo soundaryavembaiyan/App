@@ -147,6 +147,61 @@ export class CreateDocumentComponent {
     console.log('Form controls', this.myForm.value);
   }
 
+  // saveDoc() {
+  //   const formValues = this.myForm.value;
+  //   console.log('Form values:', formValues);
+
+  //   //Form data controls
+  //   const payload = {
+  //   title : this.myForm.value.title,
+  //   author : this.myForm.value.author,
+
+  //   overview: this.myForm.value.overview,
+  //   overviewTitle: this.myForm.value.overviewTitle,
+
+  //   section: this.myForm.value.section,
+  //   sectionTitle: this.myForm.value.sectionTitle,
+
+  //   subsection: this.myForm.value.subsection,
+  //   subsectionTitle: this.myForm.value.subsectionTitle,
+
+  //   subsubsection: this.myForm.value.subsubsection,
+  //   subsubsectionTitle: this.myForm.value.subsubsectionTitle,
+
+  //   paragraph: this.myForm.value.paragraph,
+  //   paragraphTitle: this.myForm.value.paragraphTitle,
+
+  //   // orderlist: this.myForm.value.orderlist,
+  //   // orderlistTitle: this.myForm.value.orderlistTitle,
+  //   orderListItems: this.myForm.value.orderListItems,
+
+  //   // unorderlist: this.myForm.value.unorderlist,
+  //   // unorderlistTitle: this.myForm.value.unorderlistTitle,
+  //   unorderListItems: this.myForm.value.unorderListItems,
+  //   }
+  //   console.log('PayloadForm Values:', payload);
+
+  //   //FIRST API
+  //   let req = { "documentname": this.myForm.value.title };
+  //   this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
+  //     (res: any) => {
+  //       //console.log('firstAPI call:', res);
+  //       const documentId = res.id;
+  //       console.log('DocID:', documentId);
+  //    //SECOND API
+  //    let reqq = { "document": "document", "page": 1 };
+  //    this.httpservice.sendPostLatexRequest(URLUtils.savedocID(documentId), reqq).subscribe(
+  //         (ress: any) => {
+  //           //console.log('secondAPI call:', ress);
+  //         },
+  //         (error: any) => {
+  //           //console.error('If Error 1:', error);
+  //         }
+  //       );
+  //     }
+  //   );
+  // }
+
 getDocument(){
   let req = { "documentname": this.myForm.value.title };
       //FIRST API
@@ -429,6 +484,16 @@ getDocument(){
   uploadDoc() {
 
   }
+  // downloadDoc() {
+  //   let reqq ={ "documentname" : this.documentname }
+  //   this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(this.documentId), reqq).subscribe(
+  //     (res: any) => {
+  //       const documentId = res.id;
+  //       //this.documentIdx = documentId;
+  //       this.docidSave(documentId); //thirdAPI methodcall
+  //     }
+  //   );
+  // }
 
   //UNORDERED LIST ACTIONS
   addorderList(): void {
@@ -1314,6 +1379,7 @@ export class OpendialogBoxComponent {
   documentId: any;
   documento: any = [];
   selectedDocumentIndex = 0;
+  targetDocId: any;
 
   constructor(
     public dialogRef: MatDialogRef<OpendialogBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { title: string },
@@ -1328,8 +1394,10 @@ export class OpendialogBoxComponent {
         this.documents = res;
       }
     );
+
   }
 
+  
   openFile() {
     //Get OpenAPI 
     this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
@@ -1384,7 +1452,7 @@ export class OpendialogBoxComponent {
     console.log('OpendocumentId',documentId)
     this.httpservice.sendGetLatexRequest(URLUtils.opendocID(documentId)).subscribe(
       (ress: any) => {
-        console.log('resssss:', ress);
+        //console.log('resssss:', ress);
         //console.log('resDoc:', ress[0].document);
         //this.toast.success("Document created successfully!")
       },
