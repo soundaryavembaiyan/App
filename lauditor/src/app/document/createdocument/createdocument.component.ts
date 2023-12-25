@@ -147,61 +147,6 @@ export class CreateDocumentComponent {
     console.log('Form controls', this.myForm.value);
   }
 
-  // saveDoc() {
-  //   const formValues = this.myForm.value;
-  //   console.log('Form values:', formValues);
-
-  //   //Form data controls
-  //   const payload = {
-  //   title : this.myForm.value.title,
-  //   author : this.myForm.value.author,
-
-  //   overview: this.myForm.value.overview,
-  //   overviewTitle: this.myForm.value.overviewTitle,
-
-  //   section: this.myForm.value.section,
-  //   sectionTitle: this.myForm.value.sectionTitle,
-
-  //   subsection: this.myForm.value.subsection,
-  //   subsectionTitle: this.myForm.value.subsectionTitle,
-
-  //   subsubsection: this.myForm.value.subsubsection,
-  //   subsubsectionTitle: this.myForm.value.subsubsectionTitle,
-
-  //   paragraph: this.myForm.value.paragraph,
-  //   paragraphTitle: this.myForm.value.paragraphTitle,
-
-  //   // orderlist: this.myForm.value.orderlist,
-  //   // orderlistTitle: this.myForm.value.orderlistTitle,
-  //   orderListItems: this.myForm.value.orderListItems,
-
-  //   // unorderlist: this.myForm.value.unorderlist,
-  //   // unorderlistTitle: this.myForm.value.unorderlistTitle,
-  //   unorderListItems: this.myForm.value.unorderListItems,
-  //   }
-  //   console.log('PayloadForm Values:', payload);
-
-  //   //FIRST API
-  //   let req = { "documentname": this.myForm.value.title };
-  //   this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
-  //     (res: any) => {
-  //       //console.log('firstAPI call:', res);
-  //       const documentId = res.id;
-  //       console.log('DocID:', documentId);
-  //    //SECOND API
-  //    let reqq = { "document": "document", "page": 1 };
-  //    this.httpservice.sendPostLatexRequest(URLUtils.savedocID(documentId), reqq).subscribe(
-  //         (ress: any) => {
-  //           //console.log('secondAPI call:', ress);
-  //         },
-  //         (error: any) => {
-  //           //console.error('If Error 1:', error);
-  //         }
-  //       );
-  //     }
-  //   );
-  // }
-
 getDocument(){
   let req = { "documentname": this.myForm.value.title };
       //FIRST API
