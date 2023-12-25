@@ -32,6 +32,7 @@ export class CreateDocumentComponent {
   isDisabled: boolean = true;
 
   documentname: any;
+  title:any;
 
   overview: any;
   overviewTitle: any;
@@ -75,7 +76,7 @@ export class CreateDocumentComponent {
   isPageBreak: boolean = false;
   pdfURL: any;
   pdfSrc: any;
-  //title: any;
+  
   documentId: any;
   documentIdx: any;
 
@@ -577,15 +578,13 @@ getDocument(){
       width: '600px',
       height: '330px',
       data: {
-        // overview: this.overview,
-        // overviewTitle: this.overviewTitle
+        title: this.title
       }
     });
 
-    dialogRef.afterClosed().subscribe((result: { overview: string, overviewTitle: string }) => {
+    dialogRef.afterClosed().subscribe((result: { title: string }) => {
       if (result) {
-        // this.overview = result.overview;
-        // this.overviewTitle = result.overviewTitle;
+         this.title = result.title;
       }
     });
   }
@@ -1373,32 +1372,27 @@ export class UnorderedlistBoxComponent {
 export class OpendialogBoxComponent {
   dialog: any;
   name: any;
+  title:any;
 
-  documents: any []=[];
+  documents: any[]=[];
   pdfSrc:any;
   documentId: any;
-  documento: any;
+  documento: any = [];
+  selectedDocumentIndex = 0;
 
   constructor(
-    public dialogRef: MatDialogRef<OpendialogBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { overview: string, overviewTitle: string },
+    public dialogRef: MatDialogRef<OpendialogBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { title: string },
     private httpservice: HttpService, private toast: ToastrService, public sanitizer: DomSanitizer, private fb: FormBuilder) {
-    // //this.overview = data[0];
-    // this.overview = data.overview;
-    // this.overviewTitle = data.overviewTitle
+     //this.overview = data[0];
+     //this.title = data.title;
   }
 
   ngOnInit() {
-
     this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
       (res: any) => {
-       this.documents = res;
-       console.log('openDRes:', res);
-      },
-      (error: any) => {
-        console.error('PreviewError:', error);
+        this.documents = res;
       }
     );
-
   }
 
   openFile() {
@@ -1406,13 +1400,14 @@ export class OpendialogBoxComponent {
     this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
       (res: any) => {
         this.documents = res;
-        console.log('openDRes:', res);
-        console.log('documentId:', res.docid);
-
-        const documentId = res.docid;
-        console.log('openDocID:', documentId);
-        this.documentId = documentId;
-        this.docidSave(documentId);
+        console.log('openDRes:', this.documents);
+        //console.log('documentId:', res.docid);
+        res.forEach((item: any) => {
+          const documentId = item.docid;
+          //console.log('openDocID:', documentId);
+          this.documentId = documentId;
+          this.docidSave(documentId);
+        });
       },
       (error: any) => {
         console.error('PreviewError:', error);
@@ -1420,12 +1415,42 @@ export class OpendialogBoxComponent {
     );
   }
 
-  //ID FROM OPEN DOCUMENT
+  // openFile() {
+  //   // Get OpenAPI
+  //   this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
+  //     (res: any) => {
+  //       this.documents = res;
+  //       console.log('openDRes:', this.documents);
+  //       //console.log('title1:', this.title);
+  
+  //       if (res.length > 0) {
+  //         const documentId = res.docid; //Get the docid
+  //         console.log('openDocID:', documentId);
+  //         this.docidSave(documentId);
+  //         //console.log('title1:', this.title);
+
+  //         // this.dialogRef.afterClosed().subscribe((result: { title: string }) => {
+  //         //   if (result) {
+  //         //      this.title = result.title;  
+  //         //        console.log('title1:', this.title);
+  //         //   }
+  //         // });
+
+  //       }
+  //     },
+  //     (error: any) => {
+  //       console.error('PreviewError:', error);
+  //     }
+  //   );
+  // }
+
   docidSave(documentId: string) {
     //Get OpenFileAPI 
+    console.log('OpendocumentId',documentId)
     this.httpservice.sendGetLatexRequest(URLUtils.opendocID(documentId)).subscribe(
       (ress: any) => {
         console.log('resssss:', ress);
+        //console.log('resDoc:', ress[0].document);
         //this.toast.success("Document created successfully!")
       },
       (error: any) => {
