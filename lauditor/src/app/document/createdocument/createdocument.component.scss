@@ -371,3 +371,21 @@ textarea {
         }
     }
 }
+
+.headStyle{
+    font-size: 20px;
+}
+
+.hoverDoc{
+    cursor: pointer;
+    font-weight: bolder;
+    font-size: 17px;
+}
+.hoverDoc:hover,
+.hoverDoc.active {
+    //background: #00B3A7;
+    color: #0078d3;
+    font-size: 100;
+}
+
+
