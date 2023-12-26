@@ -12,6 +12,7 @@ import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
 import * as jspdf from 'jspdf';
 import html2canvas from 'html2canvas';
+import { error } from 'jquery';
 
 
 @Component({
@@ -33,6 +34,8 @@ export class CreateDocumentComponent {
 
   documentname: any;
   title:any;
+  author:any;
+  documents: any[]=[];
 
   overview: any;
   overviewTitle: any;
@@ -79,6 +82,8 @@ export class CreateDocumentComponent {
   
   documentId: any;
   documentIdx: any;
+  
+  isSectionCompleted: boolean = false;
 
   constructor(private router: Router, private fb: FormBuilder, private httpservice: HttpService,
     private toast: ToastrService, private documentService: DocumentService,
@@ -122,7 +127,11 @@ export class CreateDocumentComponent {
     //     console.log('openRes:', res);
     //   }
     // );
-
+    this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
+      (res: any) => {
+        this.documents = res;
+      }
+    );
   }
 
   // updateTitle(newTitle: string) {
@@ -252,8 +261,11 @@ getDocument(){
           this.documentId = documentId;
           this.docidSave(documentId); //secondAPI methodcall
         },
-        (error: any) => {
-          // console.error('If Error 1:', error);
+        (error: HttpErrorResponse) => {
+          if (error.status === 400 || error.status === 401 || error.status === 403) {
+            const errorMessage = error.error.msg || 'Unauthorized';
+            this.toast.error(errorMessage);
+          }
         }
       );
      }
@@ -550,14 +562,25 @@ getDocument(){
 
   sectionOn() {
     this.isSection = true
+    this.isSectionCompleted = true;
   }
 
   subsectionOn() {
-    this.issubSection = true
+    if(this.isSectionCompleted === true){
+      this.issubSection = true
+    }
+    else{
+      this.toast.info("Please select the section")
+    }
   }
 
   subsubsectionOn() {
-    this.issubsubSection = true
+    if(this.isSectionCompleted === true){
+      this.issubsubSection = true
+    }
+    else{
+      this.toast.warning("Please select the section")
+    }    
   }
 
   paragraphOn() {
@@ -1374,10 +1397,10 @@ export class OpendialogBoxComponent {
   name: any;
   title:any;
 
-  documents: any[]=[];
+  documents: any=[];
   pdfSrc:any;
   documentId: any;
-  documento: any = [];
+  document: any;
   selectedDocumentIndex = 0;
   targetDocId: any;
 
@@ -1397,67 +1420,37 @@ export class OpendialogBoxComponent {
 
   }
 
-  
-  openFile() {
+  openFile(docid:any) {
     //Get OpenAPI 
     this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
       (res: any) => {
         this.documents = res;
         console.log('openDRes:', this.documents);
-        //console.log('documentId:', res.docid);
-        res.forEach((item: any) => {
-          const documentId = item.docid;
-          //console.log('openDocID:', documentId);
-          this.documentId = documentId;
-          this.docidSave(documentId);
-        });
-      },
-      (error: any) => {
-        console.error('PreviewError:', error);
+          this.httpservice.sendGetLatexRequest(URLUtils.opendocID(docid)).subscribe(
+            (req: any) => {
+              console.log('reqqq:', req);
+              console.log('reqDocument:', document);
+            }
+          );
       }
     );
+    //Dialog close
+        this.dialogRef.afterClosed().subscribe((result: { title: string }) => {
+          if (result) {
+             this.title = result.title;  
+             //console.log('title:', this.title);
+          }
+        });
   }
 
-  // openFile() {
-  //   // Get OpenAPI
-  //   this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
-  //     (res: any) => {
-  //       this.documents = res;
-  //       console.log('openDRes:', this.documents);
-  //       //console.log('title1:', this.title);
-  
-  //       if (res.length > 0) {
-  //         const documentId = res.docid; //Get the docid
-  //         console.log('openDocID:', documentId);
-  //         this.docidSave(documentId);
-  //         //console.log('title1:', this.title);
-
-  //         // this.dialogRef.afterClosed().subscribe((result: { title: string }) => {
-  //         //   if (result) {
-  //         //      this.title = result.title;  
-  //         //        console.log('title1:', this.title);
-  //         //   }
-  //         // });
-
-  //       }
-  //     },
-  //     (error: any) => {
-  //       console.error('PreviewError:', error);
-  //     }
-  //   );
-  // }
-
-  docidSave(documentId: string) {
+  docidSave(documentId: any,document:any) {
     //Get OpenFileAPI 
-    console.log('OpendocumentId',documentId)
+    //console.log('OpendocumentId',documentId)
     this.httpservice.sendGetLatexRequest(URLUtils.opendocID(documentId)).subscribe(
-      (ress: any) => {
-        //console.log('resssss:', ress);
-        //console.log('resDoc:', ress[0].document);
-        //this.toast.success("Document created successfully!")
-      },
-      (error: any) => {
-        console.error('If Error 1:', error);
+      (res: any) => {
+        console.log('resssss:', res);
+        console.log('document:', document);
+        //this.toast.success("Document opened successfully!")
       }
     );
   }
