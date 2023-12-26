@@ -18,18 +18,18 @@
            <table  class="table table-borderless tblgrid">
                 <thead>
                   <tr class="theader">
-                    <th><p class="thheadname headStyle">File name</p></th>
-                    <th><p class="thheadname headStyle">Last modified</p></th>
+                    <th><p class="thheadname headStyle">File name</p> <img src="assets/img/SORT.PNG" class="sortico" (click)="sortingFile('documentname')"></th>
+                    <th><p class="thheadname headStyle">Last modified</p> <img src="assets/img/SORT.PNG" class="sortico" (click)="sortingDateFile('updatedon.$date')"></th>
                   </tr>
                 </thead>
                 <tbody>
-                    <tr class="" *ngFor="let d of documents">
-                      <td><i class="fa fa-file" aria-hidden="true"></i> <u style="cursor: pointer;" (click)="openFile(d.docid)"> {{d.documentname}} </u></td>
-                      <td>{{d.updatedon?.$date}}</td>
+                    <tr class="" *ngFor="let d of documents | filter:searchText">
+                      <td>
+                        <u class="hoverDoc" (click)="openFile(d.docid)"><i class="fa fa-file-text" aria-hidden="true"></i>&nbsp;{{d.documentname}} </u></td>
+                      <td>{{d.updatedon?.$date}}</td> 
                     </tr>
                 </tbody>
-            </table>
-
+            </table> 
         </div>
 
         <!-- <div class="overviewSave">
