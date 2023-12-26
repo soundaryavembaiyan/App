@@ -1,4 +1,3 @@
-
 <!-- OPEN DOCUMENT DIALOG -->
 <div class="overviewDialog">
     <!-- <div class="overviewText"> 
@@ -25,7 +24,7 @@
                 </thead>
                 <tbody>
                     <tr class="" *ngFor="let d of documents">
-                      <td><i class="fa fa-file" aria-hidden="true"></i> <u style="cursor: pointer;" (click)="openFile()"> {{d.documentname}} </u></td>
+                      <td><i class="fa fa-file" aria-hidden="true"></i> <u style="cursor: pointer;" (click)="openFile(d.docid)"> {{d.documentname}} </u></td>
                       <td>{{d.updatedon?.$date}}</td>
                     </tr>
                 </tbody>
@@ -42,6 +41,3 @@
     </form>
     
 </div>
-
-
-<!-- <app-createdocument [data]="overview"></app-createdocument> -->
