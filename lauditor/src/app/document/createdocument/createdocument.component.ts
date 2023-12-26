@@ -84,6 +84,7 @@ export class CreateDocumentComponent {
   documentIdx: any;
   
   isSectionCompleted: boolean = false;
+  selectedSection: string = '';
 
   constructor(private router: Router, private fb: FormBuilder, private httpservice: HttpService,
     private toast: ToastrService, private documentService: DocumentService,
@@ -121,12 +122,8 @@ export class CreateDocumentComponent {
 
     this.orderListItems = this.myForm.get('orderListItems') as FormArray;
     this.unorderListItems = this.myForm.get('unorderListItems') as FormArray;
-    // this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
-    //   (res: any) => {
-       
-    //     console.log('openRes:', res);
-    //   }
-    // );
+
+    //Get all Document
     this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
       (res: any) => {
         this.documents = res;
@@ -138,6 +135,14 @@ export class CreateDocumentComponent {
   //   this.taskTitle = newTitle;
   //   console.log('taskTitle', this.taskTitle)
   // }
+
+  deleteDoc(){
+    this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
+      (res: any) => {
+        this.documents = res;
+      }
+    );
+  }
 
   newDoc() {
     this.myForm.reset();
@@ -155,61 +160,6 @@ export class CreateDocumentComponent {
   onSubmit() {
     console.log('Form controls', this.myForm.value);
   }
-
-  // saveDoc() {
-  //   const formValues = this.myForm.value;
-  //   console.log('Form values:', formValues);
-
-  //   //Form data controls
-  //   const payload = {
-  //   title : this.myForm.value.title,
-  //   author : this.myForm.value.author,
-
-  //   overview: this.myForm.value.overview,
-  //   overviewTitle: this.myForm.value.overviewTitle,
-
-  //   section: this.myForm.value.section,
-  //   sectionTitle: this.myForm.value.sectionTitle,
-
-  //   subsection: this.myForm.value.subsection,
-  //   subsectionTitle: this.myForm.value.subsectionTitle,
-
-  //   subsubsection: this.myForm.value.subsubsection,
-  //   subsubsectionTitle: this.myForm.value.subsubsectionTitle,
-
-  //   paragraph: this.myForm.value.paragraph,
-  //   paragraphTitle: this.myForm.value.paragraphTitle,
-
-  //   // orderlist: this.myForm.value.orderlist,
-  //   // orderlistTitle: this.myForm.value.orderlistTitle,
-  //   orderListItems: this.myForm.value.orderListItems,
-
-  //   // unorderlist: this.myForm.value.unorderlist,
-  //   // unorderlistTitle: this.myForm.value.unorderlistTitle,
-  //   unorderListItems: this.myForm.value.unorderListItems,
-  //   }
-  //   console.log('PayloadForm Values:', payload);
-
-  //   //FIRST API
-  //   let req = { "documentname": this.myForm.value.title };
-  //   this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
-  //     (res: any) => {
-  //       //console.log('firstAPI call:', res);
-  //       const documentId = res.id;
-  //       console.log('DocID:', documentId);
-  //    //SECOND API
-  //    let reqq = { "document": "document", "page": 1 };
-  //    this.httpservice.sendPostLatexRequest(URLUtils.savedocID(documentId), reqq).subscribe(
-  //         (ress: any) => {
-  //           //console.log('secondAPI call:', ress);
-  //         },
-  //         (error: any) => {
-  //           //console.error('If Error 1:', error);
-  //         }
-  //       );
-  //     }
-  //   );
-  // }
 
 getDocument(){
   let req = { "documentname": this.myForm.value.title };
@@ -485,17 +435,11 @@ getDocument(){
           const url = URL.createObjectURL(blob); //Create a URL for the Blob
           this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(url);
           this.getDocument()
-        },
-        (error: any) => {
-          console.error('PreviewError:', error);
         }
       );
     }
   }
 
-  uploadDoc() {
-
-  }
   // downloadDoc() {
   //   let reqq ={ "documentname" : this.documentname }
   //   this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(this.documentId), reqq).subscribe(
@@ -546,12 +490,10 @@ getDocument(){
     if (this.content && this.content.nativeElement) {
       const pageBreak = this.renderer.createElement('div');
       this.renderer.addClass(pageBreak, 'page-break');
-
       // visual representation of the page break
       this.renderer.setStyle(pageBreak, 'page-break-before', 'always');
       this.renderer.setStyle(pageBreak, 'border-top', '1px dashed #000');
       this.renderer.setStyle(pageBreak, 'margin-top', '20px'); // Adjust as needed
-
       this.renderer.appendChild(this.content.nativeElement, pageBreak);
     }
   }
@@ -570,17 +512,22 @@ getDocument(){
       this.issubSection = true
     }
     else{
-      this.toast.info("Please select the section")
+      this.toast.info("Please select the Section")
     }
   }
 
   subsubsectionOn() {
-    if(this.isSectionCompleted === true){
+    if (this.isSectionCompleted === true) {
       this.issubsubSection = true
     }
-    else{
-      this.toast.warning("Please select the section")
-    }    
+    else {
+      this.toast.info("Please select the Section")
+    }
+    //subsection2 was not directly allowed to select.
+    if (this.isSectionCompleted && this.issubSection === false) {
+      this.issubsubSection = false
+      this.toast.info("Please select the Sub-Section 1")
+    }
   }
 
   paragraphOn() {
@@ -1402,7 +1349,10 @@ export class OpendialogBoxComponent {
   documentId: any;
   document: any;
   selectedDocumentIndex = 0;
+  searchText:any = '';
   targetDocId: any;
+  sortKey: string = '';
+  isReverse:boolean=false;
 
   constructor(
     public dialogRef: MatDialogRef<OpendialogBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { title: string },
@@ -1434,6 +1384,7 @@ export class OpendialogBoxComponent {
           );
       }
     );
+    
     //Dialog close
         this.dialogRef.afterClosed().subscribe((result: { title: string }) => {
           if (result) {
@@ -1455,6 +1406,31 @@ export class OpendialogBoxComponent {
     );
   }
 
+  sortingFile(val: any) {
+    this.isReverse = !this.isReverse;
+    if (this.isReverse) {
+      this.documents = this.documents?.sort((p1: any, p2: any) => (p1[val] < p2[val]) ? 1 : (p1[val] > p2[val]) ? -1 : 0);
+      
+    } else {
+      this.documents = this.documents?.sort((p1: any, p2: any) => (p1[val] > p2[val]) ? 1 : (p1[val] < p2[val]) ? -1 : 0);
+    }
+  }
+  
+    sortingDateFile(val: string) {
+      if (this.sortKey === val) {
+          this.isReverse = !this.isReverse;
+      } else {
+          this.sortKey = val;
+          this.isReverse = false;
+      }
+      this.documents = this.documents?.sort((p1: any, p2: any) => {
+          const date1 = new Date(p1.updatedon?.$date);
+          const date2 = new Date(p2.updatedon?.$date);
+          return this.isReverse ? date2.getTime() - date1.getTime() : date1.getTime() - date2.getTime();
+      });
+  }
+
+  
   closeDialog() {
     this.dialogRef.close()
   }
