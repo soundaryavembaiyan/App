@@ -43,6 +43,8 @@ export class EmailComponent implements OnInit,AfterViewInit{
   controls:any;
   selectedAttachments:any=[];
   isAuthenticated:boolean=false;
+  reldata:any[]=[];
+  corpData:any[]=[];
   ngOnInit() {
     this.composeForm = this.formBuilder.group({
       toEmail: ['', [Validators.required, Validators.pattern(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)]],
@@ -181,21 +183,29 @@ export class EmailComponent implements OnInit,AfterViewInit{
       "partId": partid
     }
     this.isDocument = true;
+    //this.filter = 'client'
+
+    if(this.product == 'corporate'){
+      this.filter = 'firm'
+    }
+    else{
     this.filter = 'client'
-    // if(this.product == 'corporate'){
-    //   this.filter = 'firm'
-    // }
-    // else{
-    // this.filter = 'client'
-    // }
+    }
     this.getClients();
     this.getGroups();
   }
   getClients() {
     this.relationshipSubscribe = this.httpservice.getFeaturesdata(URLUtils.getAllRelationship).subscribe((res: any) => {
       this.data = res?.data?.relationships;
+      console.log('data',this.data)
+      this.httpservice.getFeaturesdata(URLUtils.getCalenderExternal).subscribe((res: any) => {
+        this.corpData = res?.relationships.map((obj:any)=>({ "id": obj.id, "type": "corporate","name":obj.name}))
+        this.data = this.data.concat(this.corpData)
+        console.log('corpData',this.corpData)
+    });
     });
   }
+  
   getGroups() {
     this.httpservice.sendGetRequest(URLUtils.getGroups).subscribe((res: any) => {
       this.groupViewItems = res?.data;
