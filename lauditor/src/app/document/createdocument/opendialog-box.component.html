@@ -10,12 +10,11 @@
 
     <div class="openDialog">
         <div class="form-group">
-            <label for="title" class="lableTitle overedText">Document Browse</label>
-            <!-- <input formControlName="overviewTitle" type="text" maxlength="50" (ngModelChange)="prependHyphen($event)" [(ngModel)]="overviewTitle" class="text-size form-control createDoc" name="title"> -->
-        </div>
+            <label for="title" class="lableTitle overedText">Open Document&nbsp;<img src="assets/img/SORT.PNG" class="sortico" (click)="sortingFile('documentname')"></label>
+           </div>
 
-        <div class="form-group">
-           <table  class="table table-borderless tblgrid">
+        <div class="contianer row form-group">
+           <!-- <table  class="table table-borderless tblgrid">
                 <thead>
                   <tr class="theader">
                     <th><p class="thheadname headStyle">File name</p> <img src="assets/img/SORT.PNG" class="sortico" (click)="sortingFile('documentname')"></th>
@@ -24,18 +23,25 @@
                 </thead>
                 <tbody>
                     <tr class="" *ngFor="let d of documents | filter:searchText">
-                      <td>
-                        <u class="hoverDoc" (click)="openFile(d.docid)"><i class="fa fa-file-text" aria-hidden="true"></i>&nbsp;{{d.documentname}} </u></td>
+                      <td><u class="hoverDoc" (click)="openFile(d.docid)"><i class="fa fa-file-text" aria-hidden="true"></i>&nbsp;{{d.documentname}}</u></td>
                       <td>{{d.updatedon?.$date}}</td> 
                     </tr>
                 </tbody>
-            </table> 
+            </table>  -->
+            <div class="col-sm-6" *ngFor="let d of documents| filter:searchText">
+              <div class="innerCont" (click)="openFile(d.docid)">
+                      <!-- <p class="contBox hoverDoc">
+                      <i class="fa fa-file-text ico" aria-hidden="true"></i>&nbsp;{{d.documentname}} 
+                       <br> {{d.updatedon?.$date}}
+                      </p> -->
+                      <div class="contBox hoverDoc">
+                        <p><i class="fa fa-file-text ico" aria-hidden="true"></i>&nbsp;{{truncateString(d.documentname)}} </p>
+                         <p class="hoverTime"> {{d.updatedon?.$date}}</p>
+                         <!-- <p class="hoverTime"> {{d.updatedon?.$date | date:'MMM d, y'}}</p> -->
+                      </div>
+              </div>
+            </div>
         </div>
-
-        <!-- <div class="overviewSave">
-        <!-- <button type="reset" class="btn btn-default btncancel" (click)="closeDialog()">Cancel</button> --
-        <button type="submit" (click)="save()" class="btn btn-default btnsave savecls">Save</button> 
-      </div> -->
 
     </div>
     </form>
