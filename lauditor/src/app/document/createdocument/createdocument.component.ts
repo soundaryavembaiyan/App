@@ -13,6 +13,7 @@ import { environment } from 'src/environments/environment';
 import * as jspdf from 'jspdf';
 import html2canvas from 'html2canvas';
 import { error } from 'jquery';
+import { ConfirmationDialogService } from 'src/app/confirmation-dialog/confirmation-dialog.service';
 
 
 @Component({
@@ -88,7 +89,7 @@ export class CreateDocumentComponent {
 
   constructor(private router: Router, private fb: FormBuilder, private httpservice: HttpService,
     private toast: ToastrService, private documentService: DocumentService,
-    private renderer: Renderer2, private modalService: ModalService,
+    private renderer: Renderer2, private modalService: ModalService,private confirmationDialogService: ConfirmationDialogService,
     public sanitizer: DomSanitizer, public dialog: MatDialog) {
 
   }
@@ -137,11 +138,28 @@ export class CreateDocumentComponent {
   // }
 
   deleteDoc(){
-    this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
-      (res: any) => {
-        this.documents = res;
-      }
-    );
+    // this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
+    //   (res: any) => {
+    //     this.documents = res;
+    //   }
+    // );
+      this.confirmationDialogService.confirm('Confirmation', 'Are you sure do you want to delete this Document?', true, 'Yes', 'No')
+        .then((confirmed) => {
+          if (confirmed) {
+            this.httpservice.sendDeleteLatexRequest(URLUtils.deleteDocid('docid')).subscribe((res: any) => {
+              //this.getInvoiceList()
+              if (!res.error) {
+                //this.getInvoiceList()
+                this.confirmationDialogService.confirm('Success', 'Congratulations! You have successfully deleted the Document', false, 'View Doc', 'Cancel', true)
+                  .then((confirmed) => {
+                    if (confirmed) {
+                      //this.getInvoiceList()
+                    }
+                  })
+              }
+            });
+          }
+        })
   }
 
   newDoc() {
@@ -545,11 +563,12 @@ getDocument(){
   //Dialog boxes!!!
   openDocumentDialog() {
     const dialogRef = this.dialog.open(OpendialogBoxComponent, {
-      width: '600px',
-      height: '330px',
+      width: '500px',
+      height: '500px',
       data: {
         title: this.title
-      }
+      },
+      //backdropClass: 'backdropBackground'
     });
 
     dialogRef.afterClosed().subscribe((result: { title: string }) => {
@@ -565,7 +584,8 @@ getDocument(){
       height: '200px',
       data: {
         // overview: this.overview,
-        // overviewTitle: this.overviewTitle
+          //  title: this.title,
+          //  myForm: this.myForm
       }
     });
 
@@ -754,8 +774,6 @@ getDocument(){
   // }
 
 }
-
-
 
 @Component({
   selector: 'app-dialog-box',
@@ -1347,7 +1365,7 @@ export class OpendialogBoxComponent {
   documents: any=[];
   pdfSrc:any;
   documentId: any;
-  document: any;
+  //document: any;
   selectedDocumentIndex = 0;
   searchText:any = '';
   targetDocId: any;
@@ -1367,23 +1385,77 @@ export class OpendialogBoxComponent {
         this.documents = res;
       }
     );
-
   }
+
+  //Function for truncate the texts
+  truncateString(text: string): string {
+    return text.slice(0, 15); // Get the first 15 characters
+  }
+
+  // openFile(docid:any) {
+  //   //Get OpenAPI 
+  //   this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
+  //     (res: any) => {
+  //       this.documents = res;
+  //       //console.log('openDRes:', this.documents);
+       
+  //       this.httpservice.sendGetLatexRequest(URLUtils.opendocID(docid)).subscribe(
+  //         (req: any) => {
+  //           console.log('seldocId:', req);
+  //           console.log('reqDocument:', document);
+
+  //         }
+  //       );
+  //     }
+  //   );
+    
+    
+  //   //Dialog close
+  //       this.dialogRef.afterClosed().subscribe((result: { title: string }) => {
+  //         if (result) {
+  //            this.title = result.title;  
+  //            //console.log('title:', this.title);
+  //         }
+  //       });
+  // }
+
 
   openFile(docid:any) {
     //Get OpenAPI 
     this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
       (res: any) => {
         this.documents = res;
-        console.log('openDRes:', this.documents);
-          this.httpservice.sendGetLatexRequest(URLUtils.opendocID(docid)).subscribe(
-            (req: any) => {
-              console.log('reqqq:', req);
-              console.log('reqDocument:', document);
+        //console.log('openDRes:', this.documents);
+       
+        this.httpservice.sendGetLatexRequest(URLUtils.opendocID(docid)).subscribe(
+          (req: any) => {
+            console.log('Response from server:', req); // Log the response received
+        
+
+
+            const documentContent = req; // Assuming the response itself is the document content
+            console.log("documentContent:", documentContent);
+        
+            const titleRegex = /<ltk>\\title{([^}]*)}<ltk>/;
+            const match = documentContent.document.match(titleRegex); // Assuming documentContent is the object received
+            
+            if (match && match.length > 1) {
+              const title = match[1];
+              console.log("Extracted Title:", title);
+            } else {
+              console.log("No title found or incorrect match length.");
             }
-          );
+          },
+          (error: any) => {
+            console.error('Error fetching document content:', error); // Handle errors during HTTP request
+          }
+
+          
+        );
+        
       }
     );
+    
     
     //Dialog close
         this.dialogRef.afterClosed().subscribe((result: { title: string }) => {
@@ -1430,7 +1502,6 @@ export class OpendialogBoxComponent {
       });
   }
 
-  
   closeDialog() {
     this.dialogRef.close()
   }
@@ -1445,51 +1516,55 @@ export class OpendialogBoxComponent {
 @Injectable()
 export class DownloadBoxComponent {
 
-  documentId: any;
+  @Input() documentId: any;
+  @Input() myForm: any;
   documentname: any;
-  myForm:any;
-  @Input() title: any;
+  mydForm:any;
+  filename: any;
 
   constructor(
-    public dialogRef: MatDialogRef<DownloadBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { documentname: string, },
+    public dialogRef: MatDialogRef<DownloadBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { documentname: any },
     private httpservice: HttpService, private toast: ToastrService, public sanitizer: DomSanitizer, private fb: FormBuilder) {
-      this.documentname = data.documentname;
+      //this.documentname = data.documentname;
   }
 
   ngOnInit() {
-    this.myForm = this.fb.group({
+    this.mydForm = this.fb.group({
       documentname: ['', Validators.required],
     });
 
-    console.log('downloadBox form',this.myForm)
+    console.log('downloadBox form',this.mydForm.value)
   }
 
   downloadDoc() {
-
-    console.log('22downloadBox form',this.myForm.value.documentname)
-
     //FIRST_API - For get the basedocID
-    let req = { "documentname": "documentname" };
-    this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
-      (res: any) => {
-        //SECOND_API - DownloadAPI(duplicate)
-        let reqq = { "documentname": this.myForm.value.documentname }
-        console.log('2reqqqform',reqq)
-        this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(res.id), reqq).subscribe(
-          (res: any) => {
-            this.toast.success(res.message);
-            this.dialogRef.close()
-            //THIRD_API - Get Downloaded docs
-            this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
-              (res: any) => {
-              }
-            );
-          }
-        );
-      }
-    );
+    // if(this.myForm.value.title == '' || null || undefined){
+    //   this.toast.error('Not found')
+    // }
+      let req = { "documentname": this.mydForm.value.documentname };
+      this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
+        (res: any) => {
+          //SECOND_API - DownloadAPI(duplicate)
+          let reqq = { "documentname": this.mydForm.value.documentname }
+          console.log('2reqqqform',reqq)
+          this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(res.id), reqq).subscribe(
+            (res: any) => {
+              this.toast.success(res.message);
+              this.dialogRef.close()
+              //THIRD_API - Get Downloaded docs
+              this.httpservice.sendGetLatexDoc(URLUtils.savedDocid(res.id)).subscribe(
+                (res: any) => {
+                  console.log('res of Savedid',res)
+                }
+              );
+            }
+          );
+        }
+      );
+    
   }
 
+  
   closeDialog() {
     this.dialogRef.close()
   }
