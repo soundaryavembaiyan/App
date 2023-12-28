@@ -12,7 +12,8 @@
                 <button mat-menu-item (click)="openDocumentDialog()"><img class="fileImg" src="assets/img/open.svg"/>&nbsp;Open</button>
                 <button mat-menu-item (click)="saveDoc()"><img class="fileImg" src="assets/img/save.svg"/>&nbsp;Save</button>
                 <!-- <button mat-menu-item (click)="uploadDoc()"><img class="fileImg" src="assets/img/upload.svg"/>&nbsp;Upload</button> -->
-                <!-- <button mat-menu-item (click)="downloadDialog()"><img class="fileImg" src="assets/img/downloadFile.svg"/>&nbsp;Download</button> -->
+                <!-- <button mat-menu-item (click)="downloadDialog()"><img class="fileImg" src="assets/img/downloadFile.svg"/>&nbsp;Save as</button>  -->
+                <button mat-menu-item (click)="downloadDialog()"><img class="fileImg" src="assets/img/save.svg"/>&nbsp;Save as</button> 
                 <button mat-menu-item (click)="deleteDoc()"><img class="fileImg" src="assets/img/trasho.svg"/>&nbsp;Delete</button> 
             </mat-menu>
             <!-- INSERT -->
@@ -163,5 +164,7 @@
 
     </div>
 </div> 
+
+
 
 <!-- <app-dialog-box (oversubmitted)="addData($event)"> </app-dialog-box> -->
