@@ -22,7 +22,9 @@ import { ConfirmationDialogService } from 'src/app/confirmation-dialog/confirmat
   styleUrls: ['./createdocument.component.scss']
 })
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class CreateDocumentComponent {
 
   @ViewChild('content', { static: false })
@@ -127,15 +129,13 @@ export class CreateDocumentComponent {
     //Get all Document
     this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
       (res: any) => {
-        this.documents = res;
+        //this.documents = res;
+        this.documents = res[0].documentname;
+        console.log('this.documents',this.documents)
       }
     );
   }
 
-  // updateTitle(newTitle: string) {
-  //   this.taskTitle = newTitle;
-  //   console.log('taskTitle', this.taskTitle)
-  // }
 
   deleteDoc(){
     // this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
@@ -458,17 +458,6 @@ getDocument(){
     }
   }
 
-  // downloadDoc() {
-  //   let reqq ={ "documentname" : this.documentname }
-  //   this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(this.documentId), reqq).subscribe(
-  //     (res: any) => {
-  //       const documentId = res.id;
-  //       //this.documentIdx = documentId;
-  //       this.docidSave(documentId); //thirdAPI methodcall
-  //     }
-  //   );
-  // }
-
   //UNORDERED LIST ACTIONS
   addorderList(): void {
     this.orderListItems = this.myForm.get('orderListItems') as FormArray;
@@ -579,22 +568,21 @@ getDocument(){
   }
 
   downloadDialog() {
+    console.log('Beforedocumentname', this.documentname)
     const dialogRef = this.dialog.open(DownloadBoxComponent, {
       width: '500px',
       height: '200px',
       data: {
-        // overview: this.overview,
-          //  title: this.title,
-          //  myForm: this.myForm
+        documentname: this.documentname,
       }
     });
 
-    dialogRef.afterClosed().subscribe((result: {  }) => {
+    dialogRef.afterClosed().subscribe((result: { documentname: string }) => {
       if (result) {
-        // this.overview = result.overview;
-        // this.overviewTitle = result.overviewTitle;
+        this.documentname = result.documentname;
       }
     });
+    console.log('Afterdocumentname', this.documentname)
   }
 
   openOverviewDialog() {
@@ -1362,7 +1350,13 @@ export class OpendialogBoxComponent {
   name: any;
   title:any;
 
+  //@Output() dataEvent: EventEmitter<any>  = new EventEmitter<any>();
+  @Output() dataEvent: EventEmitter<{ title: string; author: string; }> = new EventEmitter<{ title: string; author: string; }>();
+
+
   documents: any=[];
+  documentex: any=[];
+  latexcode: any;
   pdfSrc:any;
   documentId: any;
   //document: any;
@@ -1375,8 +1369,7 @@ export class OpendialogBoxComponent {
   constructor(
     public dialogRef: MatDialogRef<OpendialogBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { title: string },
     private httpservice: HttpService, private toast: ToastrService, public sanitizer: DomSanitizer, private fb: FormBuilder) {
-     //this.overview = data[0];
-     //this.title = data.title;
+
   }
 
   ngOnInit() {
@@ -1389,7 +1382,7 @@ export class OpendialogBoxComponent {
 
   //Function for truncate the texts
   truncateString(text: string): string {
-    return text.slice(0, 15); // Get the first 15 characters
+    return text.slice(0, 18); // Get the first 15 characters
   }
 
   // openFile(docid:any) {
@@ -1420,50 +1413,110 @@ export class OpendialogBoxComponent {
   // }
 
 
-  openFile(docid:any) {
-    //Get OpenAPI 
+  openFile(docid: any) {
+    //DocAPI 
     this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
       (res: any) => {
         this.documents = res;
         //console.log('openDRes:', this.documents);
-       
+
+        //OpenAPI 
         this.httpservice.sendGetLatexRequest(URLUtils.opendocID(docid)).subscribe(
           (req: any) => {
-            console.log('Response from server:', req); // Log the response received
-        
 
+            this.latexcode = req[0];
+            this.dataEvent.emit(this.latexcode);
+            console.log('latexcode',this.latexcode?.document)
 
-            const documentContent = req; // Assuming the response itself is the document content
-            console.log("documentContent:", documentContent);
-        
-            const titleRegex = /<ltk>\\title{([^}]*)}<ltk>/;
-            const match = documentContent.document.match(titleRegex); // Assuming documentContent is the object received
-            
-            if (match && match.length > 1) {
-              const title = match[1];
-              console.log("Extracted Title:", title);
-            } else {
-              console.log("No title found or incorrect match length.");
-            }
-          },
-          (error: any) => {
-            console.error('Error fetching document content:', error); // Handle errors during HTTP request
-          }
+            // this.documentex = req;
+            // console.log("documentex:", this.documentex);
+            // const match = this.latexcode?.document.match(/<ltk>\\title{([^}]*)}<ltk>/)
+            // console.log('mat',match)
 
-          
+            // Extract Title
+            const titleMatch = this.latexcode?.document.match(/\\title{([^}]*)}/);
+            const title = titleMatch && titleMatch.length > 1 ? titleMatch[1] : '';
+            console.log("Title:", title);
+
+            // Extract Author
+            const authorMatch = this.latexcode?.document.match(/\\author{([^}]*)}/);
+            const author = authorMatch && authorMatch.length > 1 ? authorMatch[1] : '';
+            console.log("Author:", author);
+
+            // Extract Date
+            const dateMatch = this.latexcode?.document.match(/\\date{([^}]*)}/);
+            const date = dateMatch && dateMatch.length > 1 ? dateMatch[1] : '';
+            console.log("Date:", date);
+
+            // Extract Abstract Title and Content
+            const abstractMatch = this.latexcode?.document.match(/\\abstract{([^}]*)}([^]*)\\section{/);
+            const abstractTitle = abstractMatch && abstractMatch.length > 1 ? abstractMatch[1] : '';
+            console.log("Abstract Title:", abstractTitle);
+
+            const abstractContent = abstractMatch && abstractMatch.length > 2 ? abstractMatch[2] : '';
+            console.log("Abstract Content:", abstractContent);
+
+            // Extract Section Title and Content
+            const sectionMatch = this.latexcode?.document.match(/\\section{([^}]*)}([^]*)\\subsection{/);
+            const sectionTitle = sectionMatch && sectionMatch.length > 1 ? sectionMatch[1] : '';
+            console.log("sectionTitle:", sectionTitle);
+
+            const sectionContent = sectionMatch && sectionMatch.length > 2 ? sectionMatch[2] : '';
+            console.log("section Content:", sectionContent);
+
+            // Extract subSection Title and Content
+            const subsectionMatch = this.latexcode?.document.match(/\\subsection{([^}]*)}([^]*)\\subsubsection{/);
+            const subsectionTitle = subsectionMatch && subsectionMatch.length > 1 ? subsectionMatch[1] : '';
+            console.log("subsectionTitle:", subsectionTitle);
+
+            const subsectionContent = subsectionMatch && subsectionMatch.length > 2 ? subsectionMatch[2] : '';
+            console.log("subsection Content:", sectionContent);
+
+            // Extract subsubSection Title and Content
+            const subsubsectionMatch = this.latexcode?.document.match(/\\subsubsection{([^}]*)}([^]*)\\paragraph{/);
+            const subsubsectionTitle = subsubsectionMatch && subsubsectionMatch.length > 1 ? subsubsectionMatch[1] : '';
+            console.log("subsubsectionTitle:", subsubsectionTitle);
+
+            const subsubsectionContent = subsubsectionMatch && subsubsectionMatch.length > 2 ? subsubsectionMatch[2] : '';
+            console.log("subsubsection Content:", subsubsectionContent);
+
+            // Extract Paragraph Title and Content
+            const paragraphMatch = this.latexcode?.document.match(/\\paragraph{([^}]*)}([^]*)\\begin{/);
+            const paragraphTitle = paragraphMatch && paragraphMatch.length > 1 ? paragraphMatch[1] : '';
+            console.log("paragraph Title:", paragraphTitle);
+
+            const paragraphContent = paragraphMatch && paragraphMatch.length > 2 ? paragraphMatch[2] : '';
+            console.log("paragraph Content:", paragraphContent);
+
+            // Extract Itemized List Content
+            const itemizeMatches = this.latexcode?.document.match(/\\begin{itemize}([^]*)\\end{itemize}/);
+            const itemizeContent = itemizeMatches && itemizeMatches.length > 0 ? itemizeMatches[1] : '';
+            const itemizeList = itemizeContent.match(/\\item\s([^\\]*)/g);
+            const itemizedItems = itemizeList ? itemizeList.map((match: { match: (arg0: RegExp) => any[]; }) => match.match(/\\item\s([^\\]*)/)[1]) : [];
+            console.log("Itemized List Content:", itemizedItems);
+
+            // Extract Enumerated List Content
+            const enumerateMatches = this.latexcode?.document.match(/\\begin{enumerate}([^]*)\\end{enumerate}/);
+            const enumerateContent = enumerateMatches && enumerateMatches.length > 0 ? enumerateMatches[1] : '';
+            const enumerateList = enumerateContent.match(/\\item\s([^\\]*)/g);
+            const enumeratedItems = enumerateList ? enumerateList.map((match: { match: (arg0: RegExp) => any[]; }) => match.match(/\\item\s([^\\]*)/)[1]) : [];
+            console.log("Enumerated List Content:", enumeratedItems);
+         
+            //Pass data from child to parent
+            this.dataEvent.emit({title, author});
+            console.log('this.dataEvent',title,author)
+           }
         );
-        
       }
     );
-    
-    
+
     //Dialog close
-        this.dialogRef.afterClosed().subscribe((result: { title: string }) => {
-          if (result) {
-             this.title = result.title;  
-             //console.log('title:', this.title);
-          }
-        });
+    this.dialogRef.afterClosed().subscribe((result: { title: string }) => {
+      if (result) {
+        this.title = result.title;
+        console.log('titleafterClosed:', this.title);
+      }
+    });
   }
 
   docidSave(documentId: any,document:any) {
@@ -1488,7 +1541,7 @@ export class OpendialogBoxComponent {
     }
   }
   
-    sortingDateFile(val: string) {
+  sortingDateFile(val: string) {
       if (this.sortKey === val) {
           this.isReverse = !this.isReverse;
       } else {
@@ -1521,11 +1574,12 @@ export class DownloadBoxComponent {
   documentname: any;
   mydForm:any;
   filename: any;
+  documents:any=[];
 
   constructor(
-    public dialogRef: MatDialogRef<DownloadBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { documentname: any },
+    public dialogRef: MatDialogRef<DownloadBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { documentname: string },
     private httpservice: HttpService, private toast: ToastrService, public sanitizer: DomSanitizer, private fb: FormBuilder) {
-      //this.documentname = data.documentname;
+      this.documentname = data.documentname;
   }
 
   ngOnInit() {
@@ -1533,38 +1587,80 @@ export class DownloadBoxComponent {
       documentname: ['', Validators.required],
     });
 
+    this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
+      (res: any) => {
+        this.documents = res;
+      }
+    );
+
     console.log('downloadBox form',this.mydForm.value)
+    console.log('documentname',this.documentname)
   }
+
+  // downloadDoc(documentname:any) {
+  //   //FIRST_API - For get the basedocID
+  //   // if(this.myForm.value.title == '' || null || undefined){
+  //   //   this.toast.error('Not found')
+  //   // }
+
+  //   this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
+  //     (rese: any) => {
+  //       this.documents = rese;
+
+  //     let req = { "documentname": rese[0].documentname };
+
+  //     this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
+  //       (res: any) => {
+  //         //SECOND_API - DownloadAPI(duplicate)
+  //         let reqq = { "documentname": this.mydForm.value.documentname }
+  //         console.log('2reqqqform',reqq)
+  //         this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(res.id), reqq).subscribe(
+  //           (res: any) => {
+  //             this.toast.success(res.message);
+  //             this.dialogRef.close()
+  //             //THIRD_API - Get Downloaded docs
+  //             this.httpservice.sendGetLatexDoc(URLUtils.savedDocid(res.id)).subscribe(
+  //               (res: any) => {
+  //                 console.log('res of Savedid',res)
+  //               }
+  //             );
+  //           }
+  //         );
+  //       }
+  //     );
+  //   }
+  //   );
+  // }
 
   downloadDoc() {
-    //FIRST_API - For get the basedocID
-    // if(this.myForm.value.title == '' || null || undefined){
-    //   this.toast.error('Not found')
-    // }
-      let req = { "documentname": this.mydForm.value.documentname };
-      this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
-        (res: any) => {
-          //SECOND_API - DownloadAPI(duplicate)
-          let reqq = { "documentname": this.mydForm.value.documentname }
-          console.log('2reqqqform',reqq)
-          this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(res.id), reqq).subscribe(
-            (res: any) => {
-              this.toast.success(res.message);
-              this.dialogRef.close()
-              //THIRD_API - Get Downloaded docs
-              this.httpservice.sendGetLatexDoc(URLUtils.savedDocid(res.id)).subscribe(
-                (res: any) => {
-                  console.log('res of Savedid',res)
-                }
-              );
-            }
-          );
-        }
-      );
-    
+
+    let req = { "documentname": "documentname" };
+    this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
+      (res: any) => {
+        this.documents = res;
+
+        this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
+          (res: any) => {
+            this.documents = res;
+            //SECOND_API - DownloadAPI(duplicate)
+            let reqq = { "documentname": "documentname" }
+            console.log('2reqqqform', reqq)
+            this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(res.id), reqq).subscribe(
+              (res: any) => {
+                this.toast.success(res.message);
+                this.dialogRef.close()
+                //THIRD_API - Get Downloaded docs
+                this.httpservice.sendGetLatexDoc(URLUtils.savedDocid(res.id)).subscribe(
+                  (res: any) => {
+                    console.log('res of Savedid', res)
+                  });
+              }
+            );
+          }
+        );
+      });
   }
 
-  
   closeDialog() {
     this.dialogRef.close()
   }
