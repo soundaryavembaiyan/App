@@ -1,4 +1,4 @@
-import { Component, Inject, Injectable, Input, Output, OnInit, EventEmitter, ViewChild, ElementRef, Renderer2, AfterViewInit } from '@angular/core';
+import { Component, Inject, Injectable, Input, Output, OnInit, EventEmitter, ViewChild, ElementRef, Renderer2, AfterViewInit, Optional } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Router } from '@angular/router';
@@ -13,6 +13,7 @@ import { environment } from 'src/environments/environment';
 import * as jspdf from 'jspdf';
 import html2canvas from 'html2canvas';
 import { error } from 'jquery';
+import { ChangeDetectorRef } from '@angular/core';
 import { ConfirmationDialogService } from 'src/app/confirmation-dialog/confirmation-dialog.service';
 
 
@@ -30,7 +31,7 @@ export class CreateDocumentComponent {
   @ViewChild('content', { static: false })
   content!: ElementRef;
   @ViewChild('pdfContent') pdfContent!: ElementRef;
-
+  
   product = environment.product;
   myForm: any;
   isDisabled: boolean = true;
@@ -38,6 +39,7 @@ export class CreateDocumentComponent {
   documentname: any;
   title:any;
   author:any;
+  date:any;
   documents: any[]=[];
 
   overview: any;
@@ -89,10 +91,16 @@ export class CreateDocumentComponent {
   isSectionCompleted: boolean = false;
   selectedSection: string = '';
 
+
+  receivedData:any;
+  latexcode: any;
+  //receivedData: { title: string };
+
+
   constructor(private router: Router, private fb: FormBuilder, private httpservice: HttpService,
-    private toast: ToastrService, private documentService: DocumentService,
+    private toast: ToastrService, private documentService: DocumentService,private cdr: ChangeDetectorRef,
     private renderer: Renderer2, private modalService: ModalService,private confirmationDialogService: ConfirmationDialogService,
-    public sanitizer: DomSanitizer, public dialog: MatDialog) {
+    public sanitizer: DomSanitizer,public dialog: MatDialog) {
 
   }
 
@@ -101,6 +109,7 @@ export class CreateDocumentComponent {
 
       title: ['', Validators.required],
       author: ['', Validators.required],
+      date:[''],
 
       overview: ['', Validators.required],
       overviewTitle: ['', Validators.required],
@@ -134,7 +143,14 @@ export class CreateDocumentComponent {
         console.log('this.documents',this.documents)
       }
     );
+
   }
+
+
+// receiveData($event: any): void {
+//     this.title = $event;
+//     console.log('parentData:', this.receivedData);
+// }
 
 
   deleteDoc(){
@@ -179,17 +195,17 @@ export class CreateDocumentComponent {
     console.log('Form controls', this.myForm.value);
   }
 
-getDocument(){
-  let req = { "documentname": this.myForm.value.title };
-      //FIRST API
-      this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
-        (res: any) => {
-          const documentId = res.id;
-          this.documentId = documentId;
-          //this.docidSave(documentId); //secondAPI methodcall
-        }
-      );
-}
+  getDocument() {
+    let req = { "documentname": this.myForm.value.title };
+    //FIRST API
+    this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
+      (res: any) => {
+        const documentId = res.id;
+        this.documentId = documentId;
+        //this.docidSave(documentId); //secondAPI methodcall
+      }
+    );
+  }
   saveDoc() {
     const formValues = this.myForm.value;
     console.log('Form values:', formValues);
@@ -236,8 +252,8 @@ getDocument(){
           }
         }
       );
-     }
-     else {
+    }
+    else {
       let title = this.myForm.value.title;
       let author = this.myForm.value.author;
       let currentDate = new Date().toDateString();
@@ -560,11 +576,134 @@ getDocument(){
       //backdropClass: 'backdropBackground'
     });
 
-    dialogRef.afterClosed().subscribe((result: { title: string }) => {
-      if (result) {
-         this.title = result.title;
+    dialogRef.afterClosed().subscribe((result: any) => {
+      console.log("result after docClose:", result)
+      if (result.docid) {
+        this.openFile(result.docid)
       }
     });
+  }
+
+  openFile(docid: any) {
+    //DocAPI 
+
+    this.isOverview = true;
+    this.isSectionCompleted = true;
+    this.isSection = true;
+    this.issubSection = true;
+    this.issubsubSection = true;
+    this.isParagraph = true;
+    this.isOrderlist = true;
+    this.isunOrderlist = true;
+
+    this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
+      (res: any) => {
+        this.documents = res;
+        //console.log('openDRes:', this.documents);
+
+        //OpenAPI 
+        this.httpservice.sendGetLatexRequest(URLUtils.opendocID(docid)).subscribe(
+          (req: any) => {
+
+            this.latexcode = req[0];
+
+            // Extract Title
+            const titleMatch = this.latexcode?.document.match(/\\title{([^}]*)}/);
+            this.title = titleMatch && titleMatch.length > 1 ? titleMatch[1] : '';
+            //console.log("Title:", this.title);
+
+            // Extract Author
+            const authorMatch = this.latexcode?.document.match(/\\author{([^}]*)}/);
+            this.author = authorMatch && authorMatch.length > 1 ? authorMatch[1] : '';
+            //console.log("Author:", this.author);
+
+            // Extract Date
+            // const dateMatch = this.latexcode?.document.match(/\\date{([^}]*)}/);
+            // const date = dateMatch && dateMatch.length > 1 ? dateMatch[1] : '';
+            // console.log("Date:", date);
+
+            // Extract Abstract Title and Content
+            this.overview = this.latexcode?.document.match(/\\abstract{([^}]*)}(.*?)\\section{/);
+            this.overviewTitle = this.overview && this.overview.length > 1 ? this.overview[1] : '';
+            this.overview = this.overview && this.overview.length > 2 ? this.overview[2] : '';
+            this.overview = this.overview.replace(/<ltk>/g, '');
+            // console.log("Overview Title:", this.overviewTitle);
+            // console.log("Overview Content:", this.overview);
+
+            // Extract Section Title and Content
+            this.section = this.latexcode?.document.match(/\\section{([^}]*)}([^]*)\\subsection{/);
+            this.sectionTitle = this.section && this.section.length > 1 ? this.section[1] : '';
+            this.section = this.section && this.section.length > 2 ? this.section[2] : '';
+            this.section = this.section.replace(/<ltk>/g, '');
+            // console.log("sectionTitle:", this.sectionTitle);
+            // console.log("section Content:", this.section);
+
+            // Extract subSection Title and Content
+            this.subsection = this.latexcode?.document.match(/\\subsection{([^}]*)}([^]*)\\subsubsection{/);
+            this.subsectionTitle = this.subsection && this.subsection.length > 1 ? this.subsection[1] : '';
+            this.subsection = this.subsection && this.subsection.length > 2 ? this.subsection[2] : '';
+            this.subsection = this.subsection.replace(/<ltk>/g, '');
+            // console.log("subsectionTitle:", this.subsectionTitle);
+            // console.log("subsection Content:", this.subsection);
+
+            // Extract subsubSection Title and Content
+            this.subsubsection = this.latexcode?.document.match(/\\subsubsection{([^}]*)}([^]*)\\paragraph{/);
+            this.subsubsectionTitle = this.subsubsection && this.subsubsection.length > 1 ? this.subsubsection[1] : '';
+            this.subsubsection = this.subsubsection && this.subsubsection.length > 2 ? this.subsubsection[2] : '';
+            this.subsubsection = this.subsubsection.replace(/<ltk>/g, '');
+            // console.log("subsubsectionTitle:", this.subsubsectionTitle);
+            // console.log("subsubsection Content:", this.subsubsection);
+
+            // Extract Paragraph Title and Content
+            this.paragraph = this.latexcode?.document.match(/\\paragraph{([^}]*)}([^]*)\\begin{/);
+            this.paragraphTitle = this.paragraph && this.paragraph.length > 1 ? this.paragraph[1] : '';
+            this.paragraph = this.paragraph && this.paragraph.length > 2 ? this.paragraph[2] : '';
+            this.paragraph = this.paragraph.replace(/<ltk>/g, '');
+            // console.log("paragraph Title:", this.paragraphTitle);
+            // console.log("paragraph Content:", this.paragraph);
+
+ 
+            // orderlist: ['', Validators.required],
+            // orderlistTitle: ['', Validators.required],
+            // orderListItems: this.fb.array([this.createorderItem()]),
+
+            // Extract Itemized List Content
+            // const itemizeMatches = this.latexcode?.document.match(/\\begin{itemize}([^]*)\\end{itemize}/);
+            // const itemizeContent = itemizeMatches && itemizeMatches.length > 0 ? itemizeMatches[1] : '';
+            // const itemizeList = itemizeContent.match(/\\item\s([^\\]*)/g);
+            // const itemizedItems = itemizeList ? itemizeList.map((match: { match: (arg0: RegExp) => any[]; }) => match.match(/\\item\s([^\\]*)/)[1]) : [];
+            // console.log("Itemized List Content:", itemizedItems);
+
+
+            this.orderListItems = this.latexcode?.document.match(/\\paragraph{([^}]*)}([^]*)\\begin{/);
+            this.orderListItems = this.orderListItems && this.orderListItems.length > 1 ? this.orderListItems[1] : '';
+            console.log("orderlist Title:", this.orderListItems);
+
+            this.orderListItems = this.orderListItems && this.orderListItems.length > 2 ? this.orderListItems[2] : '';
+            this.orderListItems = this.orderListItems.replace(/<ltk>/g, '');
+            console.log("orderlist Content:", this.orderListItems);
+            
+
+            // Extract Enumerated List Content
+            const enumerateMatches = this.latexcode?.document.match(/\\begin{enumerate}([^]*)\\end{enumerate}/);
+            const enumerateContent = enumerateMatches && enumerateMatches.length > 0 ? enumerateMatches[1] : '';
+            const enumerateList = enumerateContent.match(/\\item\s([^\\]*)/g);
+            const enumeratedItems = enumerateList ? enumerateList.map((match: { match: (arg0: RegExp) => any[]; }) => match.match(/\\item\s([^\\]*)/)[1]) : [];
+            console.log("Enumerated List Content:", enumeratedItems);
+         
+
+           }
+        );
+      }
+    );
+
+    //Dialog close
+    // this.dialogRef.afterClosed().subscribe((result: { title: string }) => {
+    //   if (result) {
+    //     this.title = result.title;
+    //     console.log('titleafterClosed:', this.title);
+    //   }
+    // });
   }
 
   downloadDialog() {
@@ -1350,10 +1489,10 @@ export class OpendialogBoxComponent {
   name: any;
   title:any;
 
-  //@Output() dataEvent: EventEmitter<any>  = new EventEmitter<any>();
-  @Output() dataEvent: EventEmitter<{ title: string; author: string; }> = new EventEmitter<{ title: string; author: string; }>();
+  @Output() dataEvent: EventEmitter<any>  = new EventEmitter<any>();
+  //@Output() dataEvent: EventEmitter<{ title: string; author: string; }> = new EventEmitter<{ title: string; author: string; }>();
 
-
+  @Input() documentname: string = '';
   documents: any=[];
   documentex: any=[];
   latexcode: any;
@@ -1367,7 +1506,7 @@ export class OpendialogBoxComponent {
   isReverse:boolean=false;
 
   constructor(
-    public dialogRef: MatDialogRef<OpendialogBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { title: string },
+    @Optional() public dialogRef: MatDialogRef<OpendialogBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { title: string },
     private httpservice: HttpService, private toast: ToastrService, public sanitizer: DomSanitizer, private fb: FormBuilder) {
 
   }
@@ -1412,7 +1551,10 @@ export class OpendialogBoxComponent {
   //       });
   // }
 
+ ondocumentClick(docid:any,docname:any){
+  this.dialogRef.close({"docid":docid, "docname":docname})
 
+ }
   openFile(docid: any) {
     //DocAPI 
     this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
@@ -1425,98 +1567,105 @@ export class OpendialogBoxComponent {
           (req: any) => {
 
             this.latexcode = req[0];
-            this.dataEvent.emit(this.latexcode);
-            console.log('latexcode',this.latexcode?.document)
+            // this.dataEvent.emit(this.latexcode);
+            // console.log('latexcode',this.latexcode?.document)
 
             // this.documentex = req;
             // console.log("documentex:", this.documentex);
             // const match = this.latexcode?.document.match(/<ltk>\\title{([^}]*)}<ltk>/)
             // console.log('mat',match)
 
-            // Extract Title
-            const titleMatch = this.latexcode?.document.match(/\\title{([^}]*)}/);
-            const title = titleMatch && titleMatch.length > 1 ? titleMatch[1] : '';
-            console.log("Title:", title);
+            // // Extract Title
+            // const titleMatch = this.latexcode?.document.match(/\\title{([^}]*)}/);
+            // const title = titleMatch && titleMatch.length > 1 ? titleMatch[1] : '';
+            // console.log("Title:", title);
 
-            // Extract Author
-            const authorMatch = this.latexcode?.document.match(/\\author{([^}]*)}/);
-            const author = authorMatch && authorMatch.length > 1 ? authorMatch[1] : '';
-            console.log("Author:", author);
+            // // Extract Author
+            // const authorMatch = this.latexcode?.document.match(/\\author{([^}]*)}/);
+            // const author = authorMatch && authorMatch.length > 1 ? authorMatch[1] : '';
+            // console.log("Author:", author);
 
-            // Extract Date
-            const dateMatch = this.latexcode?.document.match(/\\date{([^}]*)}/);
-            const date = dateMatch && dateMatch.length > 1 ? dateMatch[1] : '';
-            console.log("Date:", date);
+            // // Extract Date
+            // const dateMatch = this.latexcode?.document.match(/\\date{([^}]*)}/);
+            // const date = dateMatch && dateMatch.length > 1 ? dateMatch[1] : '';
+            // console.log("Date:", date);
 
-            // Extract Abstract Title and Content
-            const abstractMatch = this.latexcode?.document.match(/\\abstract{([^}]*)}([^]*)\\section{/);
-            const abstractTitle = abstractMatch && abstractMatch.length > 1 ? abstractMatch[1] : '';
-            console.log("Abstract Title:", abstractTitle);
+            // // Extract Abstract Title and Content
+            // const abstractMatch = this.latexcode?.document.match(/\\abstract{([^}]*)}([^]*)\\section{/);
+            // const abstractTitle = abstractMatch && abstractMatch.length > 1 ? abstractMatch[1] : '';
+            // console.log("Abstract Title:", abstractTitle);
 
-            const abstractContent = abstractMatch && abstractMatch.length > 2 ? abstractMatch[2] : '';
-            console.log("Abstract Content:", abstractContent);
+            // const abstractContent = abstractMatch && abstractMatch.length > 2 ? abstractMatch[2] : '';
+            // console.log("Abstract Content:", abstractContent);
 
-            // Extract Section Title and Content
-            const sectionMatch = this.latexcode?.document.match(/\\section{([^}]*)}([^]*)\\subsection{/);
-            const sectionTitle = sectionMatch && sectionMatch.length > 1 ? sectionMatch[1] : '';
-            console.log("sectionTitle:", sectionTitle);
+            // // Extract Section Title and Content
+            // const sectionMatch = this.latexcode?.document.match(/\\section{([^}]*)}([^]*)\\subsection{/);
+            // const sectionTitle = sectionMatch && sectionMatch.length > 1 ? sectionMatch[1] : '';
+            // console.log("sectionTitle:", sectionTitle);
 
-            const sectionContent = sectionMatch && sectionMatch.length > 2 ? sectionMatch[2] : '';
-            console.log("section Content:", sectionContent);
+            // const sectionContent = sectionMatch && sectionMatch.length > 2 ? sectionMatch[2] : '';
+            // console.log("section Content:", sectionContent);
 
-            // Extract subSection Title and Content
-            const subsectionMatch = this.latexcode?.document.match(/\\subsection{([^}]*)}([^]*)\\subsubsection{/);
-            const subsectionTitle = subsectionMatch && subsectionMatch.length > 1 ? subsectionMatch[1] : '';
-            console.log("subsectionTitle:", subsectionTitle);
+            // // Extract subSection Title and Content
+            // const subsectionMatch = this.latexcode?.document.match(/\\subsection{([^}]*)}([^]*)\\subsubsection{/);
+            // const subsectionTitle = subsectionMatch && subsectionMatch.length > 1 ? subsectionMatch[1] : '';
+            // console.log("subsectionTitle:", subsectionTitle);
 
-            const subsectionContent = subsectionMatch && subsectionMatch.length > 2 ? subsectionMatch[2] : '';
-            console.log("subsection Content:", sectionContent);
+            // const subsectionContent = subsectionMatch && subsectionMatch.length > 2 ? subsectionMatch[2] : '';
+            // console.log("subsection Content:", sectionContent);
 
-            // Extract subsubSection Title and Content
-            const subsubsectionMatch = this.latexcode?.document.match(/\\subsubsection{([^}]*)}([^]*)\\paragraph{/);
-            const subsubsectionTitle = subsubsectionMatch && subsubsectionMatch.length > 1 ? subsubsectionMatch[1] : '';
-            console.log("subsubsectionTitle:", subsubsectionTitle);
+            // // Extract subsubSection Title and Content
+            // const subsubsectionMatch = this.latexcode?.document.match(/\\subsubsection{([^}]*)}([^]*)\\paragraph{/);
+            // const subsubsectionTitle = subsubsectionMatch && subsubsectionMatch.length > 1 ? subsubsectionMatch[1] : '';
+            // console.log("subsubsectionTitle:", subsubsectionTitle);
 
-            const subsubsectionContent = subsubsectionMatch && subsubsectionMatch.length > 2 ? subsubsectionMatch[2] : '';
-            console.log("subsubsection Content:", subsubsectionContent);
+            // const subsubsectionContent = subsubsectionMatch && subsubsectionMatch.length > 2 ? subsubsectionMatch[2] : '';
+            // console.log("subsubsection Content:", subsubsectionContent);
 
-            // Extract Paragraph Title and Content
-            const paragraphMatch = this.latexcode?.document.match(/\\paragraph{([^}]*)}([^]*)\\begin{/);
-            const paragraphTitle = paragraphMatch && paragraphMatch.length > 1 ? paragraphMatch[1] : '';
-            console.log("paragraph Title:", paragraphTitle);
+            // // Extract Paragraph Title and Content
+            // const paragraphMatch = this.latexcode?.document.match(/\\paragraph{([^}]*)}([^]*)\\begin{/);
+            // const paragraphTitle = paragraphMatch && paragraphMatch.length > 1 ? paragraphMatch[1] : '';
+            // console.log("paragraph Title:", paragraphTitle);
 
-            const paragraphContent = paragraphMatch && paragraphMatch.length > 2 ? paragraphMatch[2] : '';
-            console.log("paragraph Content:", paragraphContent);
+            // const paragraphContent = paragraphMatch && paragraphMatch.length > 2 ? paragraphMatch[2] : '';
+            // console.log("paragraph Content:", paragraphContent);
 
-            // Extract Itemized List Content
-            const itemizeMatches = this.latexcode?.document.match(/\\begin{itemize}([^]*)\\end{itemize}/);
-            const itemizeContent = itemizeMatches && itemizeMatches.length > 0 ? itemizeMatches[1] : '';
-            const itemizeList = itemizeContent.match(/\\item\s([^\\]*)/g);
-            const itemizedItems = itemizeList ? itemizeList.map((match: { match: (arg0: RegExp) => any[]; }) => match.match(/\\item\s([^\\]*)/)[1]) : [];
-            console.log("Itemized List Content:", itemizedItems);
+            // // Extract Itemized List Content
+            // const itemizeMatches = this.latexcode?.document.match(/\\begin{itemize}([^]*)\\end{itemize}/);
+            // const itemizeContent = itemizeMatches && itemizeMatches.length > 0 ? itemizeMatches[1] : '';
+            // const itemizeList = itemizeContent.match(/\\item\s([^\\]*)/g);
+            // const itemizedItems = itemizeList ? itemizeList.map((match: { match: (arg0: RegExp) => any[]; }) => match.match(/\\item\s([^\\]*)/)[1]) : [];
+            // console.log("Itemized List Content:", itemizedItems);
 
-            // Extract Enumerated List Content
-            const enumerateMatches = this.latexcode?.document.match(/\\begin{enumerate}([^]*)\\end{enumerate}/);
-            const enumerateContent = enumerateMatches && enumerateMatches.length > 0 ? enumerateMatches[1] : '';
-            const enumerateList = enumerateContent.match(/\\item\s([^\\]*)/g);
-            const enumeratedItems = enumerateList ? enumerateList.map((match: { match: (arg0: RegExp) => any[]; }) => match.match(/\\item\s([^\\]*)/)[1]) : [];
-            console.log("Enumerated List Content:", enumeratedItems);
+            // // Extract Enumerated List Content
+            // const enumerateMatches = this.latexcode?.document.match(/\\begin{enumerate}([^]*)\\end{enumerate}/);
+            // const enumerateContent = enumerateMatches && enumerateMatches.length > 0 ? enumerateMatches[1] : '';
+            // const enumerateList = enumerateContent.match(/\\item\s([^\\]*)/g);
+            // const enumeratedItems = enumerateList ? enumerateList.map((match: { match: (arg0: RegExp) => any[]; }) => match.match(/\\item\s([^\\]*)/)[1]) : [];
+            // console.log("Enumerated List Content:", enumeratedItems);
          
-            //Pass data from child to parent
-            this.dataEvent.emit({title, author});
-            console.log('this.dataEvent',title,author)
+            // //Pass data from child to parent
+            // this.dataEvent.emit(title);
+            // console.log('childData:', title)
+
+            // this.dialogRef.afterClosed().subscribe((result: { title: any }) => {
+            //   if (result) {
+            //     this.title = result.title;
+            //     console.log('titleafterClosed:', this.title);
+            //   }
+            // });
            }
         );
       }
     );
 
     //Dialog close
-    this.dialogRef.afterClosed().subscribe((result: { title: string }) => {
-      if (result) {
-        this.title = result.title;
-        console.log('titleafterClosed:', this.title);
-      }
-    });
+    // this.dialogRef.afterClosed().subscribe((result: { title: string }) => {
+    //   if (result) {
+    //     this.title = result.title;
+    //     console.log('titleafterClosed:', this.title);
+    //   }
+    // });
   }
 
   docidSave(documentId: any,document:any) {
@@ -1571,7 +1720,8 @@ export class DownloadBoxComponent {
 
   @Input() documentId: any;
   @Input() myForm: any;
-  documentname: any;
+  //@Input() documentname: any;
+  @Output() documentname:any;
   mydForm:any;
   filename: any;
   documents:any=[];
@@ -1634,7 +1784,7 @@ export class DownloadBoxComponent {
 
   downloadDoc() {
 
-    let req = { "documentname": "documentname" };
+    let req = { "documentname": this.mydForm.value.documentname };
     this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
       (res: any) => {
         this.documents = res;
@@ -1643,7 +1793,7 @@ export class DownloadBoxComponent {
           (res: any) => {
             this.documents = res;
             //SECOND_API - DownloadAPI(duplicate)
-            let reqq = { "documentname": "documentname" }
+            let reqq = { "documentname": this.mydForm.value.documentname }
             console.log('2reqqqform', reqq)
             this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(res.id), reqq).subscribe(
               (res: any) => {
