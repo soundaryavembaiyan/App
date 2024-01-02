@@ -31,17 +31,17 @@ export class CreateDocumentComponent {
   @ViewChild('content', { static: false })
   content!: ElementRef;
   @ViewChild('pdfContent') pdfContent!: ElementRef;
-  
+
   product = environment.product;
   myForm: any;
   isDisabled: boolean = true;
 
   documentname: any;
 
-  title:any;
-  author:any;
-  date:any;
-  documents: any[]=[];
+  title: any;
+  author: any;
+  date: any;
+  documents: any[] = [];
 
   overview: any;
   overviewTitle: any;
@@ -85,26 +85,26 @@ export class CreateDocumentComponent {
   isPageBreak: boolean = false;
   pdfURL: any;
   pdfSrc: any;
-  
+
   documentId: any;
   documentIdx: any;
-  
+
   isSectionCompleted: boolean = false;
   selectedSection: string = '';
 
 
-  receivedData:any;
+  receivedData: any;
   latexcode: any;
-  docid:any;
+  docid: any;
   currentDocId: any;
   //overviews: { title: string, text: string }[] = [];
   overviewFields: any[] = [];
 
 
   constructor(private router: Router, private fb: FormBuilder, private httpservice: HttpService,
-    private toast: ToastrService, private documentService: DocumentService,private cdr: ChangeDetectorRef,
-    private renderer: Renderer2, private modalService: ModalService,private confirmationDialogService: ConfirmationDialogService,
-    public sanitizer: DomSanitizer,public dialog: MatDialog) {
+    private toast: ToastrService, private documentService: DocumentService, private cdr: ChangeDetectorRef,
+    private renderer: Renderer2, private modalService: ModalService, private confirmationDialogService: ConfirmationDialogService,
+    public sanitizer: DomSanitizer, public dialog: MatDialog) {
 
   }
 
@@ -113,7 +113,7 @@ export class CreateDocumentComponent {
 
       title: ['', Validators.required],
       author: ['', Validators.required],
-      date:[''],
+      date: [''],
 
       overview: ['', Validators.required],
       overviewTitle: ['', Validators.required],
@@ -144,20 +144,15 @@ export class CreateDocumentComponent {
       (res: any) => {
         //this.documents = res;
         this.documents = res[0].documentname;
-        console.log('this.documents',this.documents)
+        console.log('this.documents', this.documents)
       }
     );
   }
-
-
- 
 
   // Function to add a new overview field
   addOverview() {
     this.overviewFields.push({}); // Push an empty object to the overviewFields array
   }
-
-
   // addOverview() {
   //   this.overviews.push({ overviewTitle: '', overview: '' });
   // }
@@ -169,7 +164,7 @@ export class CreateDocumentComponent {
     }
   }
 
-  //Saveas dialog
+  //Saveas dialog box!!
   downloadDialog() {
     const dialogRef = this.dialog.open(DownloadBoxComponent, {
       width: '500px',
@@ -180,15 +175,15 @@ export class CreateDocumentComponent {
       }
     });
 
-    dialogRef.afterClosed().subscribe((result: { docid:any,documentname: any}) => {
+    dialogRef.afterClosed().subscribe((result: { docid: any, documentname: any }) => {
       if (result) {
         this.documentname = result.documentname;
         this.documentId = result.docid;
-        console.log('docname',this.documentname)
+        //console.log('docname',this.documentname)
         this.httpservice.sendGetLatexDoc(URLUtils.savedDocid(this.documentId)).subscribe(
-            (res: any) => {
+          (res: any) => {
 
-            });
+          });
       }
     });
   }
@@ -463,7 +458,7 @@ export class CreateDocumentComponent {
     //THIRDAPI
     this.httpservice.sendPatchLatexRequest(URLUtils.updateDoc(documentId), reqq).subscribe(
       (ress: any) => {
-        console.log('ressof3:',ress);
+        console.log('ressof3:', ress);
         this.toast.success(ress.message)
         //this.toast.success("Document updated successfully!")
       },
@@ -474,7 +469,7 @@ export class CreateDocumentComponent {
 
   getPreview() {
     //PREVIEW API
-    console.log('pre',this.documentId)
+    console.log('pre', this.documentId)
     if (this.documentId == '' || this.documentId == null) {
       this.toast.error("Please create & save the document") //If user clicks the previewIcon directly.
     }
@@ -539,7 +534,7 @@ export class CreateDocumentComponent {
 
   overviewOn() {
     this.isOverview = true;
-    this.overviewFields.push({}); 
+    this.overviewFields.push({});
   }
 
   sectionOn() {
@@ -548,10 +543,10 @@ export class CreateDocumentComponent {
   }
 
   subsectionOn() {
-    if(this.isSectionCompleted === true){
+    if (this.isSectionCompleted === true) {
       this.issubSection = true
     }
-    else{
+    else {
       this.toast.info("Please select the Section")
     }
   }
@@ -601,7 +596,7 @@ export class CreateDocumentComponent {
     });
   }
 
-  //Open document Dialog to Template
+  //Open document Dialog to Template(data)
   openFile(docid: any) {
     this.isOverview = true;
     this.isSectionCompleted = true;
@@ -676,7 +671,7 @@ export class CreateDocumentComponent {
             this.paragraph = this.latexcode?.document.match(/\\paragraph{([^}]*)}([^\\]*)\\/);
             this.paragraphTitle = this.paragraph && this.paragraph.length > 1 ? this.paragraph[1] : '';
             this.paragraph = this.paragraph && this.paragraph.length > 2 ? this.paragraph[2] : '';
-            this.paragraph = this.paragraph.replace(/<ltk>/g, '').trim(); 
+            this.paragraph = this.paragraph.replace(/<ltk>/g, '').trim();
             // console.log("paragraph Title:", this.paragraphTitle);
             // console.log("paragraph Content:", this.paragraph);
 
@@ -695,7 +690,7 @@ export class CreateDocumentComponent {
             const enumeratedItems = enumerateList ? enumerateList.map((match: string) => match.replace(/\\item\s/, '').trim()) : [];
             console.log("Ordered List:", itemizedItems);
             this.updateUnOrderListItemsForm(enumeratedItems); // Update the unorderlist extracted data
-           }
+          }
         );
       }
     );
@@ -747,13 +742,14 @@ export class CreateDocumentComponent {
       this.unorderListItems.push(this.createunorderItemWithValues(item));
     });
   }
-  
+
   createunorderItemWithValues(value: string): FormGroup {
     return this.fb.group({
       unorderlist: [value] // Initialize with extracted value
     });
   }
 
+  //Action dialog boxs!!
   openOverviewDialog() {
     this.overviewDialog = true;
     const dialogRef = this.dialog.open(DialogBoxComponent, {
@@ -929,7 +925,6 @@ export class CreateDocumentComponent {
   //     this.overviewTitle = newTitle;
   //   }
   // }
-
 }
 
 @Component({
@@ -1273,7 +1268,7 @@ export class ParagraphBoxComponent {
       paragraphTitle: this.paragraphTitle
     };
     this.dialogRef.close(data);
-    console.log('paraData',data)
+    console.log('paraData', data)
   }
 
   closeDialog() {
@@ -1517,23 +1512,23 @@ export class UnorderedlistBoxComponent {
 export class OpendialogBoxComponent {
   dialog: any;
   name: any;
-  title:any;
+  title: any;
 
-  @Output() dataEvent: EventEmitter<any>  = new EventEmitter<any>();
+  @Output() dataEvent: EventEmitter<any> = new EventEmitter<any>();
   //@Output() dataEvent: EventEmitter<{ title: string; author: string; }> = new EventEmitter<{ title: string; author: string; }>();
 
   @Input() documentname: string = '';
-  documents: any=[];
-  documentex: any=[];
+  documents: any = [];
+  documentex: any = [];
   latexcode: any;
-  pdfSrc:any;
+  pdfSrc: any;
   documentId: any;
   //document: any;
   selectedDocumentIndex = 0;
-  searchText:any = '';
+  searchText: any = '';
   targetDocId: any;
   sortKey: string = '';
-  isReverse:boolean=false;
+  isReverse: boolean = false;
 
   constructor(
     @Optional() public dialogRef: MatDialogRef<OpendialogBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { title: string },
@@ -1560,7 +1555,7 @@ export class OpendialogBoxComponent {
   //     (res: any) => {
   //       this.documents = res;
   //       //console.log('openDRes:', this.documents);
-       
+
   //       this.httpservice.sendGetLatexRequest(URLUtils.opendocID(docid)).subscribe(
   //         (req: any) => {
   //           console.log('seldocId:', req);
@@ -1570,8 +1565,8 @@ export class OpendialogBoxComponent {
   //       );
   //     }
   //   );
-    
-    
+
+
   //   //Dialog close
   //       this.dialogRef.afterClosed().subscribe((result: { title: string }) => {
   //         if (result) {
@@ -1581,9 +1576,9 @@ export class OpendialogBoxComponent {
   //       });
   // }
 
- ondocumentClick(docid:any,docname:any){
-  this.dialogRef.close({"docid":docid, "docname":docname})
- }
+  ondocumentClick(docid: any, docname: any) {
+    this.dialogRef.close({ "docid": docid, "docname": docname })
+  }
   openFile(docid: any) {
     //DocAPI 
     this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
@@ -1672,7 +1667,7 @@ export class OpendialogBoxComponent {
             // const enumerateList = enumerateContent.match(/\\item\s([^\\]*)/g);
             // const enumeratedItems = enumerateList ? enumerateList.map((match: { match: (arg0: RegExp) => any[]; }) => match.match(/\\item\s([^\\]*)/)[1]) : [];
             // console.log("Enumerated List Content:", enumeratedItems);
-         
+
             // //Pass data from child to parent
             // this.dataEvent.emit(title);
             // console.log('childData:', title)
@@ -1683,7 +1678,7 @@ export class OpendialogBoxComponent {
             //     console.log('titleafterClosed:', this.title);
             //   }
             // });
-           }
+          }
         );
       }
     );
@@ -1697,7 +1692,7 @@ export class OpendialogBoxComponent {
     // });
   }
 
-  docidSave(documentId: any,document:any) {
+  docidSave(documentId: any, document: any) {
     //Get OpenFileAPI 
     //console.log('OpendocumentId',documentId)
     this.httpservice.sendGetLatexRequest(URLUtils.opendocID(documentId)).subscribe(
@@ -1713,24 +1708,24 @@ export class OpendialogBoxComponent {
     this.isReverse = !this.isReverse;
     if (this.isReverse) {
       this.documents = this.documents?.sort((p1: any, p2: any) => (p1[val] < p2[val]) ? 1 : (p1[val] > p2[val]) ? -1 : 0);
-      
+
     } else {
       this.documents = this.documents?.sort((p1: any, p2: any) => (p1[val] > p2[val]) ? 1 : (p1[val] < p2[val]) ? -1 : 0);
     }
   }
-  
+
   sortingDateFile(val: string) {
-      if (this.sortKey === val) {
-          this.isReverse = !this.isReverse;
-      } else {
-          this.sortKey = val;
-          this.isReverse = false;
-      }
-      this.documents = this.documents?.sort((p1: any, p2: any) => {
-          const date1 = new Date(p1.updatedon?.$date);
-          const date2 = new Date(p2.updatedon?.$date);
-          return this.isReverse ? date2.getTime() - date1.getTime() : date1.getTime() - date2.getTime();
-      });
+    if (this.sortKey === val) {
+      this.isReverse = !this.isReverse;
+    } else {
+      this.sortKey = val;
+      this.isReverse = false;
+    }
+    this.documents = this.documents?.sort((p1: any, p2: any) => {
+      const date1 = new Date(p1.updatedon?.$date);
+      const date2 = new Date(p2.updatedon?.$date);
+      return this.isReverse ? date2.getTime() - date1.getTime() : date1.getTime() - date2.getTime();
+    });
   }
 
   closeDialog() {
@@ -1749,76 +1744,41 @@ export class DownloadBoxComponent {
 
   @Input() documentId: any;
   @Input() myForm: any;
-
   documentname: any;
-  //@Output() dataEvent: EventEmitter<any>  = new EventEmitter<any>();
-
-  mydForm:any;
-  filename: any;
-  documents:any=[];
-  currentdoc:any;
+  mydForm: any;
 
   constructor(
-    public dialogRef: MatDialogRef<DownloadBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { documentname: string, documentId:any },
+    public dialogRef: MatDialogRef<DownloadBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { documentname: string, documentId: any },
     private httpservice: HttpService, private toast: ToastrService, public sanitizer: DomSanitizer, private fb: FormBuilder) {
-          this.documentname = data.documentname
-          this.documentId = data.documentId
-     
+    this.documentname = data.documentname
+    this.documentId = data.documentId
+
   }
 
   ngOnInit() {
     this.mydForm = this.fb.group({
       documentname: ['', Validators.required],
-      //documentname: ['', Validators.required],
     });
-
-    // this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
-    //   (res: any) => {
-    //     this.documents = res;
-    //   }
-    // );
-    console.log('DocumentNamengg:', this.documentname);
   }
 
-  // downloadDoc() {
-  //     let reqq = { "documentname": this.documentname }
-  //     console.log('2reqqqform', reqq)
-  //     this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(this.documentId), reqq).subscribe(
-  //       (res: any) => {
-  //         this.toast.success(res.message);
-  //         this.dialogRef.close()
-  //         //THIRD_API - Get Downloaded docs
-  //         this.httpservice.sendGetLatexDoc(URLUtils.savedDocid(res.id)).subscribe(
-  //           (res: any) => {
-  //             console.log('res of Savedid', res)
-  //           });
-  //       }
-  //     );
-  // }
-
   downloadDoc() {
-    if(this.documentId){
-      // console.log('Document ID:', this.documentId);
-      // console.log('DocumentName:', this.documentname);
-      // console.log('MydForm:', this.mydForm);
+    if (this.documentId) {
       const reqq = { "documentname": this.mydForm.value.documentname };
 
       this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(this.documentId), reqq).subscribe(
         (res: any) => {
           this.toast.success(res.message);
-          this.dialogRef.close({"docid":res.id,"documentname":this.mydForm.value.documentname});
+          this.dialogRef.close({ "docid": res.id, "documentname": this.mydForm.value.documentname });
           // this.httpservice.sendGetLatexDoc(URLUtils.savedDocid(res.id)).subscribe(
           //   (res: any) => {
-
           //   });
         },
         (error: any) => {
           console.error('Error:', error);
         }
       );
+    }
   }
-  //this.dialogRef.close({"documentname":this.documentname})
-}
 
   closeDialog() {
     this.dialogRef.close()
