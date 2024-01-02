@@ -94,6 +94,8 @@ export class CreateDocumentComponent {
 
   receivedData:any;
   latexcode: any;
+  docid:any;
+  currentDocId: any;
   //receivedData: { title: string };
 
 
@@ -145,37 +147,29 @@ export class CreateDocumentComponent {
     );
 
   }
-
-
 // receiveData($event: any): void {
 //     this.title = $event;
 //     console.log('parentData:', this.receivedData);
 // }
 
 
-  deleteDoc(){
-    // this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
-    //   (res: any) => {
-    //     this.documents = res;
-    //   }
-    // );
-      this.confirmationDialogService.confirm('Confirmation', 'Are you sure do you want to delete this Document?', true, 'Yes', 'No')
-        .then((confirmed) => {
-          if (confirmed) {
-            this.httpservice.sendDeleteLatexRequest(URLUtils.deleteDocid('docid')).subscribe((res: any) => {
-              //this.getInvoiceList()
-              if (!res.error) {
-                //this.getInvoiceList()
-                this.confirmationDialogService.confirm('Success', 'Congratulations! You have successfully deleted the Document', false, 'View Doc', 'Cancel', true)
-                  .then((confirmed) => {
-                    if (confirmed) {
-                      //this.getInvoiceList()
-                    }
-                  })
-              }
-            });
-          }
-        })
+  //Saveas dialog
+  downloadDialog() {
+    console.log('Beforedocumentname', this.documentname)
+    const dialogRef = this.dialog.open(DownloadBoxComponent, {
+      width: '500px',
+      height: '200px',
+      data: {
+        documentname: this.documentname,
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result: { documentname: string }) => {
+      if (result) {
+        this.documentname = result.documentname;
+      }
+    });
+    console.log('Afterdocumentname', this.documentname)
   }
 
   newDoc() {
@@ -206,6 +200,7 @@ export class CreateDocumentComponent {
       }
     );
   }
+
   saveDoc() {
     const formValues = this.myForm.value;
     console.log('Form values:', formValues);
@@ -474,7 +469,7 @@ export class CreateDocumentComponent {
     }
   }
 
-  //UNORDERED LIST ACTIONS
+  //ORDERED LIST ACTIONS
   addorderList(): void {
     this.orderListItems = this.myForm.get('orderListItems') as FormArray;
     this.orderListItems.push(this.createorderItem());
@@ -565,7 +560,7 @@ export class CreateDocumentComponent {
     this.isunOrderlist = true
   }
 
-  //Dialog boxes!!!
+  //Open document Dialog box!
   openDocumentDialog() {
     const dialogRef = this.dialog.open(OpendialogBoxComponent, {
       width: '500px',
@@ -584,29 +579,30 @@ export class CreateDocumentComponent {
     });
   }
 
+  //Open document Dialog to Template
   openFile(docid: any) {
-    //DocAPI 
-
     this.isOverview = true;
     this.isSectionCompleted = true;
-    this.isSection = true;
+    //this.isSection = true;
     this.issubSection = true;
     this.issubsubSection = true;
     this.isParagraph = true;
     this.isOrderlist = true;
     this.isunOrderlist = true;
 
+    // if(this.section.length >= 1){
+    //   this.isSection = true;
+    // }
     this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
       (res: any) => {
         this.documents = res;
-        //console.log('openDRes:', this.documents);
 
         //OpenAPI 
         this.httpservice.sendGetLatexRequest(URLUtils.opendocID(docid)).subscribe(
           (req: any) => {
 
             this.latexcode = req[0];
-
+            this.currentDocId = docid; //for Delete (docid)
             // Extract Title
             const titleMatch = this.latexcode?.document.match(/\\title{([^}]*)}/);
             this.title = titleMatch && titleMatch.length > 1 ? titleMatch[1] : '';
@@ -655,73 +651,87 @@ export class CreateDocumentComponent {
             // console.log("subsubsection Content:", this.subsubsection);
 
             // Extract Paragraph Title and Content
-            this.paragraph = this.latexcode?.document.match(/\\paragraph{([^}]*)}([^]*)\\begin{/);
+            this.paragraph = this.latexcode?.document.match(/\\paragraph{([^}]*)}([^\\]*)\\/);
             this.paragraphTitle = this.paragraph && this.paragraph.length > 1 ? this.paragraph[1] : '';
             this.paragraph = this.paragraph && this.paragraph.length > 2 ? this.paragraph[2] : '';
-            this.paragraph = this.paragraph.replace(/<ltk>/g, '');
+            this.paragraph = this.paragraph.replace(/<ltk>/g, '').trim(); 
             // console.log("paragraph Title:", this.paragraphTitle);
             // console.log("paragraph Content:", this.paragraph);
 
- 
-            // orderlist: ['', Validators.required],
-            // orderlistTitle: ['', Validators.required],
-            // orderListItems: this.fb.array([this.createorderItem()]),
+            // Extract Ordered List items
+            const itemizeMatches = this.latexcode?.document.match(/\\begin{itemize}([^]*?)\\end{itemize}/);
+            const itemizeContent = itemizeMatches && itemizeMatches.length > 0 ? itemizeMatches[1] : '';
+            const itemizeList = itemizeContent.match(/\\item\s([^\\]*)/g);
+            const itemizedItems = itemizeList ? itemizeList.map((match: string) => match.replace(/\\item\s/, '').trim()) : [];
+            // console.log("Ordered List:", itemizedItems);
+            this.updateOrderListItemsForm(itemizedItems); // Update the orderlist extracted data
 
-            // Extract Itemized List Content
-            // const itemizeMatches = this.latexcode?.document.match(/\\begin{itemize}([^]*)\\end{itemize}/);
-            // const itemizeContent = itemizeMatches && itemizeMatches.length > 0 ? itemizeMatches[1] : '';
-            // const itemizeList = itemizeContent.match(/\\item\s([^\\]*)/g);
-            // const itemizedItems = itemizeList ? itemizeList.map((match: { match: (arg0: RegExp) => any[]; }) => match.match(/\\item\s([^\\]*)/)[1]) : [];
-            // console.log("Itemized List Content:", itemizedItems);
-
-
-            this.orderListItems = this.latexcode?.document.match(/\\paragraph{([^}]*)}([^]*)\\begin{/);
-            this.orderListItems = this.orderListItems && this.orderListItems.length > 1 ? this.orderListItems[1] : '';
-            console.log("orderlist Title:", this.orderListItems);
-
-            this.orderListItems = this.orderListItems && this.orderListItems.length > 2 ? this.orderListItems[2] : '';
-            this.orderListItems = this.orderListItems.replace(/<ltk>/g, '');
-            console.log("orderlist Content:", this.orderListItems);
-            
-
-            // Extract Enumerated List Content
-            const enumerateMatches = this.latexcode?.document.match(/\\begin{enumerate}([^]*)\\end{enumerate}/);
+            // Extract UnOrdered List items
+            const enumerateMatches = this.latexcode?.document.match(/\\begin{enumerate}([^]*?)\\end{enumerate}/);
             const enumerateContent = enumerateMatches && enumerateMatches.length > 0 ? enumerateMatches[1] : '';
             const enumerateList = enumerateContent.match(/\\item\s([^\\]*)/g);
-            const enumeratedItems = enumerateList ? enumerateList.map((match: { match: (arg0: RegExp) => any[]; }) => match.match(/\\item\s([^\\]*)/)[1]) : [];
-            console.log("Enumerated List Content:", enumeratedItems);
-         
-
+            const enumeratedItems = enumerateList ? enumerateList.map((match: string) => match.replace(/\\item\s/, '').trim()) : [];
+            console.log("Ordered List:", itemizedItems);
+            this.updateUnOrderListItemsForm(enumeratedItems); // Update the unorderlist extracted data
            }
         );
       }
     );
-
-    //Dialog close
-    // this.dialogRef.afterClosed().subscribe((result: { title: string }) => {
-    //   if (result) {
-    //     this.title = result.title;
-    //     console.log('titleafterClosed:', this.title);
-    //   }
-    // });
   }
 
-  downloadDialog() {
-    console.log('Beforedocumentname', this.documentname)
-    const dialogRef = this.dialog.open(DownloadBoxComponent, {
-      width: '500px',
-      height: '200px',
-      data: {
-        documentname: this.documentname,
-      }
-    });
+// Delete the open Document
+deleteDoc() {
+  if (this.currentDocId) {
+    this.confirmationDialogService.confirm('Confirmation', 'Are you sure you want to delete this Document?', true, 'Yes', 'No')
+      .then((confirmed) => {
+        if (confirmed) {
+          this.httpservice.sendDeleteLatexRequest(URLUtils.deleteDocid(this.currentDocId)).subscribe((res: any) => {
+            if (!res.error) {
+              this.toast.success('Document deleted successfully')
+              //this.confirmationDialogService.confirm('Success', 'Congratulations! You have successfully deleted the Document', false, 'Ok', 'Cancel', true);
+              this.newDoc();
+            }
+          });
+        }
+      });
+  } 
+}
 
-    dialogRef.afterClosed().subscribe((result: { documentname: string }) => {
-      if (result) {
-        this.documentname = result.documentname;
-      }
+
+  //ORDERLIST EXTRACTION
+  updateOrderListItemsForm(itemizedItems: string[]): void {
+    // Clear existing items
+    while (this.orderListItems.length !== 0) {
+      this.orderListItems.removeAt(0);
+    }
+    // Add extracted items to the form array
+    itemizedItems.forEach(item => {
+      this.orderListItems.push(this.createorderItemWithValues(item));
     });
-    console.log('Afterdocumentname', this.documentname)
+  }
+  
+  createorderItemWithValues(value: string): FormGroup {
+    return this.fb.group({
+      orderlist: [value] // Initialize with extracted value
+    });
+  }
+
+  //UNORDERLIST EXTRACTION
+  updateUnOrderListItemsForm(itemizedItems: string[]): void {
+    // Clear existing items
+    while (this.unorderListItems.length !== 0) {
+      this.unorderListItems.removeAt(0);
+    }
+    // Add extracted items to the form array
+    itemizedItems.forEach(item => {
+      this.unorderListItems.push(this.createunorderItemWithValues(item));
+    });
+  }
+  
+  createunorderItemWithValues(value: string): FormGroup {
+    return this.fb.group({
+      unorderlist: [value] // Initialize with extracted value
+    });
   }
 
   openOverviewDialog() {
