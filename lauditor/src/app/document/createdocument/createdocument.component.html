@@ -1,5 +1,6 @@
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-6 overRoll" #pdfContent> 
+        <!-- <div>Layout:{{documentname}}</div> -->
         <div>Layout:{{documentname}}</div>
         <form [formGroup]="myForm">
 
@@ -46,6 +47,7 @@
         </div>
 
         <!-- OVERVIEW -->
+        <!-- <div *ngFor="let overviewField of overviewFields;let i = index"> -->
         <div class="form-group" id="narrow" *ngIf="isOverview"><!-- *ngIf="isOverview" -->            
             <label for="title" class="lableTitle" style="padding-right:5px">Overview</label> 
             <input formControlName="overviewTitle" maxlength="50" [(ngModel)]="overviewTitle" class="overviewTitle" type="text" [disabled]="isDisabled"/><!--(ngModelChange)="hypenUpdate($event)"-->
@@ -53,7 +55,8 @@
             <i class="fa fa-times close" aria-hidden="true" (click)="isOverview = !isOverview; overview = ''; overviewTitle =''"></i>
             <textarea formControlName="overview" [(ngModel)]="overview" class="text-size form-control textareaDoc" rows="3" cols="50"></textarea>
        </div>
-        
+        <!-- </div> -->
+
        <!-- SECTION -->
        <div class="form-group" id="narrow" *ngIf="isSectionCompleted && isSection">         
         <label for="title" class="lableTitle" style="padding-right:5px">Section</label> 
@@ -129,7 +132,7 @@
         <div class="page-break content" #content></div>
     </div>
 
-    </form>
+        </form>
    </div>
    
 
