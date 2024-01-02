@@ -37,6 +37,7 @@ export class CreateDocumentComponent {
   isDisabled: boolean = true;
 
   documentname: any;
+
   title:any;
   author:any;
   date:any;
@@ -96,7 +97,8 @@ export class CreateDocumentComponent {
   latexcode: any;
   docid:any;
   currentDocId: any;
-  //receivedData: { title: string };
+  //overviews: { title: string, text: string }[] = [];
+  overviewFields: any[] = [];
 
 
   constructor(private router: Router, private fb: FormBuilder, private httpservice: HttpService,
@@ -145,31 +147,50 @@ export class CreateDocumentComponent {
         console.log('this.documents',this.documents)
       }
     );
-
   }
-// receiveData($event: any): void {
-//     this.title = $event;
-//     console.log('parentData:', this.receivedData);
-// }
 
+
+ 
+
+  // Function to add a new overview field
+  addOverview() {
+    this.overviewFields.push({}); // Push an empty object to the overviewFields array
+  }
+
+
+  // addOverview() {
+  //   this.overviews.push({ overviewTitle: '', overview: '' });
+  // }
+
+  removeOverview(overview: any) {
+    const index = this.overviewFields.indexOf(overview);
+    if (index !== -1) {
+      this.overviewFields.splice(index, 1);
+    }
+  }
 
   //Saveas dialog
   downloadDialog() {
-    console.log('Beforedocumentname', this.documentname)
     const dialogRef = this.dialog.open(DownloadBoxComponent, {
       width: '500px',
       height: '200px',
       data: {
-        documentname: this.documentname,
+        //documentname: this.documentname,
+        documentId: this.documentId
       }
     });
 
-    dialogRef.afterClosed().subscribe((result: { documentname: string }) => {
+    dialogRef.afterClosed().subscribe((result: { docid:any,documentname: any}) => {
       if (result) {
         this.documentname = result.documentname;
+        this.documentId = result.docid;
+        console.log('docname',this.documentname)
+        this.httpservice.sendGetLatexDoc(URLUtils.savedDocid(this.documentId)).subscribe(
+            (res: any) => {
+
+            });
       }
     });
-    console.log('Afterdocumentname', this.documentname)
   }
 
   newDoc() {
@@ -236,8 +257,8 @@ export class CreateDocumentComponent {
       this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
         (res: any) => {
           const documentId = res.id;
-          //console.log('DocID:', documentId);
           this.documentId = documentId;
+          console.log('DocID to saveas:', this.documentId);
           this.docidSave(documentId); //secondAPI methodcall
         },
         (error: HttpErrorResponse) => {
@@ -517,7 +538,8 @@ export class CreateDocumentComponent {
   }
 
   overviewOn() {
-    this.isOverview = true
+    this.isOverview = true;
+    this.overviewFields.push({}); 
   }
 
   sectionOn() {
@@ -583,7 +605,7 @@ export class CreateDocumentComponent {
   openFile(docid: any) {
     this.isOverview = true;
     this.isSectionCompleted = true;
-    //this.isSection = true;
+    this.isSection = true;
     this.issubSection = true;
     this.issubsubSection = true;
     this.isParagraph = true;
@@ -679,25 +701,23 @@ export class CreateDocumentComponent {
     );
   }
 
-// Delete the open Document
-deleteDoc() {
-  if (this.currentDocId) {
-    this.confirmationDialogService.confirm('Confirmation', 'Are you sure you want to delete this Document?', true, 'Yes', 'No')
-      .then((confirmed) => {
-        if (confirmed) {
-          this.httpservice.sendDeleteLatexRequest(URLUtils.deleteDocid(this.currentDocId)).subscribe((res: any) => {
-            if (!res.error) {
-              this.toast.success('Document deleted successfully')
-              //this.confirmationDialogService.confirm('Success', 'Congratulations! You have successfully deleted the Document', false, 'Ok', 'Cancel', true);
-              this.newDoc();
-            }
-          });
-        }
-      });
-  } 
-}
-
-
+  // Delete the open Document
+  deleteDoc() {
+    if (this.currentDocId) {
+      this.confirmationDialogService.confirm('Confirmation', 'Are you sure you want to delete this Document?', true, 'Yes', 'No')
+        .then((confirmed) => {
+          if (confirmed) {
+            this.httpservice.sendDeleteLatexRequest(URLUtils.deleteDocid(this.currentDocId)).subscribe((res: any) => {
+              if (!res.error) {
+                this.toast.success('Document deleted successfully')
+                //this.confirmationDialogService.confirm('Success', 'Congratulations! You have successfully deleted the Document', false, 'Ok', 'Cancel', true);
+                this.newDoc();
+              }
+            });
+          }
+        });
+    }
+  }
   //ORDERLIST EXTRACTION
   updateOrderListItemsForm(itemizedItems: string[]): void {
     // Clear existing items
@@ -709,7 +729,7 @@ deleteDoc() {
       this.orderListItems.push(this.createorderItemWithValues(item));
     });
   }
-  
+
   createorderItemWithValues(value: string): FormGroup {
     return this.fb.group({
       orderlist: [value] // Initialize with extracted value
@@ -1563,7 +1583,6 @@ export class OpendialogBoxComponent {
 
  ondocumentClick(docid:any,docname:any){
   this.dialogRef.close({"docid":docid, "docname":docname})
-
  }
   openFile(docid: any) {
     //DocAPI 
@@ -1730,96 +1749,76 @@ export class DownloadBoxComponent {
 
   @Input() documentId: any;
   @Input() myForm: any;
-  //@Input() documentname: any;
-  @Output() documentname:any;
+
+  documentname: any;
+  //@Output() dataEvent: EventEmitter<any>  = new EventEmitter<any>();
+
   mydForm:any;
   filename: any;
   documents:any=[];
+  currentdoc:any;
 
   constructor(
-    public dialogRef: MatDialogRef<DownloadBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { documentname: string },
+    public dialogRef: MatDialogRef<DownloadBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { documentname: string, documentId:any },
     private httpservice: HttpService, private toast: ToastrService, public sanitizer: DomSanitizer, private fb: FormBuilder) {
-      this.documentname = data.documentname;
+          this.documentname = data.documentname
+          this.documentId = data.documentId
+     
   }
 
   ngOnInit() {
     this.mydForm = this.fb.group({
       documentname: ['', Validators.required],
+      //documentname: ['', Validators.required],
     });
 
-    this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
-      (res: any) => {
-        this.documents = res;
-      }
-    );
-
-    console.log('downloadBox form',this.mydForm.value)
-    console.log('documentname',this.documentname)
+    // this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
+    //   (res: any) => {
+    //     this.documents = res;
+    //   }
+    // );
+    console.log('DocumentNamengg:', this.documentname);
   }
 
-  // downloadDoc(documentname:any) {
-  //   //FIRST_API - For get the basedocID
-  //   // if(this.myForm.value.title == '' || null || undefined){
-  //   //   this.toast.error('Not found')
-  //   // }
-
-  //   this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
-  //     (rese: any) => {
-  //       this.documents = rese;
-
-  //     let req = { "documentname": rese[0].documentname };
-
-  //     this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
+  // downloadDoc() {
+  //     let reqq = { "documentname": this.documentname }
+  //     console.log('2reqqqform', reqq)
+  //     this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(this.documentId), reqq).subscribe(
   //       (res: any) => {
-  //         //SECOND_API - DownloadAPI(duplicate)
-  //         let reqq = { "documentname": this.mydForm.value.documentname }
-  //         console.log('2reqqqform',reqq)
-  //         this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(res.id), reqq).subscribe(
+  //         this.toast.success(res.message);
+  //         this.dialogRef.close()
+  //         //THIRD_API - Get Downloaded docs
+  //         this.httpservice.sendGetLatexDoc(URLUtils.savedDocid(res.id)).subscribe(
   //           (res: any) => {
-  //             this.toast.success(res.message);
-  //             this.dialogRef.close()
-  //             //THIRD_API - Get Downloaded docs
-  //             this.httpservice.sendGetLatexDoc(URLUtils.savedDocid(res.id)).subscribe(
-  //               (res: any) => {
-  //                 console.log('res of Savedid',res)
-  //               }
-  //             );
-  //           }
-  //         );
+  //             console.log('res of Savedid', res)
+  //           });
   //       }
   //     );
-  //   }
-  //   );
   // }
 
   downloadDoc() {
+    if(this.documentId){
+      // console.log('Document ID:', this.documentId);
+      // console.log('DocumentName:', this.documentname);
+      // console.log('MydForm:', this.mydForm);
+      const reqq = { "documentname": this.mydForm.value.documentname };
 
-    let req = { "documentname": this.mydForm.value.documentname };
-    this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
-      (res: any) => {
-        this.documents = res;
+      this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(this.documentId), reqq).subscribe(
+        (res: any) => {
+          this.toast.success(res.message);
+          this.dialogRef.close({"docid":res.id,"documentname":this.mydForm.value.documentname});
+          // this.httpservice.sendGetLatexDoc(URLUtils.savedDocid(res.id)).subscribe(
+          //   (res: any) => {
 
-        this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
-          (res: any) => {
-            this.documents = res;
-            //SECOND_API - DownloadAPI(duplicate)
-            let reqq = { "documentname": this.mydForm.value.documentname }
-            console.log('2reqqqform', reqq)
-            this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(res.id), reqq).subscribe(
-              (res: any) => {
-                this.toast.success(res.message);
-                this.dialogRef.close()
-                //THIRD_API - Get Downloaded docs
-                this.httpservice.sendGetLatexDoc(URLUtils.savedDocid(res.id)).subscribe(
-                  (res: any) => {
-                    console.log('res of Savedid', res)
-                  });
-              }
-            );
-          }
-        );
-      });
+          //   });
+        },
+        (error: any) => {
+          console.error('Error:', error);
+        }
+      );
   }
+  //this.dialogRef.close({"documentname":this.documentname})
+}
 
   closeDialog() {
     this.dialogRef.close()
