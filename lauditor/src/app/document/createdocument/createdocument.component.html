@@ -1,12 +1,9 @@
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-6 overRoll" #pdfContent> 
-        <!-- <div>Layout:{{documentname}}</div> -->
-        <div>Layout:{{documentname}}</div>
+        <div class="lableTitle layout">Layout: {{documentname}}</div>
         <form [formGroup]="myForm">
 
         <div class="col-xs-6"> 
-            <!-- <p class="docName">Untitled document</p> -->
-            <p class="docName">Untitled document</p>
             <!-- FILE -->
             <button class="menuBtn1" mat-button [matMenuTriggerFor]="menu1">File<i class="fa fa-angle-down" aria-hidden="true"></i></button>
             <mat-menu class="matFile" #menu1="matMenu">
@@ -158,8 +155,7 @@
         </div>
 
         <div class="iframeStyle">
-            <!-- <p>O: {{overviewTitle}}</p> -->
-            <iframe height="100%" width="100%" class="responsive-iframe" [src]="pdfSrc" frameborder="0">
+            <iframe height="100%" width="97.4%" class="responsive-iframe" [src]="pdfSrc" frameborder="0">
                 <div class="form-group">
                 </div>
             </iframe>
