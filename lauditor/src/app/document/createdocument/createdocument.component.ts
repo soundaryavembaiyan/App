@@ -470,10 +470,10 @@ export class CreateDocumentComponent {
   getPreview() {
     //PREVIEW API
     console.log('pre', this.documentId)
-    if (this.documentId == '' || this.documentId == null) {
-      this.toast.error("Please create & save the document") //If user clicks the previewIcon directly.
-    }
-    else {
+    // if (this.documentId == '' || this.documentId == null) {
+    //   this.toast.error("Please create & save the document") //If user clicks the previewIcon directly.
+    // }
+    // else {
       this.httpservice.sendGetLatexPDFRequest(URLUtils.getPreview(this.documentId)).subscribe(
         (ress: any) => {
           const blob = new Blob([ress], { type: 'application/pdf' });
@@ -482,7 +482,7 @@ export class CreateDocumentComponent {
           this.getDocument()
         }
       );
-    }
+    //}
   }
 
   //ORDERED LIST ACTIONS
@@ -610,6 +610,7 @@ export class CreateDocumentComponent {
     // if(this.section.length >= 1){
     //   this.isSection = true;
     // }
+    
     this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
       (res: any) => {
         this.documents = res;
