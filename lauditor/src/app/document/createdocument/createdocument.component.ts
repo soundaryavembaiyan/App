@@ -249,6 +249,7 @@ export class CreateDocumentComponent {
     console.log('PayloadForm Values:', payload);
 
     if (this.documentId == null) {
+      this.submitted = true;
       let req = { "documentname": this.myForm.value.title };
       //FIRST API
       this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
@@ -267,6 +268,7 @@ export class CreateDocumentComponent {
       );
     }
     else {
+      this.submitted = true;
       let title = this.myForm.value.title;
       let author = this.myForm.value.author;
       let currentDate = new Date().toDateString();
