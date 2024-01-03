@@ -99,6 +99,7 @@ export class CreateDocumentComponent {
   currentDocId: any;
   //overviews: { title: string, text: string }[] = [];
   overviewFields: any[] = [];
+  latexdoc = environment.lateXAPI;
 
 
   constructor(private router: Router, private fb: FormBuilder, private httpservice: HttpService,
@@ -467,22 +468,18 @@ export class CreateDocumentComponent {
     );
   }
 
+  //Preview the PDF file
   getPreview() {
     //PREVIEW API
-    console.log('pre', this.documentId)
-    // if (this.documentId == '' || this.documentId == null) {
-    //   this.toast.error("Please create & save the document") //If user clicks the previewIcon directly.
-    // }
-    // else {
-      this.httpservice.sendGetLatexPDFRequest(URLUtils.getPreview(this.documentId)).subscribe(
-        (ress: any) => {
-          const blob = new Blob([ress], { type: 'application/pdf' });
-          const url = URL.createObjectURL(blob); //Create a URL for the Blob
-          this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(url);
-          this.getDocument()
-        }
-      );
-    //}
+    //console.log('preview docid:', this.documentId)
+    if (this.documentId == '' || this.documentId == null) {
+      this.toast.error("Please create & save the document") //If user clicks the previewIcon directly.
+    }
+    else {
+      let url = this.latexdoc + URLUtils.getPreview(this.documentId)
+      //console.log('ress:', url)
+      this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    }
   }
 
   //ORDERED LIST ACTIONS
@@ -535,6 +532,7 @@ export class CreateDocumentComponent {
   overviewOn() {
     this.isOverview = true;
     this.overviewFields.push({});
+    this.overview.push(''); 
   }
 
   sectionOn() {
@@ -607,6 +605,8 @@ export class CreateDocumentComponent {
     this.isOrderlist = true;
     this.isunOrderlist = true;
 
+    this.documentId = docid;
+    
     // if(this.section.length >= 1){
     //   this.isSection = true;
     // }
