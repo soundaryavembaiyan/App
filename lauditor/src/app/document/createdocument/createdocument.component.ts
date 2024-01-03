@@ -97,6 +97,7 @@ export class CreateDocumentComponent {
   latexcode: any;
   docid: any;
   currentDocId: any;
+  submitted = false;
   //overviews: { title: string, text: string }[] = [];
   overviewFields: any[] = [];
   latexdoc = environment.lateXAPI;
@@ -473,6 +474,7 @@ export class CreateDocumentComponent {
     //PREVIEW API
     //console.log('preview docid:', this.documentId)
     if (this.documentId == '' || this.documentId == null) {
+      this.submitted = true;
       this.toast.error("Please create & save the document") //If user clicks the previewIcon directly.
     }
     else {
