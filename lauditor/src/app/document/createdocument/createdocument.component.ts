@@ -82,25 +82,27 @@ export class CreateDocumentComponent {
   orderListItems: any;
   unorderListItems: any;
 
+  overviewListItems:any;
+
   isPageBreak: boolean = false;
   pdfURL: any;
   pdfSrc: any;
 
   documentId: any;
-  documentIdx: any;
+  pageId: any;
 
   isSectionCompleted: boolean = false;
   selectedSection: string = '';
-
 
   receivedData: any;
   latexcode: any;
   docid: any;
   currentDocId: any;
-  submitted = false;
   //overviews: { title: string, text: string }[] = [];
   overviewFields: any[] = [];
   latexdoc = environment.lateXAPI;
+  submitted = false;
+  documentIdo: any;
 
 
   constructor(private router: Router, private fb: FormBuilder, private httpservice: HttpService,
@@ -150,14 +152,6 @@ export class CreateDocumentComponent {
       }
     );
   }
-
-  // Function to add a new overview field
-  addOverview() {
-    this.overviewFields.push({}); // Push an empty object to the overviewFields array
-  }
-  // addOverview() {
-  //   this.overviews.push({ overviewTitle: '', overview: '' });
-  // }
 
   removeOverview(overview: any) {
     const index = this.overviewFields.indexOf(overview);
@@ -248,233 +242,88 @@ export class CreateDocumentComponent {
     }
     console.log('PayloadForm Values:', payload);
 
+    let title = this.myForm.value.title;
+    let author = this.myForm.value.author;
+    let currentDate = new Date().toDateString();
+    let overview = this.myForm.value.overview || '';
+    let overviewTitle = this.myForm.value.overviewTitle || '';
+    let section = this.myForm.value.section || '';
+    let sectionTitle = this.myForm.value.sectionTitle || '';
+    let subsection = this.myForm.value.subsection || '';
+    let subsectionTitle = this.myForm.value.subsectionTitle || '';
+    let subsubsection = this.myForm.value.subsubsection || '';
+    let subsubsectionTitle = this.myForm.value.subsubsectionTitle || '';
+    let paragraph = this.myForm.value.paragraph || '';
+    let paragraphTitle = this.myForm.value.paragraphTitle || '';
+    let orderListItems = this.myForm.value.orderListItems;
+    let unorderListItems = this.myForm.value.unorderListItems;
+    let orderedList = orderListItems.map((item: any) => `\\item ${item.orderlist}`) || '';
+    let unorderedList = unorderListItems.map((item: any) => `\\item ${item.unorderlist}`).join('\n');
+    let latexDocument = `
+  \\documentclass{article}
+  \\usepackage{geometry}
+  \\geometry{a4paper,total={170mm,257mm},left=20mm,top=20mm}
+  
+  \\title{${title}}
+  \\author{${author}}
+  \\date{${currentDate}}
+  
+  \\begin{document}
+  \\maketitle
+
+  \\begin{abstract}
+  \\end{abstract}
+  
+  \\section*{${overviewTitle}}${overview}
+  \\section*{${sectionTitle}}${section}
+  \\subsection*{${subsectionTitle}}${subsection}
+  \\subsubsection*{${subsubsectionTitle}}${subsubsection}
+  \\paragraph*{${paragraphTitle}}${paragraph}
+  
+  \\begin{enumerate}
+      ${orderedList} 
+  \\end{enumerate}
+
+  \\begin{itemize}
+      ${unorderedList}
+  \\end{itemize}
+  
+  \\end{document}`;
+    let reqq = {
+      "document": latexDocument,
+      "page": 1
+    };
+
+    console.log('null:', this.documentId);
     if (this.documentId == null) {
-      this.submitted = true;
-      let req = { "documentname": this.myForm.value.title };
-      //FIRST API
-      this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
-        (res: any) => {
-          const documentId = res.id;
-          this.documentId = documentId;
-          console.log('DocID to saveas:', this.documentId);
-          this.docidSave(documentId); //secondAPI methodcall
-        },
-        (error: HttpErrorResponse) => {
-          if (error.status === 400 || error.status === 401 || error.status === 403) {
-            const errorMessage = error.error.msg || 'Unauthorized';
-            this.toast.error(errorMessage);
+    this.submitted = true;
+    let req = { "documentname": this.myForm.value.title };
+    //FIRST API
+    this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
+      (res: any) => {
+        const documentId = res.id;
+        this.documentId = documentId;
+        console.log('DocID to saveas:', this.documentId);
+        //SECONDAPI 
+        this.httpservice.sendPostLatexRequest(URLUtils.savedocID(this.documentId), reqq).subscribe(
+          (ress: any) => {
+            this.pageId = ress.id;
+            this.toast.success(ress.message)
           }
-        }
-      );
+        );
+      });
     }
-    else {
-      this.submitted = true;
-      let title = this.myForm.value.title;
-      let author = this.myForm.value.author;
-      let currentDate = new Date().toDateString();
-      let overview = this.myForm.value.overview || '';
-      let overviewTitle = this.myForm.value.overviewTitle || '';
-      let section = this.myForm.value.section || '';
-      let sectionTitle = this.myForm.value.sectionTitle || '';
-      let subsection = this.myForm.value.subsection || '';
-      let subsectionTitle = this.myForm.value.subsectionTitle || '';
-      let subsubsection = this.myForm.value.subsubsection || '';
-      let subsubsectionTitle = this.myForm.value.subsubsectionTitle || '';
-      let paragraph = this.myForm.value.paragraph || '';
-      let paragraphTitle = this.myForm.value.paragraphTitle || '';
-      let orderListItems = this.myForm.value.orderListItems;
-      let unorderListItems = this.myForm.value.unorderListItems;
-      let orderedList = orderListItems.map((item: any) => `\\item ${item.orderlist}`) || '';
-      let unorderedList = unorderListItems.map((item: any) => `\\item ${item.unorderlist}`).join('\n');
-
-      let latexDocument = `
-    \\documentclass{article}
-    \\usepackage{geometry}
-    \\geometry{a4paper,total={170mm,257mm},left=20mm,top=20mm}
-    
-    \\title{${title}}
-    \\author{${author}}
-    \\date{${currentDate}}
-    
-    \\begin{document}
-    \\maketitle
-  
-    \\begin{abstract}
-    \\end{abstract}
-    
-    \\section*{${overviewTitle}}${overview}
-    \\section*{${sectionTitle}}${section}
-    \\subsection*{${subsectionTitle}}${subsection}
-    \\subsubsection*{${subsubsectionTitle}}${subsubsection}
-    \\paragraph*{${paragraphTitle}}${paragraph}
-    
-    \\begin{enumerate}
-        ${orderedList} 
-    \\end{enumerate}
-  
-    \\begin{itemize}
-        ${unorderedList}
-    \\end{itemize}
-    
-    \\end{document}`;
-      let reqq = {
-        "document": latexDocument,
-        "page": 1
-      };
-
-      this.httpservice.sendPostLatexRequest(URLUtils.savedocID(this.documentId), reqq).subscribe(
-        (res: any) => {
-          const documentId = res.id;
-          //this.documentIdx = documentId;
-          this.docidUpdate(documentId); //thirdAPI methodcall
-        }
-      );
-    }
-  }
-
-  //ID FROM DOCUMENT CREATION 
-  docidSave(documentId: string) {
-    let title = this.myForm.value.title;
-    let author = this.myForm.value.author;
-    let currentDate = new Date().toDateString();
-    let overview = this.myForm.value.overview || '';
-    let overviewTitle = this.myForm.value.overviewTitle || '';
-    let section = this.myForm.value.section || '';
-    let sectionTitle = this.myForm.value.sectionTitle || '';
-    let subsection = this.myForm.value.subsection || '';
-    let subsectionTitle = this.myForm.value.subsectionTitle || '';
-    let subsubsection = this.myForm.value.subsubsection || '';
-    let subsubsectionTitle = this.myForm.value.subsubsectionTitle || '';
-    let paragraph = this.myForm.value.paragraph || '';
-    let paragraphTitle = this.myForm.value.paragraphTitle || '';
-    let orderListItems = this.myForm.value.orderListItems;
-    let unorderListItems = this.myForm.value.unorderListItems;
-
-    let orderedList = orderListItems.map((item: any) => `\\item ${item.orderlist}`) || '';
-    let unorderedList = unorderListItems.map((item: any) => `\\item ${item.unorderlist}`).join('\n');
-    // console.log('orderListItems:', orderListItems);
-    // console.log('unorderListItems:', unorderListItems);
-
-    let latexDocument = `
-  \\documentclass{article}
-  \\usepackage{geometry}
-  \\geometry{a4paper,total={170mm,257mm},left=20mm,top=20mm}
-  
-  \\title{${title}}
-  \\author{${author}}
-  \\date{${currentDate}}
-  
-  \\begin{document}
-  \\maketitle
-
-  \\begin{abstract}
-  \\end{abstract}
-  
-  \\section*{${overviewTitle}}${overview}
-  \\section*{${sectionTitle}}${section}
-  \\subsection*{${subsectionTitle}}${subsection}
-  \\subsubsection*{${subsubsectionTitle}}${subsubsection}
-  \\paragraph*{${paragraphTitle}}${paragraph}
-  
-  \\begin{enumerate}
-      ${orderedList} 
-  \\end{enumerate}
-
-  \\begin{itemize}
-      ${unorderedList}
-  \\end{itemize}
-  
-  \\end{document}`;
-
-    let reqq = {
-      "document": latexDocument,
-      "page": 1
-    };
-
-    //SECONDAPI 
-    this.httpservice.sendPostLatexRequest(URLUtils.savedocID(documentId), reqq).subscribe(
-      (ress: any) => {
-        this.toast.success(ress.message)
-        //this.toast.success("Document created successfully!")
-      },
-      (error: any) => {
+      else{
+          //THIRDAPI - for update
+          this.httpservice.sendPatchLatexRequest(URLUtils.updateDoc(this.pageId), reqq).subscribe(
+            (resp: any) => {
+              this.toast.success(resp.message)
+            });
       }
-    );
-  }
-
-  //ID FROM ADDED DOCUMENT
-  docidUpdate(documentId: string) {
-    let title = this.myForm.value.title;
-    let author = this.myForm.value.author;
-    let currentDate = new Date().toDateString();
-    let overview = this.myForm.value.overview || '';
-    let overviewTitle = this.myForm.value.overviewTitle || '';
-    let section = this.myForm.value.section || '';
-    let sectionTitle = this.myForm.value.sectionTitle || '';
-    let subsection = this.myForm.value.subsection || '';
-    let subsectionTitle = this.myForm.value.subsectionTitle || '';
-    let subsubsection = this.myForm.value.subsubsection || '';
-    let subsubsectionTitle = this.myForm.value.subsubsectionTitle || '';
-    let paragraph = this.myForm.value.paragraph || '';
-    let paragraphTitle = this.myForm.value.paragraphTitle || '';
-    let orderListItems = this.myForm.value.orderListItems;
-    let unorderListItems = this.myForm.value.unorderListItems;
-
-    let orderedList = orderListItems.map((item: any) => `\\item ${item.orderlist}`) || '';
-    let unorderedList = unorderListItems.map((item: any) => `\\item ${item.unorderlist}`).join('\n');
-
-    let latexDocument = `
-  \\documentclass{article}
-  \\usepackage{geometry}
-  \\geometry{a4paper,total={170mm,257mm},left=20mm,top=20mm}
-  
-  \\title{${title}}
-  \\author{${author}}
-  \\date{${currentDate}}
-  
-  \\begin{document}
-  \\maketitle
-
-  \\begin{abstract}
-  \\end{abstract}
-  
-  \\section*{${overviewTitle}}${overview}
-  \\section*{${sectionTitle}}${section}
-  \\subsection*{${subsectionTitle}}${subsection}
-  \\subsubsection*{${subsubsectionTitle}}${subsubsection}
-  \\paragraph*{${paragraphTitle}}${paragraph}
-  
-  \\begin{enumerate}
-      ${orderedList} 
-  \\end{enumerate}
-
-  \\begin{itemize}
-      ${unorderedList}
-  \\end{itemize}
-  
-  \\end{document}`;
-
-    let reqq = {
-      "document": latexDocument,
-      "page": 1
-    };
-
-    //THIRDAPI
-    this.httpservice.sendPatchLatexRequest(URLUtils.updateDoc(documentId), reqq).subscribe(
-      (ress: any) => {
-        console.log('ressof3:', ress);
-        this.toast.success(ress.message)
-        //this.toast.success("Document updated successfully!")
-      },
-      (error: any) => {
-      }
-    );
   }
 
   //Preview the PDF file
   getPreview() {
-    //PREVIEW API
-    //console.log('preview docid:', this.documentId)
     if (this.documentId == '' || this.documentId == null) {
       this.submitted = true;
       this.toast.error("Please create & save the document") //If user clicks the previewIcon directly.
@@ -531,12 +380,6 @@ export class CreateDocumentComponent {
       this.renderer.setStyle(pageBreak, 'margin-top', '20px'); // Adjust as needed
       this.renderer.appendChild(this.content.nativeElement, pageBreak);
     }
-  }
-
-  overviewOn() {
-    this.isOverview = true;
-    this.overviewFields.push({});
-    this.overview.push(''); 
   }
 
   sectionOn() {
@@ -600,7 +443,8 @@ export class CreateDocumentComponent {
 
   //Open document Dialog to Template(data)
   openFile(docid: any) {
-    this.isOverview = true;
+        
+    this.isOverview = true; //this.isOverview = true && this.overview.length > 0;
     this.isSectionCompleted = true;
     this.isSection = true;
     this.issubSection = true;
@@ -608,12 +452,9 @@ export class CreateDocumentComponent {
     this.isParagraph = true;
     this.isOrderlist = true;
     this.isunOrderlist = true;
-
-    this.documentId = docid;
     
-    // if(this.section.length >= 1){
-    //   this.isSection = true;
-    // }
+    //Doc id
+    this.documentId = docid;
     
     this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
       (res: any) => {
@@ -622,9 +463,13 @@ export class CreateDocumentComponent {
         //OpenAPI 
         this.httpservice.sendGetLatexRequest(URLUtils.opendocID(docid)).subscribe(
           (req: any) => {
-
+        
             this.latexcode = req[0];
             this.currentDocId = docid; //for Delete (docid)
+            this.documentId = docid;
+            console.log("req:", req);
+            console.log("latexcode:", this.latexcode);
+            
             // Extract Title
             const titleMatch = this.latexcode?.document.match(/\\title{([^}]*)}/);
             this.title = titleMatch && titleMatch.length > 1 ? titleMatch[1] : '';
@@ -647,6 +492,7 @@ export class CreateDocumentComponent {
             this.overview = this.overview.replace(/<ltk>/g, '');
             // console.log("Overview Title:", this.overviewTitle);
             // console.log("Overview Content:", this.overview);
+            // console.log("OverviewVal:", this.overview.length);
 
             // Extract Section Title and Content
             this.section = this.latexcode?.document.match(/\\section{([^}]*)}([^]*)\\subsection{/);
@@ -693,12 +539,14 @@ export class CreateDocumentComponent {
             const enumerateContent = enumerateMatches && enumerateMatches.length > 0 ? enumerateMatches[1] : '';
             const enumerateList = enumerateContent.match(/\\item\s([^\\]*)/g);
             const enumeratedItems = enumerateList ? enumerateList.map((match: string) => match.replace(/\\item\s/, '').trim()) : [];
-            console.log("Ordered List:", itemizedItems);
+            //console.log("Ordered List:", enumeratedItems);
             this.updateUnOrderListItemsForm(enumeratedItems); // Update the unorderlist extracted data
           }
         );
       }
     );
+
+
   }
 
   // Delete the open Document
@@ -752,6 +600,12 @@ export class CreateDocumentComponent {
     return this.fb.group({
       unorderlist: [value] // Initialize with extracted value
     });
+  }
+
+  overviewOn() {
+    this.isOverview = true;
+    // this.overviewFields.push({});
+    // this.overview.push(''); 
   }
 
   //Action dialog boxs!!
@@ -954,7 +808,6 @@ export class DialogBoxComponent {
   constructor(
     public dialogRef: MatDialogRef<DialogBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { overview: string, overviewTitle: string },
     private fb: FormBuilder) {
-    //this.overview = data[0];
     this.overview = data.overview;
     this.overviewTitle = data.overviewTitle
   }
@@ -965,7 +818,6 @@ export class DialogBoxComponent {
       overviewTitle: ['', Validators.required],
       overview: ['', Validators.required],
     });
-
     //console.log('this.overview',this.overviewForm)
 
     if (this.overviewTitle && this.overviewTitle.startsWith('-')) {
