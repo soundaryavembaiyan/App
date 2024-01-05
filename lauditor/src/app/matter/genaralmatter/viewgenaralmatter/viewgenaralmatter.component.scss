@@ -82,6 +82,8 @@ tr.veiw-items {
 	width: 100%;
 }
 
+
+
 // only for safari browser!!!
 @media not all and (min-resolution: 0.001dpcm) {
     .dropdown {
@@ -127,7 +129,20 @@ tr.veiw-items {
            border-radius: 5px;
        }
    }
+
    .dropdown-list .textbox {
        width: 100%;
        border: none;
+   }
+
+   .matBtn {
+       background-color: #004d87;
+       color: white;
+       font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+       font-size: 17px;
+   }
+
+   .matBtn:hover {
+       background-color: white !important;
+       color: #004d87 !important;
    }
