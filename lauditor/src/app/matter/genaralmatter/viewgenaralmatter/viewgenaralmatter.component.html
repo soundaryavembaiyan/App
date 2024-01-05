@@ -10,7 +10,7 @@
     <div class="form-group name-set float-right">
       <!--Search box-->
       <div class="input-group group-custom-align court padded" id="search">
-        <input type="text" class="form-control textbox" placeholder="Search Matter" [(ngModel)]="searchText" />
+        <input type="text" class="form-control textbox" placeholder="Search Matter" [(ngModel)]="searchText" oninput="this.value = this.value.replace(/[^A-Za-z0-9 ]|^ /g,'')"/>
         <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
       </div>
       <!-- Dropdown - Internal/External -->
@@ -52,8 +52,8 @@
           </th>
           <th>
             <p class="thheadname" *ngIf = "product !='corporate'"> Groups</p>
-            <p class="thheadname" *ngIf = "product =='corporate'"> Departments</p>
-            <img src="assets/img/SORT.PNG" class="sortico" >
+            <p class="thheadname" *ngIf = "product =='corporate' && this.selectedOption != 'External Matters'"> Departments</p>
+            <img src="assets/img/SORT.PNG" *ngIf = "this.selectedOption != 'External Matters'" class="sortico" (click)="sort('groups')">
           </th>
           <th></th>
         </tr>
@@ -62,21 +62,24 @@
         <tr class="rone veiw-items" *ngFor="let generalMatter of generalMatters |filter:searchText">
           <td>{{generalMatter.title}}</td>
           <td>{{generalMatter.matterType}}</td>
-          <td>{{generalMatter.startdate}}</td>
-          <td *ngIf="this.selectedOption=='External Matters'">{{generalMatter.owner?.name}}</td>
+          <td>{{generalMatter.created_on}}</td>
+          <td *ngIf="this.selectedOption=='External Matters'">{{generalMatter.owner?.firm_name}}</td>
           <td>{{generalMatter.status}}</td>
-          <td (mouseover)="onMouseOver(generalMatter?.groups)" [matTooltip]="hoveredGroups">{{generalMatter?.groups[0]?.name}} <br/>
-          {{generalMatter?.groups[1]?.name}}</td><!--need to get back once we get group info-->
-          <td>
 
-            <div class="dropdown" *ngIf="this.selectedOption=='External Matters'">
-              <button  class="btn btn-primary actionbtn" aria-expanded="false" 
+          <!--no dept for external-->
+          <td *ngIf = "this.selectedOption != 'External Matters'" (mouseover)="onMouseOver(generalMatter?.groups)" [matTooltip]="hoveredGroups">
+            {{generalMatter?.groups[0]?.name}} <br/> {{generalMatter?.groups[1]?.name}}
+          </td>
+          <td *ngIf = "this.selectedOption == 'External Matters'"></td>
+          <!--need to get back once we get group info-->
+          <td>
+            <div class="dropdown" *ngIf="this.selectedOption == 'External Matters'">
+              <button class="btn btn-primary actionbtn" aria-expanded="false" 
                 [ngClass]="{'disabled': generalMatter.isdisabled}"
                 (click)="loadViewDetails(generalMatter,'external')"> More Details </button>
             </div>
-
-            <div class="dropdown" *ngIf="this.selectedOption!='External Matters'">
-              <button type="button" class="btn btn-primary dropdown-toggle actionbtn" 
+            <div class="dropdown" *ngIf="this.selectedOption != 'External Matters'"><!--class="dropdown"-->
+              <!-- <button type="button" class="btn btn-primary dropdown-toggle actionbtn" 
               data-bs-toggle="dropdown" aria-expanded="false"  
               [ngClass]="{'disabled': generalMatter.isdisabled || !generalMatter.is_editable}" >Action </button>
               <ul class="dropdown-menu custom-dropdown">
@@ -99,11 +102,29 @@
                 <li>
                   <a class="dropdown-item" (click)="delete(generalMatter)">Delete</a>
                 </li>              
-              </ul>
+              </ul> -->
+
+              <button mat-button [matMenuTriggerFor]="menu" class="btn btn-primary dropdown-toggle actionbtn matBtn"
+                data-bs-toggle="dropdown" aria-expanded="false" [ngClass]="{'disabled': generalMatter.isdisabled || !generalMatter.is_editable}" style=" color: white;">Action</button>
+              
+              <mat-menu class="dropdown-menu custom-dropdown" #menu="matMenu">
+                <button mat-menu-item (click)="loadViewDetails(generalMatter,'internal')">View Details</button>
+                <button mat-menu-item (click)="loadEditMatterInfo(generalMatter)">Edit Matter Info</button>
+              
+                <button mat-menu-item *ngIf="product !='corporate'" (click)="updateGroups(generalMatter)">Update Group(s)</button>
+                <button mat-menu-item *ngIf="product =='corporate'" (click)="updateGroups(generalMatter)">Update Department(s)</button>
+              
+                <button mat-menu-item *ngIf="generalMatter.status.toLowerCase() == 'active'" (click)="updateMatterStatus(generalMatter,'Closed')">Close Matter</button>
+                <button mat-menu-item *ngIf="generalMatter.status.toLowerCase()  == 'closed'" (click)="updateMatterStatus(generalMatter,'Active')">Reopen Matter</button>
+              
+                <button mat-menu-item (click)="delete(generalMatter)">Delete</button>
+              </mat-menu>
+
             </div>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
+  <ngx-spinner  size="medium" type="ball-clip-rotate"></ngx-spinner>
 </div>
