@@ -4,8 +4,11 @@
 
 export const environment = {
   apiUrl: 'https://apidev2.digicoffer.com/professional',
-  emailApi:"https://mailapi.digicoffer.com/api/v1",
+  emailApi:"https://dev.utils.mail.digicoffer.com/api/v1",
   paymentgatway:"https://dev2.payment.digicoffer.com/",
+  doc2pdf:"https://dev.utils.doc2pdf.digicoffer.com/api/v1/doc2pdf",
+  DOC2FILE :'https://dev.utils.doc2pdf.digicoffer.com/api/v1/docfile2pdf',
+  lateXAPI: 'https://devapi.latex.digicoffer.com',
   xmppDomain: 'devchat.vitacape.com',
   product: 'connect',
   production: false
