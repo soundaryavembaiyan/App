@@ -45,7 +45,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatStepperModule} from '@angular/material/stepper';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatDialogModule} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatGridListModule} from '@angular/material/grid-list';
@@ -103,8 +103,9 @@ import { CreateinvoiceComponent } from './invoice/createinvoice/createinvoice.co
 import { PreviewComponent } from './invoice/preview/preview.component';
 import { DatepickerModule } from 'ngx-bootstrap/datepicker';
 import { PaymentComponent } from './payment/payment.component';
-import { CreateDocumentComponent, DialogBoxComponent, ParagraphBoxComponent, SectionBoxComponent, SubSection1BoxComponent, SubSection2BoxComponent } from './document/createdocument/createdocument.component';
+import { CreateDocumentComponent, DialogBoxComponent, OpendialogBoxComponent, ParagraphBoxComponent, SectionBoxComponent, SubSection1BoxComponent, SubSection2BoxComponent, OrderedlistBoxComponent, UnorderedlistBoxComponent } from './document/createdocument/createdocument.component';
 
+import { ViewDocumentComponent } from './view-document/view-document.component';
 
 @NgModule({
   declarations: [		
@@ -129,13 +130,17 @@ import { CreateDocumentComponent, DialogBoxComponent, ParagraphBoxComponent, Sec
       InvoiceComponent,
       CreateinvoiceComponent,
       PreviewComponent,
+      ViewDocumentComponent,
       PaymentComponent,
       //CreateDocumentComponent,
       //DialogBoxComponent,
       SectionBoxComponent,
       //SubSection1BoxComponent, 
       //SubSection2BoxComponent, 
-      //ParagraphBoxComponent
+      //ParagraphBoxComponent,
+      //OrderedlistBoxComponent
+      //UnorderedlistBoxComponent,
+      //OpendialogBoxComponent
       
        
    ],
@@ -176,6 +181,7 @@ import { CreateDocumentComponent, DialogBoxComponent, ParagraphBoxComponent, Sec
     MatCheckboxModule,
     MatChipsModule,
     MatStepperModule,
+    MatDialogModule,
     MatDialogModule,
     MatDividerModule,
     MatExpansionModule,
@@ -218,7 +224,9 @@ import { CreateDocumentComponent, DialogBoxComponent, ParagraphBoxComponent, Sec
     AuditTrailsModule
   ],
   providers: [HttpClient,ConfirmationDialogService,BsDatepickerConfig,EditCalenderDialogService, 
-    { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { hasBackdrop: false } }
+    { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { hasBackdrop: false } },
+    { provide: MatDialogRef, useValue: {} },
+    { provide: MAT_DIALOG_DATA, useValue: { } }
   ],
   bootstrap: [AppComponent],
   schemas: [
