@@ -1,15 +1,15 @@
 <!-- DOWNLOAD DIALOG BOX -->
 <div class="overviewDialog">
 
-    <form [formGroupName]="myForm">
+    <form [formGroup]="mydForm">
     <div class="closeDialog">
         <i class="fa fa-times xClose" (click)="closeDialog()" aria-hidden="true"></i>
     </div>
 
     <div class="openDialog">
         <div class="form-group">
-            <label for="title" class="lableTitle overedText">Download File</label>
-            <input formControlName="documentname" type="text" maxlength="50" [(ngModel)]="documentname" class="text-size form-control createDoc" name="title">
+            <label for="title" class="lableTitle overedText">File name</label>
+            <input formControlName="documentname" type="text" maxlength="150" class="text-size form-control createDoc" name="title">
         </div>
 
         <div class="overviewSave">
