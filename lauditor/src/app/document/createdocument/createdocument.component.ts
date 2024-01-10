@@ -1,3 +1,4 @@
+
 import { Component, Inject, Injectable, Input, Output, OnInit, EventEmitter, ViewChild, ElementRef, Renderer2, AfterViewInit, Optional } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -81,8 +82,10 @@ export class CreateDocumentComponent {
   //orderListItems: string[] = [''];
   orderListItems: any;
   unorderListItems: any;
+  overviewListItems: any;
+  paraListItems: any;
 
-  overviewListItems:any;
+  disabled = false;
 
   isPageBreak: boolean = false;
   pdfURL: any;
@@ -104,6 +107,7 @@ export class CreateDocumentComponent {
   submitted = false;
   documentIdo: any;
 
+  openPara: boolean = false;
 
   constructor(private router: Router, private fb: FormBuilder, private httpservice: HttpService,
     private toast: ToastrService, private documentService: DocumentService, private cdr: ChangeDetectorRef,
@@ -138,10 +142,19 @@ export class CreateDocumentComponent {
       unorderlistTitle: ['', Validators.required],
       unorderListItems: this.fb.array([this.createunorderItem()]),
 
+      overviewListItems: this.fb.array([this.createoverviewItem()]),
+      paraListItems: this.fb.array([this.createparaItem()]),
+
     });
 
     this.orderListItems = this.myForm.get('orderListItems') as FormArray;
     this.unorderListItems = this.myForm.get('unorderListItems') as FormArray;
+
+    this.overviewListItems = this.myForm.get('overviewListItems') as FormArray;
+    this.paraListItems = this.myForm.get('paraListItems') as FormArray;
+
+    console.log('this.orderListItems', this.orderListItems)
+    console.log('this.paraListItems', this.paraListItems)
 
     //Get all Document
     this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
@@ -151,16 +164,10 @@ export class CreateDocumentComponent {
         console.log('this.documents', this.documents)
       }
     );
+
   }
 
-  removeOverview(overview: any) {
-    const index = this.overviewFields.indexOf(overview);
-    if (index !== -1) {
-      this.overviewFields.splice(index, 1);
-    }
-  }
-
-  //Saveas dialog box!!
+  //Save As dialog box!!
   downloadDialog() {
     const dialogRef = this.dialog.open(DownloadBoxComponent, {
       width: '500px',
@@ -168,7 +175,10 @@ export class CreateDocumentComponent {
       data: {
         //documentname: this.documentname,
         documentId: this.documentId
-      }
+      },
+      hasBackdrop: true,
+      panelClass: 'hello',
+      autoFocus: true
     });
 
     dialogRef.afterClosed().subscribe((result: { docid: any, documentname: any }) => {
@@ -209,8 +219,33 @@ export class CreateDocumentComponent {
         const documentId = res.id;
         this.documentId = documentId;
         //this.docidSave(documentId); //secondAPI methodcall
+      });
+  }
+
+  //Disable Add button if it empty
+  isparaListItemsInvalid(): boolean {
+    const paraListItems = this.myForm.get('paraListItems') as FormArray;
+    for (let i = 0; i < paraListItems.length; i++) {
+      const item = paraListItems.at(i) as FormGroup;
+      const paragraph = item.get('paragraph')?.value;
+
+      if (!paragraph) {
+        return true;
       }
-    );
+    }
+    return false;
+  }
+  isoverviewListItemsInvalid(): boolean {
+    const overviewListItems = this.myForm.get('overviewListItems') as FormArray;
+    for (let i = 0; i < overviewListItems.length; i++) {
+      const item = overviewListItems.at(i) as FormGroup;
+      const overview = item.get('overview')?.value;
+
+      if (!overview) {
+        return true;
+      }
+    }
+    return false;
   }
 
   saveDoc() {
@@ -239,103 +274,162 @@ export class CreateDocumentComponent {
 
       orderListItems: this.myForm.value.orderListItems,
       unorderListItems: this.myForm.value.unorderListItems,
+      overviewListItems: this.myForm.value.overviewListItems,
+      paraListItems: this.myForm.value.paraListItems,
     }
     console.log('PayloadForm Values:', payload);
 
-    let title = this.myForm.value.title;
-    let author = this.myForm.value.author;
+    let title = formValues.title;
+    let author = formValues.author;
     let currentDate = new Date().toDateString();
-    let overview = this.myForm.value.overview || '';
-    let overviewTitle = this.myForm.value.overviewTitle || '';
-    let section = this.myForm.value.section || '';
-    let sectionTitle = this.myForm.value.sectionTitle || '';
-    let subsection = this.myForm.value.subsection || '';
-    let subsectionTitle = this.myForm.value.subsectionTitle || '';
-    let subsubsection = this.myForm.value.subsubsection || '';
-    let subsubsectionTitle = this.myForm.value.subsubsectionTitle || '';
-    let paragraph = this.myForm.value.paragraph || '';
-    let paragraphTitle = this.myForm.value.paragraphTitle || '';
-    let orderListItems = this.myForm.value.orderListItems;
-    let unorderListItems = this.myForm.value.unorderListItems;
+    let overview = formValues.overview || '';
+    let overviewTitle = formValues.overviewTitle || '';
+    let section = formValues.section || '';
+    let sectionTitle = formValues.sectionTitle || '';
+    let subsection = formValues.subsection || '';
+    let subsectionTitle = formValues.subsectionTitle || '';
+    let subsubsection = formValues.subsubsection || '';
+    let subsubsectionTitle = formValues.subsubsectionTitle || '';
+    let paragraph = formValues.paragraph || '';
+    let paragraphTitle = formValues?.paragraphTitle || '';
+
+    let orderListItems = formValues.orderListItems;
+    let unorderListItems = formValues.unorderListItems;
+    let overviewListItems = formValues.overviewListItems;
+    let paraListItems = formValues.paraListItems;
+
     let orderedList = orderListItems.map((item: any) => `\\item ${item.orderlist}`) || '';
     let unorderedList = unorderListItems.map((item: any) => `\\item ${item.unorderlist}`).join('\n');
+
+    let overviewList = overviewListItems.map((item: any) => `\\item ${item.overview}`) || '';
+    let paraList = paraListItems.map((item: any) => `\\item ${item.paragraph}`) || '';
+
+    // const formattedOverview = overviewList ? overviewList.map((match: string) => match.replace(/\\item\s/, '').trim() + '\\par ').join(''): '';
+    // const formattedParagraph = paraList ? paraList.map((match: string) => match.replace(/\\item\s/, '').trim() + '\\par ').join(''): '';
+
     let latexDocument = `
   \\documentclass{article}
   \\usepackage{geometry}
   \\geometry{a4paper,total={170mm,257mm},left=20mm,top=20mm}
-  
   \\title{${title}}
   \\author{${author}}
   \\date{${currentDate}}
-  
   \\begin{document}
   \\maketitle
-
-  \\begin{abstract}
-  \\end{abstract}
-  
-  \\section*{${overviewTitle}}${overview}
-  \\section*{${sectionTitle}}${section}
-  \\subsection*{${subsectionTitle}}${subsection}
-  \\subsubsection*{${subsubsectionTitle}}${subsubsection}
-  \\paragraph*{${paragraphTitle}}${paragraph}
-  
+  \\abstract{${overviewTitle}}${overviewList}
+  \\section{${sectionTitle}}${section}
+  \\subsection{${subsectionTitle}}${subsection}
+  \\subsubsection{${subsubsectionTitle}}${subsubsection}
+  \\paragraph{${paragraphTitle}}${paraList}
   \\begin{enumerate}
       ${orderedList} 
   \\end{enumerate}
-
   \\begin{itemize}
       ${unorderedList}
   \\end{itemize}
-  
   \\end{document}`;
+
+    console.log('lateX', latexDocument);
+
     let reqq = {
       "document": latexDocument,
       "page": 1
     };
 
-    console.log('null:', this.documentId);
     if (this.documentId == null) {
-    this.submitted = true;
-    let req = { "documentname": this.myForm.value.title };
-    //FIRST API
-    this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
-      (res: any) => {
-        const documentId = res.id;
-        this.documentId = documentId;
-        console.log('DocID to saveas:', this.documentId);
-        //SECONDAPI 
-        this.httpservice.sendPostLatexRequest(URLUtils.savedocID(this.documentId), reqq).subscribe(
-          (ress: any) => {
-            this.pageId = ress.id;
-            this.toast.success(ress.message)
-          }
-        );
-      });
+      this.submitted = true;
+      let req = { "documentname": this.myForm.value.title };
+      //FIRST API
+      this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
+        (res: any) => {
+          const documentId = res.id;
+          this.documentId = documentId;
+          console.log('DocID to saveas:', this.documentId);
+          //SECONDAPI 
+          this.httpservice.sendPostLatexRequest(URLUtils.savedocID(this.documentId), reqq).subscribe(
+            (ress: any) => {
+              this.pageId = ress.id;
+              this.toast.success(ress.message);
+              console.log('checkid1', this.documentId);
+            }
+          );
+        });
     }
-      else{
-          //THIRDAPI - for update
-          this.httpservice.sendPatchLatexRequest(URLUtils.updateDoc(this.pageId), reqq).subscribe(
-            (resp: any) => {
-              this.toast.success(resp.message)
-            });
-      }
+    else {
+      //THIRDAPI - for update 
+      console.log('checkid2', this.documentId)
+      this.httpservice.sendPatchLatexRequest(URLUtils.updateDoc(this.pageId), reqq).subscribe(
+        (resp: any) => {
+          this.toast.success(resp.message);
+        });
+    }
   }
 
   //Preview the PDF file
   getPreview() {
+    //PREVIEW API
+    console.log('preview docid:', this.documentId)
     if (this.documentId == '' || this.documentId == null) {
       this.submitted = true;
       this.toast.error("Please create & save the document") //If user clicks the previewIcon directly.
     }
     else {
       let url = this.latexdoc + URLUtils.getPreview(this.documentId)
-      //console.log('ress:', url)
+      //console.log('PdfUrl:', url)
       this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+      //console.log('pdfSrc:', this.pdfSrc)
     }
   }
 
-  //ORDERED LIST ACTIONS
+  //OVERVIEW LIST ACTIONS overviewListItems  
+  createoverviewItem(): FormGroup {
+    return this.fb.group({
+      overview: ['']
+    });
+  }
+
+  addoverviewList(): void {
+    this.overviewListItems = this.myForm.get('overviewListItems') as FormArray;
+    this.overviewListItems.push(this.createoverviewItem());
+  }
+
+  removeoverviewList(i: number) {
+    // const overviewListItemsArray = this.overviewListItems as FormArray;
+    // overviewListItemsArray.removeAt(i);
+    const overviewListItemsArray = this.overviewListItems as FormArray;
+    if (i === 0) {
+      this.isOverview = false;
+    } else {
+      overviewListItemsArray.removeAt(i);
+    }
+  }
+  ////////////////////////////
+
+  //PARAGRAPH LIST ACTIONS - paraListItems
+  createparaItem(): FormGroup {
+    return this.fb.group({
+      paragraph: ['']
+    });
+  }
+
+  addparaList(): void {
+    this.paraListItems = this.myForm.get('paraListItems') as FormArray;
+    this.paraListItems.push(this.createparaItem());
+  }
+
+  removeparaList(i: number) {
+    // const paraListItemsArray = this.paraListItems as FormArray;
+    // paraListItemsArray.removeAt(i);
+    const paraListItemsArray = this.paraListItems as FormArray;
+    if (i === 0) {
+      this.isParagraph = false;
+    } else {
+      paraListItemsArray.removeAt(i);
+    }
+  }
+  ////////////////////////////
+
+  //ORDERED LIST ACTIONS - orderListItems
   addorderList(): void {
     this.orderListItems = this.myForm.get('orderListItems') as FormArray;
     this.orderListItems.push(this.createorderItem());
@@ -351,8 +445,9 @@ export class CreateDocumentComponent {
     const orderListItemsArray = this.orderListItems as FormArray;
     orderListItemsArray.removeAt(i);
   }
+  ////////////////////////////
 
-  //UNORDERED LIST ACTIONS
+  //UNORDERED LIST ACTIONS 
   addunorderList(): void {
     this.unorderListItems = this.myForm.get('unorderListItems') as FormArray;
     this.unorderListItems.push(this.createunorderItem());
@@ -368,6 +463,7 @@ export class CreateDocumentComponent {
     const unorderListItemsArray = this.unorderListItems as FormArray;
     unorderListItemsArray.removeAt(i);
   }
+  ////////////////////////////
 
   //PAGE BREAK FUNCTION
   insertPageBreak() {
@@ -431,6 +527,9 @@ export class CreateDocumentComponent {
         title: this.title
       },
       //backdropClass: 'backdropBackground'
+      hasBackdrop: true,
+      panelClass: 'hello',
+      autoFocus: true
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {
@@ -438,12 +537,12 @@ export class CreateDocumentComponent {
       if (result.docid) {
         this.openFile(result.docid)
       }
+      this.documentname = result.docname //Get docname on Layout
     });
   }
 
-  //Open document Dialog to Template(data)
   openFile(docid: any) {
-        
+
     this.isOverview = true; //this.isOverview = true && this.overview.length > 0;
     this.isSectionCompleted = true;
     this.isSection = true;
@@ -452,120 +551,319 @@ export class CreateDocumentComponent {
     this.isParagraph = true;
     this.isOrderlist = true;
     this.isunOrderlist = true;
-    
+
     //Doc id
     this.documentId = docid;
-    
-    this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
-      (res: any) => {
-        this.documents = res;
+    console.log("this.documentId:", this.documentId);
+    console.log("docidBefr:", docid);
 
-        //OpenAPI 
-        this.httpservice.sendGetLatexRequest(URLUtils.opendocID(docid)).subscribe(
-          (req: any) => {
-        
-            this.latexcode = req[0];
-            this.currentDocId = docid; //for Delete (docid)
-            this.documentId = docid;
-            console.log("req:", req);
-            console.log("latexcode:", this.latexcode);
-            
-            // Extract Title
-            const titleMatch = this.latexcode?.document.match(/\\title{([^}]*)}/);
-            this.title = titleMatch && titleMatch.length > 1 ? titleMatch[1] : '';
-            //console.log("Title:", this.title);
-
-            // Extract Author
-            const authorMatch = this.latexcode?.document.match(/\\author{([^}]*)}/);
-            this.author = authorMatch && authorMatch.length > 1 ? authorMatch[1] : '';
-            //console.log("Author:", this.author);
-
-            // Extract Date
-            // const dateMatch = this.latexcode?.document.match(/\\date{([^}]*)}/);
-            // const date = dateMatch && dateMatch.length > 1 ? dateMatch[1] : '';
-            // console.log("Date:", date);
-
-            // Extract Abstract Title and Content
-            this.overview = this.latexcode?.document.match(/\\abstract{([^}]*)}(.*?)\\section{/);
-            this.overviewTitle = this.overview && this.overview.length > 1 ? this.overview[1] : '';
-            this.overview = this.overview && this.overview.length > 2 ? this.overview[2] : '';
-            this.overview = this.overview.replace(/<ltk>/g, '');
-            // console.log("Overview Title:", this.overviewTitle);
-            // console.log("Overview Content:", this.overview);
-            // console.log("OverviewVal:", this.overview.length);
-
-            // Extract Section Title and Content
-            this.section = this.latexcode?.document.match(/\\section{([^}]*)}([^]*)\\subsection{/);
-            this.sectionTitle = this.section && this.section.length > 1 ? this.section[1] : '';
-            this.section = this.section && this.section.length > 2 ? this.section[2] : '';
-            this.section = this.section.replace(/<ltk>/g, '');
-            // console.log("sectionTitle:", this.sectionTitle);
-            // console.log("section Content:", this.section);
-
-            // Extract subSection Title and Content
-            this.subsection = this.latexcode?.document.match(/\\subsection{([^}]*)}([^]*)\\subsubsection{/);
-            this.subsectionTitle = this.subsection && this.subsection.length > 1 ? this.subsection[1] : '';
-            this.subsection = this.subsection && this.subsection.length > 2 ? this.subsection[2] : '';
-            this.subsection = this.subsection.replace(/<ltk>/g, '');
-            // console.log("subsectionTitle:", this.subsectionTitle);
-            // console.log("subsection Content:", this.subsection);
-
-            // Extract subsubSection Title and Content
-            this.subsubsection = this.latexcode?.document.match(/\\subsubsection{([^}]*)}([^]*)\\paragraph{/);
-            this.subsubsectionTitle = this.subsubsection && this.subsubsection.length > 1 ? this.subsubsection[1] : '';
-            this.subsubsection = this.subsubsection && this.subsubsection.length > 2 ? this.subsubsection[2] : '';
-            this.subsubsection = this.subsubsection.replace(/<ltk>/g, '');
-            // console.log("subsubsectionTitle:", this.subsubsectionTitle);
-            // console.log("subsubsection Content:", this.subsubsection);
-
-            // Extract Paragraph Title and Content
-            this.paragraph = this.latexcode?.document.match(/\\paragraph{([^}]*)}([^\\]*)\\/);
-            this.paragraphTitle = this.paragraph && this.paragraph.length > 1 ? this.paragraph[1] : '';
-            this.paragraph = this.paragraph && this.paragraph.length > 2 ? this.paragraph[2] : '';
-            this.paragraph = this.paragraph.replace(/<ltk>/g, '').trim();
-            // console.log("paragraph Title:", this.paragraphTitle);
-            // console.log("paragraph Content:", this.paragraph);
-
-            // Extract Ordered List items
-            const itemizeMatches = this.latexcode?.document.match(/\\begin{itemize}([^]*?)\\end{itemize}/);
-            const itemizeContent = itemizeMatches && itemizeMatches.length > 0 ? itemizeMatches[1] : '';
-            const itemizeList = itemizeContent.match(/\\item\s([^\\]*)/g);
-            const itemizedItems = itemizeList ? itemizeList.map((match: string) => match.replace(/\\item\s/, '').trim()) : [];
-            // console.log("Ordered List:", itemizedItems);
-            this.updateOrderListItemsForm(itemizedItems); // Update the orderlist extracted data
-
-            // Extract UnOrdered List items
-            const enumerateMatches = this.latexcode?.document.match(/\\begin{enumerate}([^]*?)\\end{enumerate}/);
-            const enumerateContent = enumerateMatches && enumerateMatches.length > 0 ? enumerateMatches[1] : '';
-            const enumerateList = enumerateContent.match(/\\item\s([^\\]*)/g);
-            const enumeratedItems = enumerateList ? enumerateList.map((match: string) => match.replace(/\\item\s/, '').trim()) : [];
-            //console.log("Ordered List:", enumeratedItems);
-            this.updateUnOrderListItemsForm(enumeratedItems); // Update the unorderlist extracted data
-          }
-        );
+    //OpenAPI 
+    this.httpservice.sendGetLatexRequest(URLUtils.opendocID(docid)).subscribe(
+      (req: any) => {
+        if (req) {
+          console.log("apiDocid:", docid);
+          this.latexcode = req[0];
+          this.documentId = docid;
+          this.pageId = req[0]?.pageid
+          console.log('pageId:', this.pageId)
+          console.log("req:", req);
+          console.log("latexcode:", this.latexcode);
+          this.extractionData();
+        }
+      },
+      (error: HttpErrorResponse) => {
+        if (error.status === 401 || error.status === 403 || error.status === 500) {
+          const errorMessage = error.error.msg || 'Unauthorized';
+          this.toast.error(errorMessage);
+        }
       }
     );
-
-
   }
 
-  // Delete the open Document
+  extractionData() {
+    // Extract Title
+    const titleMatch = this.latexcode?.document.match(/\\title{([^}]*)}/);
+    this.title = titleMatch && titleMatch.length > 1 ? titleMatch[1] : '';
+
+    // Extract Author
+    const authorMatch = this.latexcode?.document.match(/\\author{([^}]*)}/);
+    this.author = authorMatch && authorMatch.length > 1 ? authorMatch[1] : '';
+
+    // Extract Date
+    // const dateMatch = this.latexcode?.document.match(/\\date{([^}]*)}/);
+    // const date = dateMatch && dateMatch.length > 1 ? dateMatch[1] : '';
+
+    // Extract Abstract Title and Content
+    const overviewTitleMatch = this.latexcode?.document.match(/\\abstract\{([^}]*)\}/);
+    const sectionMatch = this.latexcode?.document.match(/\\section\{/);
+
+    if (overviewTitleMatch && sectionMatch && overviewTitleMatch.index < sectionMatch.index) {
+      const overviewTitle = overviewTitleMatch[1].trim();
+      const overviewStartIndex = overviewTitleMatch.index + overviewTitleMatch[0].length;
+      const overviewEndIndex = sectionMatch.index;
+      const overviewContent = this.latexcode?.document.substring(overviewStartIndex, overviewEndIndex).trim();
+      // console.log('Extracted Overview Title:', overviewTitle);
+      // console.log('Extracted Overview Content:', overviewContent);
+      // Match overview items using a more flexible regex pattern
+      const regex = /\\item\s*([^\\]+)(?=\\item|$)/gs;
+      let overviewItems: string[] = [];
+      let match;
+      while ((match = regex.exec(overviewContent)) !== null) {
+        overviewItems.push(match[1].trim());
+      }
+      //console.log('Extracted Overview Items:', overviewItems);
+      // Clear existing items in overviewListItems form array
+      while (this.overviewListItems.length !== 0) {
+        this.overviewListItems.removeAt(0);
+      }
+      // Create form controls dynamically based on the number of extracted items
+      overviewItems.forEach((item: string) => {
+        this.overviewListItems.push(this.fb.group({
+          overview: [item]
+        }));
+      });
+      // Update the form controls with the extracted data (overviewTitle)
+      this.myForm.patchValue({
+        overviewTitle: overviewTitle
+      });
+    } else {
+      console.log('Overview data not found!!!');
+    }
+
+
+    // Extract Section Title and Content
+    this.section = this.latexcode?.document.match(/\\section{([^}]*)}([^]*)\\subsection{/);
+    this.sectionTitle = this.section && this.section.length > 1 ? this.section[1] : '';
+    this.section = this.section && this.section.length > 2 ? this.section[2] : '';
+    this.section = this.section.replace(/<ltk>/g, '');
+    // console.log("sectionTitle:", this.sectionTitle);
+    // console.log("section Content:", this.section);
+
+    // Extract subSection Title and Content
+    this.subsection = this.latexcode?.document.match(/\\subsection{([^}]*)}([^]*)\\subsubsection{/);
+    this.subsectionTitle = this.subsection && this.subsection.length > 1 ? this.subsection[1] : '';
+    this.subsection = this.subsection && this.subsection.length > 2 ? this.subsection[2] : '';
+    this.subsection = this.subsection.replace(/<ltk>/g, '');
+    // console.log("subsectionTitle:", this.subsectionTitle);
+    // console.log("subsection Content:", this.subsection);
+
+    // Extract subsubSection Title and Content
+    this.subsubsection = this.latexcode?.document.match(/\\subsubsection{([^}]*)}([^]*)\\paragraph{/);
+    this.subsubsectionTitle = this.subsubsection && this.subsubsection.length > 1 ? this.subsubsection[1] : '';
+    this.subsubsection = this.subsubsection && this.subsubsection.length > 2 ? this.subsubsection[2] : '';
+    this.subsubsection = this.subsubsection.replace(/<ltk>/g, '');
+    // console.log("subsubsectionTitle:", this.subsubsectionTitle);
+    // console.log("subsubsection Content:", this.subsubsection);
+
+    //Extract Paragraph Title and Content
+    const paraMatches = this.latexcode?.document.match(/\\paragraph\{([^}]*)\}([\s\S]*?)(?=\\paragraph|\n*$)/g);
+    if (paraMatches && paraMatches.length > 0) {
+      paraMatches.forEach((paraMatch: string) => {
+        const paraData = paraMatch.match(/\\paragraph\{([^}]*)\}([\s\S]*?)(?=\\paragraph|\n*$)/);
+        if (paraData && paraData.length > 2) {
+          const paragraphTitle = paraData[1].trim();
+          const paragraphContent = paraData[2].trim();
+          // console.log('Extracted Paragraph Title:', paragraphTitle);
+          // console.log('Extracted Paragraph Content:', paragraphContent);
+
+          // Match paragraph items using a more flexible regex pattern
+          const regex = /\\item\s*([^\\]+)(?=\\item|\n|$)/gs;
+          let paragraphItems: string[] = [];
+          let match;
+          while ((match = regex.exec(paragraphContent)) !== null) {
+            const item = match[1].trim();
+            if (item) { // Check if item is not empty before adding
+              paragraphItems.push(item);
+            }
+          }
+          console.log('Extracted Paragraph Items:', paragraphItems);
+          // Reset paraListItems before populating for each paragraph
+          this.paraListItems.clear();
+          // Create form controls dynamically based on the number of extracted items
+          paragraphItems.forEach((item: string) => {
+            this.paraListItems.push(this.fb.group({
+              paragraph: [item]
+            }));
+          });
+
+          // Update the form controls with the extracted data (paragraphTitle)
+          this.myForm.patchValue({
+            paragraphTitle: paragraphTitle
+          });
+        } else {
+          console.log('Invalid Paragraph!!');
+        }
+      });
+    } else {
+      console.log('Paragraph data not found in LateX.');
+    }
+
+    //Not shows others
+    // const paraMatches = this.latexcode?.document.match(/\\paragraph\{([^}]*)\}((?:\\item\s*[^\\}]+(?:\\[a-z]+)*\s*)*)/g);
+    // if (paraMatches && paraMatches.length > 0) {
+    //   paraMatches.forEach((paraMatch: string) => {
+    //     const paraData = paraMatch.match(/\\paragraph\{([^}]*)\}((?:\\item\s*[^\\}]+(?:\\[a-z]+)*\s*)*)/);
+    //     if (paraData && paraData.length > 2) {
+    //       const paragraphTitle = paraData[1].trim();
+    //       const paragraphContent = paraData[2].trim();
+
+    //       // Match paragraph items using a more specific regex pattern
+    //       const regex = /\\item\s*([^\\]+)(?=\\item|$)/gs;
+    //       let paragraphItems: string[] = [];
+    //       let match;
+    //       while ((match = regex.exec(paragraphContent)) !== null) {
+    //         const item = match[1].trim();
+    //         if (item) { // Check if item is not empty before adding
+    //           paragraphItems.push(item);
+    //         }
+    //       }
+
+    //       // Reset paraListItems before populating for each paragraph
+    //       this.paraListItems.clear();
+
+    //       // Create form controls dynamically based on the number of extracted items
+    //       paragraphItems.forEach((item: string) => {
+    //         this.paraListItems.push(this.fb.group({
+    //           paragraph: [item]
+    //         }));
+    //       });
+
+    //       console.log('paragraphItems',paragraphItems)
+    //       // Update the form controls with the extracted data (paragraphTitle)
+    //       this.myForm.patchValue({
+    //         paragraphTitle: paragraphTitle
+    //       });
+    //     } else {
+    //       console.log('Invalid Paragraph!!');
+    //     }
+    //   });
+    // } else {
+    //   console.log('Paragraph data not found in LateX.');
+    // }
+
+    //with empty textbox!
+    // const paraMatches = this.latexcode?.document.match(/\\paragraph\{([^}]*)\}((?:\\item\s*[^\\}]+(?:\\[a-z]+)*\s*)*)/g);
+    // if (paraMatches && paraMatches.length > 0) {
+    //   paraMatches.forEach((paraMatch: string) => {
+    //     const paraData = paraMatch.match(/\\paragraph\{([^}]*)\}((?:\\item\s*[^\\}]+(?:\\[a-z]+)*\s*)*)/);
+    //     if (paraData && paraData.length > 2) {
+    //       const paragraphTitle = paraData[1].trim();
+    //       const paragraphContent = paraData[2].trim();
+
+    //       // Match paragraph items using a more specific regex pattern
+    //       const regex = /\\item\s*([^\\]+)(?=\\item|$)/gs;
+    //       let paragraphItems: string[] = [];
+    //       let match;
+    //       while ((match = regex.exec(paragraphContent)) !== null) {
+    //         const item = match[1].trim();
+    //         if (item) { // Check if item is not empty before adding
+    //           paragraphItems.push(item);
+    //         }
+    //       }
+
+    //       // Create form controls dynamically based on the number of extracted items
+    //       const formGroups: FormGroup[] = paragraphItems.map(item =>
+    //         this.fb.group({ paragraph: [item] })
+    //       );
+
+    //       // Create a FormArray from the FormGroup array
+    //       const paraGroup = this.fb.array(formGroups);
+
+    //       // Push the FormArray to the paraListItems FormArray
+    //       this.paraListItems.push(paraGroup);
+    //       console.log(' paraListItems',this.paraListItems);
+    //       // Update the form controls with the extracted data (paragraphTitle)
+    //       this.myForm.patchValue({
+    //         paragraphTitle: paragraphTitle
+    //       });
+    //     } else {
+    //       console.log('Invalid Paragraph!!');
+    //     }
+    //   });
+    // } else {
+    //   console.log('Paragraph data not found in LateX.');
+    // }
+
+    // Extract Ordered List items
+
+    const itemizeMatches = this.latexcode?.document.match(/\\begin{itemize}([^]*?)\\end{itemize}/);
+    const itemizeContent = itemizeMatches && itemizeMatches.length > 0 ? itemizeMatches[1] : '';
+    const itemizeList = itemizeContent.match(/\\item\s([^\\]*)/g);
+    const itemizedItems = itemizeList ? itemizeList.map((match: string) => match.replace(/\\item\s/, '').trim()) : [];
+    // console.log("Ordered List:", itemizedItems);
+    this.updateOrderListItemsForm(itemizedItems); // Update the orderlist extracted data
+
+    // Extract UnOrdered List items
+    const enumerateMatches = this.latexcode?.document.match(/\\begin{enumerate}([^]*?)\\end{enumerate}/);
+    const enumerateContent = enumerateMatches && enumerateMatches.length > 0 ? enumerateMatches[1] : '';
+    const enumerateList = enumerateContent.match(/\\item\s([^\\]*)/g);
+    const enumeratedItems = enumerateList ? enumerateList.map((match: string) => match.replace(/\\item\s/, '').trim()) : [];
+    console.log("enumeratedItems List:", enumeratedItems);
+    this.updateUnOrderListItemsForm(enumeratedItems); // Update the unorderlist extracted data
+  }
+
   deleteDoc() {
-    if (this.currentDocId) {
+    if (this.documentId) {
       this.confirmationDialogService.confirm('Confirmation', 'Are you sure you want to delete this Document?', true, 'Yes', 'No')
         .then((confirmed) => {
           if (confirmed) {
-            this.httpservice.sendDeleteLatexRequest(URLUtils.deleteDocid(this.currentDocId)).subscribe((res: any) => {
+            this.httpservice.sendDeleteLatexRequest(URLUtils.deleteDocid(this.documentId)).subscribe((res: any) => {
               if (!res.error) {
                 this.toast.success('Document deleted successfully')
                 //this.confirmationDialogService.confirm('Success', 'Congratulations! You have successfully deleted the Document', false, 'Ok', 'Cancel', true);
                 this.newDoc();
               }
-            });
+            },
+              (error: HttpErrorResponse) => {
+                if (error.status === 401 || error.status === 403 || error.status === 500) {
+                  const errorMessage = error.error.msg || 'Unauthorized';
+                  this.toast.error(errorMessage);
+                }
+              });
           }
         });
     }
   }
+
+  //OVERVIEWLIST EXTRACTION
+  updateOverviewListItemsForm(itemizedItems: string[]): void {
+    // Clear existing items
+    while (this.overviewListItems.length !== 0) {
+      //this.overviewListItems.removeAt(0);
+    }
+    // Add extracted items to the form array
+    itemizedItems.forEach(item => {
+      this.overviewListItems.push(this.createoverviewItemWithValues(item));
+    });
+  }
+
+  createoverviewItemWithValues(value: string): FormGroup {
+    return this.fb.group({
+      overviewTitle: [value],
+      overview: [value] // Initialize with extracted value
+    });
+  }
+  ////////////////////////////
+
+  //PARAGRAPHLIST EXTRACTION
+  updateParaListItemsForm(itemizedItems: string[]): void {
+    // Clear existing items
+    while (this.paraListItems.length !== 0) {
+      //this.paraListItems.removeAt(0);
+    }
+    // Add extracted items to the form array
+    itemizedItems.forEach(item => {
+      this.paraListItems.push(this.createparaItemWithValues(item));
+    });
+  }
+
+  createparaItemWithValues(value: string): FormGroup {
+    return this.fb.group({
+      paragraph: [value] // Initialize with extracted value
+    });
+  }
+  ////////////////////////////
+
   //ORDERLIST EXTRACTION
   updateOrderListItemsForm(itemizedItems: string[]): void {
     // Clear existing items
@@ -583,6 +881,7 @@ export class CreateDocumentComponent {
       orderlist: [value] // Initialize with extracted value
     });
   }
+  ////////////////////////////
 
   //UNORDERLIST EXTRACTION
   updateUnOrderListItemsForm(itemizedItems: string[]): void {
@@ -601,14 +900,13 @@ export class CreateDocumentComponent {
       unorderlist: [value] // Initialize with extracted value
     });
   }
+  ////////////////////////////
 
   overviewOn() {
     this.isOverview = true;
-    // this.overviewFields.push({});
-    // this.overview.push(''); 
   }
 
-  //Action dialog boxs!!
+  //Action dialog boxs!! 
   openOverviewDialog() {
     this.overviewDialog = true;
     const dialogRef = this.dialog.open(DialogBoxComponent, {
@@ -616,14 +914,30 @@ export class CreateDocumentComponent {
       height: '330px',
       data: {
         overview: this.overview,
-        overviewTitle: this.overviewTitle
-      }
+        overviewTitle: this.overviewTitle,
+        overviewListItems: this.overviewListItems
+      },
+      hasBackdrop: true,
+      panelClass: 'hello',
+      autoFocus: true
     });
 
-    dialogRef.afterClosed().subscribe((result: { overview: string, overviewTitle: string }) => {
+    dialogRef.afterClosed().subscribe((result: { overview: string, overviewTitle: string, overviewListItems: any }) => {
       if (result) {
         this.overview = result.overview;
         this.overviewTitle = result.overviewTitle;
+
+        //passing the paraListItems to parent
+        const formArrayControls = result.overviewListItems.map((item: any) => this.fb.group({ overview: item.overview }));
+
+        if (this.overviewListItems) {
+          this.overviewListItems.clear(); // Clear existing items before pushing new ones
+          formArrayControls.forEach((control: any) => {
+            this.overviewListItems.push(control); // Push each control to the FormArray
+          });
+        } else {
+          this.overviewListItems = this.fb.array(formArrayControls); // Initialize FormArray 
+        }
       }
     });
   }
@@ -636,7 +950,10 @@ export class CreateDocumentComponent {
       data: {
         section: this.section,
         sectionTitle: this.sectionTitle
-      }
+      },
+      hasBackdrop: true,
+      panelClass: 'hello',
+      autoFocus: true
     });
 
     dialogRef.afterClosed().subscribe((result: { section: string, sectionTitle: string }) => {
@@ -655,7 +972,10 @@ export class CreateDocumentComponent {
       data: {
         subsection: this.subsection,
         subsectionTitle: this.subsectionTitle
-      }
+      },
+      hasBackdrop: true,
+      panelClass: 'hello',
+      autoFocus: true
     });
 
     dialogRef.afterClosed().subscribe((result: { subsection: string, subsectionTitle: string }) => {
@@ -674,7 +994,10 @@ export class CreateDocumentComponent {
       data: {
         subsubsection: this.subsubsection,
         subsubsectionTitle: this.subsubsectionTitle
-      }
+      },
+      hasBackdrop: true,
+      panelClass: 'hello',
+      autoFocus: true
     });
 
     dialogRef.afterClosed().subscribe((result: { subsubsection: string, subsubsectionTitle: string }) => {
@@ -692,16 +1015,34 @@ export class CreateDocumentComponent {
       height: '330px',
       data: {
         paragraph: this.paragraph,
-        paragraphTitle: this.paragraphTitle
-      }
+        paragraphTitle: this.paragraphTitle,
+        paraListItems: this.paraListItems
+      },
+      hasBackdrop: true,
+      panelClass: 'hello',
+      autoFocus: true
     });
+    console.log('paraData', dialogRef)
 
-    dialogRef.afterClosed().subscribe((result: { paragraph: string, paragraphTitle: string }) => {
+    dialogRef.afterClosed().subscribe((result: { paragraph: string, paragraphTitle: string, paraListItems: any }) => {
       if (result) {
         this.paragraph = result.paragraph;
         this.paragraphTitle = result.paragraphTitle;
+
+        //passing the paraListItems to parent
+        const formArrayControls = result.paraListItems.map((item: any) => this.fb.group({ paragraph: item.paragraph }));
+
+        if (this.paraListItems) {
+          this.paraListItems.clear(); // Clear existing items before pushing new ones
+          formArrayControls.forEach((control: any) => {
+            this.paraListItems.push(control); // Push each control to the FormArray
+          });
+        } else {
+          this.paraListItems = this.fb.array(formArrayControls); // Initialize FormArray 
+        }
       }
     });
+
   }
 
   openOrderlistDialog() {
@@ -713,18 +1054,11 @@ export class CreateDocumentComponent {
         orderlist: this.orderlist,
         orderlistTitle: this.orderlistTitle,
         orderListItems: this.orderListItems
-      }
+      },
+      hasBackdrop: true,
+      panelClass: 'hello',
+      autoFocus: true
     });
-    //console.log('orderListItems',this.orderListItems)
-
-    // dialogRef.afterClosed().subscribe((result: { orderlist: string, orderlistTitle: string, orderListItems: any }) => {
-    //   if (result) {
-    //     this.orderlist = result.orderlist;
-    //     this.orderlistTitle = result.orderlistTitle;
-    //     //this.orderListItems = result.orderListItems;
-    //     this.orderListItems = this.fb.array(result.orderListItems);
-    //   }
-    // });
 
     dialogRef.afterClosed().subscribe((result: { orderlist: string, orderlistTitle: string, orderListItems: any }) => {
       if (result) {
@@ -754,7 +1088,10 @@ export class CreateDocumentComponent {
         unorderlist: this.unorderlist,
         unorderlistTitle: this.unorderlistTitle,
         unorderListItems: this.unorderListItems
-      }
+      },
+      hasBackdrop: true,
+      panelClass: 'hello',
+      autoFocus: true
     });
 
     dialogRef.afterClosed().subscribe((result: { unorderlist: string, unorderlistTitle: string, unorderListItems: any }) => {
@@ -802,28 +1139,47 @@ export class DialogBoxComponent {
   overviewTitle: any;
   isOverview: boolean = false;
   overviewDialog: boolean = true;
-
-  //@Output() oversubmitted = new EventEmitter();
+  @Input() overviewListItems!: FormArray;
 
   constructor(
-    public dialogRef: MatDialogRef<DialogBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { overview: string, overviewTitle: string },
+    public dialogRef: MatDialogRef<DialogBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { overview: string, overviewTitle: string, overviewListItems: FormArray },
     private fb: FormBuilder) {
     this.overview = data.overview;
-    this.overviewTitle = data.overviewTitle
+    this.overviewTitle = data.overviewTitle;
+    this.overviewListItems = data.overviewListItems;
   }
 
   ngOnInit() {
-
     this.overviewForm = this.fb.group({
       overviewTitle: ['', Validators.required],
       overview: ['', Validators.required],
+      overviewListItems: this.overviewListItems
     });
     //console.log('this.overview',this.overviewForm)
 
-    if (this.overviewTitle && this.overviewTitle.startsWith('-')) {
-      this.overviewTitle = this.overviewTitle.substring(2); // Remove the hyphen & space
+    if (this.overviewListItems) {
+      this.overviewListItems = this.fb.array([...this.overviewListItems.controls]);
+    } else {
+      this.overviewListItems = this.fb.array([]);
     }
 
+    if (Array.isArray(this.data.overviewListItems.controls)) {
+      this.overviewListItems = this.data.overviewListItems as FormArray;
+    } else {
+      this.overviewListItems = this.fb.array([]);
+    }
+    //console.log('paraListItems',this.overviewListItems)
+  }
+
+
+  addoverviewList(): void {
+    this.overviewListItems = this.overviewForm.get('overviewListItems') as FormArray;
+    this.overviewListItems.push(this.createoverviewItem());
+  }
+  createoverviewItem(): FormGroup {
+    return this.fb.group({
+      overview: [''] // Initialize with an empty value
+    });
   }
 
   save() {
@@ -839,12 +1195,12 @@ export class DialogBoxComponent {
     // if (this.overviewTitle && !this.overviewTitle.startsWith('-')) {
     //   this.overviewTitle = '- ' + this.overviewTitle;
     // }
+    const overviewListItemsData = this.overviewListItems.value;
     const data = {
       overview: this.overview,
-      overviewTitle: this.overviewTitle
+      overviewTitle: this.overviewTitle,
+      overviewListItems: overviewListItemsData
     };
-    console.log('overview', this.overview)
-    console.log('overviewTitle', this.overviewTitle)
     this.dialogRef.close(data);
   }
 
@@ -1074,7 +1430,6 @@ export class SubSection2BoxComponent {
 
 }
 
-
 @Component({
   selector: 'app-paragraph-box',
   templateUrl: './paragraph-box.component.html',
@@ -1092,40 +1447,62 @@ export class ParagraphBoxComponent {
   isParagraph: boolean = false;
   paragraphDialog: boolean = true;
 
+  @Input() paraListItems: FormArray;
   //@Output() oversubmitted = new EventEmitter();
 
   constructor(
-    public dialogRef: MatDialogRef<ParagraphBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { paragraph: string, paragraphTitle: string },
+    public dialogRef: MatDialogRef<ParagraphBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { paragraph: string, paragraphTitle: string, paraListItems: FormArray },
     private fb: FormBuilder
   ) {
-    //this.overview = data[0];
     this.paragraph = data.paragraph;
-    this.paragraphTitle = data.paragraphTitle
+    this.paragraphTitle = data.paragraphTitle;
+    this.paraListItems = data.paraListItems;
   }
 
   ngOnInit() {
     this.paragraphForm = this.fb.group({
       paragraphTitle: ['', Validators.required],
       paragraph: ['', Validators.required],
+      paraListItems: this.paraListItems
+
     });
 
-    if (this.paragraphTitle && this.paragraphTitle.startsWith('-')) {
-      this.paragraphTitle = this.paragraphTitle.substring(2); // Remove the hyphen & space
+    if (this.paraListItems) {
+      this.paraListItems = this.fb.array([...this.paraListItems.controls]);
+    } else {
+      this.paraListItems = this.fb.array([]);
     }
 
+    if (Array.isArray(this.data.paraListItems.controls)) {
+      this.paraListItems = this.data.paraListItems as FormArray;
+    } else {
+      this.paraListItems = this.fb.array([]);
+    }
+
+    //this.paraListItems = this.paragraphForm.get('paraListItems') as FormArray;
+    console.log('paraListItems', this.paraListItems)
+  }
+
+  addparaList(): void {
+    this.paraListItems = this.paragraphForm.get('paraListItems') as FormArray;
+    this.paraListItems.push(this.createparaItem());
+  }
+  createparaItem(): FormGroup {
+    return this.fb.group({
+      paragraph: [''] // Initialize with an empty value
+    });
   }
 
   save() {
-    //for Hypen
-    // if (this.paragraphTitle && !this.paragraphTitle.startsWith('-')) {
-    //   this.paragraphTitle = '- ' + this.paragraphTitle;
-    // }
+    const paraListItemsData = this.paraListItems.value;
     const data = {
       paragraph: this.paragraph,
-      paragraphTitle: this.paragraphTitle
+      paragraphTitle: this.paragraphTitle,
+      paraListItems: paraListItemsData
     };
     this.dialogRef.close(data);
     console.log('paraData', data)
+    console.log('paraListItemsData', paraListItemsData)
   }
 
   closeDialog() {
@@ -1142,6 +1519,7 @@ export class ParagraphBoxComponent {
       this.paragraphTitle = '' + newTitle;
     }
   }
+
 
 }
 
@@ -1170,7 +1548,6 @@ export class OrderedlistBoxComponent {
     public dialogRef: MatDialogRef<OrderedlistBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { orderlist: string, orderlistTitle: string, orderListItems: FormArray },
     private fb: FormBuilder
   ) {
-    //this.overview = data[0];
     this.orderlist = data.orderlist;
     this.orderlistTitle = data.orderlistTitle;
     this.orderListItems = data.orderListItems;
@@ -1181,16 +1558,12 @@ export class OrderedlistBoxComponent {
     this.orderlistForm = this.fb.group({
       orderlistTitle: ['', Validators.required],
       orderlist: ['', Validators.required],
-
-      //orderListItems: this.fb.array([this.createItem()]),
       orderListItems: this.orderListItems
 
     });
 
-    //this.orderListItems = this.orderlistForm.get('orderListItems') as FormArray;
-
     if (this.orderListItems) {
-      this.orderListItems = this.fb.array([...this.orderListItems.controls]); // Make a copy of orderListItems
+      this.orderListItems = this.fb.array([...this.orderListItems.controls]);
     } else {
       this.orderListItems = this.fb.array([]);
     }
@@ -1198,13 +1571,11 @@ export class OrderedlistBoxComponent {
     if (Array.isArray(this.data.orderListItems.controls)) {
       this.orderListItems = this.data.orderListItems as FormArray;
     } else {
-      // If the data doesn't match the expected structure, create a new FormArray
       this.orderListItems = this.fb.array([]);
     }
-    //console.log('OOOorderListItems',this.orderListItems)
 
     if (this.orderlistTitle && this.orderlistTitle.startsWith('-')) {
-      this.orderlistTitle = this.orderlistTitle.substring(2); // Remove the hyphen & space
+      this.orderlistTitle = this.orderlistTitle.substring(2);
     }
 
   }
@@ -1226,7 +1597,6 @@ export class OrderedlistBoxComponent {
     // if (this.orderlistTitle && !this.orderlistTitle.startsWith('-')) {
     //   this.orderlistTitle = '- ' + this.orderlistTitle;
     // }
-
     const orderListItemsData = this.orderListItems.value;
     const data = {
       orderlist: this.orderlist,
@@ -1284,10 +1654,8 @@ export class UnorderedlistBoxComponent {
 
   ngOnInit() {
     this.unorderlistForm = this.fb.group({
-      orderlistTitle: ['', Validators.required],
-      orderlist: ['', Validators.required],
-
-      //orderListItems: this.fb.array([this.createItem()]),
+      unorderlistTitle: ['', Validators.required],
+      unorderlist: ['', Validators.required],
       unorderListItems: this.unorderListItems
 
     });
@@ -1325,13 +1693,7 @@ export class UnorderedlistBoxComponent {
     });
   }
 
-
   save() {
-    //for Hypen
-    // if (this.unorderlistTitle && !this.unorderlistTitle.startsWith('-')) {
-    //   this.unorderlistTitle = '- ' + this.unorderlistTitle;
-    // }
-
     const unorderListItemsData = this.unorderListItems.value;
     const data = {
       unorderlist: this.unorderlist,
@@ -1405,33 +1767,6 @@ export class OpendialogBoxComponent {
   truncateString(text: string): string {
     return text.slice(0, 18); // Get the first 15 characters
   }
-
-  // openFile(docid:any) {
-  //   //Get OpenAPI 
-  //   this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
-  //     (res: any) => {
-  //       this.documents = res;
-  //       //console.log('openDRes:', this.documents);
-
-  //       this.httpservice.sendGetLatexRequest(URLUtils.opendocID(docid)).subscribe(
-  //         (req: any) => {
-  //           console.log('seldocId:', req);
-  //           console.log('reqDocument:', document);
-
-  //         }
-  //       );
-  //     }
-  //   );
-
-
-  //   //Dialog close
-  //       this.dialogRef.afterClosed().subscribe((result: { title: string }) => {
-  //         if (result) {
-  //            this.title = result.title;  
-  //            //console.log('title:', this.title);
-  //         }
-  //       });
-  // }
 
   ondocumentClick(docid: any, docname: any) {
     this.dialogRef.close({ "docid": docid, "docname": docname })
@@ -1539,26 +1874,6 @@ export class OpendialogBoxComponent {
         );
       }
     );
-
-    //Dialog close
-    // this.dialogRef.afterClosed().subscribe((result: { title: string }) => {
-    //   if (result) {
-    //     this.title = result.title;
-    //     console.log('titleafterClosed:', this.title);
-    //   }
-    // });
-  }
-
-  docidSave(documentId: any, document: any) {
-    //Get OpenFileAPI 
-    //console.log('OpendocumentId',documentId)
-    this.httpservice.sendGetLatexRequest(URLUtils.opendocID(documentId)).subscribe(
-      (res: any) => {
-        console.log('resssss:', res);
-        console.log('document:', document);
-        //this.toast.success("Document opened successfully!")
-      }
-    );
   }
 
   sortingFile(val: any) {
@@ -1626,12 +1941,13 @@ export class DownloadBoxComponent {
         (res: any) => {
           this.toast.success(res.message);
           this.dialogRef.close({ "docid": res.id, "documentname": this.mydForm.value.documentname });
-          // this.httpservice.sendGetLatexDoc(URLUtils.savedDocid(res.id)).subscribe(
-          //   (res: any) => {
-          //   });
+          //console.log('name:',this.documentname)
         },
-        (error: any) => {
-          console.error('Error:', error);
+        (error: HttpErrorResponse) => {
+          if (error.status === 401 || error.status === 403) {
+            const errorMessage = error.error.msg || 'Unauthorized';
+            this.toast.error(errorMessage);
+          }
         }
       );
     }
