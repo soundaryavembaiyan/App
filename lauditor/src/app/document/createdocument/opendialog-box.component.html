@@ -29,7 +29,7 @@
                 </tbody>
             </table>  -->
             <div class="col-sm-6" *ngFor="let d of documents| filter:searchText">
-              <div class="innerCont" (click)="openFile(d.docid);ondocumentClick(d.docid,d.documentname)">
+              <div class="innerCont" (click)="ondocumentClick(d.docid,d.documentname)">
                       <div class="contBox hoverDoc">
                         <p><i class="fa fa-file-text ico" aria-hidden="true"></i>&nbsp;{{truncateString(d.documentname)}} </p>
                          <p class="hoverTime"> {{d.updatedon?.$date}}</p>
