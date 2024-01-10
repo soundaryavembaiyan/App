@@ -49,15 +49,34 @@ export class URLUtils {
     static getLegalExternalMatter = '/v3/sharedlegal'
     
     //LATEX 
+    static getDocument = '/v1/documents'
     static savedoc = '/v1/document'
     //static savedocofid = '/v1/document/page/'
     
     static savedocID(args: any) {
         return `/v1/document/page/${args}`;
     }
+    static opendocID(args: any) {
+        return `/v1/document/${args}`;
+    }
 
     static updateDoc(args: any) {
         return `/v1/document/page/${args}`;
+    }
+
+    static saveasDoc(args: any) {
+        return `/v1/document/page/${args}`;
+    }
+
+    //Saveas API
+    static downloadDoc(args: any) {
+        return `/v1/document/duplicate/${args}`;
+    }
+    static savedDocid(args: any) {
+        return `/v1/document/${args}`;
+    }
+    static deleteDocid(args: any) {
+        return `/v1/document/${args}`;
     }
 
     static getPreview(args: any) {
@@ -67,7 +86,6 @@ export class URLUtils {
 
     // Profile
     static getProfile = `/profile`
-    
 
     static updateProfile(args: any) {
         return `/profile/${args.field}/update`;
