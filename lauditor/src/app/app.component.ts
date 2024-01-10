@@ -62,8 +62,8 @@ export class AppComponent implements OnInit {
        // add the image to assests/img folder and change the patch here
     }
     else if(environment.product=="corporate"){
-      this.titleservice.setTitle("Corporate")
-      this.favIcon.href = "assets/img/logo.svg";
+      this.titleservice.setTitle("DG Counsel")
+      this.favIcon.href = "assets/img/DGhome.png";
        // add the image to assests/img folder and change the patch here
     }
   }
