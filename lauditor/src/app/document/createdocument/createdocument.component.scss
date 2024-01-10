@@ -165,17 +165,35 @@
     width: 60px;
     height: 30px;
     font-weight: 900;
-    font-size: 20px;
+    font-size: 22px;
     border-radius: 3px;
     padding: 3px;
-    margin-right: 10px;
+    margin-right: 15px;
+	margin-top:-32px;
+}
+
+.closePlus {
+    float: right;
+    border: none;
+    cursor: pointer;
+    width: 45px;
+    height: 27px;
+    font-size: 25px;
+    font-weight: 900;
+    padding: 3px; //remove this for buttonStyle
+    border-radius: 3px;
+    margin-right: 116px;
+    top:-10px;
+    margin-top:-1px;
 }
 
 .expand {
     float: right;
     padding: 3px;
-    margin-bottom: -30px;
-    margin-right: 80px;
+    // margin-bottom: -30px;
+    // margin-right: 80px;
+    margin-right: 85px;
+    margin-bottom: -27px;
     cursor: pointer;
 }
 
@@ -315,6 +333,9 @@ textarea {
 .oderAlign{
     margin-bottom: 10px;
 }
+.orderTextbox{
+    margin-bottom: 35px;
+}
 
 .listRoll {
     //overflow-y: auto;
@@ -374,9 +395,9 @@ textarea {
 .iframeStyle{
     //background-color: rgb(217, 242, 250);
     width: 100%;
-    height: 93%;
+    height: 100%;
     margin-top: -920px;
-    margin-left: 18px;
+    margin-left: 18.5px;
     // position: relative;
     // position: absolute;
 }
@@ -446,11 +467,6 @@ textarea {
     margin-left: 8px;
 }
 
-.backdropBackground {
-    backdrop-filter: blur(5px);
-    /* Apply the blur effect to the backdrop */
-}
-
 .backdropBlur {
     position: fixed;
     top: 0;
@@ -467,3 +483,30 @@ textarea {
     font-weight: 500;
     margin-left: 18px;
 }
+.upPad{
+    //margin-top: -20px;
+}
+.padDown{
+    padding-bottom: -20px;
+}
+.secclose{
+    margin-top: 0px;
+}
+
+.iOd{
+    color: #00498E;
+    padding: 1px;
+}
+.disabled {
+    opacity: 0.5; 
+    pointer-events: none; 
+  }
+  .backdropBackground {
+    filter: blur(20px);
+    background-color: #aba1a1;
+    opacity: 0.7 !important;
+}
+.hello {
+    backdrop-filter: blur(50px); 
+    background-color: rgba(255, 255, 255, 0.5); 
+  }
