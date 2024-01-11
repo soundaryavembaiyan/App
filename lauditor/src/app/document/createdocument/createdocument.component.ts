@@ -167,6 +167,10 @@ export class CreateDocumentComponent {
 
   }
 
+  enableInput() {
+    this.isDisabled; // Enable the input field
+  }
+
   //Save As dialog box!!
   downloadDialog() {
     const dialogRef = this.dialog.open(DownloadBoxComponent, {
@@ -291,7 +295,7 @@ export class CreateDocumentComponent {
     let subsubsection = formValues.subsubsection || '';
     let subsubsectionTitle = formValues.subsubsectionTitle || '';
     let paragraph = formValues.paragraph || '';
-    let paragraphTitle = formValues?.paragraphTitle || '';
+    let paragraphTitle = formValues.paragraphTitle || '';
 
     let orderListItems = formValues.orderListItems;
     let unorderListItems = formValues.unorderListItems;
@@ -317,10 +321,11 @@ export class CreateDocumentComponent {
   \\begin{document}
   \\maketitle
   \\abstract{${overviewTitle}}${overviewList}
+  \\paragraph{${paragraphTitle}}${paraList}
   \\section{${sectionTitle}}${section}
   \\subsection{${subsectionTitle}}${subsection}
   \\subsubsection{${subsubsectionTitle}}${subsubsection}
-  \\paragraph{${paragraphTitle}}${paraList}
+  
   \\begin{enumerate}
       ${orderedList} 
   \\end{enumerate}
@@ -542,7 +547,6 @@ export class CreateDocumentComponent {
   }
 
   openFile(docid: any) {
-
     this.isOverview = true; //this.isOverview = true && this.overview.length > 0;
     this.isSectionCompleted = true;
     this.isSection = true;
@@ -551,6 +555,13 @@ export class CreateDocumentComponent {
     this.isParagraph = true;
     this.isOrderlist = true;
     this.isunOrderlist = true;
+
+    // if (this.overviewListItems.length >= 1) {
+    //   this.isOverview = true;
+    // }
+    // else{
+    //   this.isOverview = false;
+    // }
 
     //Doc id
     this.documentId = docid;
@@ -602,8 +613,8 @@ export class CreateDocumentComponent {
       const overviewStartIndex = overviewTitleMatch.index + overviewTitleMatch[0].length;
       const overviewEndIndex = sectionMatch.index;
       const overviewContent = this.latexcode?.document.substring(overviewStartIndex, overviewEndIndex).trim();
-      // console.log('Extracted Overview Title:', overviewTitle);
-      // console.log('Extracted Overview Content:', overviewContent);
+       console.log('Extracted Overview Title:', overviewTitle);
+       console.log('Extracted Overview Content:', overviewContent);
       // Match overview items using a more flexible regex pattern
       const regex = /\\item\s*([^\\]+)(?=\\item|$)/gs;
       let overviewItems: string[] = [];
