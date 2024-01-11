@@ -130,6 +130,15 @@ export class MessagesComponent implements OnInit {
   }
 
   ngOnInit() {
+   if(window.location.pathname == '/messages/clients'){
+      this.selectedValue = 'clients';
+    }
+    else if(window.location.pathname == '/messages/teams'){
+      this.selectedValue = 'teams';
+    }
+    else{
+    }
+    
     this.sendUser = localStorage.getItem('name');
     this.messages = [];
     this.getTeams();
