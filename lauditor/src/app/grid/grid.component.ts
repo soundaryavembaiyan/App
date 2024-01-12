@@ -1,4 +1,4 @@
-import { DashBoardChatrelModel, DashBoardChatteamModel, DashBoardEmailModel, DashBoardGroupsandtmsModel, DashBoardMatterModel, DashBoardNotificationModel, DashBoardStorageModel, DashBoardSubscriptionModel, DashBoardTimesheetModel } from './../shared/config-model';
+import { DashBoardChatrelModel, DashBoardChatteamModel, DashBoardEmailModel, DashBoardExternalMatterModel, DashBoardGroupsandtmsModel, DashBoardMatterModel, DashBoardNotificationModel, DashBoardStorageModel, DashBoardSubscriptionModel, DashBoardTimesheetModel } from './../shared/config-model';
 import { ThisReceiver } from '@angular/compiler';
 import { Component, OnInit} from '@angular/core';
 import { HttpService } from '../services/http.service';
@@ -30,6 +30,7 @@ export class GridComponent implements OnInit {
   timesheetModel: any = DashBoardTimesheetModel;
   matterModel: any = DashBoardMatterModel;
   notifyModel: any = DashBoardNotificationModel;
+  externalmatterModel: any = DashBoardExternalMatterModel;
   subscriptionModel: any = DashBoardSubscriptionModel;
   groupsandtmsModel: any = DashBoardGroupsandtmsModel;
   relationshipModel: any = {'accepted': '', 'pending': ''}
@@ -66,6 +67,7 @@ export class GridComponent implements OnInit {
 
   time = new Date();
   intervalId: any;
+  External:boolean = false
 
 
   constructor(private httpservice: HttpService,
@@ -91,6 +93,10 @@ export class GridComponent implements OnInit {
     this.getExternal();
     this.getRelationships();
     this.getNotify();
+    if(this.product=='corporate'){
+      this.getExternalMatters();
+    }
+    
     
     var role = localStorage.getItem("role");
     if(role != null){
@@ -118,8 +124,10 @@ export class GridComponent implements OnInit {
 
       if (res.error = "false") {
         this.meetingModel = res?.data;
+        console.log('this.meetingMessage1',this.meetingMessage)
         if (res.error = "true") {
           this.meetingMessage = res?.message;
+          console.log('this.meetingMessage2',this.meetingMessage)
         }
       }
 
@@ -170,7 +178,7 @@ export class GridComponent implements OnInit {
   getHiring() {
     this.httpservice.getFeaturesdata(URLUtils.getHiring).subscribe((res: any) => {
       this.hiringModel = res?.data;
-      console.log('hireModel',this.hiringModel)
+      //console.log('hireModel',this.hiringModel)
     })
   }
   getStorage() {
@@ -226,14 +234,21 @@ export class GridComponent implements OnInit {
   getClients(){
     this.httpservice.getFeaturesdata(URLUtils.getNewClients).subscribe((res: any) => {
       this.clientModel = res?.data;
-      console.log('clientMode',this.clientModel)
+      //console.log('clientMode',this.clientModel)
     })
   }
   getExternal(){
     this.httpservice.getFeaturesdata(URLUtils.getExternalCounsels).subscribe((res: any) => {
       this.externalModel = res?.data;
-      console.log('ExtclientMode',this.externalModel)
+      //console.log('ExtclientMode',this.externalModel)
     })
+  }
+  getExternalMatters(){
+    this.httpservice.getFeaturesdata(URLUtils.getExternalMatters).subscribe((res: any) => {
+      this.externalmatterModel = res?.data;
+      //console.log('ExtclientMode',this.externalModel)
+    })
+
   }
   getRelationships(){
     this.httpservice.getFeaturesdata(URLUtils.getDashboardRelations).subscribe((res: any) => {
