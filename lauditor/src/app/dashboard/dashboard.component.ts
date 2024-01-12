@@ -165,7 +165,7 @@ export class DashboardComponent implements OnInit, OnChanges {
       id: 'documents', link: '/documents', image: 'assets/img/Document.svg', class: ''
     },
     {
-      name: 'Relationship',
+      name: 'Relationships',
       roles: ['TM', 'GH', 'SU'],
       id: 'relationships', link: '/relationship/view/individuals', image: 'assets/img/relationship.svg', class: ''
     },
@@ -249,7 +249,7 @@ export class DashboardComponent implements OnInit, OnChanges {
       id: 'documents', link: '/documents', image: 'assets/img/Document.svg', class: ''
     },
     {
-      name: 'Relationship',
+      name: 'Relationships',
       roles: ['TM', 'GH', 'SU'],
       id: 'relationships',
       link: '/relationship/view/business', image: 'assets/img/relationship.svg', class: ''
@@ -306,13 +306,14 @@ export class DashboardComponent implements OnInit, OnChanges {
     if (role == 'SU') { this.role = 'SuperUser' }
     if (role == 'AAM') { this.role = 'Admin' }
     if (role == 'TM') { this.role = 'Team Member' }
-    if (role == 'GH') { this.role = 'Group Head' }
+    if (role == 'GH' && this.product == 'corporate') { this.role = 'Department Head' }
+    if (role == 'GH' && this.product != 'corporate') { this.role = 'Group Head' }
   }
 
   getCategory(category: any) {
 
     this.categoryName = category;
-    console.log("categoryName", this.categoryName);
+    //console.log("categoryName", this.categoryName);
 
     const categoryList = document.getElementsByClassName("left-menu-icon");
     for (let i = 0; i < categoryList.length; i++) {
