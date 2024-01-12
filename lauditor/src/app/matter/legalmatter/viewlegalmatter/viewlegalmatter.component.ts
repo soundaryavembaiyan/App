@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-viewlegalmatter',
@@ -38,24 +39,32 @@ export class ViewlegalmatterComponent implements OnInit {
 
   constructor(private httpservice: HttpService, private http: HttpClient, private matterService: MatterService, 
     private router: Router, private toast: ToastrService,
-    private confirmationDialogService: ConfirmationDialogService) { }
+    private confirmationDialogService: ConfirmationDialogService,private spinnerService: NgxSpinnerService) { }
 
   ngOnInit() {
-    this.getLegalMatters();
+    // if(this.product == 'corporate'){
+    //   this.selectedOption = 'External Matters'
+    // this.getExternalMatters();
+    //}
+    // else{
+    //   this.selectedOption = 'Internal Matters'
+      this.getLegalMatters();
+    //}
+    //console.log('this.selectedOption',this.selectedOption)
   }
   getLegalMatters() {
-    this.blockUI.start()
+    this.spinnerService.show()
     this.httpservice.sendGetRequest(URLUtils.getLegalMatter).subscribe((res: any) => {
       this.legalMatters = res && res["matters"];
-      this.blockUI.stop()
+      this.spinnerService.hide()
     })
   }
 
   getExternalMatters() {
-    this.blockUI.start()
+    this.spinnerService.show()
     this.httpservice.sendGetRequest(URLUtils.getLegalExternalMatter).subscribe((res: any) => {
       this.legalMatters = res && res["matters"];
-      this.blockUI.stop()
+      this.spinnerService.hide()
     })
   }
 
