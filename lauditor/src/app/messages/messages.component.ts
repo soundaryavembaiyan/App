@@ -30,7 +30,7 @@ export class MessagesComponent implements OnInit {
   @ViewChild('scrollMe') myScrollContainer: ElementRef | undefined;
   @ViewChildren('item')
   itemElements!: QueryList<any>;
-  selectedValue: string = "clients";
+  selectedValue: string = 'clients';
 
   private itemContainer: any;
   private scrollContainer: any;
@@ -130,6 +130,7 @@ export class MessagesComponent implements OnInit {
   }
 
   ngOnInit() {
+
    if(window.location.pathname == '/messages/clients'){
       this.selectedValue = 'clients';
     }
@@ -138,7 +139,7 @@ export class MessagesComponent implements OnInit {
     }
     else{
     }
-    
+
     this.sendUser = localStorage.getItem('name');
     this.messages = [];
     this.getTeams();
