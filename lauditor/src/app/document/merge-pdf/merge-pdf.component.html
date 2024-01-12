@@ -5,8 +5,8 @@
     <div class="row">
       <!-- client code  -->
       <!-- <div class="col-6"> -->
-      <div class="col-6" *ngIf="filter==='client'">
-        <div class="form-group" *ngIf="product != 'corporate'">
+      <div class="col-6" *ngIf="filter==='client' && product != 'corporate'">
+        <div class="form-group" >
           <label for="title" class="fontbold">Client Name <span class="mandate">*</span></label>
           <div class="ng-autocomplete textbox">
             <ng-autocomplete [data]="data" [searchKeyword]="keyword"  placeholder="Type to select"
@@ -14,7 +14,6 @@
               (inputFocused)='onFocused($event)' [itemTemplate]="itemTemplate" [notFoundTemplate]="notFoundTemplate">
               <!-- <i class="fa fa-chevron-down" aria-hidden="true"></i> -->
             </ng-autocomplete>
-
             <ng-template #itemTemplate let-item>
               <a [innerHTML]="item.name"></a>
             </ng-template>
@@ -22,26 +21,24 @@
             <ng-template #notFoundTemplate let-notFound>
               <div [innerHTML]="notFound"></div>
             </ng-template>
-            <!-- <i class="fa fa-chevron-down" 
-                          ></i> -->
+            <!-- <i class="fa fa-chevron-down"></i> -->
           </div>
         </div>
-        <div class="form-group">
-          <label for="title" class="fontbold" *ngIf="product != 'corporate'">Matter </label>
-          <label for="title" class="fontbold" *ngIf="product == 'corporate'">Matter <span class="mandate">*</span></label>
+        <div class="form-group" >
+          <label for="title" class="fontbold">Matter </label>
+          <!-- <label for="title" class="fontbold" *ngIf="product == 'corporate'">Matter <span class="mandate">*</span></label> -->
           <div class="dropdown-select textbox">
             <select (change)="onChange($event.target)">
               <option hidden value="">Type to select</option>
               <option *ngFor="let i of matterList " value="{{i.id}}">{{i.title}}</option>
             </select>
-            <!-- <i class="fa fa-chevron-down" 
-                          ></i> -->
+            <!-- <i class="fa fa-chevron-down"></i> -->
           </div>
         </div>
       </div>
       <!-- firm code -->
-      <div class="col-6" *ngIf="filter==='firm'">
-        <div class="form-group " id="selectbx">
+      <div class="col-6" *ngIf="filter==='firm' || product == 'corporate'">
+        <div class="form-group" id="selectbx">
           <div class="input-group court" id="search">
             <div class="multicheck form-control textbox-bg ">
               <label class="callselect" *ngIf="product != 'corporate'">Select Group(s) <span class="mandate">*</span></label>
@@ -75,13 +72,12 @@
                     </div>
                   </div>
                 </div>
-
               </div>
-
             </div>
           </div>
+
         </div>
-        <div class="form-group">
+        <div class="form-group" *ngIf="product != 'corporate'">
           <label for="title" class="fontbold">Categories </label>
           <input type="text" class="form-control textbox" id="caseType" name="caseno">
         </div>
@@ -90,7 +86,7 @@
       <div class="col-6">
         <div class="form-group float-right">
           <div class="input-group court" id="search">
-            <input type="text" class="form-control textbox" placeholder="Search "  [(ngModel)]="term"/>
+            <input type="text" class="form-control textbox" placeholder="Search" oninput="this.value = this.value.replace(/[^A-Za-z0-9 ]|^ /g,'')" [(ngModel)]="term"/>
             <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
           </div>
         </div>
@@ -115,15 +111,14 @@
   <div *ngIf="filter=='firm' && selectedGroupItems && selectedGroupItems.length==0 && product != 'corporate'" class="custom-alert">Please Select Group name </div>
   <div *ngIf="filter=='firm' && selectedGroupItems && selectedGroupItems.length==0 && product == 'corporate'" class="custom-alert">Please Select Department name </div>
 </div>
-<div   class="col-sm-12 gridtable  width-alignment ">
-  <h1  *ngIf="filter=='client'" class="custusername margin-top">List of Client Documents</h1>
+<div   class="col-sm-12 gridtable  width-alignment">
+  <h1  *ngIf="filter=='client' && product != 'corporate'" class="custusername margin-top">List of Client Documents</h1>
 
   <h1  *ngIf="filter=='firm' && product != 'corporate'" class="custusername margin-top">List of Firm Documents</h1>
   <h1  *ngIf="filter=='firm' && product == 'corporate'" class="custusername margin-top">List of Internal Documents</h1>
 
   <div *ngIf="documents && documents?.length==0 && errorMsg " class="custom-alert">List of Documents not available!!</div>
-  
-  <table class="table table-borderless tblgrid">
+    <table class="table table-borderless tblgrid">
     <tbody>
       <tr class="rone veiw-items"  [class.protected] = "document.is_encrypted" [ngClass]="{'active': document.isChecked}"
         *ngFor="let document of documents| filter:term; let i = index">
@@ -131,9 +126,19 @@
         <td class="document">{{document.filename}}</td>        
         <td class="document">{{document.created | date:'MMM d, y'}}</td>
         <td class="document">{{document.uploaded_by}}</td>
-        <td class="document">
+        <!-- <td class="document">
          <div *ngIf="document?.tags!=0" [innerHTML]="document.tags"></div>   
+        </td> -->
+        <td class="document">
+          <div *ngIf="document?.tags && objectKeys(document.tags).length > 0">
+            <ul>
+              <li *ngFor="let key of objectKeys(document.tags)">
+                {{ key }}: {{ document?.tags[key] }}
+              </li>
+            </ul>
+          </div>
         </td>
+
         <td class="document"><i class="fa fa-download" aria-hidden="true"></i></td>
         <td class="document " *ngIf="document.is_encrypted">
 
@@ -142,8 +147,7 @@
         </td>
         <td class="document "  *ngIf="!document.is_encrypted">
           <input type="checkbox" class="form-check-input custcheck cusCheckbox" id="check3" name="option1" value="something">
-          <input type="checkbox" #inputEl class="larger " name="checkBox2" (change)="checkItem(inputEl.checked,document)"
-            [checked]="document.isChecked">
+          <input type="checkbox" #inputEl class="larger " name="checkBox2" (change)="checkItem(inputEl.checked,document)" [checked]="document.isChecked">
         </td>
       </tr>
     </tbody>
@@ -154,7 +158,6 @@
       <div class="btnbox">
         <button type="reset" class="btn btn-default btncancel">Cancel</button>
         <button type="submit" class="btn btn-default btnsave savecls" [disabled]="selectedDoc && selectedDoc.length<2" (click)="mergeDoc()">Merge</button>
-
       </div>
     </div>
   </div>
