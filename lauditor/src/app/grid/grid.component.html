@@ -199,7 +199,7 @@
                     <span class="vertical verticaltotal"></span>
                   </div>
                   <div class="col-sm-4">
-                    <div class="rightbox rightboxtxt rightrate notifyhour" *ngIf="product == 'corporate'">Internal Lawyers</div>
+                    <!-- <div class="rightbox rightboxtxt rightrate notifyhour" *ngIf="product == 'corporate'">Internal Lawyers</div> -->
                     <div class="rightmname righmnamecontext rytcentNotify righboxshared">
                       <!--Notification messages!-->
                       {{notifyModel?.message}} {{notifyMessage}} 
@@ -373,13 +373,41 @@
                     <span class="vertical verticaltotal closedvertical"></span>
                 </div>
                 <div class="col-sm-4">
-                  <p class="rightbox rightboxtxt rightmatter" *ngIf="product != 'corporate'">Active</p>
-                  <p class="rightbox rightboxtxt rightmatter" *ngIf="product == 'corporate'">Internal</p>
+                  <p class="rightbox rightboxtxt rightmatter">Active</p>
                   <span class="mattertxt">Matters</span>
                   <span class="mattercount" [innerHtml]="matterModel?.active?.total"></span><!--*ngIf="matterModel.active && matterModel.active.total"-->
                   <span class="mattertxt" *ngIf="matterModel.active && matterModel.active.countsByType[0]">{{matterModel.active.countsByType[0].count}} {{matterModel.active.countsByType[0].type}}</span>
                   &nbsp;
                   <span class="mattertxt" *ngIf="matterModel.active && matterModel.active.countsByType[1]">{{matterModel.active.countsByType[1].count}} {{matterModel.active.countsByType[1].type}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row rightcontainerbox rightcontainerboxapprox" *ngIf="kpiCards.includes('Corpmatters')">
+            <div class="col-sm-12">
+              <div class="row meetingcontainer legalbox">
+                <div class="col-sm-7">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <img src="assets/img/matter.svg" alt="Meeting" class="icongroup">
+                    </div>
+                    <div class="col-sm-8">
+                      <a style="cursor: pointer;" (click)="categoryRoute('/matter/legalmatter/external')" class="mname toalhours approx rightmatter">External</a>
+                      <span class="mattertxt">Matters</span>
+                      <span class="mattercount" style="cursor: pointer;" (click)="categoryRoute('/matter/legalmatter/external')" [innerHtml]="externalmatterModel?.external?.total"></span><!--*ngIf="matterModel.closed && matterModel.closed.total"-->
+                      <span class="mattertxt" *ngIf="externalmatterModel.external && externalmatterModel.external.countsByType[0]">{{externalmatterModel.external.countsByType[0].count}} {{externalmatterModel.external.countsByType[0].type}}</span>
+                      &nbsp;
+                      <span class="mattertxt" *ngIf="externalmatterModel.external && externalmatterModel.external.countsByType[1]">{{externalmatterModel.external.countsByType[1].count}} {{externalmatterModel.external.countsByType[1].type}}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <a style="cursor: pointer;" (click)="categoryRoute('/matter/legalmatter/view')" class="rightbox rightboxtxt rightmatter">Internal</a>
+                  <span class="mattertxt">Matters</span>
+                  <span class="mattercount" style="cursor: pointer;" (click)="categoryRoute('/matter/legalmatter/view')" [innerHtml]="externalmatterModel?.internal?.total"></span><!--*ngIf="matterModel.active && matterModel.active.total"-->
+                  <span class="mattertxt" *ngIf="externalmatterModel.internal && externalmatterModel.internal.countsByType[0]">{{externalmatterModel.internal.countsByType[0].count}} {{externalmatterModel.internal.countsByType[0].type}}</span>
+                  &nbsp;
+                  <span class="mattertxt" *ngIf="externalmatterModel.internal && externalmatterModel.internal.countsByType[1]">{{externalmatterModel.internal.countsByType[1].count}} {{externalmatterModel.internal.countsByType[1].type}}</span>
                 </div>
               </div>
             </div>
@@ -397,36 +425,53 @@
                     </div>
 
                     <!-- Clients total - laud.-->
-                    <div class="col-sm-8" *ngIf="product != 'corporate'">
+                    <div class="col-sm-8" >
                       <p class="mname toalhours approx rightmatter cmatter">New Clients</p>
                       <span class="mattertxt">{{clientModel[0]['type']}}</span>
                       <span class="mattercount" [innerHtml]="clientModel[0]['count']"></span>
                     </div>
 
                     <!-- Extrenal Counsels total - corp.-->
-                    <div class="col-sm-8" *ngIf="product == 'corporate'">
+                  </div>
+                </div>
+                
+                <div class="col-sm-1 verticalwidth" >
+                    <span class="vertical verticaltotal closedvertical"></span>
+                </div>
+
+                <div class="col-sm-4">
+                  <p class="rightbox rightboxtxt rightmatter dotcontent">.</p>
+                  <span class="mattertxt newmat">{{clientModel[1]['type']}}</span>
+                  <span class="mattercount" [innerHtml]="clientModel[1]['count']"></span>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="row rightcontainerbox rightcontainerboxapprox" *ngIf="kpiCards.includes('newCounsels')" 
+                (click)="categoryRoute('/relationship/view/corporate')">
+            <div class="col-sm-12">
+              <div class="row meetingcontainer legalbox">
+                <div class="col-sm-7">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <img src="assets/img/client.svg" alt="Meeting" class="icongroup">
+                    </div>
+
+                    <!-- Extrenal Counsels total - corp.-->
+                    <div class="col-sm-8" >
                       <p class="mname toalhours approx rightmatter cmatter">New External Counsels</p>
                       <span class="mattertxt">{{externalModel[0]['type']}}</span>
                       <span class="mattercount" [innerHtml]="externalModel[0]['count']"></span>
                     </div>
-
                   </div>
                 </div>
                 
-                <div class="col-sm-1 verticalwidth" *ngIf="product != 'corporate'">
-                    <span class="vertical verticaltotal closedvertical"></span>
-                </div>
 
-                <div class="col-sm-4" *ngIf="product == 'corporate'">
+                <div class="col-sm-4">
                   <p class="rightbox rightboxtxt rightmatter dotcontent">.</p>
                   <span class="mattertxt newmat">All External Counsels</span>
                   <span class="mattercount" [innerHtml]="externalModel[0]['total_count']"></span>
-                </div>
-
-                <div class="col-sm-4" *ngIf="product != 'corporate'">
-                  <p class="rightbox rightboxtxt rightmatter dotcontent">.</p>
-                  <span class="mattertxt newmat">{{clientModel[1]['type']}}</span>
-                  <span class="mattercount" [innerHtml]="clientModel[1]['count']"></span>
                 </div>
 
               </div>
@@ -477,16 +522,19 @@
                     <div class="col-sm-8">
                       <p class="mname toalhours approx rightmatter">Data Storage</p>
                       <span class="mattercount closedm"
-                            *ngIf=" storageModel&&storageModel.totalStorage"
+                            *ngIf=" storageModel&&storageModel.totalStorage && product !== 'corporate'"
                             [innerHtml]="storageModel.totalStorage"></span> 
+                      <span class="mattercount closedm"
+                            *ngIf="product === 'corporate'"
+                            [innerHtml]="25"></span> 
                       <span class="mattertxtdata gb">GB</span>
                     </div>
                   </div>
                 </div>
-                <div class="col-sm-1 verticalwidth">
+                <div class="col-sm-1 verticalwidth"  *ngIf="product !== 'corporate'">
                     <span class="vertical verticaltotal "></span>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-4" *ngIf="product !=='corporate'">
                   <p class="rightbox rightboxtxt rightmatter ">Balance Storage</p>
                   <span class="mattercount closedm"
                         *ngIf=" storageModel&&storageModel.balanceStorage"
