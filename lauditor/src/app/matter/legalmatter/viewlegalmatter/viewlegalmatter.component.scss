@@ -44,11 +44,9 @@ tr.veiw-items {
     color:#fff;
     .actionbtn {
         background: #fff !important;
-        color:#111;
+        color:#111 !important;
         border: none;
-
     }
-
 }
 .dropdown-select.filter {
     width: 40%;
@@ -137,10 +135,10 @@ button.btn.btn-secondary.dropdown-toggle {
 }
 
 .matBtn {
-    background-color: #004d87;
-    color: white;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    font-size: 17px;
+    background-color: #004d87 !important;
+    color: white !important;
+    //font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    //font-size: 17px;
 }
 
 .matBtn:hover {
