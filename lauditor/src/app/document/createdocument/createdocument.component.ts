@@ -39,8 +39,11 @@ export class CreateDocumentComponent {
 
   documentname: any;
 
-  title: any;
-  author: any;
+  // title: any;
+  // author: any;
+  title: string = 'New Document';
+  author: string = 'Author';
+  
   date: any;
   documents: any[] = [];
 
@@ -119,8 +122,8 @@ export class CreateDocumentComponent {
   ngOnInit() {
     this.myForm = this.fb.group({
 
-      title: ['', Validators.required],
-      author: ['', Validators.required],
+      title: [this.title, Validators.required],
+      author: [this.author, Validators.required],
       date: [''],
 
       overview: ['', Validators.required],
