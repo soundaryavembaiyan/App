@@ -1,1 +1,25 @@
+<!-- CONTENT DIALOG -->
+<div class="overviewDialog">
+    <form [formGroup]="contentForm">
+        <div class="closeDialog">
+            <i class="fa fa-times xClose" (click)="closeDialog()" aria-hidden="true"></i>
+        </div>
 
+        <div class="openDialog">
+            <div class="form-group">
+                <label for="title" class="lableTitle">Content Title</label>
+                <input formControlName="contentTitle" [(ngModel)]="contentTitle" placeholder="Enter title" type="text" (ngModelChange)="prependHyphen($event)" class="text-size form-control createDoc" name="title">
+            </div>
+
+            <div class="form-group">
+                <label for="title" class="lableTitle">Content Text</label>
+                <textarea formControlName="contentData" [(ngModel)]="contentData" placeholder="Enter your content" class="text-size form-control textareaDoc"  rows="3" cols="50"></textarea>
+            </div>
+
+            <div class="overviewSave">
+                <button type="submit" (click)="save()" class="btn btn-default btnsave savecls">Save</button>
+            </div>
+
+        </div>
+    </form>
+</div>
