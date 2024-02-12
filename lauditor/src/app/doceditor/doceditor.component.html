@@ -1,1 +1,146 @@
 
+<!-- Header here-->
+<div [ngClass]="{'blur': successModel}">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="row main headertop" [ngStyle]="{'display':isDisplay?'block':'none'}">
+                <div class="col-sm-12 compswitch ">
+                    <div class="switch  cswitch cswitchtwo">
+                        <a href="javascript:void(0);" class="optionone compone"
+                            [ngClass]="{'active': selectedValue === 'create'}" (click)="isActive('create')">Create</a>
+                        <a href="javascript:void(0);" class="optiontwo comptwo"
+                            [ngClass]="{ 'active' : selectedValue === 'view' }" (click)="isActive('view')">View</a>
+                    </div>
+                </div>
+            </div>
+            <div class="arrowitem" (click)="hideAndShow()">
+                <i *ngIf="isDisplay" class="fa fa-light fa-chevron-up"></i>
+                <i *ngIf="!isDisplay" class=" fa fa-light fa-chevron-down"></i>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- Header ends here-->
+
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-6 overRoll" #pdfContent> 
+        <div class="lableTitle layout">Layout: {{documentname}}</div>
+        <form [formGroup]="myForm">
+
+        <div class="col-xs-6"> 
+            <!-- FILE -->
+            <button class="menuBtn1" mat-button [matMenuTriggerFor]="menu1">File<i class="fa fa-angle-down" aria-hidden="true"></i></button>
+            <mat-menu class="matFile" #menu1="matMenu">
+                <button mat-menu-item (click)="newDoc()"><img class="fileImg" src="assets/img/new.svg"/>&nbsp;New</button>
+                <button mat-menu-item (click)="openDocumentDialog()"><img class="fileImg" src="assets/img/open.svg"/>&nbsp;Open</button>
+                <button mat-menu-item id="btnSave" (click)="saveDoc()"><img class="fileImg" src="assets/img/save.svg"/>&nbsp;Save</button>
+                <button mat-menu-item (click)="downloadDialog()"><img class="fileImg" src="assets/img/save.svg"/>&nbsp;Save as</button> 
+                <button mat-menu-item (click)="deleteDoc()"><img class="fileImg" src="assets/img/trasho.svg"/>&nbsp;Delete</button> 
+            </mat-menu>
+            <!-- INSERT -->
+            <button class="menuBtn2" mat-button [matMenuTriggerFor]="menu2">Insert<i class="fa fa-angle-down" aria-hidden="true"></i></button>
+            <mat-menu class="matInsert" #menu2="matMenu" xPosition="before">
+                <button mat-menu-item (click)="addBlock('Overview')"><img class="imgoverView" src="assets/img/overview.svg"/>Overview</button>
+                <button mat-menu-item (click)="addBlock('Section')"><img class="imgsecView" src="assets/img/section.svg"/>&nbsp;&nbsp;Section</button>
+                <button mat-menu-item (click)="addBlock('Sub Section')"><img class="imgView" src="assets/img/subsection.svg"/>&nbsp;Sub Section</button>
+                <button mat-menu-item (click)="addBlock('Sub Sub Section')"><img class="imgView" src="assets/img/subsection.svg"/>&nbsp;Sub Sub Section</button>
+                <button mat-menu-item (click)="addBlock('Paragraph')"><img class="imgView" src="assets/img/paragraph.svg"/>&nbsp;Paragraph</button>
+                <button mat-menu-item (click)="addBlock('Ordered List')"><img class="imgView" src="assets/img/order.svg"/>&nbsp;Ordered List</button>
+                <button mat-menu-item (click)="addBlock('Unordered List')"><img class="imgView" src="assets/img/unord.svg"/>&nbsp;Unordered List</button>
+                <!-- <button mat-menu-item (click)="insertPageBreak()"><img class="imgPort" src="assets/img/pagebreak.svg"/>Page Break</button> -->
+            </mat-menu>
+        </div>
+        
+        <div class="form-group">
+            <label for="title" class="lableTitle">Title</label>
+            <input formControlName="title" [(ngModel)]="title" type="text" class="text-size form-control createDoc" name="title">
+            <!-- <div *ngIf="myForm.get('title').errors && submitted" class="errorStyle">
+                <div *ngIf="myForm.get('title').errors.required">This field is required</div>
+            </div> -->
+        </div>
+        <div class="form-group">
+            <label for="title" class="lableTitle">Author</label>
+            <input formControlName="author" [(ngModel)]="author" type="text" class="text-size form-control createDoc" name="title">
+            <!-- <div *ngIf="myForm.get('author').errors && submitted" class="errorStyle">
+                <div *ngIf="myForm.get('author').errors.required">This field is required</div>
+            </div> -->
+        </div>
+        <div class="form-group padDown">
+            <label for="title" class="lableTitle">Created</label>
+            <input formControlName="date" [(ngModel)]="date" class="text-size form-control createDoc" name="title" readonly>
+            <!-- <p>{{date | date:'yyyy-MM-dd'}}</p> -->
+        </div>
+        
+        <div id="tool-content" class="form-group" *ngIf="isOpen">
+            <ng-container formArrayName="contentListItems">
+            <div class="oderAlign" *ngFor="let item of myForm.get('contentListItems').controls; let i = index" [formGroupName]="i">
+            
+                <!--Overview, Sections.., Paragraph-->
+                  <div *ngIf="item.value.content === 'Overview' || item.value.content === 'Section' || item.value.content === 'Sub Section' || item.value.content === 'Sub Sub Section' || item.value.content === 'Paragraph'"> 
+                    <label for="title" class="lableTitle" style="padding-right:5px">{{item.value.content}}</label>
+                    <input formControlName="contentTitle" class="overviewTitle" type="text" readonly/>
+                    <img (click)="opencontentDialog(item,i)" *ngIf="item.value.content === 'Section' || item.value.content === 'Sub Section' || item.value.content === 'Sub Sub Section' || item.value.content === 'Paragraph'" class="expand" src="assets/img/expand.svg"/> 
+                    <i class="fa fa-times close secclose" (click)="removeItem(i)" aria-hidden="true"></i>
+                    <textarea formControlName="contentData" placeholder="Enter your content" class="text-size form-control textareaDoc" rows="3" cols="50"></textarea>
+                  </div>
+
+                <!--Order & Unorder lists-->
+                  <div *ngIf="item.value.content === 'Unordered List' || item.value.content === 'Ordered List'" class="form-group">
+                    <label for="title" class="lableTitle" style="padding-right:5px">{{item.value.content}}</label>
+                    <mat-icon class="closePlus iOd" aria-hidden="true" (click)="addNestedContentItem(i)">add_circle_outline</mat-icon>
+                    <i class="fa fa-times close" aria-hidden="true" (click)="removeItem(i)"></i>
+                    <div formArrayName="orderListItems">
+                    <div class="oderAlign" *ngFor="let orderitem of item.get('orderListItems').controls; let j = index;" [formGroupName]="j">
+                            <input formControlName="contentData" placeholder="Enter list items" type="text" class="text-size form-control createDoc"/> 
+                            <i class="fa-solid fa-trash delIcon" *ngIf="j != 0" (click)="removeList(i,j)"></i> 
+                    </div> 
+                    </div>
+                  </div>
+
+            </div>
+            </ng-container>
+        </div>
+
+        <!-- /Contents -->
+        <!-- <div class="form-group" id="narrow">
+         <app-latexblock (formDataEvent)="handleFormData($event)" 
+          *ngFor="let block of blocks" [content]="block.content" [onSave]="onSave"></app-latexblock>
+        </div>  -->
+        <!-- Contents/ -->
+
+        </form>
+    </div>
+
+<!------ Right Preview -->
+    <div class="col-xs-12 col-sm-12 col-md-6">
+        <div class="container">
+            <p class="preview">Preview</p>
+            <p><img (click)="getPreview()" class="eyeco" src="assets/img/eyesico.svg"></p>
+        </div>
+
+        <div class="row containerbox">
+            <div class="col-sm-12">
+                <div class="container">
+                    <div class="row inforowaling">
+                        <div class="col-sm-1 arrowcolumn">
+                            <div class="infocontainerleft">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="iframeStyle">
+            <iframe height="100%" width="97%" class="responsive-iframe" [hidden]="!showPreviewDoc" [src]='pdfSrc' frameborder="0"><!--[hidden]="!showPreviewDoc"-->
+                <div class="form-group">
+                </div>
+            </iframe>
+        </div>
+
+    </div>
+</div> 
+
+<router-outlet></router-outlet>
+
