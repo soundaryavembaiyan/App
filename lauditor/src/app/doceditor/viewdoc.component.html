@@ -1,0 +1,106 @@
+<!-- Header here-->
+<div [ngClass]="{'blur': successModel}">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="row main headertop" [ngStyle]="{'display':isDisplay?'block':'none'}">
+                <div class="col-sm-12 compswitch ">
+                    <div class="switch  cswitch cswitchtwo">
+                        <a href="javascript:void(0);" class="optionone compone"
+                            [ngClass]="{'active': selectedValue === 'create'}" (click)="isActive('create')">Create</a>
+                        <a href="javascript:void(0);" class="optiontwo comptwo"
+                            [ngClass]="{ 'active' : selectedValue === 'view' }" (click)="isActive('view')">View</a>
+                    </div>
+                </div>
+            </div>
+            <div class="arrowitem" (click)="hideAndShow()">
+                <i *ngIf="isDisplay" class="fa fa-light fa-chevron-up"></i>
+                <i *ngIf="!isDisplay" class=" fa fa-light fa-chevron-down"></i>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- Header ends here-->
+
+<!--Heading Label-->
+
+<div class="row main width-alignment">
+    <div class="col-6">
+      <div class="custusername tab-margin fontweight">
+        List of Created Documents
+      </div>
+    </div>
+    <!--Search-->
+    <div class="col-6">
+      <div class="form-group name-set float-right">
+        <div class="input-group group-custom-align court" id="search">
+          <input type="text" class="form-control textbox" placeholder="Search Document">
+          <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
+        </div>
+      </div>
+    </div>
+    <!--Search-->
+  
+</div>
+  <!--Heading Label-->
+  
+  
+  <!--Table View for Created doc views-->
+  <!-- <div *ngIf="invoicelist.length > 0"> -->
+  <div class="row main width-alignment">
+    <div class="col-sm-12 gridtable ">
+      <table class="table table-borderless tblgrid">
+  
+        <thead>
+          <tr class="theader">
+            <th>
+              <p class="thheadname"> Document Name </p>
+              <img src="assets/img/SORT.PNG" class="sortico">
+            </th>
+            <th>
+              <p class="thheadname"> Created Date</p>
+              <img src="assets/img/SORT.PNG" class="sortico">
+            </th>
+            <th>
+              <p class="thheadname"> Created By</p>
+              <img src="assets/img/SORT.PNG" class="sortico">
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="rone veiw-items" *ngFor="let i of documents | filter:searchText">
+              
+            <td>{{ i.documentname }}</td>
+            <td>{{ i.updatedon?.$date | date:'MMM dd, yyyy' }}</td> 
+            <td>Soundarya</td>
+            <td>
+              <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle actionbtn" data-bs-toggle="dropdown" aria-expanded="false"> Action </button>
+                <ul class="dropdown-menu custom-dropdown">
+                  <li>
+                    <a class="dropdown-item">View</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item">Save As</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item">Delete</a>
+                  </li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- </div> -->
+  
+  
+  
+  <!-- <div *ngIf="invoicelist && invoicelist?.length === 0 && errorMsg" class="custom-alert padded"> 
+    List of Invoices not available !!
+  </div> -->
+  
+
+  
