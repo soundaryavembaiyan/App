@@ -1,4 +1,3 @@
-
 import { Component, Inject, Injectable, ApplicationRef, Input, Output, OnInit, EventEmitter, ViewChild, ElementRef, Renderer2, AfterViewInit, Optional, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -16,6 +15,7 @@ import { ChangeDetectorRef } from '@angular/core';
 import { ConfirmationDialogService } from 'src/app/confirmation-dialog/confirmation-dialog.service';
 import { LatexblockComponent } from './latexblock/latexblock.component';
 import { RandomService } from '../services/random.service';
+
 
 @Component({
   selector: 'app-doceditor',
@@ -102,6 +102,7 @@ export class DoceditorComponent {
       contentListItems: this.fb.array([]),
     });
     this.getDocumentCall();
+    //console.log('this.myForm',this.myForm)
   }
   
   // handleFormData(data: any) {
@@ -123,57 +124,18 @@ export class DoceditorComponent {
 
   // addBlock(type: any) {
   //   this.isOpen = true;
-  //   const randomId = this.idGenerator.generateId(10);
-
-  //   const overviewExists = this.blocks.some(block => block.content === 'OVERVIEW');
-  //   // If 'OVERVIEW' exists, show an error message and return
-  //   if (type === 'OVERVIEW' && overviewExists) {
-  //     this.toast.error('Only one overview is allowed!');
-  //     return;
-  //   }
-  //   // For 'SUB SECTION', check if 'SECTION' is selected
-  //   if (type === 'SUB SECTION' && this.selectedSection === null) {
-  //     this.toast.error('Please select a Section before adding a Sub Section.');
-  //     return;
-  //   }
-  //   // For 'SUB SUB SECTION', check if 'SUB SECTION' is selected
-  //   if (type === 'SUB SUB SECTION' && this.selectedSubSection === null) {
-  //     this.toast.error('Please select a Sub Section before adding a Sub Sub Section.');
-  //     return;
-  //   }
-  //   // For 'SECTION', update the selected section and add the new block
-  //   if (type === 'SECTION') {
-  //     this.selectedSection = type;
-  //     this.selectedSubSection = null;
-  //     this.blocks.push({ content: type, id: randomId });
-  //   } else if (type === 'SUB SECTION') {
-  //     this.selectedSubSection = type;
-  //     this.blocks.push({ content: type, id: randomId });
-  //   } else if (type === 'SUB SUB SECTION') {
-  //     this.blocks.push({ content: type, id: randomId });
-  //   } else {
-  //     // For all content types!!
-  //     //this.blocks.push({ content: type });
-  //     this.blocks.push({ content: type, id: randomId});
-  //   }
-  //   console.log('..Blocks:', this.blocks);
-
-  // }
-
-    // addBlock(type: any) {
-  //   this.isOpen = true;
   //   this.content = type
   //   console.log('Content', this.content);
 
   //   const contentListItems = this.myForm.get('contentListItems') as FormArray;
   //   contentListItems.push(this.addContent(type)); 
-  //   //console.log('contentListItems', contentListItems.value);
+  //   console.log('contentListItems', contentListItems.value);
   // }
 
   addBlock(type: string) {
     this.isOpen = true;
     this.content = type;
-    console.log('Content', this.content);
+    console.log('addBlock content', this.content);
     //console.log('selectedSection', this.selectedSection);
 
     const contentListItems = this.myForm.get('contentListItems') as FormArray;
@@ -202,26 +164,13 @@ export class DoceditorComponent {
     }
 
     contentListItems.push(this.addContent(type)); 
-}
+  }
   
    createNestedContentItem(): FormGroup {
     return this.fb.group({
      contentData: ['', Validators.required]
      });
    }
-
-  //  addContentItem() {
-  //    const contentArray = this.myForm.get('contentListItems') as FormArray;
-  //     contentArray.push(this.createContentItem());
-  //   }
-
-  //  createContentItem(): FormGroup {    
-  //   return this.fb.group({      
-  //     content: ['', Validators.required],      
-  //     //contentTitle: ['', Validators.required],      
-  //     orderListItems: this.fb.array([ this.createNestedContentItem() ])
-  //   }); 
-  //  }
 
   addNestedContentItem(contentIndex: number) {
     const contentArray = this.myForm.get('contentListItems') as FormArray;
@@ -272,30 +221,6 @@ export class DoceditorComponent {
     });
   }
 
-  //ORDERLSITS
-  // addorderList(): void {
-  //   const contentListItems = this.myForm.get('contentListItems') as FormArray;
-  //   contentListItems.push(this.createorderItem()); 
-  // }
-
-  // createorderItem(): FormGroup {
-  //   return this.fb.group({
-  //     content: [this.content], 
-  //     contentData: [''] // Initialize with an empty value
-  //   });
-  // }
-
-  // removeList(i: number) {
-  //   const orderListItemsArray = this.orderListItems as FormArray;
-  //   orderListItemsArray.removeAt(i);
-  // }
-
-  // removeorderList(i: number) {
-  //   const orderListItems = this.myForm.get('orderListItems') as FormArray;
-  //   orderListItems.removeAt(i);
-  //   this.blocks.splice(i, 1); // Remove the block from the blocks array
-  // }
-
   getDocumentCall() {
     //Get all Document
     this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
@@ -344,16 +269,17 @@ export class DoceditorComponent {
   }
 
   newDoc() {
+    this.myForm.reset(); //reset form.
+    this.documentname = ' '
     const preservedValues = {
-      title: this.myForm.get('title').value,
-      author: this.myForm.get('author').value,
-      date: this.myForm.get('date').value,
+      // title: this.myForm.get('title').value,
+      // author: this.myForm.get('author').value,
+      // date: this.myForm.get('date').value,
+        title: 'New Document', 
+        author: 'Author', 
+        date: new Date() 
     };
-    //this.isOpen = false;
-    this.myForm.reset(); //parent comp.
     this.myForm.patchValue(preservedValues); //values back into the form
-    //window.location.reload();
-    //this.router.navigate(['/doceditor']);
   }
 
   getDocument() {
@@ -394,7 +320,6 @@ export class DoceditorComponent {
         this.contentTitleControl = item.get('contentTitle');
 
         const orderListItems = item.get('orderListItems') as FormArray; // orderListItems within each item
-
         this.listData = '';//prevent undefined!!!
         for (let j = 0; j < orderListItems.length; j++) {
           const itemo = orderListItems.at(j);
@@ -443,20 +368,17 @@ export class DoceditorComponent {
         (res: any) => {
           const documentId = res.id;
           this.documentId = documentId;
-          //console.log('DocID to saveas:', this.documentId);
           //SECONDAPI 
           this.httpservice.sendPostLatexRequest(URLUtils.savedocID(this.documentId), reqq).subscribe(
             (ress: any) => {
               this.pageId = ress.id;
               this.toast.success(ress.message);
-              //console.log('checkid1', this.documentId);
             }
           );
         });
     }
     else {
       //THIRDAPI - for update 
-      //console.log('checkid2', this.documentId)
       this.httpservice.sendPatchLatexRequest(URLUtils.updateDoc(this.pageId), reqq).subscribe(
         (resp: any) => {
           this.toast.success(resp.message);
@@ -514,29 +436,21 @@ export class DoceditorComponent {
   }
 
   openFile(docid: any) {
-    //this.isOpen = true;
-
+    this.isOpen = true;
     //Doc id
     this.documentId = docid;
-    // console.log("this.documentId:", this.documentId);
-    // console.log("docidBefr:", docid);
 
     //OpenAPI 
     this.httpservice.sendGetLatexRequest(URLUtils.opendocID(docid)).subscribe(
       (req: any) => {
         if (req) {
-          //console.log("apiDocid:", docid);
           this.latexcode = req[0];
           this.documentId = docid;
           this.pageId = req[0]?.pageid
-          // console.log('pageId:', this.pageId)
-          //console.log("req:", req);
-
-          console.log("openLatexcode:", this.latexcode);
+          //console.log("openLatexcode:", this.latexcode);
           this.extractionData();
-          this.cdr.detectChanges(); 
+          //this.cdr.detectChanges(); 
         }
-        
       },
       (error: HttpErrorResponse) => {
         if (error.status === 401 || error.status === 403 || error.status === 500) {
@@ -550,36 +464,66 @@ export class DoceditorComponent {
   extractionData() {
     this.isOpen = true;
 
-    // const formValues = this.childFormData;
-    // let combinedObject2 = { ...formValues, ...this.myForm.value };
-    // console.log('combinedObject2:', combinedObject2);
-    // console.log('formValues:', formValues);
+    console.log('contentData',this.contentData)
+    //console.log("openLatexcode:", this.latexcode);
+    console.log("openLateXXX: ", this.latexcode?.document);
+    const lateX = this.latexcode?.document
 
     // Extract Title
-    const titleMatch = this.latexcode?.document.match(/\\title{([^}]*)}/);
-    this.title = titleMatch && titleMatch.length > 1 ? titleMatch[1] : '';
+    this.title = lateX.match(/\\title\s*{([^}]*)}/);
+    this.title = this.title && this.title.length > 1 ? this.title[1] : '';
     console.log('Extracted title:', this.title);
 
     // Extract Author
-    const authorMatch = this.latexcode?.document.match(/\\author{([^}]*)}/);
-    this.author = authorMatch && authorMatch.length > 1 ? authorMatch[1] : '';
+    this.author = lateX.match(/\\author{([^}]*)}/);
+    this.author = this.author && this.author.length > 1 ? this.author[1] : '';
     console.log('Extracted author:', this.author);
 
     //Extract Date
-    const dateMatch = this.latexcode?.document.match(/\\date{([^}]*)}/);
+    const dateMatch = lateX.match(/\\date{([^}]*)}/);
     this.date = dateMatch && dateMatch.length > 1 ? dateMatch[1] : '';
     console.log('Extracted date:', this.date);
 
-    // Extract Abstract Title and Content
-    const abstractMatch = this.latexcode?.document.match(/\\abstract([^<]*)<ltk>/);
-    abstractMatch.abstract = abstractMatch && abstractMatch.length > 1 ? abstractMatch[1] : '';
-    abstractMatch.abstract = abstractMatch.abstract.trim();  // Trim any leading/trailing spaces
-    console.log('Extracted Overview:', abstractMatch.abstract);
+    // const contentListItems = this.myForm.get('contentListItems') as FormArray;
+    // contentListItems.push(this.addBlock('Overview')); 
 
-    // this.overview = this.latexcode?.document.match(/\\abstract\{([^}]*)\}/);
-    // this.overview = this.overview && this.overview.length > 2 ? this.overview[1] : '';
-    // this.overview = this.overview.replace(/<ltk>/g, '');
-    // console.log('Extracted Overview:', this.overview);
+    //Extract Abstract Title and Content
+    // const abstractMatch = lateX.match(/\\abstract([^]*)/);
+    // abstractMatch.abstract = abstractMatch && abstractMatch.length > 1 ? abstractMatch[1] : '';
+    // abstractMatch.abstract = abstractMatch.abstract.trim();  // Trim any leading/trailing spaces
+    // console.log('Extracted Overview:', abstractMatch.abstract);
+
+    // if (abstractMatch.abstract) {
+    //   const contentListItems = this.myForm.get('contentListItems') as FormArray;
+    //   contentListItems.push(this.addBlock('Overview')); 
+    // }
+
+    const abstractMatch = lateX.match(/\\abstract([^]*)/);
+    const abstractMatch1 = abstractMatch && abstractMatch.length > 1 ? abstractMatch[1] : '';
+    const abstractMatch2 = abstractMatch1.trim();  // Trim any leading/trailing spaces
+    console.log('Extracted Overview:', abstractMatch2);
+    if(abstractMatch2){
+      const contentListItems = this.myForm.get('contentListItems') as FormArray;
+      contentListItems.push(this.addBlock('Overview')); 
+    }
+
+    // Extract Section Title and Content
+    const sectionMatch = lateX.match(/\\section{([^}]*)}([^]*)/);
+    const sectionTitle = sectionMatch && sectionMatch.length > 1 ? sectionMatch[1] : '';
+    const sectionContent = sectionMatch && sectionMatch.length > 2 ? sectionMatch[2] : '';
+    console.log('Extracted Section Title:', sectionTitle);
+    console.log('Extracted Section Content:', sectionContent.trim());
+    
+    if (sectionTitle && sectionContent) {
+      const contentListItems = this.myForm.get('contentListItems') as FormArray;
+      contentListItems.push(this.addBlock('Section')); 
+    }
+    
+    // Extract Abstract Title and Content
+    // const abstractMatch = lateX.match(/\\abstract([^<]*)<ltk>/);
+    // abstractMatch.abstract = abstractMatch && abstractMatch.length > 1 ? abstractMatch[1] : '';
+    // abstractMatch.abstract = abstractMatch.abstract.trim();  // Trim any leading/trailing spaces
+    // console.log('Extracted Overview:', abstractMatch.abstract);
 
     // Extract Section Title and Content
     // this.section = this.latexcode?.document.match(/\\section{([^}]*)}([^]*)\\subsection{/);
@@ -613,21 +557,39 @@ export class DoceditorComponent {
     // console.log("Extracted paragraphTitle:", this.paragraphTitle);
     // console.log("Extracted paragraphContent:", this.paragraph);
 
-    // const itemizeMatches = this.latexcode?.document.match(/\\begin{itemize}([^]*?)\\end{itemize}/);
+    // const itemizeMatches = lateX.match(/\\begin{itemize}([^]*?)\\end{itemize}/);
     // const itemizeContent = itemizeMatches && itemizeMatches.length > 0 ? itemizeMatches[1] : '';
     // const itemizeList = itemizeContent.match(/\\item\s([^\\]*)/g);
     // const itemizedItems = itemizeList ? itemizeList.map((match: string) => match.replace(/\\item\s/, '').trim()) : [];
     // console.log("Extracted OrderedList:", itemizedItems);
-    //this.updateOrderListItemsForm(itemizedItems); // Update the orderlist extracted data
+    // this.updateOrderListItemsForm(itemizedItems); // Update the orderlist extracted data
 
-    // Extract UnOrdered List items
-    // const enumerateMatches = this.latexcode?.document.match(/\\begin{enumerate}([^]*?)\\end{enumerate}/);
+    // //Extract UnOrdered List items
+    // const enumerateMatches = lateX.match(/\\begin{enumerate}([^]*?)\\end{enumerate}/);
     // const enumerateContent = enumerateMatches && enumerateMatches.length > 0 ? enumerateMatches[1] : '';
     // const enumerateList = enumerateContent.match(/\\item\s([^\\]*)/g);
     // const enumeratedItems = enumerateList ? enumerateList.map((match: string) => match.replace(/\\item\s/, '').trim()) : [];
-    //console.log("Extracted UnorderedList:", enumeratedItems);
-    //this.updateUnOrderListItemsForm(enumeratedItems); // Update the unorderlist extracted data
+    // console.log("Extracted UnorderedList:", enumeratedItems);
+    // this.updateOrderListItemsForm(enumeratedItems); // Update the unorderlist extracted data
 
+  }
+
+  //ORDERLIST EXTRACTION
+  updateOrderListItemsForm(itemizedItems: string[]): void {
+    // Clear existing items
+    while (this.orderListItems.length !== 0) {
+      this.orderListItems.removeAt(0);
+    }
+    // Add extracted items to the form array
+    itemizedItems.forEach(item => {
+      this.orderListItems.push(this.createorderItemWithValues(item));
+    });
+  }
+
+  createorderItemWithValues(value: string): FormGroup {
+    return this.fb.group({
+      contentData: [value] // Initialize with extracted value
+    });
   }
 
   deleteDoc() {
@@ -637,9 +599,8 @@ export class DoceditorComponent {
           if (confirmed) {
             this.httpservice.sendDeleteLatexRequest(URLUtils.deleteDocid(this.documentId)).subscribe((res: any) => {
               if (!res.error) {
-                this.documentname = '';
+                this.newDoc();
                 this.toast.success('Document deleted successfully');
-                // this.newDoc();
               }
             },
               (error: HttpErrorResponse) => {
@@ -916,6 +877,11 @@ export class ViewDocComponent {
   documents: any[] = [];
   searchText: any;
 
+  @Input() documentId:any;
+  latexdoc = environment.lateXAPI;
+  pdfSrc!: SafeResourceUrl;
+  docId:any;
+
   constructor(private router: Router, private fb: FormBuilder, private httpservice: HttpService,
     private toast: ToastrService, private documentService: DocumentService, private cdr: ChangeDetectorRef,
     private renderer: Renderer2, private modalService: ModalService, private confirmationDialogService: ConfirmationDialogService,
@@ -923,7 +889,6 @@ export class ViewDocComponent {
   }
 
   ngOnInit() {
-
     this.getDocumentCall();
   }
 
@@ -932,9 +897,54 @@ export class ViewDocComponent {
       (res: any) => {
         this.documents = res;
         //this.documents = res[0].documentname;
-        console.log('this.documents', this.documents)
+        //console.log('this.documents', this.documents)
       }
     );
+  }
+
+  viewDocument(item: any) {
+    if (this.documents && Array.isArray(this.documents)) {
+      const document = this.documents.find(doc => doc.docid === item.docid);  //get documentId
+      if (document) {
+        let url = this.latexdoc + URLUtils.getPreview(document.docid);
+        this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+        //console.log(this.pdfSrc);
+      } else {
+        this.toast.error('Document not found!!!');
+      }
+    }
+  }
+
+  deleteDocument(item: any) {
+    if (item && item.docid) {
+      this.confirmationDialogService.confirm('Confirmation', 'Are you sure you want to delete this Document?', true, 'Yes', 'No')
+        .then((confirmed) => {
+          if (confirmed) {
+            this.httpservice.sendDeleteLatexRequest(URLUtils.deleteDocid(item.docid)).subscribe((res: any) => {
+              if (!res.error) {
+                this.getDocumentCall();
+                this.toast.success('Document deleted successfully');
+              }
+            },
+            (error: HttpErrorResponse) => {
+              if (error.status === 401 || error.status === 403 || error.status === 500) {
+                const errorMessage = error.error.msg || 'Unauthorized';
+                this.toast.error(errorMessage);
+              }
+            });
+          }
+        });
+    } else {
+      console.error('Document ID is undefined or item is invalid:', item);
+    }
+  }
+  
+  openModal(id: string) {
+    this.modalService.open(id);
+  }
+
+  closeModal(id: string) {
+    this.modalService.close(id);
   }
 
   isActive(value: string) {
@@ -945,7 +955,6 @@ export class ViewDocComponent {
   hideAndShow() {
     this.isDisplay = !this.isDisplay;
   }
-
 
 }
 
