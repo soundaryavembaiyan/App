@@ -36,6 +36,11 @@ export class DashboardComponent implements OnInit, OnChanges {
       id: 'documents', link: '/documents', image: 'assets/img/Document.svg', class: ''
     },
     {
+      name: 'Doc Editor',
+      roles: ['TM', 'GH', 'SU'],
+      id: 'doceditor', link: '/doceditor', image: 'assets/img/docedi.svg', class: ''
+    },
+    {
       name: 'Relationships',
       roles: ['TM', 'GH', 'SU'],
       id: 'relationships',
