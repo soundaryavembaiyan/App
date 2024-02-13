@@ -102,10 +102,13 @@ import { InvoiceComponent } from './invoice/invoice.component';
 import { CreateinvoiceComponent } from './invoice/createinvoice/createinvoice.component';
 import { PreviewComponent } from './invoice/preview/preview.component';
 import { DatepickerModule } from 'ngx-bootstrap/datepicker';
-import { PaymentComponent } from './payment/payment.component';
-import { CreateDocumentComponent, DialogBoxComponent, OpendialogBoxComponent, ParagraphBoxComponent, SectionBoxComponent, SubSection1BoxComponent, SubSection2BoxComponent, OrderedlistBoxComponent, UnorderedlistBoxComponent } from './document/createdocument/createdocument.component';
+//import { PaymentComponent } from './payment/payment.component';
+//import { CreateDocumentComponent, DialogBoxComponent, OpendialogBoxComponent, ParagraphBoxComponent, SectionBoxComponent, SubSection1BoxComponent, SubSection2BoxComponent, OrderedlistBoxComponent, UnorderedlistBoxComponent } from './document/createdocument/createdocument.component';
 
 import { ViewDocumentComponent } from './view-document/view-document.component';
+import { DoceditorComponent, ViewDocComponent, OpendialogBoxComponent, DownloadBoxComponent, ContentDialogComponent } from './doceditor/doceditor.component';
+import { LatexblockComponent, LatexDialogComponent } from './doceditor/latexblock/latexblock.component';
+
 
 @NgModule({
   declarations: [		
@@ -131,18 +134,17 @@ import { ViewDocumentComponent } from './view-document/view-document.component';
       CreateinvoiceComponent,
       PreviewComponent,
       ViewDocumentComponent,
-      PaymentComponent,
-      //CreateDocumentComponent,
-      //DialogBoxComponent,
-      SectionBoxComponent,
-      //SubSection1BoxComponent, 
-      //SubSection2BoxComponent, 
-      //ParagraphBoxComponent,
-      //OrderedlistBoxComponent
-      //UnorderedlistBoxComponent,
-      //OpendialogBoxComponent
-      
-       
+      //PaymentComponent,
+
+      DoceditorComponent,
+      ViewDocComponent,
+      OpendialogBoxComponent, 
+      DownloadBoxComponent,
+      ContentDialogComponent,
+
+      LatexblockComponent, 
+      LatexDialogComponent
+           
    ],
   imports: [
     BrowserModule,
