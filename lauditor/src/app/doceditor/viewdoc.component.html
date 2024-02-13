@@ -72,19 +72,19 @@
               
             <td>{{ i.documentname }}</td>
             <td>{{ i.updatedon?.$date | date:'MMM dd, yyyy' }}</td> 
-            <td>Soundarya</td>
+            <td> --- </td>
             <td>
               <div class="dropdown">
                 <button class="btn btn-primary dropdown-toggle actionbtn" data-bs-toggle="dropdown" aria-expanded="false"> Action </button>
                 <ul class="dropdown-menu custom-dropdown">
                   <li>
-                    <a class="dropdown-item">View</a>
+                    <a class="dropdown-item" (click)="viewDocument(i);openModal('view-doc-1')">View</a>
                   </li>
-                  <li>
+                  <!-- <li>
                     <a class="dropdown-item">Save As</a>
-                  </li>
+                  </li> -->
                   <li>
-                    <a class="dropdown-item">Delete</a>
+                    <a class="dropdown-item" (click)="deleteDocument(i)">Delete</a>
                   </li>
                 </ul>
               </div>
@@ -95,12 +95,38 @@
     </div>
   </div>
   <!-- </div> -->
-  
-  
+
   
   <!-- <div *ngIf="invoicelist && invoicelist?.length === 0 && errorMsg" class="custom-alert padded"> 
     List of Invoices not available !!
   </div> -->
   
+  <!-- Modal for View the Document-->
+  <jw-modal id="view-doc-1" class=" view-doc-1 doc-view-scs ">
+    <div class="iconclose" (click)="closeModal('view-doc-1');">X</div>
+    <iframe *ngIf="pdfSrc" height="100%" width="100%" [src]="pdfSrc"></iframe>
+  </jw-modal>
 
-  
+  <!-- Modal for Delete the Document-->
+  <!-- <jw-modal id="custom-modal-2" class="doc-view-scs">
+    <div class="doc-view-scs-body">
+      <div class="container">
+        <div class="row">
+          <div class="">
+            <div class="iconclose" (click)="closeModal('custom-modal-2');">X</div>
+            <div class="alertpara">
+              <p class="alertparatxt"> Alert </p>
+            </div>
+            <div class="alertext">
+              Are you sure you want to delete the document?
+            </div>
+          </div>
+          <div class="alertbutton">
+            <button class="btn btn-default  alertbtn alertbtnno" (click)="closeModal('custom-modal-2');">No</button>
+            <button class="btn btn-default alertbtn alertbtnyes"
+              (click)="closeModal('custom-modal-2');deleteDoc()">Yes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </jw-modal> -->
