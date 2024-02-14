@@ -15,6 +15,7 @@ import { ChangeDetectorRef } from '@angular/core';
 import { ConfirmationDialogService } from 'src/app/confirmation-dialog/confirmation-dialog.service';
 import { LatexblockComponent } from './latexblock/latexblock.component';
 import { RandomService } from '../services/random.service';
+import { __values } from 'tslib';
 
 
 @Component({
@@ -73,7 +74,7 @@ export class DoceditorComponent {
   content:any;
   contentTitle:any;
   contentData:any;
-  contentListItems:any;
+  contentListItems:any[]=[];
   orderListItems:any;
   latexDialog: boolean = true;
 
@@ -110,8 +111,21 @@ export class DoceditorComponent {
   //   console.log('Received childformData:', this.childFormData);
   // }
 
-  addContent(type:any) {
+  addContent(type:any, value?:any, valueTitle?:any) {
     const randomId = this.idGenerator.generateId(10);
+    console.log('value',value)
+    console.log('valueTitle',valueTitle)
+    if(value){
+      return this.fb.group({
+        randomId: [randomId],
+        content: [type], // Assigning the 'type' parameter to 'content'
+        contentData: [value, Validators.required],
+        contentTitle: [valueTitle, Validators.required],
+        orderListItems: this.fb.array([
+          this.createNestedContentItem(value)
+       ])});
+    }
+
     return this.fb.group({
       randomId: [randomId],
       content: [type], // Assigning the 'type' parameter to 'content'
@@ -120,6 +134,7 @@ export class DoceditorComponent {
       orderListItems: this.fb.array([
          this.createNestedContentItem()
      ])});
+  
   }
 
   // addBlock(type: any) {
@@ -132,11 +147,10 @@ export class DoceditorComponent {
   //   console.log('contentListItems', contentListItems.value);
   // }
 
-  addBlock(type: string) {
+  addBlock(type: string,editBlock?:boolean,value?:any,valueTitle?:any) {
     this.isOpen = true;
     this.content = type;
-    console.log('addBlock content', this.content);
-    //console.log('selectedSection', this.selectedSection);
+    //console.log('addBlock content', this.content);
 
     const contentListItems = this.myForm.get('contentListItems') as FormArray;
     // Check if adding an overview when one already exists
@@ -163,20 +177,37 @@ export class DoceditorComponent {
         return;
     }
 
-    contentListItems.push(this.addContent(type)); 
+    //openDoc() gets and assigns the value.
+    if(editBlock === true){
+      contentListItems.push(this.addContent(type, value, valueTitle)); 
+    }
+    else{
+      contentListItems.push(this.addContent(type)); 
+    }
   }
   
-   createNestedContentItem(): FormGroup {
+   createNestedContentItem(value?:any): FormGroup {
+    console.log('oovalue',value)
+    if(value){
+      return this.fb.group({
+        contentData: [value, Validators.required]
+        });
+    }
     return this.fb.group({
      contentData: ['', Validators.required]
      });
    }
 
-  addNestedContentItem(contentIndex: number) {
+  addNestedContentItem(contentIndex: number, value?:any) {
+    //debugger
+    console.log('Nested items:',value)
     const contentArray = this.myForm.get('contentListItems') as FormArray;
     const nestedArray = contentArray.at(contentIndex).get('orderListItems') as FormArray;
-    nestedArray.push(this.createNestedContentItem());
+    console.log('nestedArray',nestedArray)
+    nestedArray.push(this.createNestedContentItem(value));
   }
+
+  
 
   removeList(contentIndex: number, orderIndex: number) {
     const contentListItemsArray = this.myForm.get('contentListItems') as FormArray;
@@ -453,7 +484,7 @@ export class DoceditorComponent {
         }
       },
       (error: HttpErrorResponse) => {
-        if (error.status === 401 || error.status === 403 || error.status === 500) {
+        if (error.status === 400 || error.status === 401 || error.status === 403 || error.status === 500) {
           const errorMessage = error.error.msg || 'Unauthorized';
           this.toast.error(errorMessage);
         }
@@ -463,8 +494,6 @@ export class DoceditorComponent {
 
   extractionData() {
     this.isOpen = true;
-
-    console.log('contentData',this.contentData)
     //console.log("openLatexcode:", this.latexcode);
     console.log("openLateXXX: ", this.latexcode?.document);
     const lateX = this.latexcode?.document
@@ -484,96 +513,96 @@ export class DoceditorComponent {
     this.date = dateMatch && dateMatch.length > 1 ? dateMatch[1] : '';
     console.log('Extracted date:', this.date);
 
-    // const contentListItems = this.myForm.get('contentListItems') as FormArray;
-    // contentListItems.push(this.addBlock('Overview')); 
-
-    //Extract Abstract Title and Content
-    // const abstractMatch = lateX.match(/\\abstract([^]*)/);
-    // abstractMatch.abstract = abstractMatch && abstractMatch.length > 1 ? abstractMatch[1] : '';
-    // abstractMatch.abstract = abstractMatch.abstract.trim();  // Trim any leading/trailing spaces
-    // console.log('Extracted Overview:', abstractMatch.abstract);
-
-    // if (abstractMatch.abstract) {
-    //   const contentListItems = this.myForm.get('contentListItems') as FormArray;
-    //   contentListItems.push(this.addBlock('Overview')); 
-    // }
-
-    const abstractMatch = lateX.match(/\\abstract([^]*)/);
-    const abstractMatch1 = abstractMatch && abstractMatch.length > 1 ? abstractMatch[1] : '';
-    const abstractMatch2 = abstractMatch1.trim();  // Trim any leading/trailing spaces
-    console.log('Extracted Overview:', abstractMatch2);
-    if(abstractMatch2){
-      const contentListItems = this.myForm.get('contentListItems') as FormArray;
-      contentListItems.push(this.addBlock('Overview')); 
+   //Extract Abstract Content
+    const abstractMatch = lateX.match(/\\abstract([^<]*)<ltk>/);
+    const abstract = abstractMatch && abstractMatch.length > 1 ? abstractMatch[1] : '';
+    const trimmedAbstract = abstract.trim().replace(/<ltk>/g, ''); // Trim any spaces
+    console.log('Extracted Overview:', trimmedAbstract);
+    if (trimmedAbstract) {
+      this.addBlock('Overview', true, trimmedAbstract)
     }
 
     // Extract Section Title and Content
-    const sectionMatch = lateX.match(/\\section{([^}]*)}([^]*)/);
+    const sectionMatch = lateX.match(/\\section{([^}]*)}([^<]*)<ltk>/);
     const sectionTitle = sectionMatch && sectionMatch.length > 1 ? sectionMatch[1] : '';
     const sectionContent = sectionMatch && sectionMatch.length > 2 ? sectionMatch[2] : '';
     console.log('Extracted Section Title:', sectionTitle);
     console.log('Extracted Section Content:', sectionContent.trim());
-    
-    if (sectionTitle && sectionContent) {
-      const contentListItems = this.myForm.get('contentListItems') as FormArray;
-      contentListItems.push(this.addBlock('Section')); 
+    if (sectionTitle || sectionContent) {
+      this.addBlock('Section', true, sectionContent, sectionTitle); // Ensure section content and title are passed to addBlock
     }
-    
-    // Extract Abstract Title and Content
-    // const abstractMatch = lateX.match(/\\abstract([^<]*)<ltk>/);
-    // abstractMatch.abstract = abstractMatch && abstractMatch.length > 1 ? abstractMatch[1] : '';
-    // abstractMatch.abstract = abstractMatch.abstract.trim();  // Trim any leading/trailing spaces
-    // console.log('Extracted Overview:', abstractMatch.abstract);
-
     // Extract Section Title and Content
-    // this.section = this.latexcode?.document.match(/\\section{([^}]*)}([^]*)\\subsection{/);
-    // this.sectionTitle = this.section && this.section.length > 1 ? this.section[1] : '';
-    // this.section = this.section && this.section.length > 2 ? this.section[2] : '';
-    // this.section = this.section.replace(/<ltk>/g, '');
-    // console.log("Extracted sectionTitle:", this.sectionTitle);
-    // console.log("Extracted sectionContent:", this.section);
+    const subsectionMatch = lateX.match(/\\subsection{([^}]*)}([^<]*)<ltk>/);
+    const subsectionTitle = subsectionMatch && subsectionMatch.length > 1 ? subsectionMatch[1] : '';
+    const subsectionContent = subsectionMatch && subsectionMatch.length > 2 ? subsectionMatch[2] : '';
+    console.log('Extracted SubSection Title:', subsectionTitle);
+    console.log('Extracted SubSection Content:', subsectionContent.trim());
+    if (subsectionTitle || subsectionContent) {
+      this.addBlock('Sub Section', true, subsectionContent, subsectionTitle); // Ensure subsection content and title are passed to addBlock
+    }
+    // Extract Section Title and Content
+    const subsubsectionMatch = lateX.match(/\\subsubsection{([^}]*)}([^<]*)<ltk>/);
+    const subsubsectionTitle = subsubsectionMatch && subsubsectionMatch.length > 1 ? subsubsectionMatch[1] : '';
+    const subsubsectionContent = subsubsectionMatch && subsubsectionMatch.length > 2 ? subsubsectionMatch[2] : '';
+    console.log('Extracted SubSubSection Title:', subsubsectionTitle);
+    console.log('Extracted SubSubSection Content:', subsubsectionContent.trim());
+    if (subsubsectionTitle || subsubsectionContent) {
+      this.addBlock('Sub Sub Section', true, subsubsectionContent, subsubsectionTitle); // Ensure subsubsection content and title are passed to addBlock
+    }
 
-    // Extract subSection Title and Content
-    // this.subsection = this.latexcode?.document.match(/\\subsection{([^}]*)}([^]*)\\subsubsection{/);
-    // this.subsectionTitle = this.subsection && this.subsection.length > 1 ? this.subsection[1] : '';
-    // this.subsection = this.subsection && this.subsection.length > 2 ? this.subsection[2] : '';
-    // this.subsection = this.subsection.replace(/<ltk>/g, '');
-    // console.log("Extracted subsectionTitle:", this.subsectionTitle);
-    // console.log("Extracted subsectionContent:", this.subsection);
+    // Extract Paragraph Title and Content
+    // const paraMatch = lateX.match(/\\paragraph{([^}]*)}([^<]*)<ltk>/);
+    // const paraTitle = paraMatch && paraMatch.length > 1 ? paraMatch[1] : '';
+    // const paraContent = paraMatch && paraMatch.length > 2 ? paraMatch[2] : '';
+    // console.log('Extracted Paragraph Title:', paraTitle);
+    // console.log('Extracted Paragraph Content:', paraContent.trim());
+    // if (paraTitle || paraContent) {
+    //   this.addBlock('Paragraph', true, paraContent, paraTitle); // Ensure paragraph content and title are passed to addBlock
+    // }
 
-    // Extract subsubSection Title and Content
-    // this.subsubsection = this.latexcode?.document.match(/\\subsubsection{([^}]*)}([^]*)\\paragraph{/);
-    // this.subsubsectionTitle = this.subsubsection && this.subsubsection.length > 1 ? this.subsubsection[1] : '';
-    // this.subsubsection = this.subsubsection && this.subsubsection.length > 2 ? this.subsubsection[2] : '';
-    // this.subsubsection = this.subsubsection.replace(/<ltk>/g, '');
-    // console.log("Extracted subsubsectionTitle:", this.subsubsectionTitle);
-    // console.log("Extracted subsubsectionContent:", this.subsubsection);
+    const paragraphRegex = /\\paragraph{([^}]*)}([^\\]*)/; // regex to capture paragraph
+    const paragraph = lateX.match(paragraphRegex);
+    if (paragraph) {
+      const paragraphTitle = paragraph[1].trim();
+      const paragraphContent = paragraph[2].trim().replace(/<ltk>/g, ''); 
+      console.log("Extracted paragraphTitle:", paragraphTitle);
+      console.log("Extracted paragraphContent:", paragraphContent);
+      this.addBlock('Paragraph', true, paragraphContent, paragraphTitle);
+    }
 
-    //Extract Paragraph Title and Content
-    // this.paragraph = this.latexcode?.document.match(/\\paragraph\{([^}]*)\}/);
-    // this.paragraphTitle = this.paragraph && this.paragraph.length > 1 ? this.paragraph[1] : '';
-    // this.paragraph = this.paragraph && this.paragraph.length > 2 ? this.paragraph[2] : '';
-    // this.paragraph = this.paragraph.replace(/<ltk>/g, '');
-    // console.log("Extracted paragraphTitle:", this.paragraphTitle);
-    // console.log("Extracted paragraphContent:", this.paragraph);
+    //Extract Ordered List items
+    const itemizeMatches = lateX.match(/\\begin{itemize}([^]*?)\\end{itemize}/);
+    const itemizeContent = itemizeMatches && itemizeMatches.length > 0 ? itemizeMatches[1] : '';
+    const itemizeList = itemizeContent.match(/\\item\s([^\\]*)/g);
+    const itemizedItems = itemizeList ? itemizeList.map((match: string) => match.replace(/\\item\s/, '').trim()) : [];
+    console.log("Extracted OrderedList:", itemizedItems);
 
-    // const itemizeMatches = lateX.match(/\\begin{itemize}([^]*?)\\end{itemize}/);
-    // const itemizeContent = itemizeMatches && itemizeMatches.length > 0 ? itemizeMatches[1] : '';
-    // const itemizeList = itemizeContent.match(/\\item\s([^\\]*)/g);
-    // const itemizedItems = itemizeList ? itemizeList.map((match: string) => match.replace(/\\item\s/, '').trim()) : [];
-    // console.log("Extracted OrderedList:", itemizedItems);
-    // this.updateOrderListItemsForm(itemizedItems); // Update the orderlist extracted data
+    if (itemizedItems) {
+      // this.addBlock('Ordered List', true, itemizedItems); 
+      // itemizedItems.forEach((item:any) => {
+      //  this.addNestedContentItem(item, itemizedItems);
+      // });
+      itemizedItems.forEach((item: any, index: number) => {
+        this.addNestedContentItem(index, item);
+      });
+    }
+   //this.updateOrderListItemsForm(itemizedItems); // Update the orderlist extracted data
 
-    // //Extract UnOrdered List items
-    // const enumerateMatches = lateX.match(/\\begin{enumerate}([^]*?)\\end{enumerate}/);
-    // const enumerateContent = enumerateMatches && enumerateMatches.length > 0 ? enumerateMatches[1] : '';
-    // const enumerateList = enumerateContent.match(/\\item\s([^\\]*)/g);
-    // const enumeratedItems = enumerateList ? enumerateList.map((match: string) => match.replace(/\\item\s/, '').trim()) : [];
-    // console.log("Extracted UnorderedList:", enumeratedItems);
-    // this.updateOrderListItemsForm(enumeratedItems); // Update the unorderlist extracted data
+
+    //Extract UnOrdered List items
+    const enumerateMatches = lateX.match(/\\begin{enumerate}([^]*?)\\end{enumerate}/);
+    const enumerateContent = enumerateMatches && enumerateMatches.length > 0 ? enumerateMatches[1] : '';
+    const enumerateList = enumerateContent.match(/\\item\s([^\\]*)/g);
+    const enumeratedItems = enumerateList ? enumerateList.map((match: string) => match.replace(/\\item\s/, '').trim()) : [];
+    console.log("Extracted UnorderedList:", enumeratedItems);
+    if (enumeratedItems.length>1) {
+      this.addBlock('Unordered List', true, enumeratedItems); 
+    }
+    //this.updateOrderListItemsForm(enumeratedItems); // Update the unorderlist extracted data
 
   }
 
+  
   //ORDERLIST EXTRACTION
   updateOrderListItemsForm(itemizedItems: string[]): void {
     // Clear existing items
@@ -593,6 +622,9 @@ export class DoceditorComponent {
   }
 
   deleteDoc() {
+    if (this.documentId =='' || this.documentId == null) {
+      this.toast.info('Please select the document!');
+    }
     if (this.documentId) {
       this.confirmationDialogService.confirm('Confirmation', 'Are you sure you want to delete this Document?', true, 'Yes', 'No')
         .then((confirmed) => {
@@ -604,7 +636,7 @@ export class DoceditorComponent {
               }
             },
               (error: HttpErrorResponse) => {
-                if (error.status === 401 || error.status === 403 || error.status === 500) {
+                if (error.status === 400 || error.status === 401 || error.status === 403 || error.status === 500) {
                   const errorMessage = error.error.msg || 'Unauthorized';
                   this.toast.error(errorMessage);
                 }
@@ -842,7 +874,7 @@ export class DownloadBoxComponent {
           //console.log('name:',this.documentname)
         },
         (error: HttpErrorResponse) => {
-          if (error.status === 401 || error.status === 403) {
+          if (error.status === 400 || error.status === 401 || error.status === 403) {
             const errorMessage = error.error.msg || 'Unauthorized';
             this.toast.error(errorMessage);
           }
@@ -875,7 +907,7 @@ export class ViewDocComponent {
   successModel: boolean = false;
   selectedOption: any;
   documents: any[] = [];
-  searchText: any;
+  searchText: any = '';
 
   @Input() documentId:any;
   latexdoc = environment.lateXAPI;
@@ -926,19 +958,21 @@ export class ViewDocComponent {
                 this.toast.success('Document deleted successfully');
               }
             },
-            (error: HttpErrorResponse) => {
-              if (error.status === 401 || error.status === 403 || error.status === 500) {
-                const errorMessage = error.error.msg || 'Unauthorized';
-                this.toast.error(errorMessage);
-              }
-            });
+              (error: HttpErrorResponse) => {
+                if (error.status === 400 || error.status === 401 || error.status === 403 || error.status === 500) {
+                  const errorMessage = error.error.msg || 'Unauthorized';
+                  this.toast.error(errorMessage);
+                }
+              });
           }
         });
     } else {
       console.error('Document ID is undefined or item is invalid:', item);
     }
   }
-  
+  //serach func!!
+  onKeydown(event: any) {
+  }
   openModal(id: string) {
     this.modalService.open(id);
   }
