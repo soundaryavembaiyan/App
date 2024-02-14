@@ -34,8 +34,8 @@
     <div class="col-6">
       <div class="form-group name-set float-right">
         <div class="input-group group-custom-align court" id="search">
-          <input type="text" class="form-control textbox" placeholder="Search Document">
-          <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
+          <input type="text" class="form-control textbox" [(ngModel)]="searchText" (keydown)="onKeydown($event)" placeholder="Search Document">
+          <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg" (click)="onKeydown($event)">
         </div>
       </div>
     </div>
