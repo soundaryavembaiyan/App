@@ -103,8 +103,6 @@ import { CreateinvoiceComponent } from './invoice/createinvoice/createinvoice.co
 import { PreviewComponent } from './invoice/preview/preview.component';
 import { DatepickerModule } from 'ngx-bootstrap/datepicker';
 //import { PaymentComponent } from './payment/payment.component';
-//import { CreateDocumentComponent, DialogBoxComponent, OpendialogBoxComponent, ParagraphBoxComponent, SectionBoxComponent, SubSection1BoxComponent, SubSection2BoxComponent, OrderedlistBoxComponent, UnorderedlistBoxComponent } from './document/createdocument/createdocument.component';
-
 import { ViewDocumentComponent } from './view-document/view-document.component';
 import { DoceditorComponent, ViewDocComponent, OpendialogBoxComponent, DownloadBoxComponent, ContentDialogComponent } from './doceditor/doceditor.component';
 import { LatexblockComponent, LatexDialogComponent } from './doceditor/latexblock/latexblock.component';
