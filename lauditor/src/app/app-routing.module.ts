@@ -20,6 +20,7 @@ import { InvoiceComponent } from './invoice/invoice.component';
 import { CreateinvoiceComponent } from './invoice/createinvoice/createinvoice.component';
 import { PreviewComponent } from './invoice/preview/preview.component';
 import { PaymentComponent } from './payment/payment.component';
+import { DoceditorComponent, ViewDocComponent } from './doceditor/doceditor.component';
 
 
 const routes: Routes = [
@@ -50,6 +51,8 @@ const routes: Routes = [
   { path: 'payment', loadChildren: () => import(`./payment/payment-routing.module`).then(m => m.PaymentRoutingModule) },
   { path: 'createinvoice', component: CreateinvoiceComponent },
   { path: 'preview/:id', component: PreviewComponent },
+  { path: 'doceditor', component: DoceditorComponent},
+  { path: 'viewdoc', component: ViewDocComponent}
 ];
 
 @NgModule({
