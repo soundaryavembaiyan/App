@@ -142,13 +142,15 @@ export class PracticePartnerComponent {
   deletePartner(member: any) {
     //let isDeleted: boolean = false;
     this.selectedMember = member;
-    this.confirmationDialogService.confirm('Confirmation', ' Are you sure! Do you want to Delete this Partner?!', true, 'Yes', 'No')
+    console.log('this.selectedMember',this.selectedMember)
+    this.confirmationDialogService.confirm('Confirmation', 
+    ' Are you sure! Do you want to delete this '+this.selectedMember?.practice+' Partner?!', 
+
+    true, 'Yes', 'No')
       .then((confirmed) => {
         if (confirmed) {
           this.httpservice.sendDeleteRequest(URLUtils.deletePartners(this.selectedMember)).subscribe((res: any) => {
-
             if (!res.error) {
-
               if (confirmed) {
                 this.toast.success("Practice Partner Deleted Successfully");
                 this.getData();
