@@ -61,7 +61,7 @@ export class DoceditorComponent {
 
   isOpen: boolean = false;
   blocks: any[] = [];
-  allLatex: any[] = [];
+  allLatex:any[] =[];
 
   childFormData: any[] = [];
 
@@ -69,30 +69,34 @@ export class DoceditorComponent {
   onSave = false;
   randomId: any;
   showPreviewDoc = false
-  url: any;
+  url:any;
 
-  content: any;
-  contentTitle: any;
-  contentData: any;
-  contentListItems: any[] = [];
-  orderListItems: any;
+  content:any;
+  contentTitle:any;
+  contentData:any;
+  contentListItems:any[]=[];
+  orderListItems:any;
   latexDialog: boolean = true;
 
-  contentForm: any;
-  contentDataControl: any
-  contentTitleControl: any
+  contentForm:any;
+  contentDataControl:any
+  contentTitleControl:any
 
-  listData: any;
-  getContent: any;
+  listData:any;
+  getContent:any;
 
-  selectedSection: boolean = false;
+  selectedSection:boolean = false;
   selectedSectionIndex: number | null = null;
+
+  listView:boolean = false;
+  paragraphContent:any 
+  paragraphTitle:any
 
   constructor(private router: Router, private idGenerator: RandomService, private appRef: ApplicationRef, private fb: FormBuilder, private httpservice: HttpService,
     private toast: ToastrService, private documentService: DocumentService, private cdr: ChangeDetectorRef,
     private renderer: Renderer2, private modalService: ModalService, private confirmationDialogService: ConfirmationDialogService,
     public sanitizer: DomSanitizer, public dialog: MatDialog) {
-    this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(this.url);
+      this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(this.url);
   }
 
   ngOnInit() {
@@ -104,13 +108,13 @@ export class DoceditorComponent {
     });
     this.getDocumentCall();
   }
+  
 
-
-  addContent(type: any, value?: any, valueTitle?: any) {
+  addContent(type:any, value?:any, valueTitle?:any) {
     const randomId = this.idGenerator.generateId(10);
-    console.log('value', value)
-    console.log('valueTitle', valueTitle)
-    if (value) {
+    console.log('value',value)
+    console.log('valueTitle',valueTitle)
+    if(value){
       return this.fb.group({
         randomId: [randomId],
         content: [type], // Assigning the 'type' parameter to 'content'
@@ -118,8 +122,7 @@ export class DoceditorComponent {
         contentTitle: [valueTitle, Validators.required],
         orderListItems: this.fb.array([
           this.createNestedContentItem(value)
-        ])
-      });
+       ])});
     }
 
     return this.fb.group({
@@ -128,70 +131,85 @@ export class DoceditorComponent {
       contentData: ['', Validators.required],
       contentTitle: ['', Validators.required],
       orderListItems: this.fb.array([
-        this.createNestedContentItem()
-      ])
-    });
-
+         this.createNestedContentItem()
+     ])});
+  
   }
 
-  addBlock(type: string, editBlock?: boolean, value?: any, valueTitle?: any) {
+  addBlock(type: string,editBlock?:boolean,value?:any,valueTitle?:any) {
     this.isOpen = true;
     this.content = type;
     console.log('addBlock content', this.content);
-
+    
     const contentListItems = this.myForm.get('contentListItems') as FormArray;
     // Check if adding an overview when one already exists
     if (type === 'Overview' && contentListItems.controls.some(item => item.value.content === 'Overview')) {
-      this.toast.error('Only one overview is allowed!');
-      return;
+        this.toast.error('Only one overview is allowed!');
+        return;
     }
 
     // Check if adding a sub section or sub sub section without a section
     if ((type === 'Sub Section' || type === 'Sub Sub Section') &&
-      !contentListItems.controls.some(item => item.value.content === 'Section')) {
-      if (type === 'Sub Sub Section') {
-        this.toast.error('Please select a Section before adding a Sub Sub Section.');
-      } else if (type === 'Sub Section') {
-        this.toast.error('Please select a Section before adding a Sub Section.');
-      }
-      return;
+        !contentListItems.controls.some(item => item.value.content === 'Section')) {
+        if (type === 'Sub Sub Section') {
+            this.toast.error('Please select a Section before adding a Sub Sub Section.');
+        } else if (type === 'Sub Section') {
+            this.toast.error('Please select a Section before adding a Sub Section.');
+        }
+        return;
     }
 
     // Check if adding a sub sub section without a sub section
-    if (type === 'Sub Sub Section' &&
-      !contentListItems.controls.some(item => item.value.content === 'Sub Section')) {
-      this.toast.error('Please select a Sub Section before adding a Sub Sub Section.');
-      return;
+    if (type === 'Sub Sub Section' && 
+        !contentListItems.controls.some(item => item.value.content === 'Sub Section')) {
+        this.toast.error('Please select a Sub Section before adding a Sub Sub Section.');
+        return;
     }
 
-    //openDoc() gets and assigns the value.
     if (editBlock === true) {
+      if (type === 'Overview' || type === 'Section' || type === 'Sub Section' || type === 'Sub Sub Section' ||type === 'Paragraph'){
       contentListItems.push(this.addContent(type, value, valueTitle));
+      }
+      if ((type === 'Ordered List' || type === 'Unordered List') && value && value.length > 0) {
+        this.listView = false;
+        contentListItems.push(this.addContent(type, value));
+        const newIndex = contentListItems.length - 1;
+        if (value && Array.isArray(value) && value.length > 0) {
+          for (let i = 0; i < value.length; i++) {
+            this.addNestedContentItem(newIndex, value[i]);
+          }
+        }
+      }
     }
     else {
+      this.listView = true;
       contentListItems.push(this.addContent(type));
     }
-  }
 
-  createNestedContentItem(value?: any): FormGroup {
-    console.log('oovalue', value)
-    // if(value){
-    //   return this.fb.group({
-    //     contentData: [value, Validators.required]
-    //     });
+    // //openDoc() gets and assigns the value.
+    // if(editBlock === true){
+    //   contentListItems.push(this.addContent(type, value, valueTitle)); 
     // }
-    return this.fb.group({
-      contentData: ['', Validators.required]
-    });
+    // else{
+    //   contentListItems.push(this.addContent(type)); 
+    // }
   }
+  
+   createNestedContentItem(value?:any): FormGroup {
+    console.log('oovalue',value)
+    if(value){
+      return this.fb.group({
+        contentData: [value, Validators.required]
+        });
+    }
+    return this.fb.group({
+     contentData: ['', Validators.required]
+     });
+   }
 
-  addNestedContentItem(contentIndex: number, value?: any) {
-    debugger
-    console.log('Nested items:', value)
-    console.log('index items:', contentIndex)
+  addNestedContentItem(contentIndex: number, value?:any) {
     const contentArray = this.myForm.get('contentListItems') as FormArray;
     const nestedArray = contentArray.at(contentIndex).get('orderListItems') as FormArray;
-    console.log('nestedArray', nestedArray)
     nestedArray.push(this.createNestedContentItem(value));
   }
 
@@ -209,7 +227,7 @@ export class DoceditorComponent {
   }
 
   //OpenDialog boxes for sections!!!
-  opencontentDialog(item: any, itemIndex: any) {
+  opencontentDialog(item:any,itemIndex:any) {
     //console.log('i', item)
     this.latexDialog = true;
     const dialogRef = this.dialog.open(ContentDialogComponent, {
@@ -292,9 +310,9 @@ export class DoceditorComponent {
       // title: this.myForm.get('title').value,
       // author: this.myForm.get('author').value,
       // date: this.myForm.get('date').value,
-      title: 'New Document',
-      author: 'Author',
-      date: new Date()
+        title: 'New Document', 
+        author: 'Author', 
+        date: new Date() 
     };
     this.myForm.patchValue(preservedValues); //values back into the form
   }
@@ -324,7 +342,7 @@ export class DoceditorComponent {
     // console.log('res',result)
     // let combinedObject2 = { ...result, ...this.myForm.value };
     // console.log('combinedObject2:', combinedObject2);
-
+   
     let latexDocument = `\\documentclass{article}\\usepackage{geometry}\\geometry{a4paper,total={170mm,257mm},left=20mm,top=20mm,}<ltk>\\title
     {${this.title}}<ltk>\\author{${this.author}}<ltk>\\date{${this.date}}<ltk>\\begin{document}<ltk>\\maketitle`;
 
@@ -480,28 +498,29 @@ export class DoceditorComponent {
 
   extractionData() {
     this.isOpen = true;
-    //console.log("openLatexcode:", this.latexcode);
+
     console.log("openLateXXX: ", this.latexcode?.document);
     const lateX = this.latexcode?.document
 
     // Extract Title
     this.title = lateX.match(/\\title\s*{([^}]*)}/);
     this.title = this.title && this.title.length > 1 ? this.title[1] : '';
-    console.log('Extracted title:', this.title);
+    //console.log('Extracted title:', this.title);
 
     // Extract Author
     this.author = lateX.match(/\\author{([^}]*)}/);
     this.author = this.author && this.author.length > 1 ? this.author[1] : '';
-    console.log('Extracted author:', this.author);
+    //console.log('Extracted author:', this.author);
 
     //Extract Date
     const dateMatch = lateX.match(/\\date{([^}]*)}/);
     this.date = dateMatch && dateMatch.length > 1 ? dateMatch[1] : '';
-    console.log('Extracted date:', this.date);
+    //console.log('Extracted date:', this.date);
 
-    //Extract Abstract Content
+   //Extract Abstract Content
     const abstractMatch = lateX.match(/\\abstract([^<]*)<ltk>/);
-    const abstract = abstractMatch && abstractMatch.length > 1 ? abstractMatch[1] : '';
+    console.log('abstractMatch:', abstractMatch);
+    const abstract = abstractMatch && abstractMatch ? abstractMatch[1] : '';
     const trimmedAbstract = abstract.trim().replace(/<ltk>/g, ''); // Trim any spaces
     console.log('Extracted Overview:', trimmedAbstract);
     if (trimmedAbstract) {
@@ -515,10 +534,7 @@ export class DoceditorComponent {
     console.log('Extracted Section Title:', sectionTitle);
     console.log('Extracted Section Content:', sectionContent.trim());
     if (sectionTitle || sectionContent) {
-      this.addBlock('Section', true, sectionContent, sectionTitle); // Ensure section content and title are passed to addBlock
-      // sectionMatch.forEach((item: any) => {
-      //   this.addBlock('Section', true, sectionContent, sectionTitle); 
-      // });
+      this.addBlock('Section', true, sectionContent, sectionTitle); 
     }
 
     // Extract Section Title and Content
@@ -540,29 +556,34 @@ export class DoceditorComponent {
       this.addBlock('Sub Sub Section', true, subsubsectionContent, subsubsectionTitle); // Ensure subsubsection content and title are passed to addBlock
     }
 
-    // Extract Paragraph Title and Content
-    // const paraMatch = lateX.match(/\\paragraph{([^}]*)}([^<]*)<ltk>/);
-    // const paraTitle = paraMatch && paraMatch.length > 1 ? paraMatch[1] : '';
-    // const paraContent = paraMatch && paraMatch.length > 2 ? paraMatch[2] : '';
-    // console.log('Extracted Paragraph Title:', paraTitle);
-    // console.log('Extracted Paragraph Content:', paraContent.trim());
-    // if (paraTitle || paraContent) {
-    //   this.addBlock('Paragraph', true, paraContent, paraTitle); // Ensure paragraph content and title are passed to addBlock
+    // const paragraphRegex = /\\paragraph{([^}]*)}([^\\]*)/; // regex to capture paragraph
+    // const paragraph = lateX.match(paragraphRegex);
+    // if (paragraph) {
+    //   const paragraphTitle = paragraph[1].trim();
+    //   const paragraphContent = paragraph[2].trim().replace(/<ltk>/g, ''); 
+    //   console.log("Extracted paragraphTitle:", paragraphTitle);
+    //   console.log("Extracted paragraphContent:", paragraphContent);
+    //   this.addBlock('Paragraph', true, paragraphContent, paragraphTitle);
+    //   // paragraph.forEach((item: any) => {
+    //   //   this.addBlock('Paragraph', true, paragraphContent, paragraphTitle);
+    //   // });
     // }
 
-    const paragraphRegex = /\\paragraph{([^}]*)}([^\\]*)/; // regex to capture paragraph
-    const paragraph = lateX.match(paragraphRegex);
-    if (paragraph) {
-      const paragraphTitle = paragraph[1].trim();
-      const paragraphContent = paragraph[2].trim().replace(/<ltk>/g, '');
+    const paragraphRegex = /\\paragraph{([^}]*)}([^\\]*)/g; // Notice the 'g' flag for global matching
+    let paragraphs = []; // Array to store extracted paragraphs
+    let match;
+    while ((match = paragraphRegex.exec(lateX)) !== null) {
+      const paragraphTitle = match[1].trim();
+      const paragraphContent = match[2].trim().replace(/<ltk>/g, '');
       console.log("Extracted paragraphTitle:", paragraphTitle);
       console.log("Extracted paragraphContent:", paragraphContent);
-      this.addBlock('Paragraph', true, paragraphContent, paragraphTitle);
-      // paragraph.forEach((item: any) => {
-      //   this.addBlock('Paragraph', true, paragraphContent, paragraphTitle);
-      // });
+      paragraphs.push({ title: paragraphTitle, content: paragraphContent });
     }
-
+    paragraphs.forEach(paragraph => {
+      this.addBlock('Paragraph', true, paragraph.content, paragraph.title);
+    });
+    
+    
     //Extract Ordered List items
     const itemizeMatches = lateX.match(/\\begin{itemize}([^]*?)\\end{itemize}/);
     const itemizeContent = itemizeMatches && itemizeMatches.length > 0 ? itemizeMatches[1] : '';
@@ -571,16 +592,11 @@ export class DoceditorComponent {
     console.log("Extracted OrderedList:", itemizedItems);
 
     if (itemizedItems) {
-      //this.addBlock('Ordered List', true, itemizedItems); 
-      // itemizedItems.forEach((item:any) => {
-      //  this.addNestedContentItem(item, itemizedItems);
+       this.addBlock('Ordered List', true, itemizedItems); 
+      // itemizedItems.forEach((item: any, index: number) => {
+      //   this.addNestedContentItem(index, item);
       // });
-      itemizedItems.forEach((item: any, index: number) => {
-        this.addNestedContentItem(index, item);
-      });
-      console.log('itemizedItems', itemizedItems)
     }
-    //this.updateOrderListItemsForm(itemizedItems); // Update the orderlist extracted data
 
     //Extract UnOrdered List items
     const enumerateMatches = lateX.match(/\\begin{enumerate}([^]*?)\\end{enumerate}/);
@@ -589,14 +605,12 @@ export class DoceditorComponent {
     const enumeratedItems = enumerateList ? enumerateList.map((match: string) => match.replace(/\\item\s/, '').trim()) : [];
     console.log("Extracted UnorderedList:", enumeratedItems);
     if (enumeratedItems) {
-      //this.addBlock('Unordered List', true, enumeratedItems); 
-      enumeratedItems.forEach((item: any, index: number) => {
-        this.addNestedContentItem(index, item);
-      });
+      this.addBlock('Unordered List', true, enumeratedItems); 
+      // enumeratedItems.forEach((item: any, index: number) => {
+      //   this.addNestedContentItem(index, item);
+      // });
     }
-    //this.updateOrderListItemsForm(enumeratedItems); // Update the unorderlist extracted data
   }
-
 
   //ORDERLIST EXTRACTION
   updateOrderListItemsForm(itemizedItems: string[]): void {
@@ -617,7 +631,7 @@ export class DoceditorComponent {
   }
 
   deleteDoc() {
-    if (this.documentId == '' || this.documentId == null) {
+    if (this.documentId =='' || this.documentId == null) {
       this.toast.info('Please select the document!');
     }
     if (this.documentId) {
@@ -876,7 +890,7 @@ export class DownloadBoxComponent {
         }
       );
     }
-    else {
+    else{
       //this.submitted = false;
       this.toast.error('Please save the document and provide a valid filename.');
     }
@@ -904,11 +918,11 @@ export class ViewDocComponent {
   documents: any[] = [];
   searchText: any = '';
 
-  @Input() documentId: any;
+  @Input() documentId:any;
   latexdoc = environment.lateXAPI;
   pdfSrc!: SafeResourceUrl;
-  docId: any;
-  isReverse: boolean = false;
+  docId:any;
+  isReverse:boolean=false;
   sortKey: string = '';
 
   constructor(private router: Router, private fb: FormBuilder, private httpservice: HttpService,
@@ -927,7 +941,7 @@ export class ViewDocComponent {
         this.documents = res;
         //this.documents = res[0].documentname;
         console.log('this.documents', this.documents)
-        console.log('doc', res.documentname)
+        console.log('doc',res.documentname)
       }
     );
   }
@@ -947,10 +961,10 @@ export class ViewDocComponent {
 
   deleteDocument(item: any) {
     if (item && item.docid) {
-      console.log('i1', item)
-      console.log('i2', item.documentname)
-      this.confirmationDialogService.confirm('Confirmation', ' Are you sure! Do you want to delete this ' + item?.documentname + ' Document?!', true, 'Yes', 'No')
-        .then((confirmed) => {
+      console.log('i1',item)
+      console.log('i2',item.documentname)
+      this.confirmationDialogService.confirm('Confirmation', ' Are you sure! Do you want to delete this '+item?.documentname+' Document?!', true, 'Yes', 'No')
+      .then((confirmed) => {
           if (confirmed) {
             this.httpservice.sendDeleteLatexRequest(URLUtils.deleteDocid(item.docid)).subscribe((res: any) => {
               if (!res.error) {
@@ -977,61 +991,63 @@ export class ViewDocComponent {
     this.modalService.open(id);
   }
 
-  //sorting func!!
-  sortingFile(val: any) {
+//sorting func!!
+sortingFile(val: any) {
+  this.isReverse = !this.isReverse;
+  if (this.isReverse) {
+    this.documents = this.documents?.sort((p1: any, p2: any) => (p1[val] < p2[val]) ? 1 : (p1[val] > p2[val]) ? -1 : 0);
+    
+  } else {
+    this.documents = this.documents?.sort((p1: any, p2: any) => (p1[val] > p2[val]) ? 1 : (p1[val] < p2[val]) ? -1 : 0);
+    
+  }
+}
+// sortingDateFile(val: string) {
+//   if (this.sortKey === val) {
+//     this.isReverse = !this.isReverse;
+//   } else {
+//     this.sortKey = val;
+//     this.isReverse = false;
+//   }
+  
+//   this.documents = this.documents?.sort((p1: any, p2: any) => {
+//     const date1 = new Date(p1[val]);
+//     const date2 = new Date(p2[val]);
+//     return this.isReverse ? date2.getTime() - date1.getTime() : date1.getTime() - date2.getTime();
+//   });
+// }
+
+sortingDateFile(val: string) {
+  if (this.sortKey === val) {
     this.isReverse = !this.isReverse;
-    if (this.isReverse) {
-      this.documents = this.documents?.sort((p1: any, p2: any) => (p1[val] < p2[val]) ? 1 : (p1[val] > p2[val]) ? -1 : 0);
-
-    } else {
-      this.documents = this.documents?.sort((p1: any, p2: any) => (p1[val] > p2[val]) ? 1 : (p1[val] < p2[val]) ? -1 : 0);
-
-    }
+  } else {
+    this.sortKey = val;
+    this.isReverse = false;
   }
-  // sortingDateFile(val: string) {
-  //   if (this.sortKey === val) {
-  //     this.isReverse = !this.isReverse;
-  //   } else {
-  //     this.sortKey = val;
-  //     this.isReverse = false;
-  //   }
 
-  //   this.documents = this.documents?.sort((p1: any, p2: any) => {
-  //     const date1 = new Date(p1[val]);
-  //     const date2 = new Date(p2[val]);
-  //     return this.isReverse ? date2.getTime() - date1.getTime() : date1.getTime() - date2.getTime();
-  //   });
-  // }
+  //sortedDocuments
+  const sortedDocuments = JSON.parse(JSON.stringify(this.documents));
+  sortedDocuments.sort((a: any, b: any) => {
+    const dateA = a[val]?.["$date"] ? new Date(a[val].$date) : null;
+    const dateB = b[val]?.["$date"] ? new Date(b[val].$date) : null;
 
-  sortingDateFile(val: string) {
-    if (this.sortKey === val) {
-      this.isReverse = !this.isReverse;
+    if (dateA && dateB) {
+      return dateA.getTime() - dateB.getTime(); // Ascending order
+    } else if (!dateA && !dateB) {
+      return 0;
+    } else if (!dateA) {
+      return 1;
     } else {
-      this.sortKey = val;
-      this.isReverse = false;
+      return -1;
     }
-    //sortedDocuments
-    const sortedDocuments = JSON.parse(JSON.stringify(this.documents));
-    sortedDocuments.sort((a: any, b: any) => {
-      const dateA = a[val]?.["$date"] ? new Date(a[val].$date) : null;
-      const dateB = b[val]?.["$date"] ? new Date(b[val].$date) : null;
+  });
 
-      if (dateA && dateB) {
-        return dateA.getTime() - dateB.getTime(); // Ascending order
-      } else if (!dateA && !dateB) {
-        return 0;
-      } else if (!dateA) {
-        return 1;
-      } else {
-        return -1;
-      }
-    });
-    //isReverse is true
-    if (this.isReverse) {
-      sortedDocuments.reverse();
-    }
-    this.documents = sortedDocuments;
+  //isReverse is true
+  if (this.isReverse) {
+    sortedDocuments.reverse();
   }
+  this.documents = sortedDocuments;
+}
 
 
   closeModal(id: string) {
@@ -1062,14 +1078,14 @@ export class ContentDialogComponent {
   @Input() myForm: any;
 
   @Input() content: any;
-  contentTitle: any;
-  contentData: any;
+  contentTitle:any;
+  contentData:any;
 
   contentForm: any;
   submitted = false;
 
   constructor(
-    public dialogRef: MatDialogRef<ContentDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: { contentData: string, contentTitle: string },
+    public dialogRef: MatDialogRef<ContentDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: {contentData:string, contentTitle:string},
     private fb: FormBuilder
   ) {
     this.contentData = data.contentData;
@@ -1080,14 +1096,14 @@ export class ContentDialogComponent {
     //console.log('dial content',this.content)
     this.contentForm = this.fb.group({
       contentData: [''],
-      contentTitle: ['']
+      contentTitle:['']
     });
   }
 
   save() {
     const data = {
       contentData: this.contentData,
-      contentTitle: this.contentTitle
+      contentTitle:this.contentTitle
     };
     this.dialogRef.close(data);
     //console.log('closeData from dialog', data)
