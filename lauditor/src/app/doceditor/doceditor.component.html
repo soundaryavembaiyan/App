@@ -90,12 +90,17 @@
                     <mat-icon class="closePlus iOd" aria-hidden="true" (click)="addNestedContentItem(i)">add_circle_outline</mat-icon>
                     <i class="fa fa-times close" aria-hidden="true" (click)="removeItem(i)"></i>
                     <div formArrayName="orderListItems">
-                    <div class="oderAlign" *ngFor="let orderitem of item.get('orderListItems').controls; let j = index;" [formGroupName]="j">
+                    <div class="oderAlign" *ngFor="let orderitem of item.get('orderListItems').controls; let j = index;" [formGroupName]="j"> 
+                        <div *ngIf="listView">
                             <input formControlName="contentData" placeholder="Enter list items" type="text" class="text-size form-control createDoc"/> 
-                            <i class="fa-solid fa-trash delIcon" *ngIf="j != 0" (click)="removeList(i,j)"></i> 
+                        </div>
+                        <div *ngIf="!listView">
+                            <input formControlName="contentData" *ngIf="j != 0"  placeholder="noo list items" type="text" class="text-size form-control createDoc"/> 
+                        </div>
+                        <i class="fa-solid fa-trash delIcon" *ngIf="j != 0" (click)="removeList(i,j)"></i> 
                     </div> 
                     </div>
-                  </div>
+                    </div>
 
             </div>
             </ng-container>
