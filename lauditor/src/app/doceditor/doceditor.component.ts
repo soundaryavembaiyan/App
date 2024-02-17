@@ -498,63 +498,114 @@ export class DoceditorComponent {
 
   extractionData() {
     this.isOpen = true;
-
     console.log("openLateXXX: ", this.latexcode?.document);
     const lateX = this.latexcode?.document
 
     // Extract Title
-    this.title = lateX.match(/\\title\s*{([^}]*)}/);
+    this.title = lateX.match(/\\title\s*{([^}]*)}/); ///\\abstract\s*([^]*)/;
     this.title = this.title && this.title.length > 1 ? this.title[1] : '';
-    //console.log('Extracted title:', this.title);
 
     // Extract Author
     this.author = lateX.match(/\\author{([^}]*)}/);
     this.author = this.author && this.author.length > 1 ? this.author[1] : '';
-    //console.log('Extracted author:', this.author);
 
     //Extract Date
     const dateMatch = lateX.match(/\\date{([^}]*)}/);
     this.date = dateMatch && dateMatch.length > 1 ? dateMatch[1] : '';
-    //console.log('Extracted date:', this.date);
 
    //Extract Abstract Content
-    const abstractMatch = lateX.match(/\\abstract([^<]*)<ltk>/);
-    console.log('abstractMatch:', abstractMatch);
-    const abstract = abstractMatch && abstractMatch ? abstractMatch[1] : '';
-    const trimmedAbstract = abstract.trim().replace(/<ltk>/g, ''); // Trim any spaces
-    console.log('Extracted Overview:', trimmedAbstract);
-    if (trimmedAbstract) {
-      this.addBlock('Overview', true, trimmedAbstract)
+    // const abstractMatch = lateX.match(/\\abstract([^<]*)<ltk>/);
+    // console.log('abstractMatch:', abstractMatch);
+    // const abstract = abstractMatch && abstractMatch ? abstractMatch[1] : '';
+    // const trimmedAbstract = abstract.trim().replace(/<ltk>/g, ''); // Trim any spaces
+    // console.log('Extracted Overview:', trimmedAbstract);
+    // if (trimmedAbstract) {
+    //   this.addBlock('Overview', true, trimmedAbstract)
+    // }
+
+    const ovRegex = /\\abstract([^\\]*)/g; // Notice the 'g' flag for global matching
+    let ovs = []; // Array to store extracted paragraphs
+    let matchO;
+    while ((matchO = ovRegex.exec(lateX)) !== null) {
+      const overviewContent = matchO[1].trim().replace(/<ltk>/g, '');
+      console.log("Extracted overviewContent:", overviewContent);
+      ovs.push({  content: overviewContent });
     }
+    ovs.forEach(overview => {
+      this.addBlock('Overview', true, overview.content);
+    });
 
     // Extract Section Title and Content
-    const sectionMatch = lateX.match(/\\section{([^}]*)}([^<]*)<ltk>/);
-    const sectionTitle = sectionMatch && sectionMatch.length > 1 ? sectionMatch[1] : '';
-    const sectionContent = sectionMatch && sectionMatch.length > 2 ? sectionMatch[2] : '';
-    console.log('Extracted Section Title:', sectionTitle);
-    console.log('Extracted Section Content:', sectionContent.trim());
-    if (sectionTitle || sectionContent) {
-      this.addBlock('Section', true, sectionContent, sectionTitle); 
+    // const sectionMatch = lateX.match(/\\section{([^}]*)}([^<]*)<ltk>/);
+    // const sectionTitle = sectionMatch && sectionMatch.length > 1 ? sectionMatch[1] : '';
+    // const sectionContent = sectionMatch && sectionMatch.length > 2 ? sectionMatch[2] : '';
+    // console.log('Extracted Section Title:', sectionTitle);
+    // console.log('Extracted Section Content:', sectionContent.trim());
+    // if (sectionTitle || sectionContent) {
+    //   this.addBlock('Section', true, sectionContent, sectionTitle); 
+    // }
+
+    const sectionRegex = /\\section{([^}]*)}([^\\]*)/g; // Notice the 'g' flag for global matching
+    let sections = []; // Array to store extracted paragraphs
+    let matchSection;
+    while ((matchSection = sectionRegex.exec(lateX)) !== null) {
+      const sectionTitle = matchSection[1].trim();
+      const sectionContent = matchSection[2].trim().replace(/<ltk>/g, '');
+      console.log("Extracted sectionTitle:", sectionTitle);
+      console.log("Extracted sectionContent:", sectionContent);
+      sections.push({ title: sectionTitle, content: sectionContent });
     }
+    sections.forEach(section => {
+      this.addBlock('Section', true, section.content, section.title);
+    });
 
     // Extract Section Title and Content
-    const subsectionMatch = lateX.match(/\\subsection{([^}]*)}([^<]*)<ltk>/);
-    const subsectionTitle = subsectionMatch && subsectionMatch.length > 1 ? subsectionMatch[1] : '';
-    const subsectionContent = subsectionMatch && subsectionMatch.length > 2 ? subsectionMatch[2] : '';
-    console.log('Extracted SubSection Title:', subsectionTitle);
-    console.log('Extracted SubSection Content:', subsectionContent.trim());
-    if (subsectionTitle || subsectionContent) {
-      this.addBlock('Sub Section', true, subsectionContent, subsectionTitle); // Ensure subsection content and title are passed to addBlock
+    // const subsectionMatch = lateX.match(/\\subsection{([^}]*)}([^<]*)<ltk>/);
+    // const subsectionTitle = subsectionMatch && subsectionMatch.length > 1 ? subsectionMatch[1] : '';
+    // const subsectionContent = subsectionMatch && subsectionMatch.length > 2 ? subsectionMatch[2] : '';
+    // console.log('Extracted SubSection Title:', subsectionTitle);
+    // console.log('Extracted SubSection Content:', subsectionContent.trim());
+    // if (subsectionTitle || subsectionContent) {
+    //   this.addBlock('Sub Section', true, subsectionContent, subsectionTitle); // Ensure subsection content and title are passed to addBlock
+    // }
+
+    const subsectionRegex = /\\subsection{([^}]*)}([^\\]*)/g; // Notice the 'g' flag for global matching
+    let subsections = []; // Array to store extracted paragraphs
+    let matchSub;
+    while ((matchSub = subsectionRegex.exec(lateX)) !== null) {
+      const subsectionTitle = matchSub[1].trim();
+      const subsectionContent = matchSub[2].trim().replace(/<ltk>/g, '');
+      console.log("Extracted subsectionTitle:", subsectionTitle);
+      console.log("Extracted subsectionContent:", subsectionContent);
+      subsections.push({ title: subsectionTitle, content: subsectionContent });
     }
+    subsections.forEach(subsection => {
+      this.addBlock('Sub Section', true, subsection.content, subsection.title);
+    });
+
     // Extract Section Title and Content
-    const subsubsectionMatch = lateX.match(/\\subsubsection{([^}]*)}([^<]*)<ltk>/);
-    const subsubsectionTitle = subsubsectionMatch && subsubsectionMatch.length > 1 ? subsubsectionMatch[1] : '';
-    const subsubsectionContent = subsubsectionMatch && subsubsectionMatch.length > 2 ? subsubsectionMatch[2] : '';
-    console.log('Extracted SubSubSection Title:', subsubsectionTitle);
-    console.log('Extracted SubSubSection Content:', subsubsectionContent.trim());
-    if (subsubsectionTitle || subsubsectionContent) {
-      this.addBlock('Sub Sub Section', true, subsubsectionContent, subsubsectionTitle); // Ensure subsubsection content and title are passed to addBlock
+    // const subsubsectionMatch = lateX.match(/\\subsubsection{([^}]*)}([^<]*)<ltk>/);
+    // const subsubsectionTitle = subsubsectionMatch && subsubsectionMatch.length > 1 ? subsubsectionMatch[1] : '';
+    // const subsubsectionContent = subsubsectionMatch && subsubsectionMatch.length > 2 ? subsubsectionMatch[2] : '';
+    // console.log('Extracted SubSubSection Title:', subsubsectionTitle);
+    // console.log('Extracted SubSubSection Content:', subsubsectionContent.trim());
+    // if (subsubsectionTitle || subsubsectionContent) {
+    //   this.addBlock('Sub Sub Section', true, subsubsectionContent, subsubsectionTitle); // Ensure subsubsection content and title are passed to addBlock
+    // }
+
+    const subsubsectionRegex = /\\subsubsection{([^}]*)}([^\\]*)/g; // Notice the 'g' flag for global matching
+    let subsubsections = []; // Array to store extracted paragraphs
+    let matchSubSub;
+    while ((matchSubSub = subsubsectionRegex.exec(lateX)) !== null) {
+      const subsubsectionTitle = matchSubSub[1].trim();
+      const subsubsectionContent = matchSubSub[2].trim().replace(/<ltk>/g, '');
+      console.log("Extracted subsectionTitle:", subsubsectionTitle);
+      console.log("Extracted subsectionContent:", subsubsectionContent);
+      subsubsections.push({ title: subsubsectionTitle, content: subsubsectionContent });
     }
+    subsubsections.forEach(subsubsection => {
+      this.addBlock('Sub Sub Section', true, subsubsection.content, subsubsection.title);
+    });
 
     // const paragraphRegex = /\\paragraph{([^}]*)}([^\\]*)/; // regex to capture paragraph
     // const paragraph = lateX.match(paragraphRegex);
@@ -582,33 +633,49 @@ export class DoceditorComponent {
     paragraphs.forEach(paragraph => {
       this.addBlock('Paragraph', true, paragraph.content, paragraph.title);
     });
-    
-    
-    //Extract Ordered List items
-    const itemizeMatches = lateX.match(/\\begin{itemize}([^]*?)\\end{itemize}/);
-    const itemizeContent = itemizeMatches && itemizeMatches.length > 0 ? itemizeMatches[1] : '';
-    const itemizeList = itemizeContent.match(/\\item\s([^\\]*)/g);
-    const itemizedItems = itemizeList ? itemizeList.map((match: string) => match.replace(/\\item\s/, '').trim()) : [];
-    console.log("Extracted OrderedList:", itemizedItems);
 
-    if (itemizedItems) {
-       this.addBlock('Ordered List', true, itemizedItems); 
-      // itemizedItems.forEach((item: any, index: number) => {
-      //   this.addNestedContentItem(index, item);
-      // });
+    //Extract Ordered List items
+    // const itemizeMatches = lateX.match(/\\begin{itemize}([^]*?)\\end{itemize}/);
+    // const itemizeContent = itemizeMatches && itemizeMatches.length > 0 ? itemizeMatches[1] : '';
+    // const itemizeList = itemizeContent.match(/\\item\s([^\\]*)/g);
+    // const itemizedItems = itemizeList ? itemizeList.map((match: string) => match.replace(/\\item\s/, '').trim()) : [];
+    // console.log("Extracted OrderedList:", itemizedItems);
+    // if (itemizedItems) {
+    //    this.addBlock('Ordered List', true, itemizedItems); 
+    // }
+
+    const itemizeRegex = /\\begin{itemize}([^]*?)\\end{itemize}/g;
+    let itemizeMatch;
+    while ((itemizeMatch = itemizeRegex.exec(lateX)) !== null) {
+      const itemizeContent = itemizeMatch[1];
+      const itemList = itemizeContent.match(/\\item\s([^\\]*)/g);
+      const items = itemList ? itemList.map(item => item.replace(/\\item\s/, '').trim()) : [];
+      console.log("Extracted Itemize:", items);
+      if (items.length > 0) {
+        this.addBlock('Ordered List', true, items);
+      }
     }
 
     //Extract UnOrdered List items
-    const enumerateMatches = lateX.match(/\\begin{enumerate}([^]*?)\\end{enumerate}/);
-    const enumerateContent = enumerateMatches && enumerateMatches.length > 0 ? enumerateMatches[1] : '';
-    const enumerateList = enumerateContent.match(/\\item\s([^\\]*)/g);
-    const enumeratedItems = enumerateList ? enumerateList.map((match: string) => match.replace(/\\item\s/, '').trim()) : [];
-    console.log("Extracted UnorderedList:", enumeratedItems);
-    if (enumeratedItems) {
-      this.addBlock('Unordered List', true, enumeratedItems); 
-      // enumeratedItems.forEach((item: any, index: number) => {
-      //   this.addNestedContentItem(index, item);
-      // });
+    // const enumerateMatches = lateX.match(/\\begin{enumerate}([^]*?)\\end{enumerate}/);
+    // const enumerateContent = enumerateMatches && enumerateMatches.length > 0 ? enumerateMatches[1] : '';
+    // const enumerateList = enumerateContent.match(/\\item\s([^\\]*)/g);
+    // const enumeratedItems = enumerateList ? enumerateList.map((match: string) => match.replace(/\\item\s/, '').trim()) : [];
+    // console.log("Extracted UnorderedList:", enumeratedItems);
+    // if (enumeratedItems) {
+    //   this.addBlock('Unordered List', true, enumeratedItems); 
+    // }
+
+    const enumerateRegex = /\\begin{enumerate}([^]*?)\\end{enumerate}/g;
+    let enumerateMatch;
+    while ((enumerateMatch = enumerateRegex.exec(lateX)) !== null) {
+      const enumerateContent = enumerateMatch[1];
+      const itemList = enumerateContent.match(/\\item\s([^\\]*)/g);
+      const items = itemList ? itemList.map(item => item.replace(/\\item\s/, '').trim()) : [];
+      console.log("Extracted Enumerate:", items);
+      if (items.length > 0) {
+        this.addBlock('Unordered List', true, items);
+      }
     }
   }
 
