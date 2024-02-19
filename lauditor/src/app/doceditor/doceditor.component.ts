@@ -16,7 +16,7 @@ import { ConfirmationDialogService } from 'src/app/confirmation-dialog/confirmat
 import { LatexblockComponent } from './latexblock/latexblock.component';
 import { RandomService } from '../services/random.service';
 import { __values } from 'tslib';
-import jsPDF from 'jspdf';
+//import jsPDF from 'jspdf';
 
 
 @Component({
@@ -64,7 +64,7 @@ export class DoceditorComponent {
 
   isOpen: boolean = false;
   blocks: any[] = [];
-  allLatex:any[] =[];
+  allLatex: any[] = [];
 
   childFormData: any[] = [];
 
@@ -72,34 +72,34 @@ export class DoceditorComponent {
   onSave = false;
   randomId: any;
   showPreviewDoc = false
-  url:any;
+  url: any;
 
-  content:any;
-  contentTitle:any;
-  contentData:any;
-  contentListItems:any[]=[];
-  orderListItems:any;
+  content: any;
+  contentTitle: any;
+  contentData: any;
+  contentListItems: any[] = [];
+  orderListItems: any;
   latexDialog: boolean = true;
 
-  contentForm:any;
-  contentDataControl:any
-  contentTitleControl:any
+  contentForm: any;
+  contentDataControl: any
+  contentTitleControl: any
 
-  listData:any;
-  getContent:any;
+  listData: any;
+  getContent: any;
 
-  selectedSection:boolean = false;
+  selectedSection: boolean = false;
   selectedSectionIndex: number | null = null;
 
-  listView:boolean = false;
-  paragraphContent:any 
-  paragraphTitle:any
+  listView: boolean = false;
+  paragraphContent: any
+  paragraphTitle: any
 
   constructor(private router: Router, private idGenerator: RandomService, private appRef: ApplicationRef, private fb: FormBuilder, private httpservice: HttpService,
     private toast: ToastrService, private documentService: DocumentService, private cdr: ChangeDetectorRef,
     private renderer: Renderer2, private modalService: ModalService, private confirmationDialogService: ConfirmationDialogService,
     public sanitizer: DomSanitizer, public dialog: MatDialog) {
-      this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(this.url);
+    this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(this.url);
   }
 
   ngOnInit() {
@@ -111,12 +111,12 @@ export class DoceditorComponent {
     });
     this.getDocumentCall();
   }
-  
-  addContent(type:any, value?:any, valueTitle?:any) {
+
+  addContent(type: any, value?: any, valueTitle?: any) {
     const randomId = this.idGenerator.generateId(10);
-    console.log('value',value)
-    console.log('valueTitle',valueTitle)
-    if(value){
+    // console.log('value', value)
+    // console.log('valueTitle', valueTitle)
+    if (value) {
       return this.fb.group({
         randomId: [randomId],
         content: [type], // Assigning the 'type' parameter to 'content'
@@ -124,7 +124,8 @@ export class DoceditorComponent {
         contentTitle: [valueTitle, Validators.required],
         orderListItems: this.fb.array([
           this.createNestedContentItem(value)
-       ])});
+        ])
+      });
     }
 
     return this.fb.group({
@@ -133,54 +134,55 @@ export class DoceditorComponent {
       contentData: ['', Validators.required],
       contentTitle: ['', Validators.required],
       orderListItems: this.fb.array([
-         this.createNestedContentItem()
-     ])});
-  
+        this.createNestedContentItem()
+      ])
+    });
+
   }
 
-  addBlock(type: string,editBlock?:boolean,value?:any,valueTitle?:any) {
+  addBlock(type: string, editBlock?: boolean, value?: any, valueTitle?: any) {
     this.isOpen = true;
     this.content = type;
     //console.log('addBlock content', this.content);
-    
+
     const contentListItems = this.myForm.get('contentListItems') as FormArray;
-    
+
     // Check if adding an overview when one already exists
     if (type === 'Overview' && contentListItems.controls.some(item => item.value.content === 'Overview')) {
-        this.toast.error('Only one overview is allowed!');
-        return;
+      this.toast.error('Only one overview is allowed!');
+      return;
     }
 
     // Check if adding a sub section or sub sub section without a section
     if ((type === 'Sub Section' || type === 'Sub Sub Section') &&
-        !contentListItems.controls.some(item => item.value.content === 'Section')) {
-        if (type === 'Sub Sub Section') {
-            this.toast.error('Please select a Section before adding a Sub Sub Section.');
-        } else if (type === 'Sub Section') {
-            this.toast.error('Please select a Section before adding a Sub Section.');
-        }
-        return;
+      !contentListItems.controls.some(item => item.value.content === 'Section')) {
+      if (type === 'Sub Sub Section') {
+        this.toast.error('Please select a Section before adding a Sub Sub Section.');
+      } else if (type === 'Sub Section') {
+        this.toast.error('Please select a Section before adding a Sub Section.');
+      }
+      return;
     }
 
     // Check if adding a sub sub section without a sub section
-    if (type === 'Sub Sub Section' && 
-        !contentListItems.controls.some(item => item.value.content === 'Sub Section')) {
-        this.toast.error('Please select a Sub Section before adding a Sub Sub Section.');
-        return;
+    if (type === 'Sub Sub Section' &&
+      !contentListItems.controls.some(item => item.value.content === 'Sub Section')) {
+      this.toast.error('Please select a Sub Section before adding a Sub Sub Section.');
+      return;
     }
 
 
-    if (type === 'Ordered List' || type === 'Unordered List'){
+    if (type === 'Ordered List' || type === 'Unordered List') {
       this.listView = true;
     }
 
-    if(type === 'Page Break'){
+    if (type === 'Page Break') {
       this.insertPageBreak()
     }
 
     if (editBlock === true) {
-      if (type === 'Overview' || type === 'Section' || type === 'Sub Section' || type === 'Sub Sub Section' ||type === 'Paragraph'){
-      contentListItems.push(this.addContent(type, value, valueTitle));
+      if (type === 'Overview' || type === 'Section' || type === 'Sub Section' || type === 'Sub Sub Section' || type === 'Paragraph') {
+        contentListItems.push(this.addContent(type, value, valueTitle));
       }
       if ((type === 'Ordered List' || type === 'Unordered List') && value && value.length > 0) {
         this.listView = false;
@@ -208,20 +210,20 @@ export class DoceditorComponent {
     //   contentListItems.push(this.addContent(type)); 
     // }
   }
-  
-   createNestedContentItem(value?:any): FormGroup {
-    console.log('oovalue',value)
-    if(value){
+
+  createNestedContentItem(value?: any): FormGroup {
+    //console.log('oovalue', value)
+    if (value) {
       return this.fb.group({
         contentData: [value, Validators.required]
-        });
+      });
     }
     return this.fb.group({
-     contentData: ['', Validators.required]
-     });
-   }
+      contentData: ['', Validators.required]
+    });
+  }
 
-  addNestedContentItem(contentIndex: number, value?:any) {
+  addNestedContentItem(contentIndex: number, value?: any) {
     const contentArray = this.myForm.get('contentListItems') as FormArray;
     const nestedArray = contentArray.at(contentIndex).get('orderListItems') as FormArray;
     nestedArray.push(this.createNestedContentItem(value));
@@ -241,7 +243,7 @@ export class DoceditorComponent {
   }
 
   //OpenDialog boxes for sections!!!
-  opencontentDialog(item:any,itemIndex:any) {
+  opencontentDialog(item: any, itemIndex: any) {
     //console.log('i', item)
     this.latexDialog = true;
     const dialogRef = this.dialog.open(ContentDialogComponent, {
@@ -324,9 +326,9 @@ export class DoceditorComponent {
       // title: this.myForm.get('title').value,
       // author: this.myForm.get('author').value,
       // date: this.myForm.get('date').value,
-        title: 'New Document', 
-        author: 'Author', 
-        date: new Date() 
+      title: 'New Document',
+      author: 'Author',
+      date: new Date()
     };
     this.myForm.patchValue(preservedValues); //values back into the form
   }
@@ -356,7 +358,7 @@ export class DoceditorComponent {
     // console.log('res',result)
     // let combinedObject2 = { ...result, ...this.myForm.value };
     // console.log('combinedObject2:', combinedObject2);
-   
+
     let latexDocument = `\\documentclass{article}\\usepackage{geometry}\\geometry{a4paper,total={170mm,257mm},left=20mm,top=20mm,}<ltk>\\title
     {${this.title}}<ltk>\\author{${this.author}}<ltk>\\date{${this.date}}<ltk>\\begin{document}<ltk>\\maketitle`;
 
@@ -467,7 +469,7 @@ export class DoceditorComponent {
         existingPageBreaks.forEach((pageBreak: HTMLElement) => {
           pageBreak.remove();
         });
-  
+
         // Add new page break element
         const pageBreak = this.renderer.createElement('div');
         this.renderer.addClass(pageBreak, 'page-break');
@@ -479,7 +481,7 @@ export class DoceditorComponent {
       });
     }
   }
-  
+
   //Open document Dialog box!
   openDocumentDialog() {
     const dialogRef = this.dialog.open(OpendialogBoxComponent, {
@@ -593,13 +595,13 @@ export class DoceditorComponent {
     const extractedBlocks: any[] = [];
 
     extractionRules.forEach(rule => {
-        let match;
-        while ((match = rule.regex.exec(lateX)) !== null) {
-            const block = rule.handler(match.slice(1).map(arg => arg.trim().replace(/<ltk>/g, '')));
-            if (block) {
-                extractedBlocks.push(block);
-            }
+      let match;
+      while ((match = rule.regex.exec(lateX)) !== null) {
+        const block = rule.handler(match.slice(1).map(arg => arg.trim().replace(/<ltk>/g, '')));
+        if (block) {
+          extractedBlocks.push(block);
         }
+      }
     });
 
     // Sort extracted blocks by their positions in the document
@@ -636,7 +638,7 @@ export class DoceditorComponent {
         // Add cases for other types of blocks
       }
     });
-}
+  }
 
   //ORDERLIST EXTRACTION
   updateOrderListItemsForm(itemizedItems: string[]): void {
@@ -657,7 +659,7 @@ export class DoceditorComponent {
   }
 
   deleteDoc() {
-    if (this.documentId =='' || this.documentId == null) {
+    if (this.documentId == '' || this.documentId == null) {
       this.toast.info('Please select the document!');
     }
     if (this.documentId) {
@@ -743,95 +745,7 @@ export class OpendialogBoxComponent {
         //OpenAPI 
         this.httpservice.sendGetLatexRequest(URLUtils.opendocID(docid)).subscribe(
           (req: any) => {
-
             this.latexcode = req[0];
-            // this.dataEvent.emit(this.latexcode);
-            // console.log('latexcode',this.latexcode?.document)
-
-            // this.documentex = req;
-            // console.log("documentex:", this.documentex);
-            // const match = this.latexcode?.document.match(/<ltk>\\title{([^}]*)}<ltk>/)
-            // console.log('mat',match)
-
-            // // Extract Title
-            // const titleMatch = this.latexcode?.document.match(/\\title{([^}]*)}/);
-            // const title = titleMatch && titleMatch.length > 1 ? titleMatch[1] : '';
-            // console.log("Title:", title);
-
-            // // Extract Author
-            // const authorMatch = this.latexcode?.document.match(/\\author{([^}]*)}/);
-            // const author = authorMatch && authorMatch.length > 1 ? authorMatch[1] : '';
-            // console.log("Author:", author);
-
-            // // Extract Date
-            // const dateMatch = this.latexcode?.document.match(/\\date{([^}]*)}/);
-            // const date = dateMatch && dateMatch.length > 1 ? dateMatch[1] : '';
-            // console.log("Date:", date);
-
-            // // Extract Abstract Title and Content
-            // const abstractMatch = this.latexcode?.document.match(/\\abstract{([^}]*)}([^]*)\\section{/);
-            // const abstractTitle = abstractMatch && abstractMatch.length > 1 ? abstractMatch[1] : '';
-            // console.log("Abstract Title:", abstractTitle);
-
-            // const abstractContent = abstractMatch && abstractMatch.length > 2 ? abstractMatch[2] : '';
-            // console.log("Abstract Content:", abstractContent);
-
-            // // Extract Section Title and Content
-            // const sectionMatch = this.latexcode?.document.match(/\\section{([^}]*)}([^]*)\\subsection{/);
-            // const sectionTitle = sectionMatch && sectionMatch.length > 1 ? sectionMatch[1] : '';
-            // console.log("sectionTitle:", sectionTitle);
-
-            // const sectionContent = sectionMatch && sectionMatch.length > 2 ? sectionMatch[2] : '';
-            // console.log("section Content:", sectionContent);
-
-            // // Extract subSection Title and Content
-            // const subsectionMatch = this.latexcode?.document.match(/\\subsection{([^}]*)}([^]*)\\subsubsection{/);
-            // const subsectionTitle = subsectionMatch && subsectionMatch.length > 1 ? subsectionMatch[1] : '';
-            // console.log("subsectionTitle:", subsectionTitle);
-
-            // const subsectionContent = subsectionMatch && subsectionMatch.length > 2 ? subsectionMatch[2] : '';
-            // console.log("subsection Content:", sectionContent);
-
-            // // Extract subsubSection Title and Content
-            // const subsubsectionMatch = this.latexcode?.document.match(/\\subsubsection{([^}]*)}([^]*)\\paragraph{/);
-            // const subsubsectionTitle = subsubsectionMatch && subsubsectionMatch.length > 1 ? subsubsectionMatch[1] : '';
-            // console.log("subsubsectionTitle:", subsubsectionTitle);
-
-            // const subsubsectionContent = subsubsectionMatch && subsubsectionMatch.length > 2 ? subsubsectionMatch[2] : '';
-            // console.log("subsubsection Content:", subsubsectionContent);
-
-            // // Extract Paragraph Title and Content
-            // const paragraphMatch = this.latexcode?.document.match(/\\paragraph{([^}]*)}([^]*)\\begin{/);
-            // const paragraphTitle = paragraphMatch && paragraphMatch.length > 1 ? paragraphMatch[1] : '';
-            // console.log("paragraph Title:", paragraphTitle);
-
-            // const paragraphContent = paragraphMatch && paragraphMatch.length > 2 ? paragraphMatch[2] : '';
-            // console.log("paragraph Content:", paragraphContent);
-
-            // // Extract Itemized List Content
-            // const itemizeMatches = this.latexcode?.document.match(/\\begin{itemize}([^]*)\\end{itemize}/);
-            // const itemizeContent = itemizeMatches && itemizeMatches.length > 0 ? itemizeMatches[1] : '';
-            // const itemizeList = itemizeContent.match(/\\item\s([^\\]*)/g);
-            // const itemizedItems = itemizeList ? itemizeList.map((match: { match: (arg0: RegExp) => any[]; }) => match.match(/\\item\s([^\\]*)/)[1]) : [];
-            // console.log("Itemized List Content:", itemizedItems);
-
-            // // Extract Enumerated List Content
-            // const enumerateMatches = this.latexcode?.document.match(/\\begin{enumerate}([^]*)\\end{enumerate}/);
-            // const enumerateContent = enumerateMatches && enumerateMatches.length > 0 ? enumerateMatches[1] : '';
-            // const enumerateList = enumerateContent.match(/\\item\s([^\\]*)/g);
-            // const enumeratedItems = enumerateList ? enumerateList.map((match: { match: (arg0: RegExp) => any[]; }) => match.match(/\\item\s([^\\]*)/)[1]) : [];
-            // console.log("Enumerated List Content:", enumeratedItems);
-
-            // //Pass data from child to parent
-            // this.dataEvent.emit(title);
-            // console.log('childData:', title)
-
-            // this.dialogRef.afterClosed().subscribe((result: { title: any }) => {
-            //   if (result) {
-            //     this.title = result.title;
-            //     console.log('titleafterClosed:', this.title);
-            //   }
-            // });
           }
         );
       }
@@ -916,7 +830,7 @@ export class DownloadBoxComponent {
         }
       );
     }
-    else{
+    else {
       //this.submitted = false;
       this.toast.error('Please save the document and provide a valid filename.');
     }
@@ -944,11 +858,11 @@ export class ViewDocComponent {
   documents: any[] = [];
   searchText: any = '';
 
-  @Input() documentId:any;
+  @Input() documentId: any;
   latexdoc = environment.lateXAPI;
   pdfSrc!: SafeResourceUrl;
-  docId:any;
-  isReverse:boolean=false;
+  docId: any;
+  isReverse: boolean = false;
   sortKey: string = '';
 
   constructor(private router: Router, private fb: FormBuilder, private httpservice: HttpService,
@@ -966,8 +880,8 @@ export class ViewDocComponent {
       (res: any) => {
         this.documents = res;
         //this.documents = res[0].documentname;
-        console.log('this.documents', this.documents)
-        console.log('doc',res.documentname)
+        // console.log('this.documents', this.documents)
+        // console.log('doc', res.documentname)
       }
     );
   }
@@ -987,10 +901,8 @@ export class ViewDocComponent {
 
   deleteDocument(item: any) {
     if (item && item.docid) {
-      console.log('i1',item)
-      console.log('i2',item.documentname)
-      this.confirmationDialogService.confirm('Confirmation', ' Are you sure! Do you want to delete this '+item?.documentname+' Document?!', true, 'Yes', 'No')
-      .then((confirmed) => {
+      this.confirmationDialogService.confirm('Confirmation', ' Are you sure! Do you want to delete this ' + item?.documentname + ' Document?!', true, 'Yes', 'No')
+        .then((confirmed) => {
           if (confirmed) {
             this.httpservice.sendDeleteLatexRequest(URLUtils.deleteDocid(item.docid)).subscribe((res: any) => {
               if (!res.error) {
@@ -1007,7 +919,7 @@ export class ViewDocComponent {
           }
         });
     } else {
-      console.error('Document ID is undefined or item is invalid:', item);
+      //console.error('Document ID is undefined or item is invalid:', item);
     }
   }
   //serach func!!
@@ -1017,64 +929,63 @@ export class ViewDocComponent {
     this.modalService.open(id);
   }
 
-//sorting func!!
-sortingFile(val: any) {
-  this.isReverse = !this.isReverse;
-  if (this.isReverse) {
-    this.documents = this.documents?.sort((p1: any, p2: any) => (p1[val] < p2[val]) ? 1 : (p1[val] > p2[val]) ? -1 : 0);
-    
-  } else {
-    this.documents = this.documents?.sort((p1: any, p2: any) => (p1[val] > p2[val]) ? 1 : (p1[val] < p2[val]) ? -1 : 0);
-    
-  }
-}
-// sortingDateFile(val: string) {
-//   if (this.sortKey === val) {
-//     this.isReverse = !this.isReverse;
-//   } else {
-//     this.sortKey = val;
-//     this.isReverse = false;
-//   }
-  
-//   this.documents = this.documents?.sort((p1: any, p2: any) => {
-//     const date1 = new Date(p1[val]);
-//     const date2 = new Date(p2[val]);
-//     return this.isReverse ? date2.getTime() - date1.getTime() : date1.getTime() - date2.getTime();
-//   });
-// }
-
-sortingDateFile(val: string) {
-  if (this.sortKey === val) {
+  //sorting func!!
+  sortingFile(val: any) {
     this.isReverse = !this.isReverse;
-  } else {
-    this.sortKey = val;
-    this.isReverse = false;
-  }
+    if (this.isReverse) {
+      this.documents = this.documents?.sort((p1: any, p2: any) => (p1[val] < p2[val]) ? 1 : (p1[val] > p2[val]) ? -1 : 0);
 
-  //sortedDocuments
-  const sortedDocuments = JSON.parse(JSON.stringify(this.documents));
-  sortedDocuments.sort((a: any, b: any) => {
-    const dateA = a[val]?.["$date"] ? new Date(a[val].$date) : null;
-    const dateB = b[val]?.["$date"] ? new Date(b[val].$date) : null;
-
-    if (dateA && dateB) {
-      return dateA.getTime() - dateB.getTime(); // Ascending order
-    } else if (!dateA && !dateB) {
-      return 0;
-    } else if (!dateA) {
-      return 1;
     } else {
-      return -1;
+      this.documents = this.documents?.sort((p1: any, p2: any) => (p1[val] > p2[val]) ? 1 : (p1[val] < p2[val]) ? -1 : 0);
+
     }
-  });
-
-  //isReverse is true
-  if (this.isReverse) {
-    sortedDocuments.reverse();
   }
-  this.documents = sortedDocuments;
-}
+  // sortingDateFile(val: string) {
+  //   if (this.sortKey === val) {
+  //     this.isReverse = !this.isReverse;
+  //   } else {
+  //     this.sortKey = val;
+  //     this.isReverse = false;
+  //   }
 
+  //   this.documents = this.documents?.sort((p1: any, p2: any) => {
+  //     const date1 = new Date(p1[val]);
+  //     const date2 = new Date(p2[val]);
+  //     return this.isReverse ? date2.getTime() - date1.getTime() : date1.getTime() - date2.getTime();
+  //   });
+  // }
+
+  sortingDateFile(val: string) {
+    if (this.sortKey === val) {
+      this.isReverse = !this.isReverse;
+    } else {
+      this.sortKey = val;
+      this.isReverse = false;
+    }
+
+    //sortedDocuments
+    const sortedDocuments = JSON.parse(JSON.stringify(this.documents));
+    sortedDocuments.sort((a: any, b: any) => {
+      const dateA = a[val]?.["$date"] ? new Date(a[val].$date) : null;
+      const dateB = b[val]?.["$date"] ? new Date(b[val].$date) : null;
+
+      if (dateA && dateB) {
+        return dateA.getTime() - dateB.getTime(); // Ascending order
+      } else if (!dateA && !dateB) {
+        return 0;
+      } else if (!dateA) {
+        return 1;
+      } else {
+        return -1;
+      }
+    });
+
+    //isReverse is true
+    if (this.isReverse) {
+      sortedDocuments.reverse();
+    }
+    this.documents = sortedDocuments;
+  }
 
   closeModal(id: string) {
     this.modalService.close(id);
@@ -1104,14 +1015,14 @@ export class ContentDialogComponent {
   @Input() myForm: any;
 
   @Input() content: any;
-  contentTitle:any;
-  contentData:any;
+  contentTitle: any;
+  contentData: any;
 
   contentForm: any;
   submitted = false;
 
   constructor(
-    public dialogRef: MatDialogRef<ContentDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: {contentData:string, contentTitle:string},
+    public dialogRef: MatDialogRef<ContentDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: { contentData: string, contentTitle: string },
     private fb: FormBuilder
   ) {
     this.contentData = data.contentData;
@@ -1122,14 +1033,14 @@ export class ContentDialogComponent {
     //console.log('dial content',this.content)
     this.contentForm = this.fb.group({
       contentData: [''],
-      contentTitle:['']
+      contentTitle: ['']
     });
   }
 
   save() {
     const data = {
       contentData: this.contentData,
-      contentTitle:this.contentTitle
+      contentTitle: this.contentTitle
     };
     this.dialogRef.close(data);
     //console.log('closeData from dialog', data)
