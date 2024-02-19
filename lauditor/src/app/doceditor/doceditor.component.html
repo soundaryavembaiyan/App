@@ -47,7 +47,7 @@
                 <button mat-menu-item (click)="addBlock('Paragraph')"><img class="imgView" src="assets/img/paragraph.svg"/>&nbsp;Paragraph</button>
                 <button mat-menu-item (click)="addBlock('Ordered List')"><img class="imgView" src="assets/img/order.svg"/>&nbsp;Ordered List</button>
                 <button mat-menu-item (click)="addBlock('Unordered List')"><img class="imgView" src="assets/img/unord.svg"/>&nbsp;Unordered List</button>
-                <!-- <button mat-menu-item (click)="insertPageBreak()"><img class="imgPort" src="assets/img/pagebreak.svg"/>Page Break</button> -->
+                <button class="page-break" mat-menu-item (click)="addBlock('Page Break');insertPageBreak()"><img class="imgPort" src="assets/img/pagebreak.svg"/>Page Break</button>
             </mat-menu>
         </div>
         
@@ -95,15 +95,21 @@
                             <input formControlName="contentData" placeholder="Enter list items" type="text" class="text-size form-control createDoc"/> 
                         </div>
                         <div *ngIf="!listView">
-                            <input formControlName="contentData" *ngIf="j != 0"  placeholder="noo list items" type="text" class="text-size form-control createDoc"/> 
+                            <input formControlName="contentData" *ngIf="j != 0"  placeholder="Enter list items" type="text" class="text-size form-control createDoc"/> 
                         </div>
                         <i class="fa-solid fa-trash delIcon" *ngIf="j != 0" (click)="removeList(i,j)"></i> 
                     </div> 
                     </div>
-                    </div>
+                  </div>
 
+                <!-- Page Break -->
+                <div class="form-group" id="narrow" *ngIf="isPageBreak(item.value.content)">
+                    <div class="page-break content" #contento></div>
+                </div> 
             </div>
             </ng-container>
+
+
         </div>
 
         <!-- /Contents -->
@@ -145,7 +151,6 @@
 
     </div>
 </div> 
-
 
 <router-outlet></router-outlet>
 
