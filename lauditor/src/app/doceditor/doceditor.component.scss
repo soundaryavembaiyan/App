@@ -618,6 +618,14 @@ textarea {
 
 }
 
+::placeholder {
+    color: #727272;
+    opacity: 1;
+    /* Firefox */
+}
 
-
-
+@media print {
+    .page-break {
+      page-break-after: always;
+    }
+  }
