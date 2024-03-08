@@ -16,6 +16,8 @@ import { ConfirmationDialogService } from 'src/app/confirmation-dialog/confirmat
 import { LatexblockComponent } from './latexblock/latexblock.component';
 import { RandomService } from '../services/random.service';
 import { __values } from 'tslib';
+import { debug } from 'strophe';
+//import { DatePipe } from '@angular/common';
 //import jsPDF from 'jspdf';
 
 
@@ -49,6 +51,8 @@ export class DoceditorComponent {
   pageId: any;
 
   latexcode: any;
+  latexBlock: any[] = [];
+
   docid: any;
   currentDocId: any;
   latexdoc = environment.lateXAPI;
@@ -56,7 +60,6 @@ export class DoceditorComponent {
 
   selectedValue: string = "create";
   isDisplay: boolean = true;
-  successModel: boolean = false;
   selectedOption: any;
 
   currentDate = new Date();
@@ -88,13 +91,32 @@ export class DoceditorComponent {
   listData: any;
   getContent: any;
 
-  selectedSection: boolean = false;
+  selectedSection: boolean = true;
   selectedSectionIndex: number | null = null;
 
   listView: boolean = false;
+  orderList:boolean =false;
   paragraphContent: any
-  paragraphTitle: any
+  paragraphTitle: any;
+  successModel: boolean = false;
+  successGrpName: any;
+  hasSection = false;
+  hasSubSection = false;
 
+  maxContent = 1;
+  blockId: any;
+  pgId: any[] = [];
+  pageno: any;
+  getPage: any;
+
+  pno: any;
+  pageNumber: any;
+  pid: any;
+  docSaved = false;
+  openDoc = false;
+  openId:any;
+  sId:any;
+  
   constructor(private router: Router, private idGenerator: RandomService, private appRef: ApplicationRef, private fb: FormBuilder, private httpservice: HttpService,
     private toast: ToastrService, private documentService: DocumentService, private cdr: ChangeDetectorRef,
     private renderer: Renderer2, private modalService: ModalService, private confirmationDialogService: ConfirmationDialogService,
@@ -112,10 +134,15 @@ export class DoceditorComponent {
     this.getDocumentCall();
   }
 
+  onKeyDown(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      event.preventDefault(); // Prevent the default Enter key behavior
+    }
+  }
+
   addContent(type: any, value?: any, valueTitle?: any) {
     const randomId = this.idGenerator.generateId(10);
-    // console.log('value', value)
-    // console.log('valueTitle', valueTitle)
+
     if (value) {
       return this.fb.group({
         randomId: [randomId],
@@ -137,41 +164,58 @@ export class DoceditorComponent {
         this.createNestedContentItem()
       ])
     });
-
   }
 
   addBlock(type: string, editBlock?: boolean, value?: any, valueTitle?: any) {
     this.isOpen = true;
     this.content = type;
     //console.log('addBlock content', this.content);
-
+    //console.log('len', this.myForm.value.contentListItems);
     const contentListItems = this.myForm.get('contentListItems') as FormArray;
+    //console.log('contentListItems', contentListItems)
 
-    // Check if adding an overview when one already exists
+    // ***OVERVIEW CONDITIONS*** //
+    // Overview - Check if adding an overview when one already exists
     if (type === 'Overview' && contentListItems.controls.some(item => item.value.content === 'Overview')) {
       this.toast.error('Only one overview is allowed!');
       return;
     }
+    // Overview - If trying to add Overview when other blocks already exist
+    if (type === 'Overview' && contentListItems.length > 0 && !editBlock === true) {
+      this.toast.error('Cannot add Overview block after other blocks');
+      return;
+    }
 
-    // Check if adding a sub section or sub sub section without a section
+    // ***SECTION CONDITIONS*** //
+    // Section conditions - Check if adding a sub section or sub sub section without a section
     if ((type === 'Sub Section' || type === 'Sub Sub Section') &&
       !contentListItems.controls.some(item => item.value.content === 'Section')) {
       if (type === 'Sub Sub Section') {
-        this.toast.error('Please select a Section before adding a Sub Sub Section.');
+        this.toast.error('Please select a Section before adding a Sub Sub Section!');
       } else if (type === 'Sub Section') {
-        this.toast.error('Please select a Section before adding a Sub Section.');
+        this.toast.error('Please select a Section before adding a Sub Section!');
       }
       return;
     }
 
-    // Check if adding a sub sub section without a sub section
+    // Section conditions - Check if adding a sub sub section without a sub section
     if (type === 'Sub Sub Section' &&
       !contentListItems.controls.some(item => item.value.content === 'Sub Section')) {
-      this.toast.error('Please select a Sub Section before adding a Sub Sub Section.');
+      this.toast.error('Please select a Sub Section before adding a Sub Sub Section!');
       return;
     }
+    // ***SECTION CONDITIONS*** //
 
+    //Paragraph
+    // if ((type === 'Sub Section' || type === 'Sub Sub Section') &&
+    //   contentListItems.controls.some(item => item.value.content === 'Paragraph')
+    // ) {
+    //   //contentListItems.push(this.addContent(type));
+    //   this.toast.error('123 Please select a Section before adding Sub Section or Sub Sub Section!');
+    //   return;
+    // }
 
+    //list condition 
     if (type === 'Ordered List' || type === 'Unordered List') {
       this.listView = true;
     }
@@ -180,6 +224,7 @@ export class DoceditorComponent {
       this.insertPageBreak()
     }
 
+    //when Extraction function called
     if (editBlock === true) {
       if (type === 'Overview' || type === 'Section' || type === 'Sub Section' || type === 'Sub Sub Section' || type === 'Paragraph') {
         contentListItems.push(this.addContent(type, value, valueTitle));
@@ -188,7 +233,6 @@ export class DoceditorComponent {
         this.listView = false;
         //contentListItems.push(this.addContent(type, value));
         contentListItems.push(this.addContent(type, value?.orderListItems?.contentData));
-        //console.log('contentListItems', contentListItems.value);
         const newIndex = contentListItems.length - 1;
         if (value && Array.isArray(value) && value.length > 0) {
           for (let i = 0; i < value.length; i++) {
@@ -199,9 +243,10 @@ export class DoceditorComponent {
     }
     else {
       //this.listView = true;
+      //this.toast.info('blocks');
       contentListItems.push(this.addContent(type));
+      //console.log('blockContentListItems', contentListItems.value)
     }
-
     // //openDoc() gets and assigns the value.
     // if(editBlock === true){
     //   contentListItems.push(this.addContent(type, value, valueTitle)); 
@@ -292,36 +337,19 @@ export class DoceditorComponent {
     this.isDisplay = !this.isDisplay;
   }
 
-  //Save As dialog box!!
-  downloadDialog() {
-    const dialogRef = this.dialog.open(DownloadBoxComponent, {
-      width: '500px',
-      height: '200px',
-      data: {
-        //documentname: this.documentname,
-        documentId: this.documentId
-      },
-      hasBackdrop: true,
-      panelClass: 'hello',
-      autoFocus: true
-    });
-
-    dialogRef.afterClosed().subscribe((result: { docid: any, documentname: any }) => {
-      if (result) {
-        this.documentname = result.documentname;
-        this.documentId = result.docid;
-        //console.log('docname',this.documentname)
-        this.httpservice.sendGetLatexDoc(URLUtils.savedDocid(this.documentId)).subscribe(
-          (res: any) => {
-
-          });
-      }
-    });
-  }
-
   newDoc() {
+    //Without saving the document, cant able to select New.
+    const contentListItems = this.myForm.get('contentListItems') as FormArray;
+
+    if (contentListItems.length >= 0 && !this.documentId) {
+      this.toast.error('Document changes not saved');
+      return;
+    }
+
     this.myForm.reset(); //reset form.
     this.documentname = ' '
+    window.location.reload();
+
     const preservedValues = {
       // title: this.myForm.get('title').value,
       // author: this.myForm.get('author').value,
@@ -344,25 +372,92 @@ export class DoceditorComponent {
       });
   }
 
-  saveDoc() {
-    //this.onSave = true;
-    console.log('saveForm:', this.myForm.value);
-    // const result: { [key: string]: string } = {};
-    // this.childFormData.forEach((item: any) => {
-    //   const key = Object.keys(item)[0];
-    //   if (key && item[key]) {
-    //     result[key] = item[key];
-    //     //console.log('reskey',result[key])
-    //   }
-    // });
-    // console.log('res',result)
-    // let combinedObject2 = { ...result, ...this.myForm.value };
-    // console.log('combinedObject2:', combinedObject2);
+  // saveDoc() {
+  //     let latexDocument = `\\documentclass{article}\\usepackage{geometry}\\geometry{a4paper,total={170mm,257mm},left=20mm,top=20mm,}<ltk>\\title
+  // {${this.title}}<ltk>\\author{${this.author}}<ltk>\\date{${this.date}}<ltk>\\begin{document}<ltk>\\maketitle`;
 
+  //     const contentListItems = this.myForm.get('contentListItems') as FormArray;
+
+  //     // Check if the document needs to be saved
+  //     if (!this.documentId) { // if the docId is empty
+  //       let req = { "documentname": this.title };
+  //       // 1st API call to save the document
+  //       this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
+  //         (res: any) => {
+  //           const documentId = res.id;
+  //           this.documentId = documentId;
+  //           this.processContentItems(contentListItems, latexDocument);  //Once the document is saved, process content items
+  //         });
+  //     }
+  //     else {
+  //       this.processContentItems(contentListItems, latexDocument); //If document is already saved
+  //     }
+
+  // }
+
+  saveDoc() {
+    //this.submitted = true;
     let latexDocument = `\\documentclass{article}\\usepackage{geometry}\\geometry{a4paper,total={170mm,257mm},left=20mm,top=20mm,}<ltk>\\title
     {${this.title}}<ltk>\\author{${this.author}}<ltk>\\date{${this.date}}<ltk>\\begin{document}<ltk>\\maketitle`;
 
     const contentListItems = this.myForm.get('contentListItems') as FormArray;
+        
+    //If no contents
+    if(contentListItems.length <= 0){
+      this.toast.info('Please add atleast one content!');
+      //contentListItems.push(this.addContent('Page Break'));
+      //this.submitted = false;
+    }
+
+    // let isContentDataValid = true;
+    // // Check if the contentData field of any item is empty
+    // contentListItems.controls.forEach((item, index) => {
+    //   if (!item.get('contentData')?.value) {
+    //     isContentDataValid = false;
+    //     return;
+    //   }
+    //   // Check if orderListItems is empty
+    //   if (!item.get('orderListItems')?.value || item.get('orderListItems')?.value.length === 0) {
+    //     isContentDataValid = false;
+    //     return;
+    //   }
+    // });
+    // // If any contentData field is empty, show error message and return without saving
+    // if (!isContentDataValid) {
+    //     this.toast.error('Please Check the blocks');
+    //     return;
+    // }
+
+    // Check if the document needs to be saved
+    if (!this.documentId || contentListItems.length === 0) { // if the docId is empty
+      let req = { "documentname": this.title };
+      // 1st API call to save the document
+      this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
+        (res: any) => {
+          const documentId = res.id;
+          this.documentId = documentId;
+          this.processContentItems(contentListItems, latexDocument);  // Once the document is saved, process content items
+        },
+        (error: HttpErrorResponse) => {
+          if (error.status === 400 || error.status === 401 || error.status === 403 || error.status === 500) {
+            const errorMessage = error.error.message || 'Unauthorized';
+            this.toast.error(errorMessage);
+          }
+        }
+        );
+    } else {
+      this.processContentItems(contentListItems, latexDocument); // If the document is already saved
+    }
+}
+
+  processContentItems(contentListItems: FormArray, latexDocument: string) {
+    let currentPage = 1; // Track the current page number
+    let pageContent = ''; // Track the content for the current page
+    let blocksProcessed = 1;
+    let maxBlocks = 30; //Max blocks condition
+    this.submitted = false;
+
+    // Loop through each content item
     for (let i = 0; i < contentListItems.length; i++) {
       const item = contentListItems.at(i);
       if (item) {
@@ -370,88 +465,250 @@ export class DoceditorComponent {
         this.contentDataControl = item.get('contentData');
         this.contentTitleControl = item.get('contentTitle');
 
+        //Track the lists contentData
         const orderListItems = item.get('orderListItems') as FormArray; // orderListItems within each item
         this.listData = '';//prevent undefined!!!
         for (let j = 0; j < orderListItems.length; j++) {
           const itemo = orderListItems.at(j);
           if (itemo) {
             this.listData += `\\item ${itemo.get('contentData')?.value}`; //get all ordered & unordered lists
-            //console.log('Order List Item:', this.listData);
           }
         }
 
-        if (getContent === 'Page Break') {
-          latexDocument += `<ltk>\\newpage`;
-        }
+        blocksProcessed++;
 
-        if (getContent === 'Overview') {
-          latexDocument += `<ltk>\\abstract ${this.contentDataControl.value}`;
-        }
-        if (getContent === 'Section') {
-          latexDocument += `<ltk>\\section{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`;
-        }
-        if (getContent === 'Sub Section') {
-          latexDocument += `<ltk>\\subsection{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`;
-        }
-        if (getContent === 'Sub Sub Section') {
-          latexDocument += `<ltk>\\subsubsection{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`;
-        }
-        if (getContent === 'Paragraph') {
-          latexDocument += `<ltk>\\paragraph{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`;
-        }
-        if (getContent === 'Ordered List') {
-          latexDocument += `<ltk>\\begin{itemize}${this.listData}\\end{itemize}`;
-        }
-        if (getContent === 'Unordered List') {
-          latexDocument += `<ltk>\\begin{enumerate}${this.listData}\\end{enumerate}`;
+        // Append block content to the pageContent
+        pageContent += `<ltk>${this.getBlockContent(getContent)}`;
+
+        // Check if the block count exceeds the threshold or it's the last item
+        if (blocksProcessed > maxBlocks || i === contentListItems.length - 1) {
+          //this.toast.info('Following content will move to next page')
+
+          // Prepare request object
+          let reqq: any;
+          if (currentPage === 1) {
+            // For the first page, include both latexDocument and pageContent
+            reqq = {
+              "document": latexDocument + pageContent,
+              "page": currentPage
+            };
+          } else {
+            // For subsequent pages, include only pageContent if it's the last page
+            reqq = {
+              "document": pageContent,
+              "page": currentPage
+            };
+          }
+
+          //console.log('reqq as perPage:', reqq);
+          this.pageno = reqq.page
+
+          blocksProcessed = 0;
+          //console.log('blocksProcessed 0:', blocksProcessed)
+
+          // API call to save/update page content
+          if (!this.pageNumber) {
+            this.pageNumber = [];
+          }
+
+          
+          if (!this.pageId) { // || this.documentId
+            // API call to save the page content for the first page
+            this.httpservice.sendPostLatexRequest(URLUtils.savedocID(this.documentId), reqq).subscribe(
+              (ress: any) => {
+                this.pageId = ress.id; // Getting Id from preview
+                this.pno = reqq.page;
+
+                // Set pageNumber array for the first page
+                this.pageNumber.push({ "page": this.pno, "pageId": this.pageId });
+                // console.log('const pageNo.', this.pageNumber);
+                this.toast.success(ress.message);
+
+                currentPage++; // Increment page number for the next page
+                pageContent = ''; // Reset pageContent for the next page
+              }
+            );
+          } else {
+            // Check if the current page number exists in the pageNumber array
+            const currentPageIndex = this.pageNumber.findIndex((page: any) => page.page === reqq.page);
+            //console.log('currentPageIndex',currentPageIndex)
+
+            if (currentPageIndex !== -1) {
+              const currentPageId = this.pageNumber[currentPageIndex].pageId;
+              //console.log('ppp pageId', currentPageId)
+
+              // Make the PATCH request with the correct pageId
+              this.httpservice.sendPatchLatexRequest(URLUtils.updateDoc(currentPageId), reqq).subscribe(
+                (resp: any) => {
+                  this.toast.success(resp.message);
+                  currentPage++; // Increment page number for the next page
+                  pageContent = ''; // Reset pageContent for the next page
+                }
+              );
+            } 
+            else {
+              //this.toast.error('Page not found!');
+              this.httpservice.sendPatchLatexRequest(URLUtils.updateDoc(this.pageId), reqq).subscribe(
+                    (resp: any) => {
+                      // this.pid = this.pageId
+                      // console.log('upd .pageId', this.pageId)
+                      this.openId = this.pageId
+                      console.log('upd .pageId', this.openId)
+                      this.toast.success(resp.message);
+                    })
+                  }
+          }
+          currentPage++; // Increment page number for the next page
+          pageContent = ''; // Reset pageContent for the next page
         }
       }
     }
+  }
 
-    console.log('lateX', latexDocument);
-
-    let reqq = {
-      "document": latexDocument,
-      "page": 1
-    };
-
-    if (this.documentId == null) {
-      //this.submitted = true;
-      let req = { "documentname": this.title };
-      //FIRST API
-      this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
-        (res: any) => {
-          const documentId = res.id;
-          this.documentId = documentId;
-          //SECONDAPI 
-          this.httpservice.sendPostLatexRequest(URLUtils.savedocID(this.documentId), reqq).subscribe(
-            (ress: any) => {
-              this.pageId = ress.id;
-              this.toast.success(ress.message);
-            }
-          );
-        });
-    }
-    else {
-      //THIRDAPI - for update 
-      this.httpservice.sendPatchLatexRequest(URLUtils.updateDoc(this.pageId), reqq).subscribe(
-        (resp: any) => {
-          this.toast.success(resp.message);
-        });
+  // Get Block Contents
+  getBlockContent(contentType: string) {
+    //console.log('contentType',contentType)
+    switch (contentType) {
+      case 'Overview':
+        return `\\abstract ${this.contentDataControl.value}`;
+      case 'Section':
+        return `\\section{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`;
+      case 'Sub Section':
+        return `\\subsection{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`;
+      case 'Sub Sub Section':
+        return `\\subsubsection{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`;
+      case 'Paragraph':
+        return `\\paragraph{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`;
+      case 'Ordered List':
+        return `\\begin{enumerate}${this.listData}\\end{enumerate}`;
+      case 'Unordered List':
+        return `\\begin{itemize}${this.listData}\\end{itemize}`;
+      case 'Page Break':
+        return `\\newpage`;
+      default:
+        return ''; // Default case, handle appropriately
     }
   }
 
+  //Oldooo Save Function!!!
+  // saveDocOldoo() {
+  //   //this.onSave = true;
+  //   //console.log('saveForm:', this.myForm.value);
+  //   // const result: { [key: string]: string } = {};
+  //   // this.childFormData.forEach((item: any) => {
+  //   //   const key = Object.keys(item)[0];
+  //   //   if (key && item[key]) {
+  //   //     result[key] = item[key];
+  //   //     //console.log('reskey',result[key])
+  //   //   }
+  //   // });
+  //   // console.log('res',result)
+  //   // let combinedObject2 = { ...result, ...this.myForm.value };
+  //   // console.log('combinedObject2:', combinedObject2);
+
+  //   let latexDocument = `\\documentclass{article}\\usepackage{geometry}\\geometry{a4paper,total={170mm,257mm},left=20mm,top=20mm,}<ltk>\\title
+  //   {${this.title}}<ltk>\\author{${this.author}}<ltk>\\date{${this.date}}<ltk>\\begin{document}<ltk>\\maketitle`;
+
+  //   const contentListItems = this.myForm.get('contentListItems') as FormArray;
+  //   for (let i = 0; i < contentListItems.length; i++) {
+  //     const item = contentListItems.at(i);
+  //     if (item) {
+  //       const getContent = item.get('content')?.value;
+  //       this.contentDataControl = item.get('contentData');
+  //       this.contentTitleControl = item.get('contentTitle');
+
+  //       const orderListItems = item.get('orderListItems') as FormArray; // orderListItems within each item
+  //       this.listData = '';//prevent undefined!!!
+  //       for (let j = 0; j < orderListItems.length; j++) {
+  //         const itemo = orderListItems.at(j);
+  //         if (itemo) {
+  //           this.listData += `\\item ${itemo.get('contentData')?.value}`; //get all ordered & unordered lists
+  //           //console.log('Order List Item:', this.listData);
+  //         }
+  //       }
+
+  //       if (getContent === 'Page Break') { latexDocument += `<ltk>\\newpage`; }
+  //       if (getContent === 'Overview') { latexDocument += `<ltk>\\abstract ${this.contentDataControl.value}`; }
+  //       if (getContent === 'Section') { latexDocument += `<ltk>\\section{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`; }
+  //       if (getContent === 'Sub Section') { latexDocument += `<ltk>\\subsection{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`; }
+  //       if (getContent === 'Sub Sub Section') { latexDocument += `<ltk>\\subsubsection{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`; }
+  //       if (getContent === 'Paragraph') { latexDocument += `<ltk>\\paragraph{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`; }
+  //       if (getContent === 'Ordered List') { latexDocument += `<ltk>\\begin{itemize}${this.listData}\\end{itemize}`; }
+  //       if (getContent === 'Unordered List') { latexDocument += `<ltk>\\begin{enumerate}${this.listData}\\end{enumerate}`; }
+  //     }
+  //   }
+
+  //   // if(this.myForm.value.contentListItems.length > 1){
+  //   //   this.toast.info('Following content will move to next page');
+  //   //   return;
+  //   // }
+  //   const maxPage = this.myForm.value.contentListItems.length > 1;
+  //   if(maxPage){
+  //     this.toast.info('Following content will move to next page');
+  //     this.maxContent = this.maxContent + 1;
+  //     console.log('this.maxContent', this.maxContent)
+  //   }
+
+  //   let reqq = {
+  //     "document": latexDocument,
+  //     "page": this.maxContent
+  //   };
+
+  //   console.log('lateX', latexDocument);
+  //   // let reqq = {
+  //   //   "document": latexDocument,
+  //   //   "page": 1
+  //   // };
+
+  //   if (this.documentId == null) {
+  //     //this.submitted = true;
+  //     let req = { "documentname": this.title };
+  //     //FIRST API
+  //     this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
+  //       (res: any) => {
+  //         const documentId = res.id;
+  //         this.documentId = documentId;
+  //         //SECONDAPI 
+  //         this.httpservice.sendPostLatexRequest(URLUtils.savedocID(this.documentId), reqq).subscribe(
+  //           (ress: any) => {
+  //             this.pageId = ress.id;
+  //             this.toast.success(ress.message);
+  //           }
+  //         );
+  //       });
+  //   }
+  //   else {
+  //     //THIRDAPI - for update 
+  //     this.httpservice.sendPatchLatexRequest(URLUtils.updateDoc(this.pageId), reqq).subscribe(
+  //       (resp: any) => {
+  //         this.toast.success(resp.message);
+  //       });
+  //   }
+  // }
+
+  // getPreview() {
+  //   //PREVIEW API
+  //   if (this.documentId == '' || this.documentId == null) {
+  //     // this.submitted = true;
+  //     this.toast.error("Please save the document") //If user clicks the previewIcon directly.
+  //   }
+  //   else{
+  //     this.showPreviewDoc = true;
+  //     let url = this.latexdoc + URLUtils.getPreview(this.documentId)
+  //     this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  //   }
+  // }
+
   getPreview() {
     //PREVIEW API
-    if (this.documentId == '' || this.documentId == null) {
-      // this.submitted = true;
-      this.toast.error("Please save the document") //If user clicks the previewIcon directly.
+    if (!this.documentId) {
+      console.log('Document ID is missing');
+      this.toast.error("Please save the document");
+      return;
     }
-    else {
-      this.showPreviewDoc = true;
-      let url = this.latexdoc + URLUtils.getPreview(this.documentId)
-      this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(url);
-    }
+    this.showPreviewDoc = true;
+    let url = this.latexdoc + URLUtils.getPreview(this.documentId);
+    this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
   //PAGE BREAK FUNCTION
@@ -498,6 +755,7 @@ export class DoceditorComponent {
 
     dialogRef.afterClosed().subscribe((result: any) => {
       //console.log("result after docClose:", result)
+      this.sId = result.docid; //check open should update or not.
       if (result.docid) {
         this.openFile(result.docid)
       }
@@ -507,17 +765,26 @@ export class DoceditorComponent {
 
   openFile(docid: any) {
     this.isOpen = true;
+    this.submitted = false;
+    this.docSaved = true;
     //Doc id
     this.documentId = docid;
-
+    this.myForm.reset();
     //OpenAPI 
     this.httpservice.sendGetLatexRequest(URLUtils.opendocID(docid)).subscribe(
       (req: any) => {
         if (req) {
-          this.latexcode = req[0];
+          // this.latexcode = req[0];
+          // console.log("latexCode:", this.latexcode);
+          req.sort((a: any, b: any) => a.page - b.page); //Aligned as per the page no.
+
+          this.latexBlock = req;
+          console.log("latexBlock:", this.latexBlock);
+
           this.documentId = docid;
-          this.pageId = req[0]?.pageid
-          //console.log("openLatexcode:", this.latexcode);
+          this.pageId = req[0]?.pageid;
+          // this.openId= req[0]?.pageid;
+          // console.log('pid', this.openId)
           this.extractionData();
           //this.cdr.detectChanges(); 
         }
@@ -533,114 +800,237 @@ export class DoceditorComponent {
 
   extractionData() {
     this.isOpen = true;
-    console.log("openLateXXX: ", this.latexcode?.document);
+    this.submitted = false;
+
     const lateX = this.latexcode?.document
+    const lateXArray = this.latexBlock.map(item => item.document); // Extracting document data into an array
+    //console.log("lateXArray:", lateXArray);
 
-    // Extract Title
-    this.title = lateX.match(/\\title\s*{([^}]*)}/); ///\\abstract\s*([^]*)/;
-    this.title = this.title && this.title.length > 1 ? this.title[1] : '';
+    lateXArray.forEach(lateX => {
+      // Extract Title
+      this.title = lateXArray[0].match(/\\title\s*{([^}]*)}/);
+      this.title = this.title && this.title.length > 1 ? this.title[1] : '';
 
-    // Extract Author
-    this.author = lateX.match(/\\author{([^}]*)}/);
-    this.author = this.author && this.author.length > 1 ? this.author[1] : '';
+      // Extract Author
+      this.author = lateXArray[0].match(/\\author{([^}]*)}/);
+      this.author = this.author && this.author.length > 1 ? this.author[1] : '';
 
-    //Extract Date
-    const dateMatch = lateX.match(/\\date{([^}]*)}/);
-    this.date = dateMatch && dateMatch.length > 1 ? dateMatch[1] : '';
+      //Extract Date
+      const dateMatch = lateXArray[0].match(/\\date{([^}]*)}/);
+      this.date = dateMatch && dateMatch.length > 1 ? dateMatch[1] : '';
 
-    //Extract Blocks data
-    const extractionRules = [
-      {
-        regex: /\\newpage([^\\]*)/g,
-        blockType: 'Page Break',
-        handler: (args: string[]) => ({ type: 'Page Break', content: args[0] || '', position: lateX.indexOf(args[0] || '') })
-      },
-      {
-        regex: /\\abstract([^\\]*)/g,
-        blockType: 'Overview',
-        handler: (args: string[]) => ({ type: 'Overview', content: args[0] || '', position: lateX.indexOf(args[0] || '') })
-      },
-      {
-        regex: /\\section{([^}]*)}([^\\]*)/g,
-        blockType: 'Section',
-        handler: (args: string[]) => ({ type: 'Section', title: args[0] || '', content: args[1] || '', position: lateX.indexOf(args[0] || '') })
-      },
-      {
-        regex: /\\subsection{([^}]*)}([^\\]*)/g,
-        blockType: 'Sub Section',
-        handler: (args: string[]) => ({ type: 'Sub Section', title: args[0] || '', content: args[1] || '', position: lateX.indexOf(args[0] || '') })
-      },
-      {
-        regex: /\\subsubsection{([^}]*)}([^\\]*)/g,
-        blockType: 'Sub Sub Section',
-        handler: (args: string[]) => ({ type: 'Sub Sub Section', title: args[0] || '', content: args[1] || '', position: lateX.indexOf(args[0] || '') })
-      },
-      {
-        regex: /\\paragraph{([^}]*)}([^\\]*)/g,
-        blockType: 'Paragraph',
-        handler: (args: string[]) => ({ type: 'Paragraph', title: args[0] || '', content: args[1] || '', position: lateX.indexOf(args[0] || '') })
-      },
-      {
-        regex: /\\begin{itemize}([^]*?)\\end{itemize}/g,
-        blockType: 'Ordered List',
-        handler: (args: string[]) => ({ type: 'Ordered List', content: args[0] || '', position: lateX.indexOf(args[0] || '') })
-      },
-      {
-        regex: /\\begin{enumerate}([^]*?)\\end{enumerate}/g,
-        blockType: 'Unordered List',
-        handler: (args: string[]) => ({ type: 'Unordered List', content: args[0] || '', position: lateX.indexOf(args[0] || '') })
-      },
-    ];
+      //Extract Blocks data
+      const extractionRules = [
+        {
+          regex: /\\newpage([^\\]*)/g,
+          blockType: 'Page Break',
+          handler: (args: string[]) => ({ type: 'Page Break', content: args[0] || '', position: lateX.indexOf(args[0] || '') })
+        },
+        {
+          regex: /\\abstract([^\\]*)/g,
+          blockType: 'Overview',
+          handler: (args: string[]) => ({ type: 'Overview', content: args[1] || '', position: lateX.indexOf(args[0] || '') })
+        },
+        {
+          regex: /\\section{([^}]*)}([^\\]*)/g,
+          blockType: 'Section',
+          handler: (args: string[]) => ({ type: 'Section', title: args[1] || '', content: args[2] || '', position: lateX.indexOf(args[0] || '') })
+        },
+        {
+          regex: /\\subsection{([^}]*)}([^\\]*)/g,
+          blockType: 'Sub Section',
+          handler: (args: string[]) => ({ type: 'Sub Section', title: args[1] || '', content: args[2] || '', position: lateX.indexOf(args[0] || '') })
+        },
+        {
+          regex: /\\subsubsection{([^}]*)}([^\\]*)/g,
+          blockType: 'Sub Sub Section',
+          handler: (args: string[]) => ({ type: 'Sub Sub Section', title: args[1] || '', content: args[2] || '', position: lateX.indexOf(args[0] || '') })
+        },
+        {
+          regex: /\\paragraph{([^}]*)}([^\\]*)/g,
+          blockType: 'Paragraph',
+          handler: (args: string[]) => ({ type: 'Paragraph', title: args[1] || '', content: args[2] || '', position: lateX.indexOf(args[0] || '') })
+        },
+        {
+          regex: /\\begin{itemize}([^]*?)\\end{itemize}/g,
+          blockType: 'Ordered List',
+          handler: (args: string[]) => ({ type: 'Ordered List', content: args[0] || '', position: lateX.indexOf(args[0] || '') })
+        },
+        {
+          regex: /\\begin{enumerate}([^]*?)\\end{enumerate}/g,
+          blockType: 'Unordered List',
+          handler: (args: string[]) => ({ type: 'Unordered List', content: args[0] || '', position: lateX.indexOf(args[0] || '') })
+        },
+      ];
 
-    const extractedBlocks: any[] = [];
+      const extractedBlocks:any[]=[];
 
-    extractionRules.forEach(rule => {
-      let match;
-      while ((match = rule.regex.exec(lateX)) !== null) {
-        const block = rule.handler(match.slice(1).map(arg => arg.trim().replace(/<ltk>/g, '')));
-        if (block) {
-          extractedBlocks.push(block);
+      extractionRules.forEach(rule => {
+        let match;
+        while ((match = rule.regex.exec(lateX)) !== null) {
+          //console.log('match',match)
+          const block = rule.handler(match.slice(0).map((arg: string) => arg.trim().replace(/<ltk>/g, '')));
+          //console.log('block',block)
+          if (block) {
+            extractedBlocks.push(block);
+            //console.log('extractedBlocks',extractedBlocks)
+          }
         }
-      }
-    });
+      });
 
-    // Sort extracted blocks by their positions in the document
-    extractedBlocks.sort((a, b) => a.position - b.position);
+      // Sort extracted blocks by their positions in the document
+      extractedBlocks.sort((a, b) => a.position - b.position);
 
-    // Add blocks to the output in the sorted order
-    extractedBlocks.forEach(block => {
-      switch (block.type) {
-        case 'Overview':
-          this.addBlock('Overview', true, block.content);
-          break;
-        case 'Section':
-          this.addBlock('Section', true, block.content, block.title);
-          break;
-        case 'Sub Section':
-          this.addBlock('Sub Section', true, block.content, block.title);
-          break;
-        case 'Sub Sub Section':
-          this.addBlock('Sub Sub Section', true, block.content, block.title);
-          break;
-        case 'Paragraph':
-          this.addBlock('Paragraph', true, block.content, block.title);
-          break;
-        case 'Ordered List':
-          const itemList = block.content.match(/\\item\s([^\\]*)/g);
-          const items = itemList ? itemList.map((item: string) => item.replace(/\\item\s/, '').trim()) : [];
-          this.addBlock('Ordered List', true, items);
-          break;
-        case 'Unordered List':
-          const itemList1 = block.content.match(/\\item\s([^\\]*)/g);
-          const items1 = itemList1 ? itemList1.map((item: string) => item.replace(/\\item\s/, '').trim()) : [];
-          this.addBlock('Unordered List', true, items1);
-          break;
-        // Add cases for other types of blocks
-      }
+      // Add blocks to the output in the sorted order
+      extractedBlocks.forEach(block => {
+        switch (block.type) {
+          case 'Overview':
+            this.addBlock('Overview', true, block.content);
+            break;
+          case 'Section':
+            this.addBlock('Section', true, block.content, block.title);
+            break;
+          case 'Sub Section':
+            this.addBlock('Sub Section', true, block.content, block.title);
+            break;
+          case 'Sub Sub Section':
+            this.addBlock('Sub Sub Section', true, block.content, block.title);
+            break;
+          case 'Paragraph':
+            this.addBlock('Paragraph', true, block.content, block.title);
+            break;
+          case 'Ordered List':
+            const itemList = block.content.match(/\\item\s([^\\]*)/g);
+            const items = itemList ? itemList.map((item: string) => item.replace(/\\item\s/, '').trim()) : [];
+            this.addBlock('Ordered List', true, items);
+            break;
+          case 'Unordered List':
+            const itemList1 = block.content.match(/\\item\s([^\\]*)/g);
+            const items1 = itemList1 ? itemList1.map((item: string) => item.replace(/\\item\s/, '').trim()) : [];
+            this.addBlock('Unordered List', true, items1);
+            break;
+          // Add cases for other types of blocks
+        }
+      });
     });
   }
 
+  // extractionDataoldx() {
+  //   this.isOpen = true;
+  //   //console.log("openLateXXX: ", this.latexcode?.document);
+  //   const lateX = this.latexcode?.document
+  //   //   const lateX = this.latexBlock.forEach(item => {
+  //   //     console.log('itemDoc',item.document);
+  //   // });
+
+  //   // Extract Title
+  //   this.title = lateX.match(/\\title\s*{([^}]*)}/); ///\\abstract\s*([^]*)/;
+  //   this.title = this.title && this.title.length > 1 ? this.title[1] : '';
+
+  //   // Extract Author
+  //   this.author = lateX.match(/\\author{([^}]*)}/);
+  //   this.author = this.author && this.author.length > 1 ? this.author[1] : '';
+
+  //   //Extract Date
+  //   const dateMatch = lateX.match(/\\date{([^}]*)}/);
+  //   this.date = dateMatch && dateMatch.length > 1 ? dateMatch[1] : '';
+
+  //   //Extract Blocks data
+  //   const extractionRules = [
+  //     {
+  //       regex: /\\newpage([^\\]*)/g,
+  //       blockType: 'Page Break',
+  //       handler: (args: string[]) => ({ type: 'Page Break', content: args[0] || '', position: lateX.indexOf(args[0] || '') })
+  //     },
+  //     {
+  //       regex: /\\abstract([^\\]*)/g,
+  //       blockType: 'Overview',
+  //       handler: (args: string[]) => ({ type: 'Overview', content: args[0] || '', position: lateX.indexOf(args[0] || '') })
+  //     },
+  //     {
+  //       regex: /\\section{([^}]*)}([^\\]*)/g,
+  //       blockType: 'Section',
+  //       handler: (args: string[]) => ({ type: 'Section', title: args[0] || '', content: args[1] || '', position: lateX.indexOf(args[0] || '') })
+  //     },
+  //     {
+  //       regex: /\\subsection{([^}]*)}([^\\]*)/g,
+  //       blockType: 'Sub Section',
+  //       handler: (args: string[]) => ({ type: 'Sub Section', title: args[0] || '', content: args[1] || '', position: lateX.indexOf(args[0] || '') })
+  //     },
+  //     {
+  //       regex: /\\subsubsection{([^}]*)}([^\\]*)/g,
+  //       blockType: 'Sub Sub Section',
+  //       handler: (args: string[]) => ({ type: 'Sub Sub Section', title: args[0] || '', content: args[1] || '', position: lateX.indexOf(args[0] || '') })
+  //     },
+  //     {
+  //       regex: /\\paragraph{([^}]*)}([^\\]*)/g,
+  //       blockType: 'Paragraph',
+  //       handler: (args: string[]) => ({ type: 'Paragraph', title: args[0] || '', content: args[1] || '', position: lateX.indexOf(args[0] || '') })
+  //     },
+  //     {
+  //       regex: /\\begin{itemize}([^]*?)\\end{itemize}/g,
+  //       blockType: 'Ordered List',
+  //       handler: (args: string[]) => ({ type: 'Ordered List', content: args[0] || '', position: lateX.indexOf(args[0] || '') })
+  //     },
+  //     {
+  //       regex: /\\begin{enumerate}([^]*?)\\end{enumerate}/g,
+  //       blockType: 'Unordered List',
+  //       handler: (args: string[]) => ({ type: 'Unordered List', content: args[0] || '', position: lateX.indexOf(args[0] || '') })
+  //     },
+  //   ];
+
+  //   const extractedBlocks: any[] = [];
+
+  //   extractionRules.forEach(rule => {
+  //     let match;
+  //     while ((match = rule.regex.exec(lateX)) !== null) {
+  //       const block = rule.handler(match.slice(1).map(arg => arg.trim().replace(/<ltk>/g, '')));
+  //       if (block) {
+  //         extractedBlocks.push(block);
+  //       }
+  //     }
+  //   });
+
+  //   // Sort extracted blocks by their positions in the document
+  //   extractedBlocks.sort((a, b) => a.position - b.position);
+
+  //   // Add blocks to the output in the sorted order
+  //   extractedBlocks.forEach(block => {
+  //     switch (block.type) {
+  //       case 'Overview':
+  //         this.addBlock('Overview', true, block.content);
+  //         break;
+  //       case 'Section':
+  //         this.addBlock('Section', true, block.content, block.title);
+  //         break;
+  //       case 'Sub Section':
+  //         this.addBlock('Sub Section', true, block.content, block.title);
+  //         break;
+  //       case 'Sub Sub Section':
+  //         this.addBlock('Sub Sub Section', true, block.content, block.title);
+  //         break;
+  //       case 'Paragraph':
+  //         this.addBlock('Paragraph', true, block.content, block.title);
+  //         break;
+  //       case 'Ordered List':
+  //         const itemList = block.content.match(/\\item\s([^\\]*)/g);
+  //         const items = itemList ? itemList.map((item: string) => item.replace(/\\item\s/, '').trim()) : [];
+  //         this.addBlock('Ordered List', true, items);
+  //         break;
+  //       case 'Unordered List':
+  //         const itemList1 = block.content.match(/\\item\s([^\\]*)/g);
+  //         const items1 = itemList1 ? itemList1.map((item: string) => item.replace(/\\item\s/, '').trim()) : [];
+  //         this.addBlock('Unordered List', true, items1);
+  //         break;
+  //       // Add cases for other types of blocks
+  //     }
+  //   });
+  // }
+
+
+  
   //ORDERLIST EXTRACTION
+  
   updateOrderListItemsForm(itemizedItems: string[]): void {
     // Clear existing items
     while (this.orderListItems.length !== 0) {
@@ -658,18 +1048,51 @@ export class DoceditorComponent {
     });
   }
 
+  //Save As dialog box!!
+  downloadDialog() {
+    //without saving/updating the document cannot select the SaveAs.
+    if (!this.documentId || this.documentId === null || this.sId && !this.openId) {
+      this.toast.error('Please save changes before making a copy')
+      return;
+    }
+
+    const dialogRef = this.dialog.open(DownloadBoxComponent, {
+      width: '500px',
+      height: '200px',
+      data: {
+        //documentname: this.documentname,,
+        documentId: this.documentId
+      },
+      hasBackdrop: true,
+      panelClass: 'hello',
+      autoFocus: true
+    });
+    dialogRef.afterClosed().subscribe((result: { docid: any, documentname: any}) => {
+      if (result) {
+        this.documentname = result.documentname;
+        this.documentId = result.docid;
+        //console.log('docname', this.documentId)
+        this.httpservice.sendGetLatexDoc(URLUtils.savedDocid(this.documentId)).subscribe(
+          (res: any) => {
+
+          });
+      }
+    });
+
+  }
+
   deleteDoc() {
     if (this.documentId == '' || this.documentId == null) {
-      this.toast.info('Please select the document!');
+      this.toast.error('Please select the document!');
     }
     if (this.documentId) {
-      this.confirmationDialogService.confirm('Confirmation', 'Are you sure you want to delete this Document?', true, 'Yes', 'No')
+      this.confirmationDialogService.confirm('Confirmation', 'Are you sure! you want to delete this document?', true, 'Yes', 'No')
         .then((confirmed) => {
           if (confirmed) {
             this.httpservice.sendDeleteLatexRequest(URLUtils.deleteDocid(this.documentId)).subscribe((res: any) => {
               if (!res.error) {
-                this.newDoc();
                 this.toast.success('Document deleted successfully');
+                window.location.reload();
               }
             },
               (error: HttpErrorResponse) => {
@@ -788,6 +1211,7 @@ export class OpendialogBoxComponent {
 })
 
 @Injectable()
+//Saveas dialogComponent in Editor
 export class DownloadBoxComponent {
 
   @Input() documentId: any;
@@ -795,13 +1219,16 @@ export class DownloadBoxComponent {
   documentname: any;
   mydForm: any;
   submitted = false;
+  successModel: boolean = false;
+  saveasModal: boolean = false;
+  successGrpName: any;
+  @Input() docSaved= false;
 
   constructor(
     public dialogRef: MatDialogRef<DownloadBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { documentname: string, documentId: any },
-    private httpservice: HttpService, private toast: ToastrService, public sanitizer: DomSanitizer, private fb: FormBuilder) {
+    private httpservice: HttpService, private confirmationDialogService: ConfirmationDialogService, private toast: ToastrService, private router: Router, public sanitizer: DomSanitizer, private fb: FormBuilder) {
     this.documentname = data.documentname
     this.documentId = data.documentId
-
   }
 
   ngOnInit() {
@@ -812,16 +1239,34 @@ export class DownloadBoxComponent {
 
   downloadDoc() {
     this.submitted = true;
+    this.saveasModal = true;
 
     if (this.mydForm.valid && this.documentId) {
       const reqq = { "documentname": this.mydForm.value.documentname };
 
       this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(this.documentId), reqq).subscribe(
         (res: any) => {
-          this.toast.success(res.message);
+          //this.toast.info(res.message);
+          // this.saveasModal = false;
+          // this.successModel = true;
+          this.successGrpName = this.mydForm.value.documentname;
           this.dialogRef.close({ "docid": res.id, "documentname": this.mydForm.value.documentname });
           //console.log('name:',this.documentname)
+          if (!res.error) {
+            this.confirmationDialogService.confirm('Saved Successfully', 'Congratulations! You have successfully created the ' + this.successGrpName + ' document', true, 'View Document', 'Create Document', true, undefined).then((confirmed) => {
+              if (confirmed){
+                this.router.navigate(['/viewdoc']);
+                this.docSaved = true;
+              }
+              else
+                window.location.reload();
+            })
+          }
+          //else {
+          //   this.confirmationDialogService.confirm('Alert', res.msg, false, '', '', false, 'sm', false)
+          // }
         },
+
         (error: HttpErrorResponse) => {
           if (error.status === 400 || error.status === 401 || error.status === 403) {
             const errorMessage = error.error.msg || 'Unauthorized';
@@ -829,6 +1274,10 @@ export class DownloadBoxComponent {
           }
         }
       );
+
+      // this.saveasModal = false;
+      // this.successModel = true;
+      // this.successGrpName = this.mydForm.value.documentname;
     }
     else {
       //this.submitted = false;
@@ -859,11 +1308,14 @@ export class ViewDocComponent {
   searchText: any = '';
 
   @Input() documentId: any;
+  @Input() documentname: any;
   latexdoc = environment.lateXAPI;
   pdfSrc!: SafeResourceUrl;
   docId: any;
   isReverse: boolean = false;
   sortKey: string = '';
+  createdBy: any;
+  errorMsg: boolean = false;
 
   constructor(private router: Router, private fb: FormBuilder, private httpservice: HttpService,
     private toast: ToastrService, private documentService: DocumentService, private cdr: ChangeDetectorRef,
@@ -879,9 +1331,15 @@ export class ViewDocComponent {
     this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
       (res: any) => {
         this.documents = res;
-        //this.documents = res[0].documentname;
+        this.createdBy = localStorage.getItem('name'); //Get value from localStorage
+        // console.log('token',this.createdBy)
+        // this.documents = res[0].documentname;
         // console.log('this.documents', this.documents)
         // console.log('doc', res.documentname)
+
+        //if not createdDocuments then throw an error msg.
+        this.errorMsg = this.documents.length == 0 ? true : false;
+        //console.log('errorMsg', this.errorMsg)
       }
     );
   }
@@ -901,7 +1359,7 @@ export class ViewDocComponent {
 
   deleteDocument(item: any) {
     if (item && item.docid) {
-      this.confirmationDialogService.confirm('Confirmation', ' Are you sure! Do you want to delete this ' + item?.documentname + ' Document?!', true, 'Yes', 'No')
+      this.confirmationDialogService.confirm('Confirmation', 'Are you sure! you want to delete ' + item?.documentname + ' document?', true, 'Yes', 'No')
         .then((confirmed) => {
           if (confirmed) {
             this.httpservice.sendDeleteLatexRequest(URLUtils.deleteDocid(item.docid)).subscribe((res: any) => {
@@ -919,12 +1377,19 @@ export class ViewDocComponent {
           }
         });
     } else {
-      //console.error('Document ID is undefined or item is invalid:', item);
+      this.toast.error('Document not found!!');
     }
+    // this.httpservice.sendDeleteLatexRequest(URLUtils.deleteDocid(item.docid)).subscribe((res: any) => {
+    //   if (!res.error) {
+    //     this.getDocumentCall();
+    //     this.toast.success('Document deleted successfully');
+    // }
+    // })
   }
   //serach func!!
   onKeydown(event: any) {
   }
+
   openModal(id: string) {
     this.modalService.open(id);
   }
@@ -940,20 +1405,6 @@ export class ViewDocComponent {
 
     }
   }
-  // sortingDateFile(val: string) {
-  //   if (this.sortKey === val) {
-  //     this.isReverse = !this.isReverse;
-  //   } else {
-  //     this.sortKey = val;
-  //     this.isReverse = false;
-  //   }
-
-  //   this.documents = this.documents?.sort((p1: any, p2: any) => {
-  //     const date1 = new Date(p1[val]);
-  //     const date2 = new Date(p2[val]);
-  //     return this.isReverse ? date2.getTime() - date1.getTime() : date1.getTime() - date2.getTime();
-  //   });
-  // }
 
   sortingDateFile(val: string) {
     if (this.sortKey === val) {
@@ -985,6 +1436,33 @@ export class ViewDocComponent {
       sortedDocuments.reverse();
     }
     this.documents = sortedDocuments;
+  }
+
+  //Save As dialog box!!
+  saveasDialog(item: any) {
+    const dialogRef = this.dialog.open(SaveasBoxComponent, {
+      width: '500px',
+      height: '252px',
+      data: {
+        documentname: item.documentname,
+        //documentId: this.documentId
+      },
+      hasBackdrop: true,
+      panelClass: 'hello',
+      autoFocus: true
+    });
+
+    //console.log('data',dialogRef)
+    dialogRef.afterClosed().subscribe((result: { docid: any, documentname: any }) => {
+      if (result) {
+        item.documentname = result.documentname;
+        item.documentId = result.docid;
+        //console.log('docname',this.documentname)
+        // this.httpservice.sendGetLatexDoc(URLUtils.savedDocid(this.documentId)).subscribe(
+        //   (res: any) => {
+        //   });
+      }
+    });
   }
 
   closeModal(id: string) {
@@ -1061,4 +1539,154 @@ export class ContentDialogComponent {
     }
   }
 
+}
+
+
+@Component({
+  selector: 'app-saveas-box',
+  templateUrl: './saveas-box.component.html',
+  styleUrls: ['./doceditor.component.scss']
+})
+
+@Injectable()
+//Saveas dialogComponent in View
+export class SaveasBoxComponent {
+
+  @Input() documentId: any;
+  @Input() myForm: any;
+  @Input() documentname: any;
+  mydForm: any;
+  submitted = false;
+  successModel: boolean = false;
+  saveasModal: boolean = false;
+  successGrpName: any;
+  @Input() documents: any[] = [];
+  doco: any;
+
+  constructor(
+    public dialogRef: MatDialogRef<SaveasBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { documentname: string, documentId: any },
+    private httpservice: HttpService, private confirmationDialogService: ConfirmationDialogService, private toast: ToastrService, private router: Router, public sanitizer: DomSanitizer, private fb: FormBuilder) {
+    this.documentname = data.documentname
+    //this.documentId = data.documentId
+
+  }
+
+  ngOnInit() {
+    this.mydForm = this.fb.group({
+      documentname: ['', Validators.required],
+    });
+    this.getDocumentCall();
+  }
+
+  // downloadDoc() {
+  //   this.submitted = true;
+  //   this.saveasModal = true;
+
+  //   if (this.mydForm.valid && this.documentId) {
+  //     const reqq = { "documentname": this.mydForm.value.documentname };
+
+  //     this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(this.documentId), reqq).subscribe(
+  //       (res: any) => {
+  //         //this.toast.success(res.message);
+  //         // this.saveasModal = false;
+  //         // this.successModel = true;
+  //         this.successGrpName = this.mydForm.value.documentname;
+  //         this.dialogRef.close({ "docid": res.id, "documentname": this.mydForm.value.documentname });
+  //         //console.log('name:',this.documentname)
+  //         if (!res.error) {
+  //           this.confirmationDialogService.confirm('Saved Successfully', 'Congratulations! You have successfully created the '+this.successGrpName+' document', true, 'View Document', 'Create Document', true, undefined).then((confirmed) => {
+  //             if (confirmed)
+  //               this.router.navigate(['/viewdoc']);
+  //             else
+  //               window.location.reload();
+  //           })
+  //          } 
+  //         //else {
+  //         //   this.confirmationDialogService.confirm('Alert', res.msg, false, '', '', false, 'sm', false)
+  //         // }
+  //       },
+
+  //       (error: HttpErrorResponse) => {
+  //         if (error.status === 400 || error.status === 401 || error.status === 403) {
+  //           const errorMessage = error.error.msg || 'Unauthorized';
+  //           this.toast.error(errorMessage);
+  //         }
+  //       }
+  //     );
+
+  //     // this.saveasModal = false;
+  //     // this.successModel = true;
+  //     // this.successGrpName = this.mydForm.value.documentname;
+  //   }
+  //   else {
+  //     //this.submitted = false;
+  //     this.toast.error('Please save the document and provide a valid filename.');
+  //   }
+  // }
+
+  getDocumentCall() {
+    //Get all Document
+    this.httpservice.sendGetLatexDoc(URLUtils.getDocument).subscribe(
+      (res: any) => {
+        this.documents = res;
+        //this.documents = res[0].documentname;
+      }
+    );
+  }
+
+  downloadDoc() {
+    this.submitted = true;
+    this.saveasModal = true;
+
+    //if (this.mydForm.valid && this.documentId) {
+    const reqq = { "documentname": this.mydForm.value.documentname };
+    this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(this.documentId), reqq).subscribe(
+      (res: any) => {
+        this.successGrpName = this.mydForm.value.documentname;
+        this.dialogRef.close({ "docid": res.id, "documentname": this.mydForm.value.documentname });
+        //console.log('name:',this.documentname)
+        if (!res.error) {
+          this.confirmationDialogService.confirm('Success', 'Congratulations! New version was created successfully', true, 'View Document', 'Create Document', true, undefined).then((confirmed) => {
+            if (confirmed) {
+              window.location.reload()
+              //this.getDocumentCall();
+              this.router.navigate(['/viewdoc']);
+            }
+            else
+              window.location.reload();
+          })
+        }
+      },
+    );
+    //}
+
+
+    // if (this.mydForm.valid && this.documentId) {
+    //   const reqq = { "documentname": this.mydForm.value.documentname };
+
+    //   this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(this.documentId), reqq).subscribe(
+    //     (res: any) => {
+    //       this.successGrpName = this.mydForm.value.documentname;
+    //       this.dialogRef.close({ "docid": res.id, "documentname": this.mydForm.value.documentname });
+    //       //console.log('name:',this.documentname)
+    //       if (!res.error) {
+    //         this.confirmationDialogService.confirm('Saved Successfully', 'Congratulations! You have successfully created the '+this.successGrpName+' document', true, 'View Document', 'Create Document', true, undefined).then((confirmed) => {
+    //           if (confirmed)
+    //             this.router.navigate(['/viewdoc']);
+    //           else
+    //             window.location.reload();
+    //         })
+    //        } 
+    //     },
+    //   );
+    // }
+    // else {
+    //   //this.submitted = false;
+    //   this.toast.error('Please save the document and provide a valid filename.');
+    // }
+  }
+
+  closeDialog() {
+    this.dialogRef.close()
+  }
 }
