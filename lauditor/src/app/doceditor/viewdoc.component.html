@@ -72,7 +72,7 @@
               
             <td>{{ i.documentname }}</td>
             <td>{{ i.updatedon?.$date | date:'MMM dd, yyyy' }}</td> 
-            <td> --- </td>
+            <td> {{this.createdBy}} </td>
             <td>
               <div class="dropdown">
                 <button class="btn btn-primary dropdown-toggle actionbtn" data-bs-toggle="dropdown" aria-expanded="false"> Action </button>
@@ -80,14 +80,15 @@
                   <li>
                     <a class="dropdown-item" (click)="viewDocument(i);openModal('view-doc-1')">View</a>
                   </li>
-                  <!-- <li>
-                    <a class="dropdown-item">Save As</a>
-                  </li> -->
+                   <!-- <li>
+                    <a class="dropdown-item" (click)="saveasDialog(i)">Save As</a>
+                  </li>  -->
                   <li>
                     <a class="dropdown-item" (click)="deleteDocument(i)">Delete</a>
                   </li>
                 </ul>
               </div>
+              <!-- <button (click)="deleteDocument(i)">Delete</button>  -->
             </td>
           </tr>
         </tbody>
@@ -97,9 +98,9 @@
   <!-- </div> -->
 
   
-  <!-- <div *ngIf="invoicelist && invoicelist?.length === 0 && errorMsg" class="custom-alert padded"> 
-    List of Invoices not available !!
-  </div> -->
+  <div *ngIf="documents && documents?.length === 0 && errorMsg" class="custom-alert padded"> 
+    List of Documents not available!!
+  </div>
   
   <!-- Modal for View the Document-->
   <jw-modal id="view-doc-1" class=" view-doc-1 doc-view-scs ">
