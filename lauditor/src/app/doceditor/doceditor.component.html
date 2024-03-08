@@ -23,10 +23,12 @@
 <!-- Header ends here-->
 
 <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-6 overRoll" #pdfContent> 
-        <div class="lableTitle layout">Layout: {{documentname}}</div>
+    <div class="col-xs-12 col-sm-12 col-md-6 overRoll" #pdfContent>           
+        <!-- <div class="lableTitle layout">Layout: {{documentname}}</div> -->
+        <div class="lableTitle layout" *ngIf="!docSaved">Untitled Document.pdf</div>
+        <div class="lableTitle layout" *ngIf="docSaved">{{documentname}}.pdf</div>
         <form [formGroup]="myForm">
-
+       
         <div class="col-xs-6"> 
             <!-- FILE -->
             <button class="menuBtn1" mat-button [matMenuTriggerFor]="menu1">File<i class="fa fa-angle-down" aria-hidden="true"></i></button>
@@ -53,7 +55,7 @@
         
         <div class="form-group">
             <label for="title" class="lableTitle">Title</label>
-            <input formControlName="title" [(ngModel)]="title" placeholder="Enter Title" type="text" class="text-size form-control createDoc" name="title">
+            <input formControlName="title" maxlength="50" [(ngModel)]="title" placeholder="Enter Title" type="text" class="text-size form-control createDoc" name="title">
             <!-- <div *ngIf="myForm.get('title').errors && submitted" class="errorStyle">
                 <div *ngIf="myForm.get('title').errors.required">This field is required</div>
             </div> -->
@@ -81,7 +83,7 @@
                     <input formControlName="contentTitle" class="overviewTitle" type="text" readonly/>
                     <img (click)="opencontentDialog(item,i)" *ngIf="item.value.content === 'Section' || item.value.content === 'Sub Section' || item.value.content === 'Sub Sub Section' || item.value.content === 'Paragraph'" class="expand" src="assets/img/expand.svg"/> 
                     <i class="fa fa-times close secclose" (click)="removeItem(i)" aria-hidden="true"></i>
-                    <textarea formControlName="contentData" placeholder="Enter your content" class="text-size form-control textareaDoc" rows="3" cols="50"></textarea>
+                    <textarea formControlName="contentData" placeholder="Enter your content" class="text-size form-control textareaDoc" (keydown)="onKeyDown($event)" rows="3" cols="50"></textarea>
                   </div>
 
                 <!--Order & Unorder lists-->
@@ -89,18 +91,23 @@
                     <label for="title" class="lableTitle" style="padding-right:5px">{{item.value.content}}</label>
                     <mat-icon class="closePlus iOd" aria-hidden="true" (click)="addNestedContentItem(i)">add_circle_outline</mat-icon>
                     <i class="fa fa-times close" aria-hidden="true" (click)="removeItem(i)"></i>
-                    <div formArrayName="orderListItems">
+                    <div class="listScroll" formArrayName="orderListItems">
                     <div class="oderAlign" *ngFor="let orderitem of item.get('orderListItems').controls; let j = index;" [formGroupName]="j"> 
                         <div *ngIf="listView">
-                            <input formControlName="contentData" placeholder="Enter list items" type="text" class="text-size form-control createDoc"/> 
+                            <input (keydown)="onKeyDown($event)" formControlName="contentData" placeholder="Enter list items" type="text" class="text-size form-control createDoc"/> 
                         </div>
                         <div *ngIf="!listView">
-                            <input formControlName="contentData" *ngIf="j != 0"  placeholder="Enter list items" type="text" class="text-size form-control createDoc"/> 
+                            <input (keydown)="onKeyDown($event)" formControlName="contentData" *ngIf="j != 0"  placeholder="Enter list items" type="text" class="text-size form-control createDoc"/> 
                         </div>
                         <i class="fa-solid fa-trash delIcon" *ngIf="j != 0" (click)="removeList(i,j)"></i> 
                     </div> 
                     </div>
                   </div>
+                  
+                  <!-- Validation for empty Blocks -->
+                  <!-- <div *ngIf="item.get('contentData').errors && submitted" class="errorStyle">
+                    <div *ngIf="item.get('contentData').errors.required">Please enter valid content</div>
+                  </div> -->
 
                 <!-- Page Break -->
                 <div class="form-group" id="narrow" *ngIf="isPageBreak(item.value.content)">
@@ -108,8 +115,6 @@
                 </div> 
             </div>
             </ng-container>
-
-
         </div>
 
         <!-- /Contents -->
@@ -143,7 +148,7 @@
         </div>
 
         <div class="iframeStyle">
-            <iframe height="100%" width="97%" class="responsive-iframe" [hidden]="!showPreviewDoc" [src]='pdfSrc' frameborder="0"><!--[hidden]="!showPreviewDoc"-->
+            <iframe height="100%" width="100%" class="responsive-iframe" [hidden]="!showPreviewDoc" [src]='pdfSrc' frameborder="0"><!--[hidden]="!showPreviewDoc"-->
                 <div class="form-group">
                 </div>
             </iframe>
