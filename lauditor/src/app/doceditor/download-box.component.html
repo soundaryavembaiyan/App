@@ -1,6 +1,5 @@
 <!-- DOWNLOAD DIALOG BOX -->
 <div class="overviewDialog">
-
     <form [formGroup]="mydForm">
     <div class="closeDialog">
         <i class="fa fa-times xClose" (click)="closeDialog()" aria-hidden="true"></i>
@@ -9,7 +8,7 @@
     <div class="openDialog">
         <div class="form-group">
             <label for="title" class="lableTitle overedText">File name</label>
-            <input formControlName="documentname" type="text" class="text-size form-control createDoc" name="title">
+            <input formControlName="documentname" maxlength="50" placeholder="Enter document name" type="text" class="text-size form-control createDoc" name="title">
             <div *ngIf="mydForm.get('documentname').errors && submitted" class="errorStyle">
                 <div *ngIf="mydForm.get('documentname').errors.required">Filename is required</div>
             </div> 
@@ -22,7 +21,6 @@
 
     </div>
     </form>
-    
 </div>
 
 
