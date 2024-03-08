@@ -1,6 +1,6 @@
 <!-- OPEN DOCUMENT DIALOG -->
 <div class="overviewDialog">
-    <form >
+    <form>
     <div class="closeDialog">
         <i class="fa fa-times closeBtn" (click)="closeDialog()" aria-hidden="true"></i>
     </div>
@@ -15,8 +15,8 @@
               <div class="innerCont" (click)="ondocumentClick(d.docid,d.documentname)"><!-- ;child.extractionData(); -->
                       <div class="contBox hoverDoc">
                         <p><i class="fa fa-file-text ico" aria-hidden="true"></i>&nbsp;{{truncateString(d.documentname)}} </p>
-                         <p class="hoverTime"> {{d.updatedon?.$date}}</p>
-                         <!-- <p class="hoverTime"> {{d.updatedon?.$date | date:'MMM d, y'}}</p> -->
+                         <!-- <p class="hoverTime"> {{d.updatedon?.$date}}</p> -->
+                         <p class="hoverTime"> {{d.updatedon?.$date | date :"EEEE, MMM d, y h:mm:ss a zzzz"}}</p>
                       </div>
               </div>
             </div>
