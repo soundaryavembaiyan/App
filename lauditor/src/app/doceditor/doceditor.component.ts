@@ -169,8 +169,6 @@ export class DoceditorComponent {
   addBlock(type: string, editBlock?: boolean, value?: any, valueTitle?: any) {
     this.isOpen = true;
     this.content = type;
-    //console.log('addBlock content', this.content);
-    //console.log('len', this.myForm.value.contentListItems);
     const contentListItems = this.myForm.get('contentListItems') as FormArray;
     //console.log('contentListItems', contentListItems)
 
