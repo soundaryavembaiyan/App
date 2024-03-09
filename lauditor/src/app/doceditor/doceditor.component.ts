@@ -349,9 +349,6 @@ export class DoceditorComponent {
     window.location.reload();
 
     const preservedValues = {
-      // title: this.myForm.get('title').value,
-      // author: this.myForm.get('author').value,
-      // date: this.myForm.get('date').value,
       title: 'New Document',
       author: 'Author',
       date: new Date()
