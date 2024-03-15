@@ -43,10 +43,10 @@ export class DoceditorComponent {
   documents: any[] = [];
 
   documentname: any;
-  // title: string = 'New Document';
-  // author: string = 'Author';
-  title: any;
-  author: any;
+  title: string = '';
+  author: string = '';
+  // title: any;
+  // author: any;
 
   disabled = false;
   //isPageBreak: boolean = false;
@@ -67,8 +67,9 @@ export class DoceditorComponent {
   isDisplay: boolean = true;
   selectedOption: any;
 
-  currentDate = new Date();
-  date = this.currentDate;
+  //  currentDate = new Date();
+  //  date = this.currentDate;
+   date:any;
 
   isOpen: boolean = false;
   blocks: any[] = [];
@@ -192,7 +193,7 @@ export class DoceditorComponent {
     //console.log('addBlock content', this.content);
     //console.log('len', this.myForm.value.contentListItems);
     const contentListItems = this.myForm.get('contentListItems') as FormArray;
-    console.log('contentListItems', contentListItems.value)
+    //console.log('contentListItems', contentListItems.value)
 
     // ***OVERVIEW CONDITIONS*** //
     // Overview - Check if adding an overview when one already exists
@@ -318,7 +319,7 @@ export class DoceditorComponent {
     this.latexDialog = true;
     const dialogRef = this.dialog.open(ContentDialogComponent, {
       width: '600px',
-      height: '330px',
+      height: '340px',
       data: {
         contentData: item.value.contentData,
         contentTitle: item.value.contentTitle,
@@ -348,7 +349,7 @@ export class DoceditorComponent {
     this.latexDialog = true;
     const dialogRef = this.dialog.open(OverviewExpandComponent, {
       width: '600px',
-      height: '400px',
+      height: '340px',
       data: {
         contentData: item.value.contentData,
         //contentTitle: item.value.contentTitle,
@@ -411,7 +412,7 @@ export class DoceditorComponent {
       // date: this.myForm.get('date').value,
       title: 'New Document',
       author: 'Author',
-      date: new Date()
+      //date: new Date()
     };
     this.myForm.patchValue(preservedValues); //values back into the form
   }
@@ -454,7 +455,10 @@ export class DoceditorComponent {
       inputValue.charAt(0) === '7' || inputValue.charAt(0) === '8' || inputValue.charAt(0) === '9') {
       inputValue = inputValue.substring(1);
       event.target.value = inputValue;
+      this.toast.error('Numbers should not be first thing')
+      return;
     }
+
   }
   restrictSpaces(event: any) {
     let inputValue: string = event.target.value;
@@ -470,21 +474,78 @@ export class DoceditorComponent {
       inputValue = inputValue.substring(1);
       // Update the input field value
       event.target.value = inputValue;
+      // this.toast.error('Special characters should not take place at first position')
+      this.toast.error('Hyphens (-) and underscore (_) should not be the first thing')
+      return;
     }
   }
 
   saveDocument() {
-    this.submitted = true;
+    //this.submitted = true;
 
-    const title = this.myForm.value.title
     const contentListItems = this.myForm.get('contentListItems') as FormArray;
-    const form = this.myForm.value
-    console.log('form', form)
+    const form = this.myForm.value.title
+    console.log('contentListItems', contentListItems.value)
+    //console.log('content data', contentListItems.value.contentData)
 
-    // if (!this.myForm.valid) {
+    // if (form == '' || form == undefined) {
+    //   this.submitted = true;
+    //   //this.toast.error('form invalid')
     //   return
     // }
-      
+    // this.submitted = false;
+    if(contentListItems.length <= 0){
+      this.toast.error('Please add atleast one content!');
+      return
+    }
+
+    for (let i = 0; i < contentListItems.length; i++) {
+      const item = contentListItems.at(i);
+      if (item) {
+        const getContent = item.get('content')?.value;
+        this.contentDataControl = item.get('contentData');
+        this.contentTitleControl = item.get('contentTitle');
+        // console.log('getContent:', getContent);
+        //console.log('item:', item);
+        // console.log('contentDataControl', this.contentDataControl.value);
+        // console.log('contentTitleControl', this.contentTitleControl.value);
+
+        const data = this.contentDataControl.value;
+        if(getContent == 'Overview' || getContent == 'Section' || getContent == 'Sub Section' || getContent == 'Sub Sub Section' || getContent == 'Paragraph'){
+        if(data ==='' || data === undefined || data ===""){
+          this.toast.error('Please check the Content data');
+          return;
+        }
+      }
+
+        const orderListItems = item.get('orderListItems') as FormArray; // orderListItems within each item
+        this.listData = '';//prevent undefined!!!
+        // console.log('orderListItems:', orderListItems);
+        // console.log('orderListItems:', orderListItems.value[0].contentData);
+        // console.log('lisDat:', this.listData);
+
+        const data2 = orderListItems.value[0].contentData;
+        if(getContent == 'Ordered List' || getContent == 'Unordered List'){
+        if(data2 ==='' || data2 === undefined || data2 ===""){
+          this.toast.error('Please check the List data');
+          return;
+        }
+        }
+
+        for (let j = 0; j < orderListItems.length; j++) {
+          const itemo = orderListItems.at(j);
+          if (itemo) {
+            this.listData += `\\item ${itemo.get('contentData')?.value}`; //get all ordered & unordered lists
+            //console.log('List Item:', this.listData);
+              // if(this.listData ==='' ||  this.listData === undefined ||  this.listData ===""){
+              //   this.toast.error('Please check the List data');
+              //   return;
+              // }
+          }
+        }
+      }
+    }
+
     if (!this.documentId && contentListItems.length !== 0) {
         this.modalService.open('custom-modal-1');
         return
@@ -495,23 +556,33 @@ export class DoceditorComponent {
       }
 
   }
+
   saveDoc() {
-    this.submitted = true;
+    //this.submitted = true;
     //this.saveData = true;
 
+    const saveForm = this.saveForm.value.documentname
+    //console.log('saveForm', saveForm)
+
+    if (saveForm === '') {
+      this.submitted = true;
+      //this.toast.error('invalid')
+      return
+    }
+
     let latexDocument = `\\documentclass{article}\\usepackage{geometry}\\geometry{a4paper,total={170mm,257mm},left=20mm,top=20mm,}<ltk>\\title
-    {${this.title}}<ltk>\\author{${this.author}}<ltk>\\date{${this.date}}<ltk>\\begin{document}<ltk>\\maketitle`;
+    {${this.title}}<ltk>\\author{${this.author}}<ltk>\\date{}<ltk>\\begin{document}<ltk>\\maketitle`;
 
     const contentListItems = this.myForm.get('contentListItems') as FormArray;
     //console.log('save contentListItems',contentListItems.value)
 
     //If no contents
-    if(contentListItems.length <= 0){
-      this.toast.info('Please add atleast one content!');
-      //contentListItems.push(this.addContent('Page Break'));
-      //this.submitted = false;
-      return
-    }
+    // if(contentListItems.length <= 0){
+    //   this.toast.info('Please add atleast one content!');
+    //   //contentListItems.push(this.addContent('Page Break'));
+    //   //this.submitted = false;
+    //   return
+    // }
 
     // Check if the document needs to be saved
     if (!this.documentId) { // if the docId is empty  || contentListItems.length === 0
@@ -527,16 +598,17 @@ export class DoceditorComponent {
           if (error.status === 400 || error.status === 403 || error.status === 500) {
             const errorMessage = error.error.message || 'Unauthorized';
             this.toast.error(errorMessage);
+            this.modalService.open('custom-modal-1'); //if status 400 exists the same dialog open
+            return;
           }
-        }
-        );
-        this.modalService.close('custom-modal-1');
-        this.docSaved = true;
-        this.documentname = req.documentname;//pass docname to layout
+        });
+      this.modalService.close('custom-modal-1');
+      this.docSaved = true;
+      this.documentname = req.documentname;//pass docname to layout
     } else {
       this.processContentItems(contentListItems, latexDocument); // If the document is already saved
     }
-}
+  }
 
   processContentItems(contentListItems: FormArray, latexDocument: string) {
     let currentPage = 1; // Track the current page number
@@ -908,8 +980,8 @@ export class DoceditorComponent {
       this.author = this.author && this.author.length > 1 ? this.author[1] : '';
 
       //Extract Date
-      const dateMatch = lateXArray[0].match(/\\date{([^}]*)}/);
-      this.date = dateMatch && dateMatch.length > 1 ? dateMatch[1] : '';
+      // const dateMatch = lateXArray[0].match(/\\date{([^}]*)}/);
+      // this.date = dateMatch && dateMatch.length > 1 ? dateMatch[1] : '';
 
       //Extract Blocks data
       const extractionRules = [
