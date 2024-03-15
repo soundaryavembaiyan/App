@@ -127,6 +127,7 @@ export class DoceditorComponent {
   showSpin:any
   saveData = true;
   saveForm:any;
+  editMeta:any;
 
   
   constructor(private router: Router, private idGenerator: RandomService, private appRef: ApplicationRef, private fb: FormBuilder, private httpservice: HttpService,
@@ -319,7 +320,7 @@ export class DoceditorComponent {
     this.latexDialog = true;
     const dialogRef = this.dialog.open(ContentDialogComponent, {
       width: '600px',
-      height: '340px',
+      height: '365px',
       data: {
         contentData: item.value.contentData,
         contentTitle: item.value.contentTitle,
@@ -349,7 +350,7 @@ export class DoceditorComponent {
     this.latexDialog = true;
     const dialogRef = this.dialog.open(OverviewExpandComponent, {
       width: '600px',
-      height: '340px',
+      height: '365px',
       data: {
         contentData: item.value.contentData,
         //contentTitle: item.value.contentTitle,
