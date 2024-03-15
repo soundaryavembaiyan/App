@@ -1,4 +1,4 @@
-<!-- DOWNLOAD DIALOG BOX -->
+<!-- SaveAs DIALOG BOX for SAVE-->
 <div class="overviewDialog">
     <form [formGroup]="mydForm">
     <div class="closeDialog">
@@ -6,14 +6,14 @@
     </div>
 
     <div class="openDialog">
+
         <div class="form-group">
-            <label for="title" class="lableTitle overedText">File name</label>
-            <input formControlName="documentname" maxlength="50" placeholder="Enter document name" type="text" class="text-size form-control createDoc" name="title">
+        <label for="title" class="lableTitle overedText">File name</label>
+        <input maxlength="25" formControlName="documentname" (input)="restrictFirstPosition($event);restrictSpaces($event);restrictFirstCharacter($event)" placeholder="Enter document name" type="text" pattern="[^\s]*" (keydown)="onKeyDown($event)" class="text-size form-control createDoc" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_ ]|^ /g,'')" name="title">
             <div *ngIf="mydForm.get('documentname').errors && submitted" class="errorStyle">
                 <div *ngIf="mydForm.get('documentname').errors.required">Filename is required</div>
-            </div> 
+            </div>  
         </div>
-
         <div class="overviewSave">
         <!-- <button type="reset" class="btn btn-default btncancel" (click)="closeDialog()">Cancel</button> -->
         <button type="submit" (click)="downloadDoc()" class="btn btn-default btnsave savecls">Save</button> 
