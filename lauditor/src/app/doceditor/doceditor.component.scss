@@ -266,8 +266,8 @@
 .overviewTitle {
     border: none;
     //width: 320px;
-    //width: 338px;
-    width: 330px;
+    //width: 330px;
+    width: 400px;
     outline: none;
     color: #212529;
     font-size: 18px;
@@ -318,8 +318,9 @@
     }
 
     .overviewTitle {
-        font-size: 1rem;
-        width: auto;
+        font-size: 15px;
+        //width: auto;
+        width: 270px;
     }
 }
 
@@ -718,8 +719,8 @@ table td {
 }
 
 .ovtextarea {
-    height: 195px;
-    width: 530px;
+    height: 205px;
+    width: 526px;
 }
 
 .list-container {
@@ -732,4 +733,8 @@ table td {
 }
 .savecreate{
     margin-top: 20px;
+}
+.textCount{
+    width: 30px;
+    margin-left: 18px;
 }
