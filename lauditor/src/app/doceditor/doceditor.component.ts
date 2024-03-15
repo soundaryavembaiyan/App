@@ -17,6 +17,7 @@ import { LatexblockComponent } from './latexblock/latexblock.component';
 import { RandomService } from '../services/random.service';
 import { __values } from 'tslib';
 import { debug } from 'strophe';
+import { NgxSpinnerService } from 'ngx-spinner';
 //import { DatePipe } from '@angular/common';
 //import jsPDF from 'jspdf';
 
@@ -34,14 +35,18 @@ export class DoceditorComponent {
   @ViewChildren('contento') contentoElements!: QueryList<ElementRef>;
   @ViewChild(LatexblockComponent) childComp!: LatexblockComponent;
 
+  //@ViewChild(SaveasBoxComponent) saveComp!: SaveasBoxComponent;
+
   product = environment.product;
   myForm: any;
   isDisabled: boolean = true;
   documents: any[] = [];
 
   documentname: any;
-  title: string = 'New Document';
-  author: string = 'Author';
+  // title: string = 'New Document';
+  // author: string = 'Author';
+  title: any;
+  author: any;
 
   disabled = false;
   //isPageBreak: boolean = false;
@@ -116,23 +121,38 @@ export class DoceditorComponent {
   openDoc = false;
   openId:any;
   sId:any;
+
+  showSpinner = false;
+  showSpin:any
+  saveData = true;
+  saveForm:any;
+
   
   constructor(private router: Router, private idGenerator: RandomService, private appRef: ApplicationRef, private fb: FormBuilder, private httpservice: HttpService,
     private toast: ToastrService, private documentService: DocumentService, private cdr: ChangeDetectorRef,
-    private renderer: Renderer2, private modalService: ModalService, private confirmationDialogService: ConfirmationDialogService,
+    private renderer: Renderer2, private modalService: ModalService, private spinnerService: NgxSpinnerService, private confirmationDialogService: ConfirmationDialogService,
     public sanitizer: DomSanitizer, public dialog: MatDialog) {
     this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(this.url);
   }
 
   ngOnInit() {
     this.myForm = this.fb.group({
-      title: [this.title],
-      author: [this.author],
-      date: [this.date],
+      // title: [this.title],
+      // author: [this.author],
+      title: ['', Validators.required],
+      author: ['', Validators.required],
+      date: [''],
+      //date: [this.date],
       contentListItems: this.fb.array([]),
     });
+
+    this.saveForm = this.fb.group({
+      documentname:['', Validators.required],
+    });
+
     this.getDocumentCall();
   }
+
 
   onKeyDown(event: KeyboardEvent): void {
     if (event.key === 'Enter') {
@@ -169,8 +189,10 @@ export class DoceditorComponent {
   addBlock(type: string, editBlock?: boolean, value?: any, valueTitle?: any) {
     this.isOpen = true;
     this.content = type;
+    //console.log('addBlock content', this.content);
+    //console.log('len', this.myForm.value.contentListItems);
     const contentListItems = this.myForm.get('contentListItems') as FormArray;
-    //console.log('contentListItems', contentListItems)
+    console.log('contentListItems', contentListItems.value)
 
     // ***OVERVIEW CONDITIONS*** //
     // Overview - Check if adding an overview when one already exists
@@ -180,7 +202,7 @@ export class DoceditorComponent {
     }
     // Overview - If trying to add Overview when other blocks already exist
     if (type === 'Overview' && contentListItems.length > 0 && !editBlock === true) {
-      this.toast.error('Cannot add Overview block after other blocks');
+      this.toast.error('Overview block should not be added after other blocks');
       return;
     }
 
@@ -202,15 +224,17 @@ export class DoceditorComponent {
       this.toast.error('Please select a Sub Section before adding a Sub Sub Section!');
       return;
     }
-    // ***SECTION CONDITIONS*** //
+    // ***SECTION CONDITIONS*** //    
 
     //Paragraph
     // if ((type === 'Sub Section' || type === 'Sub Sub Section') &&
-    //   contentListItems.controls.some(item => item.value.content === 'Paragraph')
+    //   contentListItems.controls.some(item => item.value.content === 'Paragraph') ||
+    //   contentListItems.controls.some(item => item.value.content === 'Ordered List') ||
+    //   contentListItems.controls.some(item => item.value.content === 'Unordered List')
     // ) {
     //   //contentListItems.push(this.addContent(type));
-    //   this.toast.error('123 Please select a Section before adding Sub Section or Sub Sub Section!');
-    //   return;
+    //   this.toast.info('Please select a Section before adding Sub Section or Sub Sub Section')
+    //   //return;
     // }
 
     //list condition 
@@ -234,6 +258,9 @@ export class DoceditorComponent {
         const newIndex = contentListItems.length - 1;
         if (value && Array.isArray(value) && value.length > 0) {
           for (let i = 0; i < value.length; i++) {
+              if (i === 0 && value[i] === "") {
+                continue; // Skip adding empty string at index 0
+               }
             this.addNestedContentItem(newIndex, value[i]);
           }
         }
@@ -285,7 +312,7 @@ export class DoceditorComponent {
     //console.log('contentRem', contentListItems);
   }
 
-  //OpenDialog boxes for sections!!!
+  //OpenDialog boxes for all sections!!!
   opencontentDialog(item: any, itemIndex: any) {
     //console.log('i', item)
     this.latexDialog = true;
@@ -295,6 +322,36 @@ export class DoceditorComponent {
       data: {
         contentData: item.value.contentData,
         contentTitle: item.value.contentTitle,
+      },
+      hasBackdrop: true,
+      panelClass: 'hello',
+      autoFocus: true
+    });
+    //console.log('pass data to dialog', dialogRef)
+
+    dialogRef.afterClosed().subscribe((result: { contentData: string, contentTitle: string }) => {
+      if (result) {
+        // this.contentData = result.contentData;
+        // this.contentTitle = result.contentTitle;
+        const contentTitleCont = (this.myForm.get('contentListItems') as FormArray).at(itemIndex).get('contentTitle');
+        contentTitleCont?.setValue(result.contentTitle);
+
+        const contentTitleDat = (this.myForm.get('contentListItems') as FormArray).at(itemIndex).get('contentData');
+        contentTitleDat?.setValue(result.contentData);
+      }
+    });
+  }
+
+  //OpenDialog boxes for Overview section!!!
+  openoverviewDialog(item: any, itemIndex: any) {
+    //console.log('i', item)
+    this.latexDialog = true;
+    const dialogRef = this.dialog.open(OverviewExpandComponent, {
+      width: '600px',
+      height: '400px',
+      data: {
+        contentData: item.value.contentData,
+        //contentTitle: item.value.contentTitle,
       },
       hasBackdrop: true,
       panelClass: 'hello',
@@ -349,6 +406,9 @@ export class DoceditorComponent {
     window.location.reload();
 
     const preservedValues = {
+      // title: this.myForm.get('title').value,
+      // author: this.myForm.get('author').value,
+      // date: this.myForm.get('date').value,
       title: 'New Document',
       author: 'Author',
       date: new Date()
@@ -370,9 +430,7 @@ export class DoceditorComponent {
   // saveDoc() {
   //     let latexDocument = `\\documentclass{article}\\usepackage{geometry}\\geometry{a4paper,total={170mm,257mm},left=20mm,top=20mm,}<ltk>\\title
   // {${this.title}}<ltk>\\author{${this.author}}<ltk>\\date{${this.date}}<ltk>\\begin{document}<ltk>\\maketitle`;
-
   //     const contentListItems = this.myForm.get('contentListItems') as FormArray;
-
   //     // Check if the document needs to be saved
   //     if (!this.documentId) { // if the docId is empty
   //       let req = { "documentname": this.title };
@@ -387,45 +445,77 @@ export class DoceditorComponent {
   //     else {
   //       this.processContentItems(contentListItems, latexDocument); //If document is already saved
   //     }
-
   // }
 
+  restrictFirstPosition(event: any) {
+    let inputValue: string = event.target.value;
+    if (inputValue.length > 0 && inputValue.charAt(0) === '0' || inputValue.charAt(0) === '1' || inputValue.charAt(0) === '2' || inputValue.charAt(0) === '3' ||
+      inputValue.charAt(0) === '4' || inputValue.charAt(0) === '5' || inputValue.charAt(0) === '6' ||
+      inputValue.charAt(0) === '7' || inputValue.charAt(0) === '8' || inputValue.charAt(0) === '9') {
+      inputValue = inputValue.substring(1);
+      event.target.value = inputValue;
+    }
+  }
+  restrictSpaces(event: any) {
+    let inputValue: string = event.target.value;
+    // Replace multiple spaces with a single space
+    inputValue = inputValue.replace(/\s{2,}/g, ' ');
+    event.target.value = inputValue;
+  }
+  restrictFirstCharacter(event: any) {
+    let inputValue: string = event.target.value;
+    // Check if the first character is hyphen '-' or underscore '_'
+    if (/^[-_]/.test(inputValue)) {
+      // Remove the first character
+      inputValue = inputValue.substring(1);
+      // Update the input field value
+      event.target.value = inputValue;
+    }
+  }
+
+  saveDocument() {
+    this.submitted = true;
+
+    const title = this.myForm.value.title
+    const contentListItems = this.myForm.get('contentListItems') as FormArray;
+    const form = this.myForm.value
+    console.log('form', form)
+
+    // if (!this.myForm.valid) {
+    //   return
+    // }
+      
+    if (!this.documentId && contentListItems.length !== 0) {
+        this.modalService.open('custom-modal-1');
+        return
+      }
+      else {
+        //this.toast.info('else work')
+        this.saveDoc();
+      }
+
+  }
   saveDoc() {
-    //this.submitted = true;
+    this.submitted = true;
+    //this.saveData = true;
+
     let latexDocument = `\\documentclass{article}\\usepackage{geometry}\\geometry{a4paper,total={170mm,257mm},left=20mm,top=20mm,}<ltk>\\title
     {${this.title}}<ltk>\\author{${this.author}}<ltk>\\date{${this.date}}<ltk>\\begin{document}<ltk>\\maketitle`;
 
     const contentListItems = this.myForm.get('contentListItems') as FormArray;
-        
+    //console.log('save contentListItems',contentListItems.value)
+
     //If no contents
     if(contentListItems.length <= 0){
       this.toast.info('Please add atleast one content!');
       //contentListItems.push(this.addContent('Page Break'));
       //this.submitted = false;
+      return
     }
 
-    // let isContentDataValid = true;
-    // // Check if the contentData field of any item is empty
-    // contentListItems.controls.forEach((item, index) => {
-    //   if (!item.get('contentData')?.value) {
-    //     isContentDataValid = false;
-    //     return;
-    //   }
-    //   // Check if orderListItems is empty
-    //   if (!item.get('orderListItems')?.value || item.get('orderListItems')?.value.length === 0) {
-    //     isContentDataValid = false;
-    //     return;
-    //   }
-    // });
-    // // If any contentData field is empty, show error message and return without saving
-    // if (!isContentDataValid) {
-    //     this.toast.error('Please Check the blocks');
-    //     return;
-    // }
-
     // Check if the document needs to be saved
-    if (!this.documentId || contentListItems.length === 0) { // if the docId is empty
-      let req = { "documentname": this.title };
+    if (!this.documentId) { // if the docId is empty  || contentListItems.length === 0
+      let req = { "documentname": this.saveForm.value.documentname };
       // 1st API call to save the document
       this.httpservice.sendPostLatexRequest(URLUtils.savedoc, req).subscribe(
         (res: any) => {
@@ -434,12 +524,15 @@ export class DoceditorComponent {
           this.processContentItems(contentListItems, latexDocument);  // Once the document is saved, process content items
         },
         (error: HttpErrorResponse) => {
-          if (error.status === 400 || error.status === 401 || error.status === 403 || error.status === 500) {
+          if (error.status === 400 || error.status === 403 || error.status === 500) {
             const errorMessage = error.error.message || 'Unauthorized';
             this.toast.error(errorMessage);
           }
         }
         );
+        this.modalService.close('custom-modal-1');
+        this.docSaved = true;
+        this.documentname = req.documentname;//pass docname to layout
     } else {
       this.processContentItems(contentListItems, latexDocument); // If the document is already saved
     }
@@ -506,11 +599,10 @@ export class DoceditorComponent {
             this.pageNumber = [];
           }
 
-          
-          if (!this.pageId) { // || this.documentId
-            // API call to save the page content for the first page
+          if (!this.pageId) { // || this.documentId // API call to save the page content for the first page
             this.httpservice.sendPostLatexRequest(URLUtils.savedocID(this.documentId), reqq).subscribe(
               (ress: any) => {
+
                 this.pageId = ress.id; // Getting Id from preview
                 this.pno = reqq.page;
 
@@ -518,7 +610,6 @@ export class DoceditorComponent {
                 this.pageNumber.push({ "page": this.pno, "pageId": this.pageId });
                 // console.log('const pageNo.', this.pageNumber);
                 this.toast.success(ress.message);
-
                 currentPage++; // Increment page number for the next page
                 pageContent = ''; // Reset pageContent for the next page
               }
@@ -697,13 +788,19 @@ export class DoceditorComponent {
   getPreview() {
     //PREVIEW API
     if (!this.documentId) {
-      console.log('Document ID is missing');
       this.toast.error("Please save the document");
       return;
     }
+    //this.spinnerService.show()
     this.showPreviewDoc = true;
     let url = this.latexdoc + URLUtils.getPreview(this.documentId);
     this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    //this.spinnerService.hide()
+  }
+
+  //Wrap the Layout text
+  truncateString(text: string): string {
+    return text.slice(0, 42); //Get the first 42 characters
   }
 
   //PAGE BREAK FUNCTION
@@ -847,12 +944,12 @@ export class DoceditorComponent {
           handler: (args: string[]) => ({ type: 'Paragraph', title: args[1] || '', content: args[2] || '', position: lateX.indexOf(args[0] || '') })
         },
         {
-          regex: /\\begin{itemize}([^]*?)\\end{itemize}/g,
+          regex: /\\begin{enumerate}([^]*?)\\end{enumerate}/g,
           blockType: 'Ordered List',
           handler: (args: string[]) => ({ type: 'Ordered List', content: args[0] || '', position: lateX.indexOf(args[0] || '') })
         },
         {
-          regex: /\\begin{enumerate}([^]*?)\\end{enumerate}/g,
+          regex: /\\begin{itemize}([^]*?)\\end{itemize}/g,
           blockType: 'Unordered List',
           handler: (args: string[]) => ({ type: 'Unordered List', content: args[0] || '', position: lateX.indexOf(args[0] || '') })
         },
@@ -863,12 +960,12 @@ export class DoceditorComponent {
       extractionRules.forEach(rule => {
         let match;
         while ((match = rule.regex.exec(lateX)) !== null) {
-          //console.log('match',match)
+          console.log('match',match)
           const block = rule.handler(match.slice(0).map((arg: string) => arg.trim().replace(/<ltk>/g, '')));
-          //console.log('block',block)
+          console.log('block',block)
           if (block) {
             extractedBlocks.push(block);
-            //console.log('extractedBlocks',extractedBlocks)
+            console.log('extractedBlocks',extractedBlocks)
           }
         }
       });
@@ -903,6 +1000,9 @@ export class DoceditorComponent {
             const itemList1 = block.content.match(/\\item\s([^\\]*)/g);
             const items1 = itemList1 ? itemList1.map((item: string) => item.replace(/\\item\s/, '').trim()) : [];
             this.addBlock('Unordered List', true, items1);
+            break;
+          case 'Page Break':
+            this.addBlock('Page Break', true, block.content);
             break;
           // Add cases for other types of blocks
         }
@@ -1043,10 +1143,10 @@ export class DoceditorComponent {
     });
   }
 
-  //Save As dialog box!!
+  //SaveAs dialog box!!
   downloadDialog() {
     //without saving/updating the document cannot select the SaveAs.
-    if (!this.documentId || this.documentId === null || this.sId && !this.openId) {
+    if (!this.documentId || this.documentId === null) { //this.sId && !this.openId
       this.toast.error('Please save changes before making a copy')
       return;
     }
@@ -1062,7 +1162,7 @@ export class DoceditorComponent {
       panelClass: 'hello',
       autoFocus: true
     });
-    dialogRef.afterClosed().subscribe((result: { docid: any, documentname: any}) => {
+    dialogRef.afterClosed().subscribe((result: { docid: any, documentname: any }) => {
       if (result) {
         this.documentname = result.documentname;
         this.documentId = result.docid;
@@ -1072,16 +1172,17 @@ export class DoceditorComponent {
 
           });
       }
+      this.docSaved = true;
     });
-
   }
 
   deleteDoc() {
     if (this.documentId == '' || this.documentId == null) {
       this.toast.error('Please select the document!');
     }
+    
     if (this.documentId) {
-      this.confirmationDialogService.confirm('Confirmation', 'Are you sure! you want to delete this document?', true, 'Yes', 'No')
+      this.confirmationDialogService.confirm('Confirmation', 'Are you sure! you want to delete the '+this.documentname+' document?', true, 'Yes', 'No')
         .then((confirmed) => {
           if (confirmed) {
             this.httpservice.sendDeleteLatexRequest(URLUtils.deleteDocid(this.documentId)).subscribe((res: any) => {
@@ -1099,6 +1200,11 @@ export class DoceditorComponent {
           }
         });
     }
+  }
+
+  closeDialog() {
+    this.modalService.close('custom-modal-1');
+    //this.dialogRef.close()
   }
 
 }
@@ -1234,7 +1340,7 @@ export class DownloadBoxComponent {
 
   downloadDoc() {
     this.submitted = true;
-    this.saveasModal = true;
+    //this.saveasModal = true;
 
     if (this.mydForm.valid && this.documentId) {
       const reqq = { "documentname": this.mydForm.value.documentname };
@@ -1248,13 +1354,14 @@ export class DownloadBoxComponent {
           this.dialogRef.close({ "docid": res.id, "documentname": this.mydForm.value.documentname });
           //console.log('name:',this.documentname)
           if (!res.error) {
-            this.confirmationDialogService.confirm('Saved Successfully', 'Congratulations! You have successfully created the ' + this.successGrpName + ' document', true, 'View Document', 'Create Document', true, undefined).then((confirmed) => {
-              if (confirmed){
+            this.confirmationDialogService.confirm('Saved', 'Congratulations! You have successfully created the ' + this.successGrpName + '', true, 'View Document', 'Go Back', true, undefined).then((confirmed) => {
+              if (confirmed) {
                 this.router.navigate(['/viewdoc']);
                 this.docSaved = true;
               }
               else
-                window.location.reload();
+                this.dialogRef.close()
+              //window.location.reload();
             })
           }
           //else {
@@ -1280,6 +1387,37 @@ export class DownloadBoxComponent {
     }
   }
 
+  onKeyDown(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      event.preventDefault(); // Prevent the default Enter key behavior
+    }
+  }
+  
+  restrictFirstPosition(event: any) {
+    let inputValue: string = event.target.value;
+    if (inputValue.length > 0 && inputValue.charAt(0) === '0' || inputValue.charAt(0) === '1' || inputValue.charAt(0) === '2' || inputValue.charAt(0) === '3' ||
+      inputValue.charAt(0) === '4' || inputValue.charAt(0) === '5' || inputValue.charAt(0) === '6' ||
+      inputValue.charAt(0) === '7' || inputValue.charAt(0) === '8' || inputValue.charAt(0) === '9') {
+      inputValue = inputValue.substring(1);
+      event.target.value = inputValue;
+    }
+  }
+  restrictSpaces(event: any) {
+    let inputValue: string = event.target.value;
+    // Replace multiple spaces with a single space
+    inputValue = inputValue.replace(/\s{2,}/g, ' ');
+    event.target.value = inputValue;
+  }
+  restrictFirstCharacter(event: any) {
+    let inputValue: string = event.target.value;
+    // Check if the first character is hyphen '-' or underscore '_'
+    if (/^[-_]/.test(inputValue)) {
+      // Remove the first character
+      inputValue = inputValue.substring(1);
+      // Update the input field value
+      event.target.value = inputValue;
+    }
+  }
   closeDialog() {
     this.dialogRef.close()
   }
@@ -1489,10 +1627,11 @@ export class ContentDialogComponent {
 
   @Input() content: any;
   contentTitle: any;
-  contentData: any;
+  //contentData: any;
 
   contentForm: any;
   submitted = false;
+  @Input() contentData: any;
 
   constructor(
     public dialogRef: MatDialogRef<ContentDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: { contentData: string, contentTitle: string },
@@ -1503,7 +1642,69 @@ export class ContentDialogComponent {
   }
 
   ngOnInit() {
-    //console.log('dial content',this.content)
+    console.log('dial content',this.contentData)
+    this.contentForm = this.fb.group({
+      contentData: [''],
+      contentTitle: ['']
+    });
+  }
+
+  save() {
+    const data = {
+      contentData: this.contentData,
+      contentTitle: this.contentTitle
+    };
+    this.dialogRef.close(data);
+    //console.log('closeData from dialog', data)
+  }
+
+  closeDialog() {
+    this.dialogRef.close()
+  }
+
+  onInputChange(event: Event) {
+    const target = event.target as HTMLTextAreaElement;
+    this.content = target.value; // latex to parent textarea
+  }
+
+  prependHyphen(newTitle: string) {
+    if (newTitle && !newTitle.startsWith(' ')) {
+      this.contentTitle = '' + newTitle;
+    }
+  }
+
+}
+
+@Component({
+  selector: 'app-overview-expand',
+  templateUrl: './overview-expand.component.html',
+  styleUrls: ['./doceditor.component.scss']
+})
+
+@Injectable()
+export class OverviewExpandComponent {
+
+  @Input() documentId: any;
+  @Input() myForm: any;
+
+  @Input() content: any;
+  contentTitle: any;
+  //contentData: any;
+
+  contentForm: any;
+  submitted = false;
+  @Input() contentData: any;
+
+  constructor(
+    public dialogRef: MatDialogRef<ContentDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: { contentData: string, contentTitle: string },
+    private fb: FormBuilder
+  ) {
+    this.contentData = data.contentData;
+    this.contentTitle = data.contentTitle;
+  }
+
+  ngOnInit() {
+    console.log('dial content',this.contentData)
     this.contentForm = this.fb.group({
       contentData: [''],
       contentTitle: ['']
@@ -1537,6 +1738,7 @@ export class ContentDialogComponent {
 }
 
 
+
 @Component({
   selector: 'app-saveas-box',
   templateUrl: './saveas-box.component.html',
@@ -1544,8 +1746,11 @@ export class ContentDialogComponent {
 })
 
 @Injectable()
-//Saveas dialogComponent in View
+//SaveDialog for Save Option
 export class SaveasBoxComponent {
+
+  //@Output() childEvent = new EventEmitter();
+  @Output() childEvent: EventEmitter<any> = new EventEmitter<any>();
 
   @Input() documentId: any;
   @Input() myForm: any;
@@ -1557,67 +1762,22 @@ export class SaveasBoxComponent {
   successGrpName: any;
   @Input() documents: any[] = [];
   doco: any;
+  title: any;
+  @Input() saveData = true;
 
   constructor(
     public dialogRef: MatDialogRef<SaveasBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { documentname: string, documentId: any },
     private httpservice: HttpService, private confirmationDialogService: ConfirmationDialogService, private toast: ToastrService, private router: Router, public sanitizer: DomSanitizer, private fb: FormBuilder) {
     this.documentname = data.documentname
     //this.documentId = data.documentId
-
   }
 
   ngOnInit() {
     this.mydForm = this.fb.group({
       documentname: ['', Validators.required],
     });
-    this.getDocumentCall();
+    //this.getDocumentCall();
   }
-
-  // downloadDoc() {
-  //   this.submitted = true;
-  //   this.saveasModal = true;
-
-  //   if (this.mydForm.valid && this.documentId) {
-  //     const reqq = { "documentname": this.mydForm.value.documentname };
-
-  //     this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(this.documentId), reqq).subscribe(
-  //       (res: any) => {
-  //         //this.toast.success(res.message);
-  //         // this.saveasModal = false;
-  //         // this.successModel = true;
-  //         this.successGrpName = this.mydForm.value.documentname;
-  //         this.dialogRef.close({ "docid": res.id, "documentname": this.mydForm.value.documentname });
-  //         //console.log('name:',this.documentname)
-  //         if (!res.error) {
-  //           this.confirmationDialogService.confirm('Saved Successfully', 'Congratulations! You have successfully created the '+this.successGrpName+' document', true, 'View Document', 'Create Document', true, undefined).then((confirmed) => {
-  //             if (confirmed)
-  //               this.router.navigate(['/viewdoc']);
-  //             else
-  //               window.location.reload();
-  //           })
-  //          } 
-  //         //else {
-  //         //   this.confirmationDialogService.confirm('Alert', res.msg, false, '', '', false, 'sm', false)
-  //         // }
-  //       },
-
-  //       (error: HttpErrorResponse) => {
-  //         if (error.status === 400 || error.status === 401 || error.status === 403) {
-  //           const errorMessage = error.error.msg || 'Unauthorized';
-  //           this.toast.error(errorMessage);
-  //         }
-  //       }
-  //     );
-
-  //     // this.saveasModal = false;
-  //     // this.successModel = true;
-  //     // this.successGrpName = this.mydForm.value.documentname;
-  //   }
-  //   else {
-  //     //this.submitted = false;
-  //     this.toast.error('Please save the document and provide a valid filename.');
-  //   }
-  // }
 
   getDocumentCall() {
     //Get all Document
@@ -1628,6 +1788,32 @@ export class SaveasBoxComponent {
       }
     );
   }
+
+  // downloadDoc() {
+  //   this.submitted = true;
+  //   this.saveasModal = true;
+
+  //   //if (this.mydForm.valid && this.documentId) {
+  //   const reqq = { "documentname": this.mydForm.value.documentname };
+  //   this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(this.documentId), reqq).subscribe(
+  //     (res: any) => {
+  //       this.successGrpName = this.mydForm.value.documentname;
+  //       this.dialogRef.close({ "docid": res.id, "documentname": this.mydForm.value.documentname });
+  //       //console.log('name:',this.documentname)
+  //       if (!res.error) {
+  //         this.confirmationDialogService.confirm('Success', 'Congratulations! New version was created successfully', true, 'View Document', 'Create Document', true, undefined).then((confirmed) => {
+  //           if (confirmed) {
+  //             window.location.reload()
+  //             //this.getDocumentCall();
+  //             this.router.navigate(['/viewdoc']);
+  //           }
+  //           else
+  //             window.location.reload();
+  //         })
+  //       }
+  //     },
+  //   );
+  // }
 
   downloadDoc() {
     this.submitted = true;
@@ -1653,35 +1839,11 @@ export class SaveasBoxComponent {
         }
       },
     );
-    //}
-
-
-    // if (this.mydForm.valid && this.documentId) {
-    //   const reqq = { "documentname": this.mydForm.value.documentname };
-
-    //   this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(this.documentId), reqq).subscribe(
-    //     (res: any) => {
-    //       this.successGrpName = this.mydForm.value.documentname;
-    //       this.dialogRef.close({ "docid": res.id, "documentname": this.mydForm.value.documentname });
-    //       //console.log('name:',this.documentname)
-    //       if (!res.error) {
-    //         this.confirmationDialogService.confirm('Saved Successfully', 'Congratulations! You have successfully created the '+this.successGrpName+' document', true, 'View Document', 'Create Document', true, undefined).then((confirmed) => {
-    //           if (confirmed)
-    //             this.router.navigate(['/viewdoc']);
-    //           else
-    //             window.location.reload();
-    //         })
-    //        } 
-    //     },
-    //   );
-    // }
-    // else {
-    //   //this.submitted = false;
-    //   this.toast.error('Please save the document and provide a valid filename.');
-    // }
   }
 
   closeDialog() {
     this.dialogRef.close()
   }
+
+
 }
