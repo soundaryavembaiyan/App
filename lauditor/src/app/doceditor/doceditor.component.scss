@@ -52,6 +52,8 @@
     font-weight: bolder;
     margin-left: 15px;
     letter-spacing: 0.5px;
+    word-wrap: break-word;
+    overflow: hidden;
 }
 
 .text-size {
@@ -155,6 +157,7 @@
     border: 1px solid #CED4DA;
     background: #EEE;
     width: 90%;
+    //height: 85px;
     font-size: 22px;
     margin-left: 15px;
 }
@@ -169,25 +172,40 @@
     border-radius: 3px;
     padding: 3px;
     margin-right: 15px;
-	margin-top:-32px;
+    margin-top: -32px;
 }
 
+// .closePlus {
+//     float: right;
+//     border: none;
+//     cursor: pointer;
+//     width: 45px;
+//     height: 27px;
+//     font-size: 25px;
+//     font-weight: 900;
+//     padding: 3px; //remove this for buttonStyle
+//     border-radius: 3px;
+//     top: -10px;
+//     margin-right: 116px;
+//     margin-top:-1px;
+//     // margin-right: 90px;
+//     // margin-top: -41px;
+// }
 .closePlus {
-    float: right;
+    //float: right;
     border: none;
+    color: #00498E;
     cursor: pointer;
     width: 45px;
     height: 27px;
     font-size: 25px;
-    font-weight: 900;
-    padding: 3px; //remove this for buttonStyle
+    font-weight: 500;
+    padding: 3px;
     border-radius: 3px;
     top: -10px;
-    margin-right: 116px;
-    margin-top:-1px;
-    // margin-right: 90px;
-    // margin-top: -41px;
-
+    margin-right: -14px;
+    margin-bottom: -6px;
+    margin-top: 1px;
 }
 
 .expand {
@@ -209,7 +227,7 @@
     margin-left: 0px;
 }
 
-.overedText{
+.overedText {
     font-size: 27px;
     margin-left: 17px;
     margin-top: -10px;
@@ -228,7 +246,7 @@
 //     margin-top: 30px;
 // }
 
-.closeBtn{
+.closeBtn {
     // margin-right: 100px;
     //margin-top: 50px;
     font-size: 20px;
@@ -249,9 +267,10 @@
     border: none;
     //width: 320px;
     //width: 338px;
+    width: 330px;
     outline: none;
     color: #212529;
-    font-size: 21px;
+    font-size: 18px;
     font-weight: 900;
     background-color: transparent;
 
@@ -275,14 +294,14 @@
         margin-right: -15px;
     }
 
-    .delIcon{
+    .delIcon {
         font-size: 18px;
         margin-top: -33px;
         //margin-right: -28px;
         margin-right: -40px;
     }
 
-    .createDoc{
+    .createDoc {
         width: 85%;
     }
 
@@ -293,8 +312,9 @@
         //margin-right: 50px;
         cursor: pointer;
     }
+
     .closePlus {
-       // margin-right: 52px;
+        // margin-right: 52px;
     }
 
     .overviewTitle {
@@ -322,24 +342,28 @@ textarea {
 .subsubsec {
     margin-left: 35px;
 }
-.addBtn{
+
+.addBtn {
     width: 25px;
     margin-left: 15px;
     margin-bottom: -20px;
     height: 20px;
     cursor: pointer;
 }
-.addMore{
+
+.addMore {
     font-size: 1.2rem;
     color: #004d87;
     margin-top: -13px;
     margin-left: 48px;
     font-weight: 900;
 }
-.oderAlign{
+
+.oderAlign {
     margin-bottom: 10px;
 }
-.orderTextbox{
+
+.orderTextbox {
     margin-bottom: 35px;
 }
 
@@ -347,7 +371,7 @@ textarea {
     //overflow-y: auto;
 }
 
-.delIcon{
+.delIcon {
     float: right;
     border: none;
     cursor: pointer;
@@ -359,7 +383,8 @@ textarea {
     margin-top: -36px;
     margin-right: -18px;
 }
-.preview{
+
+.preview {
     color: #00498E;
     font-size: 23px;
     font-weight: 800;
@@ -380,13 +405,15 @@ textarea {
     // color: #fff;
     // margin-left: 25px;
 }
-.layout{
+
+.layout {
     color: #00498E;
     font-size: 23px;
     font-weight: 800;
     padding-top: 20px;
 }
-.eyeco{
+
+.eyeco {
     margin-top: -46px;
     cursor: pointer;
     float: right;
@@ -395,10 +422,11 @@ textarea {
 }
 
 .page-break {
-  width: 100%;
-  box-sizing: border-box;
+    width: 100%;
+    box-sizing: border-box;
 }
-.iframeStyle{
+
+.iframeStyle {
     // //background-color: rgb(217, 242, 250);
     // width: 100%;
     // height: 100%;
@@ -414,12 +442,16 @@ textarea {
     border-radius: 5px;
     border: 1px solid black;
 }
+
 // these styles are only for safari browser!!!
 @media not all and (min-resolution:.001dpcm) {
     @supports (-webkit-appearance: none) {
-        .menuBtn1,.menuBtn2 {
+
+        .menuBtn1,
+        .menuBtn2 {
             background: #EFEFEF;
         }
+
         .menuBtn2 {
             width: 73px;
             margin-right: 21px;
@@ -427,23 +459,25 @@ textarea {
     }
 }
 
-.headStyle{
+.headStyle {
     font-size: 20px;
 }
 
-.hoverDoc{
+.hoverDoc {
     cursor: pointer;
     font-weight: bolder;
     font-size: 20px;
     //color: #00498E;
 }
-.hoverTime{
+
+.hoverTime {
     cursor: pointer;
     font-weight: 600;
     margin-left: 30px;
     font-size: 13px;
     margin-top: -13px;
 }
+
 // .hoverDoc:hover,
 // .hoverDoc.active {
 //     //background: #00B3A7;
@@ -458,22 +492,25 @@ textarea {
     font-size: 100;
 }
 
-.contBox{
+.contBox {
     border-radius: 6px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     height: 90%;
     width: 90%;
     margin-left: 10px;
 }
-.innerCont{
+
+.innerCont {
     //width: 120%;
     height: 100%;
 }
-.sortico{
+
+.sortico {
     cursor: pointer;
     width: 25px;
     //margin-top: 0px;
 }
+
 .ico {
     font-size: 25px;
     margin-top: 8px;
@@ -490,25 +527,38 @@ textarea {
     backdrop-filter: blur(5px);
     z-index: 9998;
 }
+
 .errorStyle {
     color: #FF5722;
     font-size: 16px;
     font-weight: 500;
     margin-left: 18px;
 }
-.upPad{
+
+.upPad {
     //margin-top: -20px;
 }
-.padDown{
+
+.padDown {
     padding-bottom: -20px;
 }
-.secclose{
+
+.secclose {
     margin-top: 0px;
 }
 
 .iOd {
     color: #00498E;
     padding: 1px;
+}
+
+.pluslist {
+    color: #00498E;
+    font-weight: 900;
+    width: 105px;
+    font-size: 1.1rem;
+    margin-left: 7px;
+    cursor: pointer;
 }
 
 .disabled {
@@ -634,17 +684,19 @@ textarea {
 
 @media print {
     .page-break {
-      page-break-after: always;
+        page-break-after: always;
     }
-  }
-.pageRegion{
+}
+
+.pageRegion {
     width: auto;
     color: #00498E;
     font-size: 18px;
     margin-left: 15px;
     font-weight: 900;
 }
-.rename{
+
+.rename {
     font-weight: bolder;
     margin-left: 17px;
     font-size: 1.2rem;
@@ -656,7 +708,28 @@ textarea {
     resize: none;
 }
 
-  table td{
-      white-space: nowrap;
-      border: 2px solid #eeeeee;
-  }
+table td {
+    white-space: nowrap;
+    border: 2px solid #eeeeee;
+}
+
+::ng-deep mat-menu {
+    overflow: hidden !important;
+}
+
+.ovtextarea {
+    height: 195px;
+    width: 530px;
+}
+
+.list-container {
+    height: 185px;
+    overflow: auto;
+}
+
+.savefilenameBtn{
+    margin-top: 50px;
+}
+.savecreate{
+    margin-top: 20px;
+}
