@@ -88,7 +88,7 @@
                     <img (click)="opencontentDialog(item,i)" *ngIf="item.value.content === 'Section' || item.value.content === 'Sub Section' || item.value.content === 'Sub Sub Section' || item.value.content === 'Paragraph'" class="expand" src="assets/img/expand.svg"/> 
                     <img (click)="openoverviewDialog(item,i)" *ngIf="item.value.content === 'Overview'" class="expand" src="assets/img/expand.svg"/> 
                     <i class="fa fa-times close secclose" (click)="removeItem(i)" aria-hidden="true"></i>
-                    <textarea formControlName="contentData" placeholder="Enter your content" class="text-size form-control textareaDoc" (keydown)="onKeyDown($event)" rows="3" cols="50"></textarea>
+                    <textarea formControlName="contentData" maxlength="5000" placeholder="Enter your content" class="text-size form-control textareaDoc" (keydown)="onKeyDown($event)" rows="3" cols="50"></textarea>
                   </div>
 
                 <!--Order & Unorder lists-->
@@ -99,10 +99,10 @@
                     <div [ngClass]="{'list-container': item.get('orderListItems').length > 3}" formArrayName="orderListItems"><!--class="listScroll"-->
                     <div class="oderAlign" *ngFor="let orderitem of item.get('orderListItems').controls; let j = index;" [formGroupName]="j"> 
                         <div *ngIf="listView">
-                            <input formControlName="contentData" placeholder="Enter list items" type="text" (keydown)="onKeyDown($event)" class="text-size form-control createDoc"/> 
+                            <input formControlName="contentData" maxlength="5000" placeholder="Enter list items" type="text" (keydown)="onKeyDown($event)" class="text-size form-control createDoc"/> 
                         </div>
                         <div *ngIf="!listView">
-                            <input formControlName="contentData" *ngIf="j != 0"  placeholder="Enter list items" type="text" (keydown)="onKeyDown($event)" class="text-size form-control createDoc"/> 
+                            <input formControlName="contentData" *ngIf="j != 0" maxlength="5000" placeholder="Enter list items" type="text" (keydown)="onKeyDown($event)" class="text-size form-control createDoc"/> 
                         </div>
                         <i class="fa-solid fa-trash delIcon" *ngIf="j != 0" (click)="removeList(i,j)"></i> 
                     </div> 
