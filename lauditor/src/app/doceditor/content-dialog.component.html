@@ -8,7 +8,7 @@
         <div class="openDialog">
             <div class="form-group">
                 <label for="title" class="lableTitle">Content Title</label>
-                <input formControlName="contentTitle" [(ngModel)]="contentTitle" placeholder="Enter title" type="text" (ngModelChange)="prependHyphen($event)" class="text-size form-control createDoc" name="title">
+                <input formControlName="contentTitle" maxlength="25" [(ngModel)]="contentTitle" placeholder="Enter title" type="text" (ngModelChange)="prependHyphen($event)" class="text-size form-control createDoc" name="title">
             </div>
 
             <div class="form-group">
