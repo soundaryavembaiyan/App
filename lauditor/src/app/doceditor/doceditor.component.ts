@@ -320,7 +320,7 @@ export class DoceditorComponent {
     this.latexDialog = true;
     const dialogRef = this.dialog.open(ContentDialogComponent, {
       width: '600px',
-      height: '365px',
+      height: '415px',
       data: {
         contentData: item.value.contentData,
         contentTitle: item.value.contentTitle,
@@ -1219,7 +1219,7 @@ export class DoceditorComponent {
   //SaveAs dialog box!!
   downloadDialog() {
     //without saving/updating the document cannot select the SaveAs.
-    if (!this.documentId || this.documentId === null) { //this.sId && !this.openId
+    if (!this.documentId || this.documentId === null) { //!this.documentId || this.documentId === null || this.sId && !this.openId
       this.toast.error('Please save changes before making a copy')
       return;
     }
@@ -1397,6 +1397,7 @@ export class DownloadBoxComponent {
   saveasModal: boolean = false;
   successGrpName: any;
   @Input() docSaved= false;
+  @Input() pageId:any;
 
   constructor(
     public dialogRef: MatDialogRef<DownloadBoxComponent>, @Inject(MAT_DIALOG_DATA) public data: { documentname: string, documentId: any },
@@ -1415,7 +1416,17 @@ export class DownloadBoxComponent {
     this.submitted = true;
     //this.saveasModal = true;
 
-    if (this.mydForm.valid && this.documentId) {
+    const form = this.mydForm.value.documentname
+    //console.log('form', form)
+    if (form == '' || form == undefined) {
+      this.submitted = true;
+      //this.toast.error('form invalid')
+      return
+    }
+    this.submitted = false;
+
+
+    if (this.mydForm.valid && this.documentId || this.documentId) {
       const reqq = { "documentname": this.mydForm.value.documentname };
 
       this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(this.documentId), reqq).subscribe(
