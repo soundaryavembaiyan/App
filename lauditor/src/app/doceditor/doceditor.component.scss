@@ -165,13 +165,13 @@
 .close {
     float: right;
     border: none;
-    width: 60px;
+    //width: 60px;
     height: 30px;
     font-weight: 900;
     font-size: 22px;
     border-radius: 3px;
     padding: 3px;
-    margin-right: 15px;
+    margin-right: 50px;
     margin-top: -32px;
 }
 
@@ -235,6 +235,14 @@
     color: #004d87;
 }
 
+.openText {
+    font-size: 27px;
+    margin-left: -1px;
+    margin-top: -10px;
+    font-weight: 900;
+    color: #004d87;
+}
+
 .closeDialog {
     float: right;
     //margin-top: -82px;
@@ -267,7 +275,7 @@
     border: none;
     //width: 320px;
     //width: 330px;
-    width: 330px;
+    width: 220px;
     outline: none;
     color: #212529;
     font-size: 18px;
@@ -278,6 +286,8 @@
     white-space: nowrap;
     overflow: hidden !important;
     text-overflow: ellipsis;
+    height: 23px;
+    margin-bottom: -6px;
 }
 
 //  .overviewTitle{
@@ -288,10 +298,13 @@
 //     text-overflow: ellipsis;
 //  }
 
+
+//For 1024 screen view
 @media only screen and (min-width: 768px) and (max-width: 1024px) {
     .close {
         //margin-top: -60px;
-        margin-right: -15px;
+        //margin-right: -15px;
+        margin-right: 50px;
     }
 
     .delIcon {
@@ -320,7 +333,16 @@
     .overviewTitle {
         font-size: 15px;
         //width: auto;
-        width: 200px;
+        width: 165px;
+        height: 20px;
+    }
+}
+
+//For tablet view
+@media only screen and (min-width: 400px) and (max-width: 768px) {
+    .overviewTitle {
+        font-size: 14px;
+        width: 40px;
     }
 }
 
@@ -376,13 +398,14 @@ textarea {
     float: right;
     border: none;
     cursor: pointer;
-    width: 60px;
-    height: 30px;
+    // width: 60px;
+    // height: 30px;
     font-weight: 900;
     font-size: 20px;
     border-radius: 3px;
     margin-top: -36px;
-    margin-right: -18px;
+    //margin-right: -18px;
+    margin-right: 30px;
 }
 
 .preview {
@@ -422,9 +445,38 @@ textarea {
     width: 35px;
 }
 
+// .page-break {
+//     // width: 100%;
+//     // box-sizing: border-box;
+//     width: 95%;
+//     box-sizing: border-box;
+//     margin-left: 8px;
+// }
 .page-break {
-    width: 100%;
+    width: 95%;
     box-sizing: border-box;
+    margin-left: 8px;
+    position: relative;
+}
+
+.page-break::after {
+    content: "NEW PAGE";
+    color: #838383;
+    position: absolute;
+    //top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    /* Ensure background matches page */
+    padding: 8px;
+    /* Adjust padding as needed */
+    //border: 1px dashed black; /* Adjust border style as needed */
+}
+
+@media print {
+    .page-break {
+        page-break-after: always;
+    }
 }
 
 .iframeStyle {
@@ -457,6 +509,10 @@ textarea {
             width: 73px;
             margin-right: 21px;
         }
+
+        .iframeStyle {
+            margin-top: -900px;
+        }
     }
 }
 
@@ -474,7 +530,8 @@ textarea {
 .hoverTime {
     cursor: pointer;
     font-weight: 600;
-    margin-left: 30px;
+    //margin-left: 30px;
+    margin-left: 38px;
     font-size: 13px;
     margin-top: -13px;
 }
@@ -497,8 +554,9 @@ textarea {
     border-radius: 6px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     height: 90%;
-    width: 90%;
-    margin-left: 10px;
+    //width: 90%;
+    width: 98%;
+    //margin-left: 10px;
 }
 
 .innerCont {
@@ -514,8 +572,10 @@ textarea {
 
 .ico {
     font-size: 25px;
-    margin-top: 8px;
-    margin-left: 8px;
+    // margin-top: 8px;
+    // margin-left: 8px;
+    margin-top: 10px;
+    margin-left: 15px;
 }
 
 .backdropBlur {
@@ -553,13 +613,33 @@ textarea {
     padding: 1px;
 }
 
+// .pluslist {
+//     color: #00498E;
+//     font-weight: 900;
+//     width: 105px;
+//     font-size: 1.1rem;
+//     margin-left: 7px;
+//     cursor: pointer;
+// }
+
 .pluslist {
     color: #00498E;
     font-weight: 900;
-    width: 105px;
+    //width: 105px;
+    width: 110px;
+    height: 50px;
     font-size: 1.1rem;
     margin-left: 7px;
     cursor: pointer;
+}
+
+.addBtn {
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
 }
 
 .disabled {
@@ -647,6 +727,15 @@ textarea {
     font-size: 20px;
 }
 
+// .fixedBtn {
+//     position: fixed;
+//     bottom: 270px;
+//     margin-left: -120px;
+//     display: flex;
+//     justify-content: space-around;
+//     align-items: center;
+// }
+
 .bbtn {
     width: 140px;
 }
@@ -681,12 +770,6 @@ textarea {
     color: #727272;
     opacity: 1;
     /* Firefox */
-}
-
-@media print {
-    .page-break {
-        page-break-after: always;
-    }
 }
 
 .pageRegion {
@@ -728,13 +811,186 @@ table td {
     overflow: auto;
 }
 
-.savefilenameBtn{
-    margin-top: 50px;
+.savefilenameBtn {
+    //margin-top: 50px;
+    margin-left: 150px;
+    position: fixed;
+    position: absolute;
+    margin-bottom: 20px;
+    bottom: 0;
 }
-.savecreate{
+
+.savecreate {
     margin-top: 20px;
 }
-.textCount{
+
+.textCount {
     width: 30px;
     margin-left: 18px;
+}
+
+.hypendot {
+    color: black;
+    font-size: 25px;
+}
+
+.pbClass {
+    border: none;
+    outline: none;
+    color: #878787;
+    width: 90%;
+    //font-size: 22px;
+    margin-left: 15px;
+}
+
+.pbDiv {
+    width: 100%;
+    padding-bottom: 10px;
+}
+
+.holiMove {
+    margin-left: 55px;
+}
+
+.pushBtn {
+    float: right;
+    margin-right: 50px;
+    margin-top: 20px;
+}
+
+.colab {
+    border: 10px solid #fff;
+    width: 95%;
+    height: 100%;
+    cursor: pointer;
+    border-radius: 3px;
+    background: #fff;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    padding-bottom: 11px;
+    position: relative;
+    display: block;
+    margin-left: 7px;
+}
+
+.textNotes {
+    font-size: 1rem;
+    word-wrap: break-word;
+}
+
+.readmore {
+    cursor: pointer;
+    //color: #00498E;
+    color: #0f62b1;
+    font-size: 18px;
+    font-weight: bolder;
+}
+
+.alertbtnno,
+.alertbtnyes {
+    width: 30%;
+    height: auto;
+}
+
+.alertparatxt {
+    padding-top: 0px;
+}
+
+.iconclose {
+    font-size: 1.4rem;
+    padding-right: 10px;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+    .savefilenameBtn {
+        //margin-top: 40px;
+        margin-left: 80px;
+        position: fixed;
+        position: absolute;
+        margin-bottom: 20px;
+        bottom: 0;
+    }
+
+    .btnsave {
+        //width: auto;
+        margin-left: -10px;
+    }
+
+    .colab {
+        margin-left: 4px;
+    }
+
+    .page-break {
+        width: 93%;
+    }
+}
+
+//only for safri browser
+@media not all and (min-resolution: 0.001dpcm) {
+
+    // .pluslist {
+    //     width: 200px;
+    //     margin-left: -35px;
+    // }
+    .addBtn {
+        width: 120px;
+    }
+}
+
+/* General styles for all large screens */
+@media screen and (min-width: 1200px) {
+    .addBtn {
+        width: 120px;
+    }
+}
+
+/* Styles specific to Safari on MacBook */
+@media screen and (min-width: 1200px) and (-webkit-min-device-pixel-ratio:0) {
+    .addBtn {
+        width: 120px;
+    }
+}
+
+/* For 1024x640 resolution */
+@media screen and (min-width: 1024px) and (min-height: 640px) {
+    .delIcon {
+        //font-size: 20px;
+        margin-top: -36px;
+        margin-right: 30px;
+    }
+
+    .holiMove {
+        margin-left: -55px;
+    }
+}
+
+/* For 1280x100 resolution */
+@media screen and (min-width: 1280px) and (min-height: 100px) {
+    .delIcon {
+        //font-size: 20px;
+        margin-top: -36px;
+        margin-right: 23px;
+    }
+
+    .savefilenameBtn {
+        margin-left: 134px;
+        margin-bottom: 20px;
+        bottom: 0;
+    }
+
+    .holiMove {
+        margin-left: 20px;
+    }
+}
+
+/* For 1280x100 resolution */
+@media screen and (min-width: 1440px) and (min-height: 900px) {
+    .savefilenameBtn {
+        margin-right: 200px;
+        margin-bottom: 20px;
+        bottom: 0;
+    }
+
+    .holiMove {
+        margin-left: 30px;
+    }
 }
