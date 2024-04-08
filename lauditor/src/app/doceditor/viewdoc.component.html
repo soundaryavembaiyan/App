@@ -84,7 +84,7 @@
                     <a class="dropdown-item" (click)="saveasDialog(i)">Save As</a>
                   </li>  -->
                   <li>
-                    <a class="dropdown-item" (click)="deleteDocument(i)">Delete</a>
+                    <a class="dropdown-item" (click)="openModal('custom-modal-2');editDocInfo(i)">Delete</a>
                   </li>
                 </ul>
               </div>
@@ -109,25 +109,26 @@
   </jw-modal>
 
   <!-- Modal for Delete the Document-->
-  <!-- <jw-modal id="custom-modal-2" class="doc-view-scs">
-    <div class="doc-view-scs-body">
-      <div class="container">
-        <div class="row">
-          <div class="">
-            <div class="iconclose" (click)="closeModal('custom-modal-2');">X</div>
-            <div class="alertpara">
-              <p class="alertparatxt"> Alert </p>
+    <!--- Delete DIALOG BOX -->
+    <jw-modal id="custom-modal-2" class="doc-view-scs">
+      <div class="doc-view-scs-body" *ngIf="editDoc">
+        <div class="container">
+          <div class="row">
+            <div class="">
+              <div class="iconclose" (click)="closeModal('custom-modal-2');"><b>X</b></div>
+              <div class="alertpara">
+                <p class="alertparatxt"><b>Confirmation</b></p>
+              </div>
+              <div class="alertext">
+                Are you sure you want to delete<br><b>{{editDoc?.documentname}}</b> document?
+              </div>
             </div>
-            <div class="alertext">
-              Are you sure you want to delete the document?
+            <div class="alertbutton">
+              <button class="btn btn-default  alertbtn alertbtnno" (click)="closeModal('custom-modal-2');">No</button>
+              <button class="btn btn-default alertbtn alertbtnyes"
+                (click)="closeModal('custom-modal-2');deleteDocument(editDoc)">Yes</button>
             </div>
-          </div>
-          <div class="alertbutton">
-            <button class="btn btn-default  alertbtn alertbtnno" (click)="closeModal('custom-modal-2');">No</button>
-            <button class="btn btn-default alertbtn alertbtnyes"
-              (click)="closeModal('custom-modal-2');deleteDoc()">Yes</button>
           </div>
         </div>
       </div>
-    </div>
-  </jw-modal> -->
+    </jw-modal>
