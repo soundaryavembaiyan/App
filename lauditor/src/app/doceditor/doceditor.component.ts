@@ -369,7 +369,7 @@ export class DoceditorComponent {
       type === 'Sub Sub Section' && this.getContent === 'Unordered List' && !editBlock === true ||
       type === 'Sub Sub Section' && this.getContent === 'Ordered List' && !editBlock === true ||
       type === 'Sub Sub Section' && this.getContent === 'Section' && !editBlock === true) {
-      this.toast.error('6Invalid Selection. Please add Sub Section before adding Sub Sub Section.');
+      this.toast.error('Invalid Selection. Please add Sub Section before adding Sub Sub Section.');
       return
     }
     if (type === 'Sub Section' && this.getContent === 'Sub Sub Section' && !editBlock === true) {
@@ -810,6 +810,7 @@ export class DoceditorComponent {
     //this.saveData = true;
     const saveForm = this.saveForm.value.documentname;
     const contentListItems = this.myForm.get('contentListItems') as FormArray;
+    console.log('save contentListItems',contentListItems)
 
     if (!this.documentId && saveForm === '' || saveForm === " " || saveForm === null) {
       this.submitted = true;
@@ -886,7 +887,7 @@ export class DoceditorComponent {
           if (currentPage === 1) {
             // For the first page, include both latexDocument and pageContent
             reqq = {
-              "document": latexDocument + pageContent,
+              "document": latexDocument + pageContent.replace(/\n/g, '<nln>'),
               "page": currentPage
             };
           } else {
@@ -1276,34 +1277,36 @@ export class DoceditorComponent {
 
       // Add blocks to the output in the sorted order
       extractedBlocks.forEach((block) => {
+        var content = block.content.replace(/<nln>/g, '\n');
+        //console.log('rev content', content)
         switch (block.type) {
           case 'Overview':
-            this.addBlock('Overview', true, block.content);
+            this.addBlock('Overview', true, content);
             break;
           case 'Section':
-            this.addBlock('Section', true, block.content, block.title);
+            this.addBlock('Section', true, content, block.title);
             break;
           case 'Sub Section':
-            this.addBlock('Sub Section', true, block.content, block.title);
+            this.addBlock('Sub Section', true, content, block.title);
             break;
           case 'Sub Sub Section':
-            this.addBlock('Sub Sub Section', true, block.content, block.title);
+            this.addBlock('Sub Sub Section', true, content, block.title);
             break;
           case 'Paragraph':
-            this.addBlock('Paragraph', true, block.content, block.title);
+            this.addBlock('Paragraph', true, content, block.title);
             break;
           case 'Ordered List':
-            const itemList = block.content.match(/\\item\s([^\\]*)/g);
+            const itemList = content.match(/\\item\s([^\\]*)/g);
             const items = itemList ? itemList.map((item: string) => item.replace(/\\item\s/, '').trim()) : [];
             this.addBlock('Ordered List', true, items);
             break;
           case 'Unordered List':
-            const itemList1 = block.content.match(/\\item\s([^\\]*)/g);
+            const itemList1 = content.match(/\\item\s([^\\]*)/g);
             const items1 = itemList1 ? itemList1.map((item: string) => item.replace(/\\item\s/, '').trim()) : [];
             this.addBlock('Unordered List', true, items1);
             break;
           case 'Page Break':
-            this.addBlock('Page Break', true, block.content);
+            this.addBlock('Page Break', true, content);
             break;
           // Add cases for other types of blocks
         }
