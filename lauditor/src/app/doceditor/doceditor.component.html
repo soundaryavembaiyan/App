@@ -120,7 +120,7 @@
                  </div>
 
                 <!--Order & Unorder lists-->
-                  <div *ngIf="item.value.content === 'Unordered List' || item.value.content === 'Ordered List'" class="form-group">
+<!--                   <div *ngIf="item.value.content === 'Unordered List' || item.value.content === 'Ordered List'" class="form-group">
                     <label for="title" class="lableTitle" style="padding-right:5px">{{item.value.content}}</label>
                     <!-- <mat-icon class="closePlus iOd" aria-hidden="true" (click)="addNestedContentItem(i)">add_circle_outline</mat-icon> -->
                     <i class="fa fa-times close secclose" aria-hidden="true" (click)="removeItem(i)"></i>
@@ -132,7 +132,36 @@
                     </div>
                     <!-- <div class="pluslist" (click)="addNestedContentItem(i)"><mat-icon class="closePlus" aria-hidden="true">add_circle_outline</mat-icon>Add More</div> -->
                     <button class="pluslist addBtn" (click)="addNestedContentItem(i)"><mat-icon class="closePlus" aria-hidden="true">add_circle_outline</mat-icon>&nbsp;Add More</button>
+                  </div> -->
+
+                              <!--Order & Unorder lists-->
+                  <div *ngIf="item.value.content === 'Unordered List'" class="form-group">
+                    <label for="title" class="lableTitle" style="padding-right:5px">{{item.value.content}}</label>
+                    <!-- <mat-icon class="closePlus iOd" aria-hidden="true" (click)="addNestedContentItem(i)">add_circle_outline</mat-icon> -->
+                    <i class="fa fa-times close secclose" aria-hidden="true" (click)="removeItem(i)"></i>
+                    <div [ngClass]="{'list-container': item.get('orderListItems').length > 3}" formArrayName="orderListItems"><!--class="listScroll"-->
+                    <div class="oderAlign1" *ngFor="let orderitem of item.get('orderListItems').controls; let j = index;" [formGroupName]="j"> 
+                        <input formControlName="contentData" maxlength="5000" placeholder="Enter list items" type="text" (input)="restrictSplCharacteratFirst($event)" (keypress)="onKeyPress($event)" class="text-size form-control createDoc unorderMain"/> 
+                        <i class="fa-solid fa-trash delIcon" *ngIf="j != 0" (click)="removeList(i,j)"></i> 
+                    </div> 
+                    </div>
+                    <!-- <div class="pluslist" (click)="addNestedContentItem(i)"><mat-icon class="closePlus" aria-hidden="true">add_circle_outline</mat-icon>Add More</div> -->
+                    <button class="pluslist addBtn" (click)="addNestedContentItem(i)"><mat-icon class="closePlus" aria-hidden="true">add_circle_outline</mat-icon>&nbsp;Add More</button>
                   </div>
+
+                  <div *ngIf="item.value.content === 'Ordered List'" class="form-group">
+                    <label for="title" class="lableTitle" style="padding-right:5px">{{item.value.content}}</label>
+                    <i class="fa fa-times close secclose" aria-hidden="true" (click)="removeItem(i)"></i>
+                    <div [ngClass]="{'list-container': item.get('orderListItems').length > 3}" formArrayName="orderListItems">
+                    <div class="oderAlign2" *ngFor="let orderitem of item.get('orderListItems').controls; let j = index;" [formGroupName]="j"> 
+                        <input formControlName="contentData" maxlength="5000" placeholder="Enter list items" type="text" (input)="restrictSplCharacteratFirst($event)" (keypress)="onKeyPress($event)" class="text-size form-control createDoc orderMain"/> 
+                        <i class="fa-solid fa-trash delIcon" *ngIf="j != 0" (click)="removeList(i,j)"></i> 
+                    </div> 
+                    </div>
+                    <button class="pluslist addBtn" (click)="addNestedContentItem2(i)"><mat-icon class="closePlus" aria-hidden="true">add_circle_outline</mat-icon>&nbsp;Add More</button>
+                  </div>
+                <!--Order & Unorder lists-->
+              
 
                 <!-- Page Break -->
                 <div class="pbDiv" *ngIf="item.value.content === 'Page Break'"> 
