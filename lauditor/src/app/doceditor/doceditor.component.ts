@@ -383,11 +383,22 @@ export class DoceditorComponent {
     // ***SECTION CONDITIONS*** //    
 
     // ***List focus Condition*** //
-    if (type === 'Ordered List' || type === 'Unordered List') {
+    if (type === 'Unordered List') {
       // Set focus on the input field of the new block
       setTimeout(() => {
         const newIndex = contentListItems.length - 1;
-        const inputs = document.querySelectorAll(`.oderAlign:nth-child(${newIndex + 1}) .text-size.form-control.createDoc`);
+        const inputs = document.querySelectorAll(`.oderAlign:nth-child(${newIndex + 1}) .text-size.form-control.createDoc.unorderMain`);
+        const lastInput = inputs[inputs.length - 1] as HTMLInputElement;
+        if (lastInput && !editBlock === true) {
+          lastInput.focus();
+        }
+      }, 100); // Adjust the delay as needed
+    }
+    if (type === 'Ordered List') {
+      // Set focus on the input field of the new block
+      setTimeout(() => {
+        const newIndex = contentListItems.length - 1;
+        const inputs = document.querySelectorAll(`.oderAlign:nth-child(${newIndex + 1}) .text-size.form-control.createDoc.orderMain`);
         const lastInput = inputs[inputs.length - 1] as HTMLInputElement;
         if (lastInput && !editBlock === true) {
           lastInput.focus();
@@ -402,7 +413,7 @@ export class DoceditorComponent {
       //this.insertPageBreak()
       return;
     }
-    if (type === 'Page Break' && this.getContent === 'Page Break' && !editBlock === true) {
+    if (type === 'Page Break' && this.getContent === 'Page Break') { //&& !editBlock === true
       this.toast.error('Please add any content before using a Page Break');
       return
     }
@@ -465,13 +476,39 @@ export class DoceditorComponent {
 
     // Set focus on the last added input field
     setTimeout(() => {
-      const inputs = document.querySelectorAll(`.oderAlign:nth-child(${contentIndex + 1}) .text-size.form-control.createDoc`);
+      const inputs = document.querySelectorAll(`.oderAlign:nth-child(${contentIndex + 1}) .text-size.form-control.createDoc.unorderMain`);
       const lastInput = inputs[inputs.length - 1] as HTMLInputElement;
       if (lastInput) {
         lastInput.focus();
       }
     });
   }
+  addNestedContentItem2(contentIndex: number, value?: any) {
+    const contentArray = this.myForm.get('contentListItems') as FormArray;
+    const nestedArray = contentArray.at(contentIndex).get('orderListItems') as FormArray;
+    // console.log('contentIndex',contentIndex)
+    // console.log('content',this.content)
+    //Disable to trigger the Add Btn if no val.
+    for (let j = 0; j < nestedArray.length; j++) {
+      const itemo = nestedArray.at(j) as FormGroup
+      const listValue = itemo.value.contentData
+      if (listValue === '') {
+        this.toast.error('Please provide a value')
+        return
+      }
+    }
+    nestedArray.push(this.createNestedContentItem(value));
+
+    // Set focus on the last added input field
+    setTimeout(() => {
+      const inputs = document.querySelectorAll(`.oderAlign:nth-child(${contentIndex + 1}) .text-size.form-control.createDoc.orderMain`);
+      const lastInput = inputs[inputs.length - 1] as HTMLInputElement;
+      if (lastInput) {
+        lastInput.focus();
+      }
+    });
+  }
+
 
   removeList(contentIndex: number, orderIndex: number, i?: any) {
     const contentListItemsArray = this.myForm.get('contentListItems') as FormArray;
@@ -679,6 +716,24 @@ export class DoceditorComponent {
     event.target.value = inputValue;
   }
 
+  onKeyDownEntero(event: KeyboardEvent): void {
+    const textarea = event.target as HTMLTextAreaElement;
+    const cursorPosition: number = textarea.selectionStart;
+    const textLength: number = textarea.value.length;
+  
+    // If Enter is pressed and cursor is not at the end of the text
+    if (event.key === 'Enter' && cursorPosition !== textLength) {
+      return; // Allow default behavior
+    }
+  
+    // If Enter is pressed at the end of the text
+    if (event.key === 'Enter' && cursorPosition === textLength) {
+      textarea.setRangeText('\n', cursorPosition, cursorPosition, 'end');
+      textarea.dispatchEvent(new Event('input')); // Trigger input event
+      event.preventDefault(); // Prevent default behavior
+    }
+  }
+
   restrictFirstCharacter(event: any) {
     let inputValue: string = event.target.value;
     // Check if the first character is hyphen '-' or underscore '_'
@@ -810,7 +865,7 @@ export class DoceditorComponent {
     //this.saveData = true;
     const saveForm = this.saveForm.value.documentname;
     const contentListItems = this.myForm.get('contentListItems') as FormArray;
-    console.log('save contentListItems',contentListItems)
+    //console.log('save contentListItems',contentListItems)
 
     if (!this.documentId && saveForm === '' || saveForm === " " || saveForm === null) {
       this.submitted = true;
@@ -893,7 +948,7 @@ export class DoceditorComponent {
           } else {
             // For subsequent pages, include only pageContent if it's the last page
             reqq = {
-              "document": pageContent,
+              "document": pageContent.replace(/\n/g, '<nln>'),
               "page": currentPage
             };
           }
@@ -926,43 +981,24 @@ export class DoceditorComponent {
             );
           }
           else {
-            //this.toast.error('Page not found!');
-            this.httpservice.sendPatchLatexRequest(URLUtils.updateDoc(this.pageId), reqq).subscribe(
-              (resp: any) => {
-                // this.pid = this.pageId
-                this.openId = this.pageId
-                this.toast.success('Document updated successfully');
-              })
+            // Check if the current page number exists in the pageNumber array
+            let currentPageIndex = this.pageNumber.findIndex((page: any) => page.page === reqq.page);
+            //currentPageIndex =
+            //console.log('currentPageIndex',currentPageIndex)
+            if (currentPageIndex !== -1 || currentPageIndex === -1) {
+              let currentPageId = this.pageNumber[currentPageIndex].pageId;
+              //console.log('ppp pageId', currentPageId)
+              // Make the PATCH request with the correct pageId
+              this.httpservice.sendPatchLatexRequest(URLUtils.updateDoc(currentPageId), reqq).subscribe(
+                (resp: any) => {
+                  //this.toast.success(resp.message);
+                  this.toast.success('Document updated successfully');
+                  currentPage++; // Increment page number for the next page
+                  pageContent = ''; // Reset pageContent for the next page
+                }
+              );
+            }
           }
-
-          // else {
-          //   // Check if the current page number exists in the pageNumber array
-          //   const currentPageIndex = this.pageNumber.findIndex((page: any) => page.page === reqq.page);
-          //   console.log('currentPageIndex',currentPageIndex)
-          //   if (currentPageIndex !== -1) {
-          //     const currentPageId = this.pageNumber[currentPageIndex].pageId;
-          //     //console.log('ppp pageId', currentPageId)
-          //     // Make the PATCH request with the correct pageId
-          //     this.httpservice.sendPatchLatexRequest(URLUtils.updateDoc(currentPageId), reqq).subscribe(
-          //       (resp: any) => {
-          //         //this.toast.success(resp.message);
-          //         this.toast.success('Document updated successfully');
-          //         currentPage++; // Increment page number for the next page
-          //         pageContent = ''; // Reset pageContent for the next page
-          //       }
-          //     );
-          //   }
-          //   else {
-          //     //this.toast.error('Page not found!');
-          //     this.httpservice.sendPatchLatexRequest(URLUtils.updateDoc(this.pageId), reqq).subscribe(
-          //       (resp: any) => {
-          //         // this.pid = this.pageId
-          //         this.openId = this.pageId
-          //         console.log('this.openId',this.openId)
-          //         this.toast.success(resp.message);
-          //       })
-          //   }
-          // }
           currentPage++; // Increment page number for the next page
           pageContent = ''; // Reset pageContent for the next page
         }
@@ -1909,6 +1945,13 @@ export class ContentDialogComponent {
     this.content = target.value; // latex to parent textarea
   }
 
+  //For content title!!
+  onKeyDown1(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      event.preventDefault(); // Prevent the default Enter key behavior
+    }
+  }
+
   onKeyDown(event: KeyboardEvent): void {
     const textarea = event.target as HTMLTextAreaElement;
     const textareaValue: string = textarea.value;
@@ -1917,23 +1960,26 @@ export class ContentDialogComponent {
       event.preventDefault(); // Prevent the default Enter key behavior
     }
   }
-  //For content title!!
-  onKeyDown1(event: KeyboardEvent): void {
-    if (event.key === 'Enter') {
-      event.preventDefault(); // Prevent the default Enter key behavior
-    }
-  }
 
-  //not allow some splChar
+  //{ and } not allow 
   onKeyPress(event: any) {
-    const restrictedCharacters = /[{}@^=+<>`~'\\\/]/; // Updated regex to include forward slash /
+    const restrictedCharacters = /[{}]/;
+    const restrictedCharacters1 = /[\\]/;
     if (restrictedCharacters.test(event.key)) {
       this.showErrorMessage = true;
+      this.toast.error('Please avoid using { and } brackets.');
       event.preventDefault();
-    } else {
+    }
+    else if(restrictedCharacters1.test(event.key)) {
+      this.showErrorMessage = true;
+      this.toast.error('Please avoid using backslash.');
+      event.preventDefault();
+    }
+    else {
       this.showErrorMessage = false;
     }
   }
+
 
   //{ and } not allow 
   onKeyPress1(event: any) {
