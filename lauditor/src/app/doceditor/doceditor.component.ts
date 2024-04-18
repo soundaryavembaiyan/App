@@ -19,6 +19,7 @@ import { __values } from 'tslib';
 import { debug } from 'strophe';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { get } from 'jquery';
+import { MatMenuTrigger } from '@angular/material/menu';
 //import { DatePipe } from '@angular/common';
 //import jsPDF from 'jspdf';
 
@@ -138,6 +139,31 @@ export class DoceditorComponent {
   AddDesc = false;
   isNotesElipses: boolean = false;
   itemContent: any;
+  isFirefox: boolean = false;
+  
+  @ViewChild('menuTrigger1') menuTrigger1!: MatMenuTrigger;
+  @ViewChild('menuTrigger2') menuTrigger2!: MatMenuTrigger;
+
+  // Listen to mouse leave event on the document
+  @HostListener('document:mouseleave', ['$event'])
+  onMouseLeave(event: MouseEvent) {
+    if (this.menuTrigger1.menuOpen) {
+      this.menuTrigger1.closeMenu();
+    }
+    if (this.menuTrigger2.menuOpen) {
+      this.menuTrigger2.closeMenu();
+    }
+  }
+  // Listen to scroll event on the document
+  @HostListener('document:scroll', ['$event'])
+  onScroll(event: Event) {
+    if (this.menuTrigger1.menuOpen) {
+      this.menuTrigger1.closeMenu();
+    }
+    if (this.menuTrigger2.menuOpen) {
+      this.menuTrigger2.closeMenu();
+    }
+  }
 
   constructor(private router: Router, private idGenerator: RandomService, private appRef: ApplicationRef, private fb: FormBuilder, private httpservice: HttpService,
     private toast: ToastrService, private documentService: DocumentService, private cdr: ChangeDetectorRef,
@@ -163,6 +189,7 @@ export class DoceditorComponent {
     });
 
     this.getDocumentCall();
+    this.isFirefox = this.detectFirefox(); //...firefox style
   }
 
   // addContent(type: any, value?: any, valueTitle?: any) {
@@ -194,6 +221,26 @@ export class DoceditorComponent {
   // });
   // }
 
+  detectFirefox(): boolean {
+    const userAgent = window.navigator.userAgent;
+    return userAgent.indexOf('Firefox') !== -1;
+  }
+
+  //restrict enter at first position
+  // onEnterPress(event: KeyboardEvent) {
+  //   if (event.key === 'Enter') {
+  //     const textarea = event.target as HTMLTextAreaElement;
+  //     if (textarea.selectionStart === 0 && textarea.selectionEnd === 0) {
+  //       event.preventDefault();
+  //     }
+  //   }
+  // }
+  onEnterPress(event: KeyboardEvent) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+    }
+  }
+  
   toggleEdit(item: FormGroup) {
     item.patchValue({
       editMode: !item.value.editMode
@@ -330,11 +377,13 @@ export class DoceditorComponent {
       this.toast.error('Only one overview is allowed');
       return;
     }
+
     // Overview - If trying to add Overview when other blocks already exist
-    if (type === 'Overview' && contentListItems.length > 0 && !editBlock === true) {
+    if (type === 'Overview' && contentListItems.length > 0 && !editBlock === true && contentListItems.length === 1 && !contentListItems.controls.some(item => item.value.content === null)) {
       this.toast.error('Overview block should not be added after other blocks');
       return;
     }
+
     // ***OVERVIEW CONDITIONS*** //
 
     // ***SECTION CONDITIONS*** //
@@ -424,6 +473,7 @@ export class DoceditorComponent {
       if (type === 'Overview') {
         contentListItems.push(this.addContent(type, value));
       }
+
       if (type === 'Section' || type === 'Sub Section' || type === 'Sub Sub Section' || type === 'Paragraph') {
         contentListItems.push(this.addContent(type, value, valueTitle));
       }
@@ -509,7 +559,6 @@ export class DoceditorComponent {
     });
   }
 
-
   removeList(contentIndex: number, orderIndex: number, i?: any) {
     const contentListItemsArray = this.myForm.get('contentListItems') as FormArray;
     const contentItem = contentListItemsArray.at(contentIndex);
@@ -520,7 +569,7 @@ export class DoceditorComponent {
   removeItem(i: number) {
     const contentListItems = this.myForm.get('contentListItems') as FormArray;
     contentListItems.removeAt(i);
-  }
+  }  
 
   //OpenDialog boxes for all sections!!!
   opencontentDialog(item: any, itemIndex: any) {
@@ -557,7 +606,7 @@ export class DoceditorComponent {
     this.latexDialog = true;
     const dialogRef = this.dialog.open(OverviewExpandComponent, {
       width: '600px',
-      height: '365px',
+      height: '415px',
       data: {
         contentData: item.value.contentData,
         //contentTitle: item.value.contentTitle,
@@ -663,18 +712,34 @@ export class DoceditorComponent {
   onKeyPress(event: any) {
     const restrictedCharacters = /[{}]/;
     const restrictedCharacters1 = /[\\]/;
+
+    // Check if the pressed key is a Space 
+    if (event.key === ' ' && (event.target as HTMLTextAreaElement).selectionStart === 0) {
+      event.preventDefault();
+      //this.toast.error('Space is not allowed at the beginning.');
+      return;
+    }
+
     if (restrictedCharacters.test(event.key)) {
       this.showErrorMessage = true;
       this.toast.error('Please avoid using { and } brackets.');
       event.preventDefault();
     }
-    else if(restrictedCharacters1.test(event.key)) {
+    else if (restrictedCharacters1.test(event.key)) {
       this.showErrorMessage = true;
       this.toast.error('Please avoid using backslash.');
       event.preventDefault();
     }
     else {
       this.showErrorMessage = false;
+    }
+
+    // Check if the pressed key is a Enter 
+    if (event.key === 'Enter') {
+      const textarea = event.target as HTMLTextAreaElement;
+      if (textarea.selectionStart === 0 && textarea.selectionEnd === 0) {
+        event.preventDefault();
+      }
     }
   }
 
@@ -906,7 +971,7 @@ export class DoceditorComponent {
   processContentItems(contentListItems: FormArray, latexDocument: string) {
     let currentPage = 1; // Track the current page number
     let pageContent = ''; // Track the content for the current page
-    let blocksProcessed = 1;
+    let blocksProcessed = 0;
     let maxBlocks = 35; //Max blocks condition
     this.submitted = false;
 
@@ -927,7 +992,6 @@ export class DoceditorComponent {
             this.listData += `\\item ${itemo.get('contentData')?.value}`; //get all ordered & unordered lists
           }
         }
-
         blocksProcessed++;
 
         // Append block content to the pageContent
@@ -972,7 +1036,7 @@ export class DoceditorComponent {
 
                 // Set pageNumber array for the first page
                 this.pageNumber.push({ "page": this.pno, "pageId": this.pageId });
-                // console.log('const pageNo.', this.pageNumber);
+                //console.log('const pageNo.', this.pageNumber);
                 //this.toast.success(ress.message);
                 this.toast.success('Document saved successfully');
                 currentPage++; // Increment page number for the next page
@@ -980,25 +1044,43 @@ export class DoceditorComponent {
               }
             );
           }
-          else {
-            // Check if the current page number exists in the pageNumber array
-            let currentPageIndex = this.pageNumber.findIndex((page: any) => page.page === reqq.page);
-            //currentPageIndex =
-            //console.log('currentPageIndex',currentPageIndex)
-            if (currentPageIndex !== -1 || currentPageIndex === -1) {
-              let currentPageId = this.pageNumber[currentPageIndex].pageId;
-              //console.log('ppp pageId', currentPageId)
-              // Make the PATCH request with the correct pageId
-              this.httpservice.sendPatchLatexRequest(URLUtils.updateDoc(currentPageId), reqq).subscribe(
-                (resp: any) => {
-                  //this.toast.success(resp.message);
-                  this.toast.success('Document updated successfully');
-                  currentPage++; // Increment page number for the next page
-                  pageContent = ''; // Reset pageContent for the next page
-                }
-              );
-            }
+          else{
+            this.httpservice.sendPatchLatexRequest(URLUtils.updateDoc(this.pageId), reqq).subscribe(
+              (resp: any) => {
+                // this.pid = this.pageId
+                //this.openId = this.pageId
+                //console.log('this.openId',this.pageId)
+                this.toast.success('Document updated successfully');
+              })
           }
+          // else {
+          //   // Check if the current page number exists in the pageNumber array
+          //   // console.log('pageId', this.pageId)
+          //   let currentPageIndex = this.pageNumber.findIndex((page: any) => page.page === reqq.page);
+          //   //console.log('currentPageIndex',currentPageIndex)
+          //   if (currentPageIndex !== -1) {
+          //     let currentPageId = this.pageNumber[currentPageIndex].pageId;
+          //     // console.log('curr pageId', currentPageId)
+          //     // Make the PATCH request with the correct pageId
+          //     this.httpservice.sendPatchLatexRequest(URLUtils.updateDoc(currentPageId), reqq).subscribe(
+          //       (resp: any) => {
+          //         //this.toast.success(resp.message);
+          //         this.toast.success('Document updated successfully');
+          //         currentPage++; // Increment page number for the next page
+          //         pageContent = ''; // Reset pageContent for the next page
+          //       }
+          //     );
+          //   }
+          //   else{
+          //     this.httpservice.sendPatchLatexRequest(URLUtils.updateDoc(this.pageId), reqq).subscribe(
+          //       (resp: any) => {
+          //         // this.pid = this.pageId
+          //         //this.openId = this.pageId
+          //         console.log('this.openId',this.pageId)
+          //         this.toast.success('Document updated successfully');
+          //       })
+          //   }
+          // }
           currentPage++; // Increment page number for the next page
           pageContent = ''; // Reset pageContent for the next page
         }
@@ -1965,12 +2047,13 @@ export class ContentDialogComponent {
   onKeyPress(event: any) {
     const restrictedCharacters = /[{}]/;
     const restrictedCharacters1 = /[\\]/;
+
     if (restrictedCharacters.test(event.key)) {
       this.showErrorMessage = true;
       this.toast.error('Please avoid using { and } brackets.');
       event.preventDefault();
     }
-    else if(restrictedCharacters1.test(event.key)) {
+    else if (restrictedCharacters1.test(event.key)) {
       this.showErrorMessage = true;
       this.toast.error('Please avoid using backslash.');
       event.preventDefault();
@@ -1978,8 +2061,22 @@ export class ContentDialogComponent {
     else {
       this.showErrorMessage = false;
     }
-  }
 
+    // Check if the pressed key is a Space 
+    if (event.key === ' ' && (event.target as HTMLTextAreaElement).selectionStart === 0) {
+      event.preventDefault();
+      //this.toast.error('Space is not allowed at the beginning.');
+      return;
+    }
+
+    // Check if the pressed key is a Enter 
+    if (event.key === 'Enter') {
+      const textarea = event.target as HTMLTextAreaElement;
+      if (textarea.selectionStart === 0 && textarea.selectionEnd === 0) {
+        event.preventDefault();
+      }
+    }
+  }
 
   //{ and } not allow 
   onKeyPress1(event: any) {
@@ -2136,6 +2233,21 @@ export class OverviewExpandComponent {
   }
   //{ and } not allow 
   onKeyPress(event: any) {
+    // Check if the pressed key is a Space 
+    if (event.key === ' ' && (event.target as HTMLTextAreaElement).selectionStart === 0) {
+      event.preventDefault();
+      //this.toast.error('Space is not allowed at the beginning.');
+      return;
+    }
+
+    // Check if the pressed key is a Enter 
+    if (event.key === 'Enter') {
+      const textarea = event.target as HTMLTextAreaElement;
+      if (textarea.selectionStart === 0 && textarea.selectionEnd === 0) {
+        event.preventDefault();
+      }
+    }
+
     const restrictedCharacters = /[{}]/;
     const restrictedCharacters1 = /[\\]/;
     if (restrictedCharacters.test(event.key)) {
@@ -2143,7 +2255,7 @@ export class OverviewExpandComponent {
       this.toast.error('Please avoid using { and } brackets.');
       event.preventDefault();
     }
-    else if(restrictedCharacters1.test(event.key)) {
+    else if (restrictedCharacters1.test(event.key)) {
       this.showErrorMessage = true;
       this.toast.error('Please avoid using backslash.');
       event.preventDefault();
