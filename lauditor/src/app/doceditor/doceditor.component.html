@@ -30,7 +30,7 @@
         <form [formGroup]="myForm">
         <div class="col-xs-6"> 
             <!-- FILE -->
-            <button class="menuBtn1" mat-button (keydown)="onKeyDown($event)" [matMenuTriggerFor]="menu1">File<i class="fa fa-angle-down" aria-hidden="true"></i></button>
+            <button class="menuBtn1" mat-button #menuTrigger1="matMenuTrigger" (keydown)="onKeyDown($event)" [matMenuTriggerFor]="menu1">File<i class="fa fa-angle-down" aria-hidden="true"></i></button>
             <mat-menu class="matFile" #menu1="matMenu">
                 <button mat-menu-item (click)="newDoc()"><img class="fileImg" src="assets/img/new.svg"/>&nbsp;New</button>
                 <button mat-menu-item (click)="openDocumentDialog()"><img class="fileImg" src="assets/img/open.svg"/>&nbsp;Open</button>
@@ -38,8 +38,8 @@
                 <button mat-menu-item (click)="downloadDialog()"><img class="fileImg" src="assets/img/save.svg"/>&nbsp;Save as</button> 
                 <button mat-menu-item (click)="deleteDocument()"><img class="fileImg" src="assets/img/trasho.svg"/>&nbsp;Delete</button> 
             </mat-menu>
-            <!-- INSERT -->
-            <button class="menuBtn2" mat-button (keydown)="onKeyDown($event)" [matMenuTriggerFor]="menu2">Insert<i class="fa fa-angle-down" aria-hidden="true"></i></button>
+           <!-- INSERT -->
+            <button class="menuBtn2" mat-button #menuTrigger2="matMenuTrigger" (keydown)="onKeyDown($event)" [matMenuTriggerFor]="menu2">Insert<i class="fa fa-angle-down" aria-hidden="true"></i></button>
             <mat-menu class="matInsert" #menu2="matMenu" xPosition="before">
                 <button mat-menu-item (click)="addBlock('Overview')"><img class="imgoverView" src="assets/img/overview.svg"/>Overview</button>
                 <button mat-menu-item (click)="addBlock('Section')"><img class="imgsecView" src="assets/img/section.svg"/>&nbsp;&nbsp;Section</button>
@@ -56,7 +56,7 @@
             <label for="title" class="lableTitle">Title</label>
             <input formControlName="title" class="text-size form-control createDoc" name="title" 
             [(ngModel)]="title" value="" type="hidden"  maxlength="255" placeholder="Enter Title" type="text" 
-            (keydown)="onKeyDown1($event)" (input)="restrictNoFirst($event);restrictSpaces($event)" pattern="[^\s]*" oninput="this.value = this.value.replace(/[^A-Za-z0-9-,_!@$%^*;'&/.()\|# ]|^ /g,'')" required>
+            (keydown)="onKeyDown1($event)" (input)="restrictNoFirst($event);restrictSpaces($event)" pattern="[^\s]*" oninput="this.value = this.value.replace(/[^A-Za-z0-9-,_!@$%^*;'&/.()\|# ]|^ /g,'')">
             <!-- <div *ngIf="myForm.get('title').errors && submitted" class="errorStyle">
                 <div *ngIf="myForm.get('title').errors.required">This field is required</div>
             </div> -->
@@ -65,7 +65,7 @@
             <label for="title" class="lableTitle">Author</label>
             <input formControlName="author" class="text-size form-control createDoc" name="title" 
             [(ngModel)]="author" value="" type="hidden" placeholder="Enter Author" type="text" 
-            (keydown)="onKeyDown1($event)" (input)="restrictNoFirst($event);restrictSpaces($event)" pattern="[^\s]*" oninput="this.value = this.value.replace(/[^A-Za-z0-9-,_!@$%^*;'&/.\|()# ]|^ /g,'')" required>
+            (keydown)="onKeyDown1($event)" (input)="restrictNoFirst($event);restrictSpaces($event)" pattern="[^\s]*" oninput="this.value = this.value.replace(/[^A-Za-z0-9-,_!@$%^*;'&/.\|()# ]|^ /g,'')">
             <!-- <div *ngIf="myForm.get('author').errors && submitted" class="errorStyle">
                 <div *ngIf="myForm.get('author').errors.required">This field is required</div>
             </div> -->
@@ -84,8 +84,8 @@
                     <label for="title" class="lableTitle" style="padding-right:5px">{{item.value.content}}</label>
                     <img (click)="openoverviewDialog(item,i)" class="expand" src="assets/img/expand.svg"/> 
                     <i class="fa fa-times close secclose" (click)="removeItem(i)" aria-hidden="true"></i>
-                    <textarea name="type" formControlName="contentData" maxlength="5000" placeholder="Enter your content" class="text-size form-control textareaDoc" (input)="restricttextSpace($event);restrictSplCharacteratFirst($event)" (keypress)="onKeyPress($event)" (keydown)="onKeyDown($event)" rows="3" cols="50"></textarea>
-                  </div>
+                    <textarea name="type" formControlName="contentData" maxlength="5000" placeholder="Enter your content" class="text-size form-control textareaDoc" (input)="restrictSplCharacteratFirst($event)" (keypress)="onKeyPress($event)" rows="3" cols="50"></textarea><!--restricttextSpace($event);-->
+                </div>
 
                   <!-- <div *ngIf="item.value.content === 'Overview'"> 
                     <label for="title" class="lableTitle" style="padding-right:5px">{{item.value.content}}</label>
@@ -109,32 +109,17 @@
 
                    <!--Sections.., Paragraph-->
                   <div *ngIf="item.value.content === 'Section' || item.value.content === 'Sub Section' || item.value.content === 'Sub Sub Section' || item.value.content === 'Paragraph'">
-                    <label for="title" class="lableTitle" style="padding-right:5px">{{item.value.content}}<a class="hypendot" *ngIf="item.value.contentTitle.length > 0">&nbsp;-&nbsp;</a>
+                    <label for="title" class="lableTitle" style="padding-right:5px">{{item.value.content}}<a class="hypendot" *ngIf="item.value.contentTitle.length > 0 && !isFirefox">&nbsp;-&nbsp;</a>
                       <textarea class="overviewTitle" formControlName="contentTitle" type="text" (keypress)="onKeyPress($event)" readonly></textarea>                      
-                      <a class="hypendot" *ngIf="item.value.contentTitle.length > 38">...</a>
+                      <a class="hypendot" *ngIf="item.value.contentTitle.length > 38 && !isFirefox">...</a>
                     </label>
 
                     <img (click)="opencontentDialog(item,i)" class="expand" src="assets/img/expand.svg"/> 
                     <i class="fa fa-times close secclose" (click)="removeItem(i)" aria-hidden="true"></i>
-                    <textarea name="type" formControlName="contentData" maxlength="5000" placeholder="Enter your content" class="text-size form-control textareaDoc" (input)="restricttextSpace($event);restrictSplCharacteratFirst($event)" (keydown)="onKeyDown($event)" (keypress)="onKeyPress($event)" rows="3" cols="50"></textarea>
+                    <textarea name="type" formControlName="contentData" maxlength="5000" placeholder="Enter your content" class="text-size form-control textareaDoc" (input)="restrictSplCharacteratFirst($event)" (keypress)="onKeyPress($event)" rows="3" cols="50"></textarea>
                  </div>
 
                 <!--Order & Unorder lists-->
-<!--                   <div *ngIf="item.value.content === 'Unordered List' || item.value.content === 'Ordered List'" class="form-group">
-                    <label for="title" class="lableTitle" style="padding-right:5px">{{item.value.content}}</label>
-                    <!-- <mat-icon class="closePlus iOd" aria-hidden="true" (click)="addNestedContentItem(i)">add_circle_outline</mat-icon> -->
-                    <i class="fa fa-times close secclose" aria-hidden="true" (click)="removeItem(i)"></i>
-                    <div [ngClass]="{'list-container': item.get('orderListItems').length > 3}" formArrayName="orderListItems"><!--class="listScroll"-->
-                    <div class="oderAlign" *ngFor="let orderitem of item.get('orderListItems').controls; let j = index;" [formGroupName]="j"> 
-                        <input formControlName="contentData" maxlength="5000" placeholder="Enter list items" type="text" (input)="restricttextSpace($event);restrictSplCharacteratFirst($event)" (keypress)="onKeyPress($event)" (keydown)="onKeyDownList($event)" class="text-size form-control createDoc"/> 
-                        <i class="fa-solid fa-trash delIcon" *ngIf="j != 0" (click)="removeList(i,j)"></i> 
-                    </div> 
-                    </div>
-                    <!-- <div class="pluslist" (click)="addNestedContentItem(i)"><mat-icon class="closePlus" aria-hidden="true">add_circle_outline</mat-icon>Add More</div> -->
-                    <button class="pluslist addBtn" (click)="addNestedContentItem(i)"><mat-icon class="closePlus" aria-hidden="true">add_circle_outline</mat-icon>&nbsp;Add More</button>
-                  </div> -->
-
-                              <!--Order & Unorder lists-->
                   <div *ngIf="item.value.content === 'Unordered List'" class="form-group">
                     <label for="title" class="lableTitle" style="padding-right:5px">{{item.value.content}}</label>
                     <!-- <mat-icon class="closePlus iOd" aria-hidden="true" (click)="addNestedContentItem(i)">add_circle_outline</mat-icon> -->
@@ -154,14 +139,13 @@
                     <i class="fa fa-times close secclose" aria-hidden="true" (click)="removeItem(i)"></i>
                     <div [ngClass]="{'list-container': item.get('orderListItems').length > 3}" formArrayName="orderListItems">
                     <div class="oderAlign2" *ngFor="let orderitem of item.get('orderListItems').controls; let j = index;" [formGroupName]="j"> 
-                        <input formControlName="contentData" maxlength="5000" placeholder="Enter list items" type="text" (input)="restrictSplCharacteratFirst($event)" (keypress)="onKeyPress($event)" class="text-size form-control createDoc orderMain"/> 
+                        <input formControlName="contentData" maxlength="5000" placeholder="Enter list items" type="text" (input)="restrictSplCharacteratFirst($event)" (keypress)="onKeyPress($event); onEnterPress($event)" class="text-size form-control createDoc orderMain"/> 
                         <i class="fa-solid fa-trash delIcon" *ngIf="j != 0" (click)="removeList(i,j)"></i> 
                     </div> 
                     </div>
                     <button class="pluslist addBtn" (click)="addNestedContentItem2(i)"><mat-icon class="closePlus" aria-hidden="true">add_circle_outline</mat-icon>&nbsp;Add More</button>
                   </div>
                 <!--Order & Unorder lists-->
-              
 
                 <!-- Page Break -->
                 <div class="pbDiv" *ngIf="item.value.content === 'Page Break'"> 
