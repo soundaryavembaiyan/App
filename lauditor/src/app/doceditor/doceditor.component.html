@@ -35,7 +35,7 @@
                 <button mat-menu-item (click)="newDoc()"><img class="fileImg" src="assets/img/new.svg"/>&nbsp;New</button>
                 <button mat-menu-item (click)="openDocumentDialog()"><img class="fileImg" src="assets/img/open.svg"/>&nbsp;Open</button>
                 <button mat-menu-item id="btnSave" (click)="saveDocument()"><img class="fileImg" src="assets/img/save.svg"/>&nbsp;Save</button>
-                <button mat-menu-item (click)="downloadDialog()"><img class="fileImg" src="assets/img/save.svg"/>&nbsp;Save as</button> 
+                <button mat-menu-item (click)="downloadDialog()"><img class="fileImg" src="assets/img/save.svg"/>&nbsp;Save As</button> 
                 <button mat-menu-item (click)="deleteDocument()"><img class="fileImg" src="assets/img/trasho.svg"/>&nbsp;Delete</button> 
             </mat-menu>
            <!-- INSERT -->
@@ -109,7 +109,7 @@
 
                    <!--Sections.., Paragraph-->
                   <div *ngIf="item.value.content === 'Section' || item.value.content === 'Sub Section' || item.value.content === 'Sub Sub Section' || item.value.content === 'Paragraph'">
-                    <label for="title" class="lableTitle" style="padding-right:5px">{{item.value.content}}<a class="hypendot" *ngIf="item.value.contentTitle.length > 0 && !isFirefox">&nbsp;-&nbsp;</a>
+                    <label for="title" class="lableTitle" style="padding-right:5px">{{item.value.content}}<a class="hypendot" *ngIf="item.value.contentTitle.length > 0">&nbsp;-&nbsp;</a>
                       <textarea class="overviewTitle" formControlName="contentTitle" type="text" (keypress)="onKeyPress($event)" readonly></textarea>                      
                       <a class="hypendot" *ngIf="item.value.contentTitle.length > 38 && !isFirefox">...</a>
                     </label>
@@ -126,7 +126,7 @@
                     <i class="fa fa-times close secclose" aria-hidden="true" (click)="removeItem(i)"></i>
                     <div [ngClass]="{'list-container': item.get('orderListItems').length > 3}" formArrayName="orderListItems"><!--class="listScroll"-->
                     <div class="oderAlign1" *ngFor="let orderitem of item.get('orderListItems').controls; let j = index;" [formGroupName]="j"> 
-                        <input formControlName="contentData" maxlength="5000" placeholder="Enter list items" type="text" (input)="restrictSplCharacteratFirst($event)" (keypress)="onKeyPress($event)" class="text-size form-control createDoc unorderMain"/> 
+                        <input formControlName="contentData" maxlength="5000" placeholder="Enter list items" type="text" (input)="restrictSplCharacteratFirst($event)" (keypress)="onKeyPress($event); onEnterPress($event)" class="text-size form-control createDoc unorderMain"/> 
                         <i class="fa-solid fa-trash delIcon" *ngIf="j != 0" (click)="removeList(i,j)"></i> 
                     </div> 
                     </div>
@@ -257,9 +257,9 @@
       </jw-modal>
 
       
-
+      <ngx-spinner size="medium" type="ball-clip-rotate"></ngx-spinner>
 </div> 
-<ngx-spinner size="medium" type="ball-clip-rotate"></ngx-spinner>
+
 <router-outlet></router-outlet>
 
 
