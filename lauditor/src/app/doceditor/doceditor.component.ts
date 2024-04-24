@@ -169,7 +169,7 @@ export class DoceditorComponent {
     private toast: ToastrService, private documentService: DocumentService, private cdr: ChangeDetectorRef,
     private renderer: Renderer2, private modalService: ModalService, private spinnerService: NgxSpinnerService, private confirmationDialogService: ConfirmationDialogService,
     public sanitizer: DomSanitizer, public dialog: MatDialog) {
-    this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(this.url);
+    // this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(this.url);
   }
 
   ngOnInit() {
@@ -379,11 +379,10 @@ export class DoceditorComponent {
     }
 
     // Overview - If trying to add Overview when other blocks already exist
-    if (type === 'Overview' && contentListItems.length > 0 && !editBlock === true && contentListItems.length === 1 && !contentListItems.controls.some(item => item.value.content === null)) {
-      this.toast.error('Overview block should not be added after other blocks');
+    if(type === 'Overview' && contentListItems.controls.some(item => item.value.content !== 'Overview' && this.getContent != null)){
+      this.toast.error('Overview can be added only at the beginning of the document.');
       return;
     }
-
     // ***OVERVIEW CONDITIONS*** //
 
     // ***SECTION CONDITIONS*** //
@@ -458,12 +457,12 @@ export class DoceditorComponent {
 
     // ***Page Break Condition*** //
     if (type === 'Page Break' && contentListItems.length < 1) {
-      this.toast.error('Please add any content before using a Page Break');
+      this.toast.error('Please add text before the Page Break');
       //this.insertPageBreak()
       return;
     }
     if (type === 'Page Break' && this.getContent === 'Page Break') { //&& !editBlock === true
-      this.toast.error('Please add any content before using a Page Break');
+      this.toast.error('Please add text before the Page Break');
       return
     }
     // ***Page Break Condition*** //
@@ -473,7 +472,6 @@ export class DoceditorComponent {
       if (type === 'Overview') {
         contentListItems.push(this.addContent(type, value));
       }
-
       if (type === 'Section' || type === 'Sub Section' || type === 'Sub Sub Section' || type === 'Paragraph') {
         contentListItems.push(this.addContent(type, value, valueTitle));
       }
@@ -518,7 +516,7 @@ export class DoceditorComponent {
       const itemo = nestedArray.at(j) as FormGroup
       const listValue = itemo.value.contentData
       if (listValue === '') {
-        this.toast.error('Please provide a value')
+        this.toast.error('Please add text.')
         return
       }
     }
@@ -543,7 +541,7 @@ export class DoceditorComponent {
       const itemo = nestedArray.at(j) as FormGroup
       const listValue = itemo.value.contentData
       if (listValue === '') {
-        this.toast.error('Please provide a value')
+        this.toast.error('Please add text.')
         return
       }
     }
@@ -570,7 +568,7 @@ export class DoceditorComponent {
     const contentListItems = this.myForm.get('contentListItems') as FormArray;
     contentListItems.removeAt(i);
   }  
-
+  
   //OpenDialog boxes for all sections!!!
   opencontentDialog(item: any, itemIndex: any) {
     this.latexDialog = true;
@@ -655,7 +653,7 @@ export class DoceditorComponent {
     const contentListItems = this.myForm.get('contentListItems') as FormArray;
 
     if (contentListItems.length >= 0 && !this.documentId) {
-      this.toast.error('Document changes not saved');
+      this.toast.error('Document changes not saved. Please try again.');
       return;
     }
 
@@ -742,7 +740,7 @@ export class DoceditorComponent {
       }
     }
   }
-
+  
   restrictNoFirst(event: any) {
     let inputValue: string = event.target.value;
     if (inputValue.length > 0 && inputValue.charAt(0) === '0' || inputValue.charAt(0) === '1' || inputValue.charAt(0) === '2' || inputValue.charAt(0) === '3' ||
@@ -761,7 +759,7 @@ export class DoceditorComponent {
       inputValue.charAt(0) === '7' || inputValue.charAt(0) === '8' || inputValue.charAt(0) === '9') {
       inputValue = inputValue.substring(1);
       event.target.value = inputValue;
-      this.toast.error('Numbers should not be first thing')
+      this.toast.error('Numbers should not be first character')
       return;
     }
 
@@ -808,7 +806,7 @@ export class DoceditorComponent {
       // Update the input field value
       event.target.value = inputValue;
       // this.toast.error('Special characters should not take place at first position')
-      this.toast.error('Hyphens (-) and underscore (_) should not be the first thing')
+      this.toast.error('Hyphens (-) and underscore (_) should not be the first character')
       return;
     }
   }
@@ -841,17 +839,43 @@ export class DoceditorComponent {
     }
   }
 
-  saveDocument() {
+  saveDocument(i?:any) {
     this.submitted = false;
     //this.documentname = ' '
     const contentListItems = this.myForm.get('contentListItems') as FormArray;
     // console.log('form', this.myForm)
     // console.log('only cont',contentListItems)
-    // console.log('len',contentListItems.value.length)
+    // console.log('len',contentListItems.value)
+    // console.log('content', this.content)
 
     if (contentListItems.value.length === 0) {
-      this.toast.error('Please add atleast one content');
+      this.toast.error('Please add text to proceed.');
       return
+    }
+    let previousContentChecked = false;
+
+    for (let i = 0; i < contentListItems.length; i++) {
+      const item = contentListItems.at(i);
+      if (item) {
+        const getContent = item.get('content')?.value;
+
+        const currentContent = contentListItems.at(i).get('content')?.value;
+        const previousContent = contentListItems.at(i - 1).get('content')?.value;      
+        // console.log('currentContent', currentContent)
+        // console.log('previousContent', previousContent)
+
+        //Editblock - empty content conditions!!!
+        if (!previousContentChecked && previousContent === null) {
+          this.toast.error('Please add text to proceed.');
+          return;
+        }
+        previousContentChecked = true;
+
+        if (currentContent === 'Page Break' && previousContent === 'Page Break') {
+          this.toast.error('Please add text before the Page Break.');
+          return;
+        }
+      }
     }
 
     // Set focus on the last added input field  text-size form-control createDoc savecreate
@@ -900,10 +924,10 @@ export class DoceditorComponent {
       this.modalService.open('custom-modal-1');
       return
     }
-    else if (contentListItems.length === 1 && this.getContent === null) {
-      this.toast.error('Please add atleast one content');
-      return
-    }
+    // else if (contentListItems.length === 1 && this.getContent === null) {
+    //   this.toast.error('Please add atleast one content');
+    //   return
+    // }
     else {
       //this.toast.info('else work')
       this.saveDoc();
@@ -979,7 +1003,7 @@ export class DoceditorComponent {
     for (let i = 0; i < contentListItems.length; i++) {
       const item = contentListItems.at(i);
       if (item) {
-        const getContent = item.get('content')?.value;
+        let getContent = item.get('content')?.value;
         this.contentDataControl = item.get('contentData');
         this.contentTitleControl = item.get('contentTitle');
 
@@ -1089,18 +1113,46 @@ export class DoceditorComponent {
   }
 
   // Get Block Contents
+  // getBlockContent(contentType: string) {
+  //   console.log('contenType',contentType)
+  //   switch (contentType) {
+  //     case 'Overview':
+  //       return `\\abstract ${this.contentDataControl.value}`;
+  //     case 'Section':
+  //       return `\\section{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`;
+  //     case 'Sub Section':
+  //       return `\\subsection{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`;
+  //     case 'Sub Sub Section':
+  //       return `\\subsubsection{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`;
+  //     case 'Paragraph':
+  //       return `\\paragraph{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`;
+  //     case 'Ordered List':
+  //       return `\\begin{enumerate}${this.listData}\\end{enumerate}`;
+  //     case 'Unordered List':
+  //       return `\\begin{itemize}${this.listData}\\end{itemize}`;
+  //     case 'Page Break':
+  //       return `\\newpage`;
+  //     default:
+  //       return ''; // Default case, handle appropriately
+  //   }
+  // }
+
   getBlockContent(contentType: string) {
+    // Trim leading and trailing whitespace including '\n' from this.contentDataControl.value
+    const contentData = this.contentDataControl.value ? this.contentDataControl.value.trim() : '';
+    const contentTitle = this.contentTitleControl.value ? this.contentTitleControl.value.trim() : '';
+  
     switch (contentType) {
       case 'Overview':
-        return `\\abstract ${this.contentDataControl.value}`;
+        return `\\abstract ${contentData || ''}`;
       case 'Section':
-        return `\\section{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`;
+        return `\\section{${contentTitle || ''}}${contentData || ''}`;
       case 'Sub Section':
-        return `\\subsection{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`;
+        return `\\subsection{${contentTitle || ''}}${contentData || ''}`;
       case 'Sub Sub Section':
-        return `\\subsubsection{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`;
+        return `\\subsubsection{${contentTitle || ''}}${contentData || ''}`;
       case 'Paragraph':
-        return `\\paragraph{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`;
+        return `\\paragraph{${contentTitle || ''}}${contentData || ''}`;
       case 'Ordered List':
         return `\\begin{enumerate}${this.listData}\\end{enumerate}`;
       case 'Unordered List':
@@ -1111,7 +1163,7 @@ export class DoceditorComponent {
         return ''; // Default case, handle appropriately
     }
   }
-
+  
   //Oldooo Save Function!!!
   // saveDocOldoo() {
   //   //this.onSave = true;
@@ -1290,8 +1342,10 @@ export class DoceditorComponent {
           this.pageId = req[0]?.pageid;
           // this.openId= req[0]?.pageid;
           // console.log('pid', this.openId)
+          this.spinnerService.show()
           this.extractionData();
           this.getPreview();
+          this.spinnerService.hide()
           //this.cdr.detectChanges(); 
         }
       },
@@ -1454,7 +1508,7 @@ export class DoceditorComponent {
   downloadDialog() {
     //without saving/updating the document cannot select the SaveAs.
     if (!this.documentId || this.documentId === null) { //!this.documentId || this.documentId === null || this.sId && !this.openId
-      this.toast.error('Please save changes before making a copy')
+      this.toast.error('Please save changes before making a copy.')
       return;
     }
 
@@ -1494,14 +1548,12 @@ export class DoceditorComponent {
   getPreview() {
     //PREVIEW API
     if (!this.documentId) {
-      this.toast.error("Please save the document");
+      this.toast.error("Please save the document.");
       return;
     }
-    //this.spinnerService.show()
     this.showPreviewDoc = true;
     let url = this.latexdoc + URLUtils.getPreview(this.documentId);
     this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(url);
-    //this.spinnerService.hide()
   }
 
   // deleteDoc() {
@@ -1530,7 +1582,7 @@ export class DoceditorComponent {
   // }
   deleteDocument() {
     if (this.documentId == '' || this.documentId == null) {
-      this.toast.error('Please select the document!');
+      this.toast.error('Please select the document.');
       return;
     }
     this.modalService.open('custom-modal-2');
@@ -1540,7 +1592,7 @@ export class DoceditorComponent {
     if (this.documentId) {
       this.httpservice.sendDeleteLatexRequest(URLUtils.deleteDocid(this.documentId)).subscribe((res: any) => {
         if (!res.error) {
-          this.toast.success('Document deleted successfully');
+          this.toast.success('Document deleted successfully.');
           window.location.reload();
         }
       },
@@ -1848,7 +1900,7 @@ export class ViewDocComponent {
       if (document) {
         let url = this.latexdoc + URLUtils.getPreview(document.docid);
         this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(url);
-        //console.log(this.pdfSrc);
+         console.log(this.pdfSrc);
       } else {
         this.toast.error('Document not found!');
       }
@@ -1869,7 +1921,7 @@ export class ViewDocComponent {
       this.httpservice.sendDeleteLatexRequest(URLUtils.deleteDocid(item.docid)).subscribe((res: any) => {
         if (!res.error) {
           this.getDocumentCall();
-          this.toast.success('Document deleted successfully');
+          this.toast.success('Document deleted successfully.');
         }
       },
         (error: HttpErrorResponse) => {
@@ -2124,6 +2176,7 @@ export class ContentDialogComponent {
       this.toast.error('\\ should not be the first character');
       return;
     }
+
   }
 
   restricttextSpace(event: any) {
