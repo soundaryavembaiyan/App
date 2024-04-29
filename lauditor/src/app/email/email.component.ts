@@ -10,6 +10,7 @@ import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ModalService } from '../model/model.service';
 import { EmailService } from './email.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-email',
@@ -17,9 +18,11 @@ import { EmailService } from './email.service';
   styleUrls: ['./email.component.scss']
 })
 export class EmailComponent implements OnInit,AfterViewInit{
+  metaData: any;
+
   constructor(private httpservice: HttpService, private confirmationDialogService: ConfirmationDialogService,
     private spinnerService: NgxSpinnerService, private modalService: ModalService,
-    private formBuilder: FormBuilder, private emailService: EmailService,
+    private formBuilder: FormBuilder, private emailService: EmailService, private toast: ToastrService, 
     private router: Router) { }
   messagesMap: Map<number, any> = new Map<number, any>();
   messages: any;
@@ -45,6 +48,26 @@ export class EmailComponent implements OnInit,AfterViewInit{
   isAuthenticated:boolean=false;
   reldata:any[]=[];
   corpData:any[]=[];
+
+
+  documents: any = [];
+  viewMode = 1;
+  value: any = 1;
+  filterKey: any;
+  matterList: any;
+  viewItemsList: any;
+  clientDetails: any;
+  term: any;
+  matters ='';
+  errorMsg: boolean = false;
+  selectedmatterType='internal';
+  categories='';
+  corp_matter_list:any[] = [];
+  uploadDocs: any = [];
+  files: File[] = []; 
+  clientId: any = [];
+
+
   ngOnInit() {
     this.composeForm = this.formBuilder.group({
       toEmail: ['', [Validators.required, Validators.pattern(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)]],
@@ -66,6 +89,7 @@ export class EmailComponent implements OnInit,AfterViewInit{
       localStorage.removeItem("docs");
     }
     this.getMessageCount();
+    this.get_all_matters(this.selectedmatterType)
     //this.emailAuthentication();
   }
   get f() { return this.composeForm.controls; }
@@ -215,9 +239,22 @@ export class EmailComponent implements OnInit,AfterViewInit{
     })
   }
   selectEvent(item: any) {
+    // this.clients = [];
+    // if (this.filter === 'client') {
+    //   this.clients.push(item);
+    // }
+
     this.clients = [];
     if (this.filter === 'client') {
       this.clients.push(item);
+      this.clientDetails = item;
+      localStorage.setItem("clientData", JSON.stringify(item));
+      this.httpservice.sendGetRequest(URLUtils.getMattersByClient(item)).subscribe((res: any) => {
+          this.matterList = res?.matterList;
+          //console.log("matterList " + JSON.stringify(this.matterList));
+      })
+      //console.log("test   " + JSON.stringify(item));
+      //this.getAllDocuments();
     }
   }
   selectGroup(val: boolean) {
@@ -230,9 +267,11 @@ export class EmailComponent implements OnInit,AfterViewInit{
     {
       "category": this.filter,
       "clientids": this.clients.map((obj: any) => ({ "id": obj.id, "type": obj.type })),
+      "matters": this.matters,
       "groupids": this.selectedGroupItems.map((obj: any) => obj.id),
       "enableDownload": true
     }
+
     this.httpservice.sendPostEmailRequest(URLUtils.MessageDocUpload({ "token": localStorage.getItem('TOKEN'), "msgid": this.msgAndpartId.msgId, "partid": this.msgAndpartId.partId }), obj).subscribe((res: any) => {
       if (res) {
         this.spinnerService.hide();
@@ -245,6 +284,7 @@ export class EmailComponent implements OnInit,AfterViewInit{
       this.isDocument = false;
     });
   }
+
   selectGroupItem(item: any, val: any) {
     //console.log("selected item" + JSON.stringify(item) + val);
     if (val) {
@@ -287,6 +327,95 @@ export class EmailComponent implements OnInit,AfterViewInit{
   onRemoveAttachment(attachment:any){
     this.selectedAttachments = this.selectedAttachments.filter((item: any) => item.filename !== attachment.filename);
   }
+
+  getAllDocuments() {
+    //console.log('get.documents',this.documents)
+    this.documents = [];
+    let selectedGroups: any = [];
+    let clientId: any;
+    this.selectedGroupItems?.forEach((item: any) => {
+        selectedGroups.push(item.id)
+    })
+    if (this.clientDetails) {
+        clientId = this.clientDetails?.id;
+    }
+    let obj = {
+        "category": this.filterKey,
+        "clients": clientId,
+        "matters": this.matters,
+        "subcategories":this.categories,
+        "groups": selectedGroups,
+        "showPdfDocs": false
+    }
+    let url = this.viewMode == 1 ? URLUtils.getFilteredDocuments : URLUtils.filterMergeDoc;
+    //console.log('url',url)
+    if (clientId || selectedGroups.length > 0 )
+        this.httpservice.sendPutRequest(url, obj).subscribe((res: any) => {
+            if (this.viewMode == 1)
+                this.documents = res?.data?.reverse();
+            else
+                this.documents = res?.data?.items?.reverse()
+            //console.log("documents " + JSON.stringify(this.documents));
+            this.documents.forEach((item: any) => {
+                item.expiration_date=item.expiration_date=='NA'?null:new Date(item.expiration_date);
+                
+                item.tags = Object.entries(item.tags);
+                item.isChecked = false;
+                if (this.viewItemsList && this.viewItemsList.length > 0) {
+                    this.viewItemsList?.forEach((val: any) => {
+
+                        if (item.name == val.name) {
+                            item.isChecked = true;
+                        }
+                    })
+                }
+            })
+            this.errorMsg = this.documents.length == 0 ? true : false;
+        });
+
+}
+
+  onChangeMatters(val: any) {
+        //console.log("value " + JSON.stringify(val.value));
+        this.matters = val.value;
+        //console.log('matt',this.matters)
+        this.categories = ''
+        //this.getAllDocuments();
+}
+
+get_all_matters(type:any,event?:any){
+  this.spinnerService.show()
+  let selectedGroups: any = [];
+  this.selectedGroupItems?.forEach((item: any) => {
+      selectedGroups.push(item.id)
+  })
+  let payload = {"grp_acls":selectedGroups}
+  if(type=='internal'){
+      this.httpservice.sendPutRequest(URLUtils.getAllMatters,payload).subscribe((res:any)=>{
+          if(res.error == false){
+              this.corp_matter_list = res.matterList
+              this.spinnerService.hide()
+          } else {
+              this.spinnerService.hide()
+          }
+      },(err:any)=>{
+          //console.log(err)
+          this.spinnerService.hide()
+      })
+  }
+  if(type == 'external'){
+      this.httpservice.sendPutRequest(URLUtils.getAllExternalMatters,payload).subscribe((res:any)=>{
+          if(res){
+              this.corp_matter_list = res.matterList
+              this.spinnerService.hide()
+          }
+      },(err:any)=>{
+          this.spinnerService.hide()
+      })
+
+  }
+}
+
   onSubmit() {
     this.spinnerService.show();
     if (!this.composeForm.valid) {
