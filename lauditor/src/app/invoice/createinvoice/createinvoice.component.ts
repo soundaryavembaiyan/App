@@ -93,6 +93,7 @@ export class CreateinvoiceComponent {
   myDateValue:any;
   minDate:any;
   maxDate:any;
+  shown = false;
 
   constructor(
     private router: Router, 
@@ -133,7 +134,7 @@ export class CreateinvoiceComponent {
       discount_type: ['Discount'], //Validators.required
     })
 
-    console.log('Form',this.createinvoiceForm)
+    // console.log('Form',this.createinvoiceForm)
     // console.log('inForm',this.createInvoiceItem())
     // console.log('inItem',this.invoice_items)
 
@@ -171,10 +172,11 @@ export class CreateinvoiceComponent {
   }
 
   onSelectFile(event: any) {
-
-    this.imgDisplay = false;
-    this.imgGet = true;
+    // this.imgDisplay = false;
+    // this.imgGet = true;
     
+    this.shown = true;
+    this.imageUrl = ''
 
     const allowedTypes = ['image/jpeg', 'image/png','image/bmp'];
     const maxSize = 1 * 1024 * 1024; // 1MB in bytes
@@ -193,22 +195,19 @@ export class CreateinvoiceComponent {
       // File size exceeds 1MB
       this.imageUrl = "assets/img/logo.png";
       this.imageToShow = this.imageUrl;
-      this.imgDisplay = true
-      this.imgGet = false
+      // this.imgDisplay = true
+      // this.imgGet = false
       this.errorMessage = 'Max file size should be less than 1 MB';
       return;
     }
 
     this.files = event.target.files[0];
-    console.log('File upload!',this.files)
-    console.log('File!',this.file)
+    // console.log('File upload!',this.files)
+    // console.log('File!',this.file)
     this.errorMessage = ''
     if (event.target.files && event.target.files[0]) {
-
       var reader = new FileReader();
-
       reader.readAsDataURL(event.target.files[0]);// read file as data url
-
       reader.onload = (event) => {// called once readAsDataURL is completed
         this.imageToShow = event.target?.result;
         //console.log(this.imageToShow)
@@ -400,12 +399,11 @@ export class CreateinvoiceComponent {
       let fdata = new FormData();
       fdata.append('file', this.files)
       //console.log('file', this.files)
-
       //if(this.files.length != 0) {
       if (this.files) {
         this.httpservice.sendPostRequest(URLUtils.UploadLogo, fdata).subscribe((res: any) => {
           if (res.error == false) {
-            this.toast.success(res.msg)
+            //this.toast.success(res.msg)
             this.httpservice.sendPostRequest(URLUtils.Invoice, payload).subscribe((res: any) => {
               if (res.error == false) {
                 this.toast.success(res.msg)
@@ -420,7 +418,7 @@ export class CreateinvoiceComponent {
               if (error.status === 401 || error.status === 403) {
                 const errorMessage = error.error.msg || 'Unauthorized';
                 this.toast.error(errorMessage);
-                console.log(error);
+                //console.log(error);
               }
             })
           }
@@ -429,7 +427,7 @@ export class CreateinvoiceComponent {
           if (error.status === 401 || error.status === 403) {
             const errorMessage = error.error.msg || 'Unauthorized';
             this.toast.error(errorMessage);
-            console.log(error);
+            //console.log(error);
           }
         })
       }
@@ -448,15 +446,12 @@ export class CreateinvoiceComponent {
           if (error.status === 401 || error.status === 403) {
             const errorMessage = error.error.msg || 'Unauthorized';
             this.toast.error(errorMessage);
-            console.log(error);
+            //console.log(error);
           }
         })
         // this.toast.error("File not Uploaded")
-      }
-
-      
+      } 
     }
-
   }
 
   calculateAmount(item: FormGroup): number {
@@ -516,7 +511,6 @@ export class CreateinvoiceComponent {
   removeItem(index: number) {
     const invoiceItems = this.createinvoiceForm.get('invoice_items') as FormArray;
     invoiceItems.removeAt(index);
-
     //console.log('invoiceItems',invoiceItems)
     // if(invoiceItems.length == 0){
     //  this.toast.error('Add atleast add one Item!!')
@@ -553,12 +547,15 @@ export class CreateinvoiceComponent {
 
   removeImg() {
     // this.imageUrl = null; 
+    this.shown = false;
     this.imageUrl = "assets/img/logo.png";
-    this.imageToShow = this.imageUrl;
-    this.imgDisplay = true
-    this.imgGet = false
-    //this.errorMessage = this.imageToShow
+    this.errorMessage = ''
     this.files = ''
+    //this.imageToShow = this.imageUrl;
+    // this.imgDisplay = true
+    // this.imgGet = false
+    //this.errorMessage = this.imageToShow
+    //this.files = ''
 
     // console.log('imgtoshow',this.imageToShow)
     // console.log('imgdisp',this.imgDisplay)
@@ -606,7 +603,5 @@ export class CreateinvoiceComponent {
     //console.log(this.createinvoiceForm)
     return (control.value || '').trim().length? null : { 'whitespace': true };       
 }
-
-
 }
 
