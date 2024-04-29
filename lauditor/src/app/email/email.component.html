@@ -141,18 +141,17 @@
                 <div class="col-sm-12 compswitch ">
                     <div class="switch cswitch cswitchtwo">
                         <!-- Product condition for label-->
-                        <a href="javascript:void(0);" class="details doc-option
-                            client " [ngClass]="{ 'active': filter=='client'}"
-                            *ngIf="product != 'content'"
-                            (click)="filter='client';">Client</a>
-                        <a href="javascript:void(0);" class="details doc-option
-                            client " [ngClass]="{ 'active': filter=='client'}"
-                            *ngIf="product == 'content'"
-                            (click)="filter='client';">Customer</a>
-                        <a href="javascript:void(0);" class=" details doc-option
-                            firm"
-                            [ngClass]="{ 'active': filter=='firm'}"
-                            (click)="filter='firm';">Firm</a>
+                        <a href="javascript:void(0);" class="details doc-option client " [ngClass]="{ 'active': filter=='client'}"
+                            *ngIf="product != 'content' && product != 'corporate'" (click)="filter='client';">Client</a>
+
+                        <a href="javascript:void(0);" class="details doc-option client " [ngClass]="{ 'active': filter=='client'}"
+                            *ngIf="product == 'content'" (click)="filter='client';">Customer</a>
+
+                        <a href="javascript:void(0);" class=" details doc-option firm" [ngClass]="{ 'active': filter=='firm'}"
+                            *ngIf="product != 'corporate'" (click)="filter='firm';">Firm</a>
+
+                        <a href="javascript:void(0);" class=" details doc-option firm internalF" [ngClass]="{ 'active': filter=='firm'}"
+                            *ngIf="product == 'corporate'" (click)="filter='firm';">Internal</a>
                     </div>
                 </div>
             </div>
@@ -164,14 +163,8 @@
                         <div class="col-6" *ngIf="filter==='client'">
                             <div class="form-group">
 
-                                <label for="title" class="fontbold"
-                                    *ngIf="product != 'content'">Client Name
-                                    <span
-                                        class="mandate">*</span></label>
-                                <label for="title" class="fontbold"
-                                    *ngIf="product == 'content'">Customer Name
-                                    <span
-                                        class="mandate">*</span></label>
+                                <label for="title" class="fontbold" *ngIf="product != 'content'">Client Name<span class="mandate">*</span></label>
+                                <label for="title" class="fontbold" *ngIf="product == 'content'">Customer Name <span class="mandate">*</span></label>
                                 <div class="ng-autocomplete textbox">
                                     <!-- Product != Content -->
                                     <ng-autocomplete [data]="data"
@@ -209,6 +202,20 @@
                                     </ng-template>
                                     <i class="fa fa-chevron-down"></i>
                                 </div>
+
+                                <div class="form-group">
+                                    <label for="title" class="fontbold">Matter </label>
+                                    <!-- <label for="title" class="fontbold" *ngIf="product == 'corporate'">Matter <span class="mandate">*</span></label> -->
+                                    <div class="dropdown-select textbox">
+                                      <select class="textbox" (change)="onChangeMatters($event.target)">
+                                        <option hidden value="">Select matter</option>
+                                        <option class="textbox" value="all">All Documents</option>
+                                        <option class="textbox" *ngFor="let i of matterList " value="{{i.id}}">{{i.title}}</option>
+                                      </select>
+                                      <i class="fa fa-chevron-down"></i>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
 
@@ -218,8 +225,8 @@
                                 <div class="input-group court" id="search">
                                     <div class="multicheck form-control
                                         textbox">
-                                        <label class="callselect">Select
-                                            Group(s) <span class="mandate">*</span></label>
+                                        <label class="callselect" *ngIf="product != 'corporate'">Select Group(s) <span class="mandate">*</span></label>
+                                        <label class="callselect" *ngIf="product == 'corporate'">Select Department(s) <span class="mandate">*</span></label>
                                         <i *ngIf="!isSelectGroup"
                                             class=" fa fa-plus form-check-inpu
                                             calimg calitem input-group-append
@@ -235,8 +242,7 @@
                                     </div>
                                 </div>
                                 <div class="" *ngIf="isSelectGroup">
-                                    <div class="input-group index court"
-                                        id="search">
+                                    <div class="input-group index court" id="search">
                                         <div class="multicheck form-control
                                             textbox" *ngFor="let item of
                                             groupViewItems">
@@ -301,7 +307,7 @@
                 </div>
             </div>
         </div>
-        <ngx-spinner size="medium" [type]="'ball-fall'"></ngx-spinner>
+        <ngx-spinner size="medium" [type]="'ball-clip-rotate'"></ngx-spinner>
     </div>
     <!-- Email for Connect -->
 
