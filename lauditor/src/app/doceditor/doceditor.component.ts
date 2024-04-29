@@ -581,7 +581,8 @@ export class DoceditorComponent {
       },
       hasBackdrop: true,
       panelClass: 'hello',
-      autoFocus: true
+      autoFocus: true,
+      disableClose: true
     });
     //console.log('pass data to dialog', dialogRef)
 
@@ -611,7 +612,8 @@ export class DoceditorComponent {
       },
       hasBackdrop: true,
       panelClass: 'hello',
-      autoFocus: true
+      autoFocus: true,
+      disableClose: true
     });
     //console.log('pass data to dialog', dialogRef)
 
@@ -1305,7 +1307,8 @@ export class DoceditorComponent {
       //backdropClass: 'backdropBackground'
       hasBackdrop: true,
       panelClass: 'hello',
-      autoFocus: true
+      autoFocus: true,
+      disableClose: true
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {
@@ -1530,7 +1533,8 @@ export class DoceditorComponent {
       },
       hasBackdrop: true,
       panelClass: 'hello',
-      autoFocus: true
+      autoFocus: true,
+      disableClose: true
     });
     dialogRef.afterClosed().subscribe((result: { docid: any, documentname: any }) => {
       if (result) {
@@ -1989,6 +1993,7 @@ export class ViewDocComponent {
 
   //Save As dialog box!!
   saveasDialog(item: any) {
+    //this.toast.info('info')
     const dialogRef = this.dialog.open(SaveasBoxComponent, {
       width: '500px',
       height: '252px',
@@ -1997,8 +2002,10 @@ export class ViewDocComponent {
         //documentId: this.documentId
       },
       hasBackdrop: true,
-      panelClass: 'hello',
-      autoFocus: true
+      //panelClass: 'hello',
+      panelClass: 'white-background', 
+      autoFocus: true,
+      disableClose: true
     });
 
     //console.log('data',dialogRef)
@@ -2387,13 +2394,14 @@ export class SaveasBoxComponent {
 
     //if (this.mydForm.valid && this.documentId) {
     const reqq = { "documentname": this.mydForm.value.documentname };
+
     this.httpservice.sendPostLatexRequest(URLUtils.downloadDoc(this.documentId), reqq).subscribe(
       (res: any) => {
         this.successGrpName = this.mydForm.value.documentname;
         this.dialogRef.close({ "docid": res.id, "documentname": this.mydForm.value.documentname });
-        //console.log('name:',this.documentname)
+        // console.log('success:', this.successGrpName )
         if (!res.error) {
-          this.confirmationDialogService.confirm('Success', 'Congratulations! New version was created successfully', true, 'View Document', 'Create Document', true, undefined).then((confirmed) => {
+          this.confirmationDialogService.confirm('Success', 'Congratulations! You have successfully created a '+ this.successGrpName +' new version Document', true, 'View Document', 'Create Document', true, undefined).then((confirmed) => {
             if (confirmed) {
               window.location.reload()
               //this.getDocumentCall();
