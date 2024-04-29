@@ -58,17 +58,24 @@
                         </div>
                   
                          <!--Upload new logo-->
-                         <div class="avatar-preview image-container" *ngIf="imgDisplay">
+                         <div class="avatar-preview image-container">
+                          <i *ngIf="shown" class="fa fa-times calimg calitems input-group-append sgroup" (click)="removeImg()" aria-hidden="true"></i>
                           <div id="imagePreview" [style.backgroundImage]="'url('+ imageUrl +')'" (click)="fileInput.click()">
-                          <!-- <i class="fa fa-times calimg calitems input-group-append sgroup" (click)="removeImg()" aria-hidden="true"></i>   -->
+                          <img *ngIf="shown" src="{{imageToShow}}">
                          </div>
                         </div>
+
+                         <!--Upload new logo-->
+                         <!-- <div class="avatar-preview image-container" *ngIf="imgDisplay">
+                          <div id="imagePreview" [style.backgroundImage]="'url('+ imageUrl +')'" (click)="fileInput.click()">
+                         </div>
+                        </div> -->
                   
                          <!--Get Logo-->
-                        <div class="avatar-preview image-container" *ngIf="imgGet">
+                        <!-- <div class="avatar-preview image-container" *ngIf="imgGet">
                           <i class="fa fa-times calimg calitems input-group-append sgroup" (click)="removeImg()" aria-hidden="true"></i>
                           <img src="{{imageToShow}}">
-                        </div>
+                        </div> -->
 
                       </div>
                     </div>
@@ -94,7 +101,7 @@
                           <input id="drp" #dp="bsDatepicker" bsDatepicker placeholder="Select" style="background: #eeeeee;"
                             (bsValueChange)='selectDurationIn()' (change)="selectClearIn(); clearInDateError()" formControlName="date" 
                             [bsValue]="bsValue" [minDate]="minDate" [maxDate]="maxDate"
-                            [bsConfig]="{dateInputFormat: 'DD/MM/YYYY', showWeekNumbers:false}" class="form-control textbox invoiceCls" readonly>
+                            [bsConfig]="{dateInputFormat: 'MMM DD, YYYY', showWeekNumbers:false}" class="form-control textbox invoiceCls" readonly>
                             <img src="assets/img/formcalendor.svg" class="" id="datepicker" (click)="dp.show()">
                         </div>
                         
@@ -185,7 +192,7 @@
                          <div class="input-group court">
                             <input bsDatepicker id="drp" #dp2="bsDatepicker" placeholder="Select" style="background: #eeeeee;"
                             (bsValueChange)='selectDuration()' [min]="date.value" (change)="selectClearDue(); clearDueDateError()" formControlName="duedate" 
-                            [bsConfig]="{dateInputFormat: 'DD/MM/YYYY', showWeekNumbers:false }"  class="form-control textbox invoiceCls" readonly>
+                            [bsConfig]="{dateInputFormat: 'MMM DD, YYYY', showWeekNumbers:false }"  class="form-control textbox invoiceCls" readonly>
                             <img src="assets/img/formcalendor.svg" class="" id="datepicker" #bsDatepicker (click)="dp2.show()">
                          </div>
                           
@@ -433,7 +440,7 @@
     
     <div class="btnbox">
     <button type="reset" [routerLink]="['/invoice']" class="btn btn-default btncancel btnrightitem">Cancel</button>
-    <button type="button"  [disabled]="disabled" (click)="onSubmit()" class="btn btn-primary btnsave savecls">Save</button>
+    <button type="button"  [disabled]="createinvoiceForm.invalid" (click)="onSubmit()" class="btn btn-primary btnsave savecls">Save</button>
     <!--[disabled]="createinvoiceForm.invalid"-->
 
 </div>
