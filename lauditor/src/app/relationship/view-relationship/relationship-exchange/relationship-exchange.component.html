@@ -221,18 +221,20 @@
                     </thead>
                     <tbody>
                         <tr class="rone veiw-items" *ngFor="let doc of docsSharedwithus |filter:searchText">
-                            <td>{{doc.name}}</td>
+                            <td><strong>{{doc.name}}</strong><br>
+                                <div *ngIf="doc?.matter_details.length!=0"><b class="conf">Confidential:</b> {{ getMatterNames(doc) }}</div>
+                            </td>
                             <td>{{doc.sharedOn}}</td>
                             <td>{{doc.description}}</td>
                             <td *ngIf="activeTab != 'corporate'">
+                                <!-- <button type="button" *ngIf="!doc.added_encryption" class="btn btn-default btnsave savecls actionbtn"
+                                    (click)="copyWithmeDoc(doc)">Copy</button> -->
                                 <button type="button" class="btn btn-default btnsave savecls actionbtn"
-                                    (click)="copyWithmeDoc(doc)">Copy</button>
-                                <button type="button" class="btn btn-default btnsave savecls actionbtn"
-                                        (click)="viewDoc(doc.id)">View</button>
+                                        (click)="viewDocShared(doc)">View</button>
                             </td>
-                            <td *ngIf="activeTab == 'corporate'">
+                            <td *ngIf="activeTab == 'corporate' ">
                                 <button type="button" class="btn btn-default btnsave savecls actionbtn"
-                                        (click)="viewDoc(doc.id)">View</button>
+                                        (click)="viewDoc(doc)">View</button>
                             </td>
                         </tr>
                     </tbody>
@@ -304,16 +306,19 @@
                         <tr class="rone veiw-items"
                             *ngFor="let doc of docsSharedbyus |filter:searchText"
                             [class.active]="doc.highlight">
-                            <td>{{doc.name}}</td>
+                            <td><strong>{{doc.name}}</strong><br>
+                                <div *ngIf="doc?.matter_details.length!=0"><b class="conf">Confidential:</b> {{ getMatterNames(doc) }}</div>
+                                <!-- <div *ngIf="doc?.matter_details.length!=0">Confidential: {{ getMatterNames(doc) }}</div> -->
+                            </td>
                             <td>{{doc.sharedOn}}</td>
                             <td>{{doc.description}}</td>
                             <td style="width:25%;">
                                 <button type="button" class="btn btn-default btnsave savecls actionbtn" 
-                                        (click)="unShare(doc)">Unshare</button>
+                                        (click)="unShare(doc,'client')">Unshare</button>
                                 <button type="button" class="btn btn-default btnsave savecls actionbtn"
                                         data-toggle="modal"
                                         data-target="#viewWithmeModal"
-                                        (click)="viewGenDoc(doc.id)">View</button>
+                                        (click)="viewGenDoc(doc)">View</button>
                                 
                                         
                             </td>
@@ -366,16 +371,16 @@
                         </div>
 
                         <div class="switch relationship-tabs cswitch" *ngIf="product == 'corporate'">
-                            <span class="relSubTab business" (click)="viewFirmDocuments=true">
+                            <span class="relSubTab business" (click)="!viewFirmDocuments;">
                             <a href="javascript: void(0)" [ngClass]="{'active' : viewFirmDocuments==true}"
-                                class="optiontwo relation-sub-tabs compotwoo comptwo firms">Internal Documents</a>
+                                class="optiontwo relation-sub-tabs compotwoo comptwo firms">External Documents</a>
                             </span>
                         </div>
 
                     </div>
                     <div class="col-6"></div>
                 </div>
-                <table class="table table-borderless tblgrid" *ngIf="viewClientDocuments && clientDocuments.length>0">
+                <table class="table table-borderless tblgrid" *ngIf="viewClientDocuments && clientDocuments.length>0 && product != 'corporate'">
                     <thead>
                         <tr class="theader">
                             <th>
@@ -399,20 +404,22 @@
                         <tr class="rone veiw-items" 
                             *ngFor="let doc of clientDocuments |filter:searchDocText"
                             [class.active]="doc.highlight">
-                            <td>{{doc.name}}</td>
+                            <td><strong>{{doc.name}}</strong><br>
+                                <div *ngIf="doc?.matter_details.length!=0"><b class="conf">Confidential:</b> {{doc?.matter_details[0].name}}</div>
+                            </td>
                             <td>{{doc.created}}</td>
                             <td>{{doc.description}}</td>
                             <td style="width:25%;">
                                 <button type="button" class="btn btn-default btnsave savecls actionbtn"
                                     (click)="share(doc,'client')">Share</button>
                                 <button type="button" class="btn btn-default btnsave savecls actionbtn" data-toggle="modal"
-                                    data-target="#viewWithmeModal" (click)="viewGenDoc(doc.id)">View</button>
+                                    data-target="#viewWithmeModal" (click)="viewGenDoc(doc)">View</button>
                               
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                <table class="table table-borderless tblgrid" *ngIf="viewFirmDocuments && firmDocuments.length>0 || product == 'corporate'">
+                <table class="table table-borderless tblgrid" *ngIf="viewFirmDocuments && firmDocuments.length>0 && product != 'corporate'">
                     <thead>
                         <tr class="theader">
                             <th>
@@ -444,12 +451,56 @@
                                 <button type="button" class="btn btn-default btnsave savecls actionbtn"
                                     (click)="share(doc,'firm')">Share</button>
                                 <button type="button" class="btn btn-default btnsave savecls actionbtn" data-toggle="modal"
-                                    data-target="#viewWithmeModal" (click)="viewGenDoc(doc.id)">View</button>
+                                    data-target="#viewWithmeModal" (click)="viewGenDoc(doc)">View</button>
                                 
                             </td>
                         </tr>
                     </tbody>
                 </table>
+
+<!-- Only for Corporate-->
+<table class="table table-borderless tblgrid" *ngIf="!viewFirmDocuments && firmDocuments.length>0 && product == 'corporate'">
+    <thead>
+        <tr class="theader">
+            <th>
+                <p class="thheadname">Document Name</p>
+                <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('name',firmDocuments)">
+            </th>
+
+            <th>
+                <p class="thheadname">Created On</p>
+                <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('created',firmDocuments)">
+            </th>
+            <th>
+                <p class="thheadname">Description</p>
+                <img src="assets/img/SORT.PNG" class="sortico"
+                    (click)="sort('description',firmDocuments)">
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="rone veiw-items"
+            *ngFor="let doc of firmDocuments |filter:searchDocText"
+            [class.active]="doc.highlight">
+            <td><strong>{{doc.name}}</strong><br>
+                <div *ngIf="doc?.matter_details.length!=0"><b class="conf">Confidential:</b> {{doc?.matter_details[0].name}}</div>
+            </td>
+            <td>{{doc.created}}</td>
+            <td>{{doc.description}}</td>
+            <td style="width:25%;">
+                <button type="button" class="btn btn-default btnsave savecls actionbtn"
+                    (click)="share(doc,'firm')">Share</button>
+                <button type="button" class="btn btn-default btnsave savecls actionbtn" data-toggle="modal"
+                    data-target="#viewWithmeModal" (click)="viewGenDoc(doc)">View</button>
+                
+            </td>
+        </tr>
+    </tbody>
+</table>
+<!-- Only for Corporate-->
+
             </div>
         </div>
     </div>
@@ -471,15 +522,10 @@
                 <div class="container">
                   
                     <div class="sharedblock sharedblue">
-                      <label for="court ">Shared Documents</label>
+                      <label for="court">Shared Documents</label>
                       <div class="tog">
                         <span class="fa fa-plus" *ngIf="!viewSharedDoc" ></span>
                         <span class="fa fa-minus" *ngIf="viewSharedDoc" style="display: none;"></span>
-
-
-                       
-
-
                       </div>
                     </div>
                     <div *ngIf="openconfirmationunmodifiedDoc && unchangedDocs?.length>0"
@@ -509,11 +555,24 @@
                       <span class="fa fa-minus sharedgreenplus" style="display: none;"></span>
                     </div>
                   </div>
-                  <div class="sharedgird shared greentxt" class="col-6">
+                  <div class="sharedgird shared greentxt together" class="col-6">
                     <div *ngIf="openconfirmationAddedDoc && sharedandUnsharedData?.add?.length>0">
-                        <p class="immigrationtxt" *ngFor="let doc of sharedandUnsharedData.add">
-                            {{doc.name}}
-                        </p>
+                        <div class="nameandlist" *ngFor="let doc of sharedandUnsharedData.add">
+                            <!-- <p class="immigrationtxt">{{doc.name}}&nbsp;</p> -->
+
+                            <div class="immigrationtxt">{{doc.name}}&nbsp;
+                                <p *ngIf="product === 'lauditor' && doc?.matter_details[0]?.name" class="matter-details">
+                                  <strong class="docmatter">- </strong> {{doc?.matter_details[0]?.name}}</p>
+                            </div>
+
+                            <div class="pull-right matS" *ngIf="activeTab !== 'individuals' && product !=='lauditor' && product !=='corporate'">
+                                <mat-select multiple placeholder="Select Matters" (selectionChange)="updateMatters(doc, $event.value)">
+                                    <mat-option *ngFor="let matters of matterList" [value]="matters">{{matters.matterTitle}}</mat-option>
+                                </mat-select>
+                            </div>
+                        </div>
+                        
+                        
                     </div>
                 </div>
                   <!-- input filled with search icon -->
@@ -555,3 +614,4 @@
         </div>
     </div>
 </div>
+<ngx-spinner  size="medium" type="ball-clip-rotate"></ngx-spinner>
