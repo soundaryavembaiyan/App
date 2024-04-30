@@ -851,7 +851,7 @@ export class DoceditorComponent {
     // console.log('content', this.content)
 
     if (contentListItems.value.length === 0) {
-      this.toast.error('Please add text to proceed.');
+      this.toast.error('Please add at least one segment from the "Insert" menu to create the document.');
       return
     }
     let previousContentChecked = false;
@@ -868,7 +868,7 @@ export class DoceditorComponent {
 
         //Editblock - empty content conditions!!!
         if (!previousContentChecked && previousContent === null) {
-          this.toast.error('Please add text to proceed.');
+          this.toast.error('Please add at least one segment from the "Insert" menu to create the document.');
           return;
         }
         previousContentChecked = true;
