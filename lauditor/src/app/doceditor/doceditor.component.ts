@@ -280,7 +280,7 @@ export class DoceditorComponent {
           if (itemo) {
             this.listData += `\\item ${itemo.get('contentData')?.value}`; //get all ordered & unordered lists
             const data2 = itemo.value?.contentData;
-            if (getContent == 'Ordered List' || getContent == 'Unordered List') {
+            if (getContent == 'Numbered List' || getContent == 'Bulleted List') {
               if (data2 === '' || data2 === undefined || data2 === " " || data2 === null) {
                 this.toast.error('Please check the Content List data');
                 return;
@@ -406,16 +406,16 @@ export class DoceditorComponent {
     if (type === 'Sub Section' && this.getContent === 'Paragraph' && !editBlock === true ||
       type === 'Sub Section' && this.getContent === 'Overview' && !editBlock === true ||
       type === 'Sub Section' && this.getContent === 'Page Break' && !editBlock === true ||
-      type === 'Sub Section' && this.getContent === 'Unordered List' && !editBlock === true ||
-      type === 'Sub Section' && this.getContent === 'Ordered List' && !editBlock === true) {
+      type === 'Sub Section' && this.getContent === 'Bulleted List' && !editBlock === true ||
+      type === 'Sub Section' && this.getContent === 'Numbered List' && !editBlock === true) {
       this.toast.error('Invalid Selection. Please add Section before adding Sub Section or Sub Sub Section.');
       return
     }
     if (type === 'Sub Sub Section' && this.getContent === 'Paragraph' && !editBlock === true ||
       type === 'Sub Sub Section' && this.getContent === 'Overview' && !editBlock === true ||
       type === 'Sub Sub Section' && this.getContent === 'Page Break' && !editBlock === true ||
-      type === 'Sub Sub Section' && this.getContent === 'Unordered List' && !editBlock === true ||
-      type === 'Sub Sub Section' && this.getContent === 'Ordered List' && !editBlock === true ||
+      type === 'Sub Sub Section' && this.getContent === 'Bulleted List' && !editBlock === true ||
+      type === 'Sub Sub Section' && this.getContent === 'Numbered List' && !editBlock === true ||
       type === 'Sub Sub Section' && this.getContent === 'Section' && !editBlock === true) {
       this.toast.error('Invalid Selection. Please add Sub Section before adding Sub Sub Section.');
       return
@@ -431,7 +431,7 @@ export class DoceditorComponent {
     // ***SECTION CONDITIONS*** //    
 
     // ***List focus Condition*** //
-    if (type === 'Unordered List') {
+    if (type === 'Bulleted List') {
       // Set focus on the input field of the new block
       setTimeout(() => {
         const newIndex = contentListItems.length - 1;
@@ -442,7 +442,7 @@ export class DoceditorComponent {
         }
       }, 100); // Adjust the delay as needed
     }
-    if (type === 'Ordered List') {
+    if (type === 'Numbered List') {
       // Set focus on the input field of the new block
       setTimeout(() => {
         const newIndex = contentListItems.length - 1;
@@ -457,12 +457,12 @@ export class DoceditorComponent {
 
     // ***Page Break Condition*** //
     if (type === 'Page Break' && contentListItems.length < 1) {
-      this.toast.error('Please add text before the Page Break');
+      this.toast.error('Page Break can not be added at the beginning of the document.');
       //this.insertPageBreak()
       return;
     }
     if (type === 'Page Break' && this.getContent === 'Page Break') { //&& !editBlock === true
-      this.toast.error('Please add text before the Page Break');
+      this.toast.error('Consecutive page breaks can not be added.');
       return
     }
     // ***Page Break Condition*** //
@@ -475,7 +475,7 @@ export class DoceditorComponent {
       if (type === 'Section' || type === 'Sub Section' || type === 'Sub Sub Section' || type === 'Paragraph') {
         contentListItems.push(this.addContent(type, value, valueTitle));
       }
-      if (type === 'Ordered List' || type === 'Unordered List') {
+      if (type === 'Numbered List' || type === 'Bulleted List') {
         const List = this.addContentList(type);
         if (Array.isArray(value) && value.length > 0) {
           const orderListItems = (List.controls['orderListItems'] as FormArray);
@@ -851,7 +851,7 @@ export class DoceditorComponent {
     // console.log('content', this.content)
 
     if (contentListItems.value.length === 0) {
-      this.toast.error('Please add at least one segment from the "Insert" menu to create the document.');
+      this.toast.error('Please add atleast one segment from the "Insert" menu to create the document.');
       return
     }
     let previousContentChecked = false;
@@ -868,13 +868,13 @@ export class DoceditorComponent {
 
         //Editblock - empty content conditions!!!
         if (!previousContentChecked && previousContent === null) {
-          this.toast.error('Please add at least one segment from the "Insert" menu to create the document.');
+          this.toast.error('Please add atleast one segment from the "Insert" menu to create the document.');
           return;
         }
         previousContentChecked = true;
 
         if (currentContent === 'Page Break' && previousContent === 'Page Break') {
-          this.toast.error('Please add text before the Page Break.');
+          this.toast.error('Consecutive page breaks are added. Please remove the additional Page Break to proceed.');
           return;
         }
       }
@@ -927,7 +927,7 @@ export class DoceditorComponent {
       return
     }
     // else if (contentListItems.length === 1 && this.getContent === null) {
-    //   this.toast.error('Please add atleast one content');
+    //   this.toast.error('Please addatleast one content');
     //   return
     // }
     else {
@@ -1155,9 +1155,9 @@ export class DoceditorComponent {
         return `\\subsubsection{${contentTitle || ''}}${contentData || ''}`;
       case 'Paragraph':
         return `\\paragraph{${contentTitle || ''}}${contentData || ''}`;
-      case 'Ordered List':
+      case 'Numbered List':
         return `\\begin{enumerate}${this.listData}\\end{enumerate}`;
-      case 'Unordered List':
+      case 'Bulleted List':
         return `\\begin{itemize}${this.listData}\\end{itemize}`;
       case 'Page Break':
         return `\\newpage`;
@@ -1424,13 +1424,13 @@ export class DoceditorComponent {
         },
         {
           regex: /\\begin{enumerate}([^]*?)\\end{enumerate}/g,
-          blockType: 'Ordered List',
-          handler: (args: string[]) => ({ type: 'Ordered List', content: args[0] || '', position: lateX.indexOf(args[0] || '') })
+          blockType: 'Numbered List',
+          handler: (args: string[]) => ({ type: 'Numbered List', content: args[0] || '', position: lateX.indexOf(args[0] || '') })
         },
         {
           regex: /\\begin{itemize}([^]*?)\\end{itemize}/g,
-          blockType: 'Unordered List',
-          handler: (args: string[]) => ({ type: 'Unordered List', content: args[0] || '', position: lateX.indexOf(args[0] || '') })
+          blockType: 'Bulleted List',
+          handler: (args: string[]) => ({ type: 'Bulleted List', content: args[0] || '', position: lateX.indexOf(args[0] || '') })
         },
       ];
 
@@ -1470,15 +1470,15 @@ export class DoceditorComponent {
           case 'Paragraph':
             this.addBlock('Paragraph', true, content, block.title);
             break;
-          case 'Ordered List':
+          case 'Numbered List':
             const itemList = content.match(/\\item\s([^\\]*)/g);
             const items = itemList ? itemList.map((item: string) => item.replace(/\\item\s/, '').trim()) : [];
-            this.addBlock('Ordered List', true, items);
+            this.addBlock('Numbered List', true, items);
             break;
-          case 'Unordered List':
+          case 'Bulleted List':
             const itemList1 = content.match(/\\item\s([^\\]*)/g);
             const items1 = itemList1 ? itemList1.map((item: string) => item.replace(/\\item\s/, '').trim()) : [];
-            this.addBlock('Unordered List', true, items1);
+            this.addBlock('Bulleted List', true, items1);
             break;
           case 'Page Break':
             this.addBlock('Page Break', true, content);
