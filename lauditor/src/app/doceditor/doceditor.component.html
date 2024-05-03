@@ -35,7 +35,7 @@
                 <button mat-menu-item (click)="newDoc()"><img class="fileImg" src="assets/img/new.svg"/>&nbsp;New</button>
                 <button mat-menu-item (click)="openDocumentDialog()"><img class="fileImg" src="assets/img/open.svg"/>&nbsp;Open</button>
                 <button mat-menu-item id="btnSave" (click)="saveDocument()"><img class="fileImg" src="assets/img/save.svg"/>&nbsp;Save</button>
-                <button mat-menu-item (click)="downloadDialog()"><img class="fileImg" src="assets/img/save.svg"/>&nbsp;Save As</button> 
+                <button mat-menu-item (click)="downloadDialog()"><img class="saveasImg" src="assets/img/saveas.svg"/>&nbsp;Save As</button> 
                 <button mat-menu-item (click)="deleteDocument()"><img class="fileImg" src="assets/img/trasho.svg"/>&nbsp;Delete</button> 
             </mat-menu>
            <!-- INSERT -->
@@ -46,8 +46,8 @@
                 <button mat-menu-item (click)="addBlock('Sub Section')"><img class="imgsubView" src="assets/img/subsection.svg"/>&nbsp;Sub Section</button>
                 <button mat-menu-item (click)="addBlock('Sub Sub Section')"><img class="imgsubsubView" src="assets/img/subsubsection.svg"/>&nbsp;Sub Sub Section</button>
                 <button mat-menu-item (click)="addBlock('Paragraph')"><img class="imgView" src="assets/img/paragraph.svg"/>&nbsp;Paragraph</button>
-                <button mat-menu-item (click)="addBlock('Ordered List')"><img class="imgView" src="assets/img/order.svg"/>&nbsp;Ordered List</button>
-                <button mat-menu-item (click)="addBlock('Unordered List')"><img class="imgView" src="assets/img/unord.svg"/>&nbsp;Unordered List</button>
+                <button mat-menu-item (click)="addBlock('Numbered List')"><img class="imgView" src="assets/img/order.svg"/>&nbsp;Numbered List</button>
+                <button mat-menu-item (click)="addBlock('Bulleted List')"><img class="imgView" src="assets/img/unord.svg"/>&nbsp;Bulleted List</button>
                 <button mat-menu-item (click)="addBlock('Page Break');insertPageBreak()"><img class="imgPort" src="assets/img/pagebreak.svg"/>Page Break</button>
             </mat-menu>
         </div> 
@@ -120,7 +120,7 @@
                  </div>
 
                 <!--Order & Unorder lists-->
-                  <div *ngIf="item.value.content === 'Unordered List'" class="form-group">
+                  <div *ngIf="item.value.content === 'Bulleted List'" class="form-group">
                     <label for="title" class="lableTitle" style="padding-right:5px">{{item.value.content}}</label>
                     <!-- <mat-icon class="closePlus iOd" aria-hidden="true" (click)="addNestedContentItem(i)">add_circle_outline</mat-icon> -->
                     <i class="fa fa-times close secclose" aria-hidden="true" (click)="removeItem(i)"></i>
@@ -134,7 +134,7 @@
                     <button class="pluslist addBtn" (click)="addNestedContentItem(i)"><mat-icon class="closePlus" aria-hidden="true">add_circle_outline</mat-icon>&nbsp;Add More</button>
                   </div>
 
-                  <div *ngIf="item.value.content === 'Ordered List'" class="form-group">
+                  <div *ngIf="item.value.content === 'Numbered List'" class="form-group">
                     <label for="title" class="lableTitle" style="padding-right:5px">{{item.value.content}}</label>
                     <i class="fa fa-times close secclose" aria-hidden="true" (click)="removeItem(i)"></i>
                     <div [ngClass]="{'list-container': item.get('orderListItems').length > 3}" formArrayName="orderListItems">
