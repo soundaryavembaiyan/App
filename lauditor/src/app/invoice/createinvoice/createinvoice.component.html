@@ -79,7 +79,7 @@
 
                       </div>
                     </div>
-                    <div *ngIf="errorMessage" class="errorStyle">{{ errorMessage }}</div>
+                    <div *ngIf="errorMessage" class="errorStyle errMsg">{{ errorMessage }}</div>
                   </div>
               <!-- Logo Upload -->
 
@@ -159,7 +159,7 @@
                       <div class="form-group">
                         <label for="websites" class="fontbold firm-head">Client Address<span class="mandate">*</span></label>
                         <div class="input-group">
-                          <input type="text" formControlName="billto" placeholder="Address" maxlength="150" [ngModel]="billto" class="form-control textbox invoiceCls" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@,.]|^ /g,'')"/>
+                          <input type="text" formControlName="billto" placeholder="Address" maxlength="150" [ngModel]="billto" class="form-control textbox invoiceCls" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@,. ]/g,'')"/>
                         </div>
                         <div *ngIf="createinvoiceForm.get('billto').errors && submitted" class="errorStyle">
                           <div *ngIf="createinvoiceForm.get('billto').errors.required">This field is required</div>
@@ -193,7 +193,7 @@
                             <input bsDatepicker id="drp" #dp2="bsDatepicker" placeholder="Select" style="background: #eeeeee;"
                             (bsValueChange)='selectDuration()' [min]="date.value" (change)="selectClearDue(); clearDueDateError()" formControlName="duedate" 
                             [bsConfig]="{dateInputFormat: 'MMM DD, YYYY', showWeekNumbers:false }"  class="form-control textbox invoiceCls" readonly>
-                            <img src="assets/img/formcalendor.svg" class="" id="datepicker" #bsDatepicker (click)="dp2.show()">
+                            <img src="assets/img/formcalendor.svg" id="datepicker" #bsDatepicker (click)="dp2.show()">
                          </div>
                           
                           <div *ngIf="submitted" class="errorStyle">
@@ -391,9 +391,9 @@
       </div>
     
       <div *ngIf="f['discount'].errors" class="errorStyle">
-        <div *ngIf="f['discount'].errors.max">Should be less than or equal to 100</div>
+        <div class="numshould" *ngIf="f['discount'].errors.max">Should be less than or equal to 100</div>
         <!-- <div *ngIf="f['discount'].errors.maxLength">Maximum length should be 4</div> -->
-        <div *ngIf="f['discount'].errors.pattern">Accepts only numbers & two decimal places</div> 
+        <div class="numaccept" *ngIf="f['discount'].errors.pattern">Accepts only numbers & two decimal places</div> 
         <!-- <div *ngIf="f['discount'].errors.pattern">Symbols/Characters are not allowed</div>  -->
         <div *ngIf="f['discount'].errors.min">Should be greater than or equal to 0</div>
       </div>
@@ -414,9 +414,9 @@
       </div>
     
       <div *ngIf="f['tax'].errors" class="errorStyle">
-        <div *ngIf="f['tax'].errors.max">Should be less than or equal to 100</div>
+        <div class="numshould" *ngIf="f['tax'].errors.max">Should be less than or equal to 100</div>
         <!-- <div *ngIf="f['tax'].errors.maxLength">Maximum length should be 4</div> -->
-        <div *ngIf="f['tax'].errors.pattern">Accepts only numbers & two decimal places</div>
+        <div class="numaccept" *ngIf="f['tax'].errors.pattern">Accepts only numbers & two decimal places</div>
         <!-- <div *ngIf="f['tax'].errors.pattern">Symbols/Characters are not allowed</div> -->
         <div *ngIf="f['tax'].errors.min">Should be greater than or equal to 0</div>
       </div>
