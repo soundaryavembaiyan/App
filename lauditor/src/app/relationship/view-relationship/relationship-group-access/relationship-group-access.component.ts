@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { HttpService } from 'src/app/services/http.service';
 import { URLUtils } from 'src/app/urlUtils';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { environment } from 'src/environments/environment';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
+import { MatTooltipModule } from '@angular/material/tooltip';
   
-
 @Component({
     selector: 'app-relationship-group-access',
     templateUrl: 'relationship-group-access.component.html',
@@ -21,24 +21,35 @@ export class RelationshipGroupAccessComponent implements OnInit {
     product = environment.product;
     groupList: any[] = [];
   	selectedIds: string[] = [];
+    selectedDel: string[] = [];
   	relname: string = "";
     showConfirm: boolean = false;
+    isDisable = false;
     //isDisabled = true;   ||  [disabled]="isDisabled"
     
-
 	constructor(private formBuilder: FormBuilder, private toast: ToastrService,
-              private httpService: HttpService) { 
+              private httpService: HttpService, private fb: FormBuilder) { 
 	}
 
 	ngOnInit(){
-    	this.loadGroups()
     	this.selectedIds = this.reldata.groups.map((obj: any) => { return obj.id })
+      this.selectedDel = this.reldata.groups.map((obj: any) => { return obj.can_delete })
+      this.loadGroups();
     	this.relname = this.reldata.name
   	}
 
 	loadGroups(){
      	this.httpService.sendGetRequest(URLUtils.getGroups).subscribe((res: any) => {
       		this.groupList = res?.data;
+          if(this.reldata.groups){
+            const canDeleteMap = new Map(this.reldata?.groups.map((item:any) => [item.id, item.can_delete]));
+
+          // Combine the two lists
+          this.groupList = this.groupList?.map((group:any) => ({
+              ...group,
+              can_delete: canDeleteMap.get(group.id)
+          }));
+          }
           //console.log('groupList', this.groupList)
     	})
     }
@@ -67,7 +78,7 @@ export class RelationshipGroupAccessComponent implements OnInit {
           if (error.status === 401 || error.status === 403) {
             const errorMessage = error.error.msg || 'Unauthorized';
             this.toast.error(errorMessage);
-            console.log(error);
+            //console.log(error);
           }
         })
       }
@@ -86,17 +97,22 @@ export class RelationshipGroupAccessComponent implements OnInit {
         }
         )
       }
-      console.log('activeTab', this.activeTab)
+      //console.log('activeTab', this.activeTab)
   }
 
-    selectGrp(grp: any, checked: boolean){
+  isDisabled(grp: any): boolean {
+    return !grp.can_delete && this.selectedIds.includes(grp.id) && this.selectedDel.includes(grp.can_delete) && this.product === 'lauditor';
+  }
+
+  selectGrp(grp: any, checked: boolean){
     if(checked){
-      this.selectedIds.push(grp.id)
+      this.selectedIds.push(grp.id);
       //console.log('selectedIds', this.selectedIds)
-    } else {
+    } 
+    else {
       this.selectedIds.splice(this.selectedIds.indexOf(grp.id), 1)
     }
   }
-
+  
 }
  
