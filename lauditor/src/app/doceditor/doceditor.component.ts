@@ -509,14 +509,11 @@ export class DoceditorComponent {
   addNestedContentItem(contentIndex: number, value?: any) {
     const contentArray = this.myForm.get('contentListItems') as FormArray;
     const nestedArray = contentArray.at(contentIndex).get('orderListItems') as FormArray;
-    // console.log('contentIndex',contentIndex)
-    // console.log('content',this.content)
-    //Disable to trigger the Add Btn if no val.
     for (let j = 0; j < nestedArray.length; j++) {
       const itemo = nestedArray.at(j) as FormGroup
       const listValue = itemo.value.contentData
       if (listValue === '') {
-        this.toast.error('Please add text.')
+        this.toast.error('Please add text in the Bulleted List.')
         return
       }
     }
@@ -534,14 +531,11 @@ export class DoceditorComponent {
   addNestedContentItem2(contentIndex: number, value?: any) {
     const contentArray = this.myForm.get('contentListItems') as FormArray;
     const nestedArray = contentArray.at(contentIndex).get('orderListItems') as FormArray;
-    // console.log('contentIndex',contentIndex)
-    // console.log('content',this.content)
-    //Disable to trigger the Add Btn if no val.
     for (let j = 0; j < nestedArray.length; j++) {
       const itemo = nestedArray.at(j) as FormGroup
       const listValue = itemo.value.contentData
       if (listValue === '') {
-        this.toast.error('Please add text.')
+        this.toast.error('Please add text in the Numbered List.')
         return
       }
     }
@@ -841,7 +835,7 @@ export class DoceditorComponent {
     }
   }
 
-  saveDocument(i?:any) {
+  saveDocument(i?: any) {
     this.submitted = false;
     //this.documentname = ' '
     const contentListItems = this.myForm.get('contentListItems') as FormArray;
@@ -862,9 +856,25 @@ export class DoceditorComponent {
         const getContent = item.get('content')?.value;
 
         const currentContent = contentListItems.at(i).get('content')?.value;
-        const previousContent = contentListItems.at(i - 1).get('content')?.value;      
+        const previousContent = contentListItems.at(i - 1).get('content')?.value;
         // console.log('currentContent', currentContent)
         // console.log('previousContent', previousContent)
+
+        if ((currentContent === 'Sub Section' || currentContent === 'Sub Sub Section') &&
+          !contentListItems.controls.some(item => item.value.content === 'Section')) {
+          if (currentContent === 'Sub Sub Section') {
+            this.toast.error('Invalid Selection. Please add Section before adding Sub Section or Sub Sub Section.');
+          } else if (currentContent === 'Sub Section') {
+            this.toast.error('Invalid Selection. Please add Section before adding Sub Section or Sub Sub Section.');
+          }
+          return;
+        }
+
+        if ((currentContent === 'Sub Sub Section') &&
+          !contentListItems.controls.some(item => item.value.content === 'Sub Section')) {
+          this.toast.error('Invalid Selection. Please add Section before adding Sub Section or Sub Sub Section.');
+          return;
+        }
 
         //Editblock - empty content conditions!!!
         if (!previousContentChecked && previousContent === null) {
@@ -872,6 +882,17 @@ export class DoceditorComponent {
           return;
         }
         previousContentChecked = true;
+
+        //PB as 1st position
+        if (i === 0 && currentContent === 'Page Break') {
+          this.toast.error('Page Break can not be added at the beginning of the document.');
+          return;
+        }
+
+        if ((contentListItems.value.length === 1 && currentContent === 'Page Break') || (previousContent === null && currentContent === 'Page Break')) {
+          this.toast.error('Page Break can not be added at the beginning of the document.');
+          return
+        }
 
         if (currentContent === 'Page Break' && previousContent === 'Page Break') {
           this.toast.error('Consecutive page breaks are added. Please remove the additional Page Break to proceed.');
@@ -882,7 +903,7 @@ export class DoceditorComponent {
 
     // Set focus on the last added input field  text-size form-control createDoc savecreate
     setTimeout(() => {
-      const textareas = document.querySelectorAll('.text-size.form-control.createDoc.savecreate');
+      const textareas = document.querySelectorAll('.text-size.form-control.createDoc');
       const lastTextarea = textareas[textareas.length - 1] as HTMLTextAreaElement;
       if (lastTextarea) {
         lastTextarea.focus();
@@ -941,12 +962,10 @@ export class DoceditorComponent {
     console.log('saveform', saveForm)
     // if (saveForm === '' || saveForm === " " || saveForm === null && !this.documentId) {
     //   this.submitted = true;
-    //   this.toast.error('invalid....')
     //   return
     // }
     if (this.saveForm.invalid && saveForm === '' || saveForm === " " || saveForm === null) {
       this.submitted = true;
-      //this.toast.error('invalid....')
       return
     }
   }
@@ -1064,7 +1083,7 @@ export class DoceditorComponent {
                 this.pageNumber.push({ "page": this.pno, "pageId": this.pageId });
                 //console.log('const pageNo.', this.pageNumber);
                 //this.toast.success(ress.message);
-                this.toast.success('Document saved successfully');
+                this.toast.success('Document saved successfully.');
                 currentPage++; // Increment page number for the next page
                 pageContent = ''; // Reset pageContent for the next page
               }
@@ -1076,7 +1095,7 @@ export class DoceditorComponent {
                 // this.pid = this.pageId
                 //this.openId = this.pageId
                 //console.log('this.openId',this.pageId)
-                this.toast.success('Document updated successfully');
+                this.toast.success('Document updated successfully.');
               })
           }
           // else {
