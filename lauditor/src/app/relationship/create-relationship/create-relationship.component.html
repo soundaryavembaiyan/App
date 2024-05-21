@@ -16,7 +16,7 @@
       
       <span class="relSubTab individual">
         <a href="javascript: void(0)"
-           class="optionone compone relation-sub-tabs"
+           class="optionone compone relation-sub-tabs tabStyle"
            [class.active]="activeTab == 'individual'"
            routerLink="/relationship/add/individual">Individual</a>
       </span>
@@ -24,21 +24,21 @@
       <span class="relSubTab entity" *ngIf="product == 'corporate' || product == 'lauditor'">
         <a href="javascript: void(0)"
            [class.active]="activeTab == 'entity'"
-           class="optiontwo relation-sub-tabs compotwoo comptwo cls"
+           class="optiontwo relation-sub-tabs compotwoo comptwo cls tabStyle"
            routerLink="/relationship/add/entity">Entity</a>   <!--cls-->
       </span>
 
       <span class="relSubTab entity" *ngIf="product == 'content'">
         <a href="javascript: void(0)"
            [class.active]="activeTab == 'entity'"
-           class="optiontwo relation-sub-tabs compotwoo comptwo"
+           class="optiontwo relation-sub-tabs compotwoo comptwo tabStyle"
            routerLink="/relationship/add/entity">Entity</a>  
       </span>
 
       <span class="relSubTab corporate" *ngIf="product == 'corporate' || product == 'lauditor'">
         <a href="javascript: void(0)"
            [class.active]="activeTab == 'corporate'"
-           class="optiontwo relation-sub-tabs compotwoo comptwo"
+           class="optiontwo relation-sub-tabs compotwoo comptwo tabStyle"
            routerLink="/relationship/add/corporate">Corporate</a>
       </span>
     </div>
