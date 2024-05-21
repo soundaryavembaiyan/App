@@ -18,6 +18,10 @@ import { MatAutocompleteModule} from '@angular/material/autocomplete';
 import { RelationshipGroupAccessComponent } from './view-relationship/relationship-group-access/relationship-group-access.component';
 import { RelationshipExchangeComponent } from './view-relationship/relationship-exchange/relationship-exchange.component';
 import { ModelModule } from '../model/model.module';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import {MatSelectModule} from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 @NgModule({
     imports: [
@@ -29,6 +33,10 @@ import { ModelModule } from '../model/model.module';
         MatAutocompleteModule,
         Ng2SearchPipeModule,
         ModelModule,
+        NgxSpinnerModule,
+        MatSelectModule,
+        MatTooltipModule,
+        MatCheckboxModule
         ],
     declarations: [
         RelationshipComponent,
