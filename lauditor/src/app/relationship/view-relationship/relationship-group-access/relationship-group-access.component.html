@@ -1,25 +1,23 @@
 <div class="container update-members main width-alignment">
     <div class="col-12 Individual createGroup">
         <div class="update-group">
-        <label for="select" class="lable-size" *ngIf="product != 'corporate'">Modify Group Access - {{relname}}</label>
-        <label for="select" class="lable-size" *ngIf="product == 'corporate'">Update Department Access - {{relname}}</label>
+        <label for="select" class="lable-size labelaccess" *ngIf="product != 'corporate'">Modify Group Access - {{relname}}</label>
+        <label for="select" class="lable-size labelaccess" *ngIf="product == 'corporate'">Update Department Access - {{relname}}</label>
     </div>
         <div class="row">
             <div class="col-3"></div>
             <div class="col-6">
                 <div class="form-group " id="selectbx">
-                  <div class="input-group group-custom-align court"
-                       *ngFor="let grp of groupList"
-                       style="margin-bottom:3px;">
+                  <div class="input-group group-custom-align court" *ngFor="let grp of groupList" style="margin-bottom:3px;">
                     <div class="multicheck form-control textbox">
                       <div class="callselect" [innerHtml]="grp.name"></div>
-                      <input class="form-check-inpu calimg calitem input-group-app end checkboxitem"
-                             #inputEl
-                             [ngClass]="{'active': selectedIds.includes(grp.id)}"
-                             [checked]="selectedIds.includes(grp.id)"
-                             type="checkbox"
-                             (change)="selectGrp(grp, inputEl.checked)">
-                    </div>
+                      <input class="form-check-inpu calimg calitem input-group-app end checkboxitem" #inputEl
+                        [ngClass]="{'active': selectedIds.includes(grp.id)}" 
+                        [checked]="selectedIds.includes(grp.id)" type="checkbox"
+                        (change)="selectGrp(grp, inputEl.checked)"  
+                        [disabled]="isDisabled(grp)"
+                        [matTooltip]="!grp.can_delete && selectedIds.includes(grp.id) && selectedDel.includes(grp.can_delete) && product == 'lauditor' ? 'Update blocked; Matters, Documents linked to Client.' : ''"> 
+                      </div>
                   </div>
                 </div>
             </div>
