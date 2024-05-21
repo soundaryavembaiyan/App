@@ -22,9 +22,10 @@
     //font-family: 'Gill Sans';
 }
 
-.logo{
-    font-size: 1.3rem; 
+.logo {
+    font-size: 1.3rem;
 }
+
 .datatext {
     color: #004D87;
     padding-bottom: 10px;
@@ -170,7 +171,7 @@ tr.veiw-items {
     width: 100px;
     background: #004D87;
     top: -1.5px;
-    margin-right:1px;
+    margin-right: 1px;
 }
 
 .txttxt {
@@ -523,6 +524,9 @@ input#drp {
     background-color: #eeeeee;
 }
 
+// .moveSpace{
+//     margin-left: -10px;
+// }
 .duedatepaded {
     padding-top: 0px;
     //margin-right: 20px;
@@ -631,13 +635,23 @@ textarea {
 
 @media (max-width: 2560px) {}
 
+@media (max-width: 1440px) and (min-width: 1440px) {
+    .numshould {
+        margin-left: -30px;
+    }
+
+    .numaccept {
+        margin-left: -15px;
+    }
+}
+
 .errorStyle {
     color: red;
 }
 
 .ng-autocomplete {
     width: 100% !important;
-    background: #eeeeee!important;
+    background: #eeeeee !important;
     border-radius: 30px !important;
 }
 
@@ -702,13 +716,14 @@ textarea {
     opacity: 1;
 }
 
-.image-container{
-    min-height:150px;
-    min-width:150px;
+.image-container {
+    min-height: 150px;
+    min-width: 150px;
 }
-.image-container img{
-    height:100%;
-    width:100%;
+
+.image-container img {
+    height: 100%;
+    width: 100%;
 }
 
 
@@ -722,11 +737,12 @@ textarea {
     right: 0px;
     z-index: 9;
     color: rgb(255, 0, 0)
-  }
+}
 
-  .small, small {
+.small,
+small {
     font-size: .8em;
-    font-weight:800;
+    font-weight: 800;
 }
 
 ::placeholder {
@@ -741,20 +757,33 @@ textarea {
 
 input.has-value::placeholder {
     color: transparent; // Hide the placeholder text in firefox
-  }
+}
 
-.input.desp{
+.input.desp {
     width: 500px;
-  }
+}
 
-  /* If you want to highlight the background of today's date */
+/* If you want to highlight the background of today's date */
 .highlight-today .bsDatepicker .dateClass {
     background-color: rgb(8, 15, 228);
-  }
-  
-  /* If you want to highlight the text color of today's date */
+}
+
+/* If you want to highlight the text color of today's date */
 //   .highlight-today .bs-datepicker-container .bs-datepicker-body .day.is-today:not(.is-disabled) {
 //     color: white;
 //     background-color: blue;
 //   }
-  
+#imagePreview {
+    cursor: pointer;
+}
+
+.errMsg {
+    margin-top: 12px;
+    margin-left: 5px;
+}
+#datepicker{
+    cursor: pointer;
+}
+.removedoc{
+    margin-top: 25px;
+}
