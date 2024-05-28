@@ -1,12 +1,16 @@
-.one-btn{
-border-radius: 10px;
+.one-btn {
+  border-radius: 10px;
+  /* color: #fff;
+  background: #00b3a7 !important; */
 }
+
 .arrowitem .fa {
-    background: #00498e;
-    color: #fff;
-    padding: 10px;
-  
-  }
-  .headerrelationship {
-    height: 190px !important;
+  background: #00498e;
+  color: #fff;
+  padding: 10px;
+
+}
+
+.headerrelationship {
+  height: 190px !important;
 }
