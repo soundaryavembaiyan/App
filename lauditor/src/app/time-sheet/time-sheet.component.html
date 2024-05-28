@@ -2,17 +2,20 @@
 <div class="row main headertop headerrelationship" [ngStyle]="{'display':isDisplay?'block':'none'}">
   <div class="col-sm-12 compswitch ">
     <div class="switch  cswitch">
-      <a *ngIf="authUser" (click)="viewMode='aggregated'" class="  button-class optionone compone   aggregate-members aggregate-projects"  routerLink="/timesheets/aggregate-members">Aggregated Timesheets</a>
-      <a (click)="viewMode='mytimeSheets'" [ngClass]="{'one-btn':!authUser}" class="  button-class optiontwo comptwo non-submitted submitted active" routerLink="/timesheets/non-submitted">My Timesheets</a>
+      <a *ngIf="authUser" class="button-class optionone compone aggregate-members aggregate-projects" href="javascript:void(0);" [ngClass]="{'active': viewMode === 'aggregated'}" 
+      (click)="viewMode='aggregated'; isActive('aggregated')" routerLink="/timesheets/aggregate-members">Aggregated Timesheets</a>
+    
+      <a class="button-class optiontwo comptwo non-submitted submitted active" href="javascript:void(0);" [ngClass]="{'one-btn': !authUser,'active': viewMode === 'mytimeSheets'}" 
+      (click)="viewMode='mytimeSheets'; isActive('mytimeSheets')" routerLink="/timesheets/non-submitted">My Timesheets</a>
     </div>
-    <div  [ngSwitch]="viewMode" class="switch   cswitch cswitchtwo switchrelation">
+    <div  [ngSwitch]="viewMode" class="switch cswitch cswitchtwo switchrelation">
       <div *ngSwitchCase="'mytimeSheets'">
-      <a  class=" button-class optionone compone oneswitch non-submitted active" routerLink="/timesheets/non-submitted">Not Submitted</a>
-      <a  class=" button-class optiontwo comptwo  oneswitch submitted " routerLink="/timesheets/submitted">Submitted</a>
+      <a  class=" button-class optionone compone oneswitch non-submitted" routerLinkActive="active" routerLink="/timesheets/non-submitted">Not Submitted</a>
+      <a  class=" button-class optiontwo comptwo  oneswitch submitted" routerLinkActive="active"  routerLink="/timesheets/submitted">Submitted</a> 
     </div>
     <div *ngSwitchCase="'aggregated'">
       <a  class=" button-class optionone compone oneswitch aggregate-members active" routerLink="/timesheets/aggregate-members">Team Members</a>
-      <a  class=" button-class optiontwo comptwo  oneswitch aggregate-projects " routerLink="/timesheets/aggregate-projects">Projects</a>
+      <a  class=" button-class optiontwo comptwo oneswitch aggregate-projects " routerLink="/timesheets/aggregate-projects">Projects</a>
     </div>
     </div>
     <!-- <div class="switch  cswitch">
