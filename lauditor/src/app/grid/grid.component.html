@@ -99,7 +99,7 @@
               <span class="vertical"></span>
             </div>
             <div class="col-sm-2">
-              <p class="rightbox rightboxtxt float-right rightrate cards billhour ">0</p>
+              <p class="rightbox rightboxtxt float-right rightrate cards billhour ">{{unreadcountclient}}</p>
             </div>
 
             <!--<div class="col-3 middlecontainer">
@@ -160,7 +160,7 @@
             </div>-->
 
             <div class="col-sm-2">
-              <p class="rightbox rightboxtxt float-right rightrate cards billhour ">0</p>
+              <p class="rightbox rightboxtxt float-right rightrate cards billhour ">{{unreadcountteam}}</p>
             </div>
 
             <!--<div class="col-sm-2">
@@ -227,10 +227,10 @@
       <!-- card layout right side -->
       <!-- right row  card 7 layout -->
       <div class="row containerbox">
-        <div class="col-sm-12"  >
-          <div class="row rightcontainerbox rightcontainerboxapprox"
+        <div class="col-sm-12">
+          <div class="row rightcontainerbox rightcontainerboxapprox point"
                 *ngIf="kpiCards.includes('billable')" (click)="categoryRoute('/timesheets/aggregate-members')">
-            <div class="col-sm-12" *ngIf="product != 'corporate'">
+            <div class="col-sm-12" *ngIf="product != 'corporate' && userRole != 'TM'">
               <div class="row meetingcontainer">
                 <div class="col-sm-6">
                   <div class="row">
@@ -260,9 +260,9 @@
           </div>
           <!-- ends here -->
           <!-- right row card 8 layout -->
-          <div class="row rightcontainerbox rightcontainerboxapprox"
-                *ngIf="kpiCards.includes('nonBillable')" (click)="categoryRoute('/timesheets/aggregate-members')">
-            <div class="col-sm-12" *ngIf="product != 'corporate'">
+          <div class="row rightcontainerbox rightcontainerboxapprox point"
+                *ngIf="kpiCards.includes('nonBillable')" (click)="categoryRoute('/timesheets/non-submitted')">
+            <div class="col-sm-12" *ngIf="product != 'corporate' && userRole != 'TM'">
               <div class="row meetingcontainer">
                 <div class="col-sm-6">
                   <div class="row">
@@ -349,7 +349,7 @@
           </div>
           <!-- ends here -->
                  <!-- right row card 11 layout -->
-          <div class="row rightcontainerbox rightcontainerboxapprox "
+          <div class="row rightcontainerbox rightcontainerboxapprox point"
                 *ngIf="kpiCards.includes('matters')" (click)="categoryRoute('/matter/legalmatter/view')">
             <div class="col-sm-12">
               <div class="row meetingcontainer legalbox">
@@ -414,7 +414,7 @@
           </div>
           <!-- ends here -->
                   <!-- right row card 12 layout -->
-          <div class="row rightcontainerbox rightcontainerboxapprox" *ngIf="kpiCards.includes('newClients')" 
+          <div class="row rightcontainerbox rightcontainerboxapprox point" *ngIf="kpiCards.includes('newClients')" 
                 (click)="categoryRoute('/relationship/view/individuals')">
             <div class="col-sm-12">
               <div class="row meetingcontainer legalbox">
@@ -479,7 +479,7 @@
           </div>
           <!-- ends here -->
              <!-- right row card 13 layout -->
-          <div class="row rightcontainerbox rightcontainerboxapprox "
+          <div class="row rightcontainerbox rightcontainerboxapprox point"
                 *ngIf="kpiCards.includes('newHires')" (click)="categoryRoute('/groups/view-member')">
             <div class="col-sm-12" *ngIf="product != 'corporate'">
               <div class="row meetingcontainer legalbox">
@@ -513,7 +513,7 @@
           <div class="row rightcontainerbox rightcontainerboxapprox"
                 *ngIf="kpiCards.includes('storage')">
             <div class="col-sm-12">
-              <div class="row meetingcontainer legalbox">
+              <div class="row meetingcontainer legalbox" *ngIf="userRole != 'GH'">
                 <div class="col-sm-7">
                   <div class="row">
                     <div class="col-sm-4">
@@ -561,17 +561,17 @@
                       <p class="mname toalhours rightmatter cmatter" *ngIf="product != 'corporate'">My Active Matters</p>
                       <p class="mname toalhours rightmatter cmatter" *ngIf="product == 'corporate'">External Counsels</p>
                       -->
-                      <span class="mattercount closedm " *ngIf="matterModel.active && matterModel.active.countsByType[1]"[innerHtml]="matterModel.active.countsByType[1].count"></span>&nbsp;
-                      <span class="mattertxtdata" *ngIf="matterModel.active && matterModel.active.countsByType[1]"[innerHtml]="matterModel.active.countsByType[1].type"></span>
+                      <span class="mattercount closedm point" (click)="categoryRoute('/matter/generalmatter/view')" *ngIf="matterModel.active && matterModel.active.countsByType[1]"[innerHtml]="matterModel.active.countsByType[1].count"></span>&nbsp;
+                      <span class="mattertxtdata point" (click)="categoryRoute('/matter/generalmatter/view')" *ngIf="matterModel.active && matterModel.active.countsByType[1]"[innerHtml]="matterModel.active.countsByType[1].type"></span>
                     </div>
                   </div>
                 </div>
                 <!-- <span class="mattertxt" *ngIf="matterModel.active && matterModel.active.countsByType[0]">{{matterModel.active.countsByType[0].count}} {{matterModel.active.countsByType[0].type}}</span>
                   <span class="mattertxt" *ngIf="matterModel.active && matterModel.active.countsByType[1]">{{matterModel.active.countsByType[1].count}} {{matterModel.active.countsByType[1].type}}</span> -->
                 <div class="col-sm-5 getD">
-                  <p class="rightbox rightboxtxt rightmatter  dotcontent">.</p>
-                  <span class="mattercount closedm " *ngIf="matterModel.active && matterModel.active.countsByType[0]" [innerHtml]="matterModel.active.countsByType[0].count"></span>&nbsp;
-                  <span class="mattertxtdata" *ngIf="matterModel.active && matterModel.active.countsByType[0]" [innerHtml]="matterModel.active.countsByType[0].type"></span>
+                  <p class="rightbox rightboxtxt rightmatter dotcontent">.</p>
+                  <span class="mattercount closedm point" (click)="categoryRoute('/matter/legalmatter/view')" *ngIf="matterModel.active && matterModel.active.countsByType[0]" [innerHtml]="matterModel.active.countsByType[0].count"></span>&nbsp;
+                  <span class="mattertxtdata point" (click)="categoryRoute('/matter/legalmatter/view')" *ngIf="matterModel.active && matterModel.active.countsByType[0]" [innerHtml]="matterModel.active.countsByType[0].type"></span>
                 </div>
               </div>
             </div>
@@ -655,7 +655,7 @@
           <!-- ends here -->
                  <!-- right row card 19 layout -->
           <div class="row rightcontainerbox rightcontainerboxapprox"
-                *ngIf="kpiCards.includes('submittedTs')" (click)="categoryRoute('/timesheets')">
+                *ngIf="kpiCards.includes('submittedTs')" (click)="categoryRoute('/timesheets/submitted')">
             <div class="col-sm-12">
               <div class="row meetingcontainer legalbox">
                 <div class="col-sm-7">
@@ -681,7 +681,7 @@
           <!-- ends here -->
           <!-- right row card 20 layout -->
           <div class="row rightcontainerbox rightcontainerboxapprox"
-                *ngIf="kpiCards.includes('pendingTs')" (click)="categoryRoute('/timesheets')">
+                *ngIf="kpiCards.includes('pendingTs')" (click)="categoryRoute('/timesheets/non-submitted')">
             <div class="col-sm-12">
               <div class="row meetingcontainer legalbox">
                 <div class="col-sm-7">
