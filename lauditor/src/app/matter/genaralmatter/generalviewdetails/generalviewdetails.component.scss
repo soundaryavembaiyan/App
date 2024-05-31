@@ -586,11 +586,26 @@ button:focus {
 	margin-left: 5%;
 	margin-right: 5%;
 }
+// .removedoc{
+// 	right: 54px;
+// 	margin-top: -9px;
+//     margin-right: 52px;
+// }
+
 .removedoc{
-	right: 54px;
-	margin-top: -9px;
-    margin-right: 52px;
+	margin-top: -1px;
+	// margin-right: 223px;
+    margin-right: 100px;
+    float: right;
 }
+
+@media only screen and (max-width: 768px)  {
+    .removedoc{
+        margin-right: 40px;
+        float: right;
+    }   
+}
+
 .containerbox {
 	width: 100%;
   }
@@ -778,7 +793,8 @@ button:focus {
   }
   .textNotes{
     font-size: 1rem;
-    margin-top: -10px; 
+    word-wrap: break-word;
+    //margin-top: -10px; 
     //color:blue
   }
   .contDiv{
@@ -883,6 +899,7 @@ button:focus {
 #limitTextHeight{
 font-size: 1rem;
 font-weight: 900;
+word-wrap: break-word;
 }
 .plusBtn{     
     background-color: Transparent;
@@ -900,4 +917,9 @@ font-weight: 900;
     overflow: hidden; 
     width: 40px;
     margin-left: -10px;       
+}
+.assign{
+    font-size: 1rem;
+    font-weight: 900;
+    color: #00498E;
 }
