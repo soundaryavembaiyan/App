@@ -109,7 +109,7 @@ export class EmailComponent implements OnInit,AfterViewInit{
            localStorage.setItem('popupOpened','true');
             setTimeout(() => {
               location.reload()
-            }, 10000)
+            }, 1000)
           }
         });
     }
@@ -313,6 +313,11 @@ export class EmailComponent implements OnInit,AfterViewInit{
     this.modalService.close('compose-email');
     this.composeForm.reset();
     this.selectedAttachments=[];
+
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
+
   }
   onAttach() {
     localStorage.setItem('inputs', JSON.stringify(this.composeForm.value));
