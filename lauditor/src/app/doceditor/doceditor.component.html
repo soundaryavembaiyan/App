@@ -63,7 +63,7 @@
         </div>
         <div class="form-group">
             <label for="title" class="lableTitle">Author</label>
-            <input formControlName="author" class="text-size form-control createDoc" name="title" 
+            <input formControlName="author" maxlength="255" class="text-size form-control createDoc" name="title" 
             [(ngModel)]="author" value="" type="hidden" placeholder="Enter the Author" type="text" 
             (keydown)="onKeyDown1($event)" (input)="restrictNoFirst($event);restrictSpaces($event)" pattern="[^\s]*" oninput="this.value = this.value.replace(/[^A-Za-z0-9-,_!@$%^*;'&/.\|()# ]|^ /g,'')">
             <!-- <div *ngIf="myForm.get('author').errors && submitted" class="errorStyle">
