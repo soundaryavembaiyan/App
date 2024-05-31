@@ -53,6 +53,12 @@
 .invalid-feedback {
     display: block;
 }
+.alertEmail{
+    color: #FF0000;
+    font-size: 18px;
+    font-weight: bolder;
+    letter-spacing: 0px;
+}
 
 .nameSet {
     width: 96%;
@@ -74,6 +80,9 @@
 
 .textGreen {
     color: #359A00;
+    font-size: 18px;
+    font-weight: bolder;
+    letter-spacing: 0px;
 }
 
 .textDanger {
@@ -103,3 +112,8 @@
 .alertbutton {
     padding-bottom: 22px;
 }
+
+#addedGrp:hover {
+    color: #fff;
+    background-color: #00b3a7;
+  }
