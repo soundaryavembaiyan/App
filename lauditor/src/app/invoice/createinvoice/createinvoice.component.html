@@ -159,7 +159,8 @@
                       <div class="form-group">
                         <label for="websites" class="fontbold firm-head">Client Address<span class="mandate">*</span></label>
                         <div class="input-group">
-                          <input type="text" formControlName="billto" placeholder="Address" maxlength="150" [ngModel]="billto" class="form-control textbox invoiceCls" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@,. ]/g,'')"/>
+                          <input type="text" formControlName="billto" placeholder="Address" maxlength="150" [ngModel]="billto" class="form-control textbox invoiceCls" 
+                          (input)="restrictSpaces($event)" oninput="this.value = this.value.replace(/[^A-Za-z0-9-,_!@$%^*;'&/.()\|# ]|^ /g,'')"/>
                         </div>
                         <div *ngIf="createinvoiceForm.get('billto').errors && submitted" class="errorStyle">
                           <div *ngIf="createinvoiceForm.get('billto').errors.required">This field is required</div>
