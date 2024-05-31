@@ -565,7 +565,8 @@
                                   <strong class="docmatter">- </strong> {{doc?.matter_details[0]?.name}}</p>
                             </div>
 
-                            <div class="pull-right matS" *ngIf="activeTab !== 'individuals' && product !=='lauditor' && product !=='corporate'">
+                            <!-- <div class="pull-right matS" *ngIf="activeTab !== 'individuals' && product ==='content' && reldata.plan != 'connect' && product ==='connect' && reldata.plan != 'content'"> -->
+                                <div class="pull-right matS" *ngIf="(activeTab !== 'individuals') && (product === 'content' && reldata.plan !== 'connect' || product === 'connect' && reldata.plan !== 'content')">
                                 <mat-select multiple placeholder="Select Matters" (selectionChange)="updateMatters(doc, $event.value)">
                                     <mat-option *ngFor="let matters of matterList" [value]="matters">{{matters.matterTitle}}</mat-option>
                                 </mat-select>
@@ -587,7 +588,7 @@
                     class="sharedgird shared redtxt">
                         <p class="immigrationtxt"
                            *ngFor="let doc of sharedandUnsharedData.remove">
-                            {{doc.name}}
+                            {{doc.name}} <strong class="docmatter">&nbsp;-&nbsp;</strong>{{doc?.matter_details[0]?.name}}
                         </p>
                     </div>
                 </div>
