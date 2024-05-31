@@ -2,15 +2,17 @@
 <form class="example-form">
     <div class="row">
     <div class="form-group col-sm-5" style="margin:20px auto">
-      <div class="input-group court" id="search">
+     
+      <!-- list for Lauditor-->
+      <div class="input-group court" id="search" >
         <input type="text" 
-               placeholder="Search by name" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@,.]|^ /g,'')"
+               placeholder="Search by name" 
+               oninput="this.value = this.value.replace(/[^A-Za-z0-9_- ]|^ /g,'')"
                matInput
                class="form-control textbox" 
                [formControl]="selectedEntity"
-               ng-pattern="/^[a-zA-Z]*$/"
-               [matAutocomplete]="auto"
-               >
+               ng-pattern="/^[a-zA-Z]*$/" (input)="restrictSpaces($event)"
+               [matAutocomplete]="auto">
   
             <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="onOptSel($event)">
               <mat-option *ngFor="let option of filteredEntities | async" [value]="option">
@@ -20,13 +22,37 @@
   
         <button id="btnadd" type="submit" class="input-group-append appendadd" (click)='searchEntity()'>Search</button>
       </div>
-      <div class="invalid-feedback" style="display:block;" *ngIf='emptySearchError'>Please enter entity name to search.</div>
+       <!-- list for Lauditor/Corp-->
+
+      <!-- list for Corporate-->
+      <!-- <div class="input-group court" id="search" *ngIf="product == 'corporate'">
+        <input type="text" 
+               placeholder="Search by name" 
+               oninput="this.value = this.value.replace(/[^A-Za-z0-9 ]|^ /g,'')"
+               matInput
+               class="form-control textbox" 
+               [formControl]="selectedEntity"
+               ng-pattern="/^[a-zA-Z]*$/"
+               [matAutocomplete]="auto"
+               >
+  
+            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="onOptSel($event)">
+              <mat-option *ngFor="let option of lauditorList" [value]="option">
+                {{option.name}}
+              </mat-option>
+            </mat-autocomplete>
+  
+        <button id="btnadd" type="submit" class="input-group-append appendadd" (click)='searchEntity()'>Search</button>
+      </div> -->
+
+
+      <div class="invalid-feedback alertEmail" style="display:block;" *ngIf='emptySearchError'>Please enter Entity name to search.</div>
     </div>
   
          <!--Shown Messages-->
         <div class="text-center alertText">
           <p class="textDanger" *ngIf="reqError.show">{{reqError.msg}}</p>
-          <!-- <p class="textGreen" *ngIf="formMode == 'request'">{{msg}}</p> -->
+          <p class="textGreen" *ngIf="formMode == 'request' && !closeMode">{{msg}}</p>
           <p class="textDanger" *ngIf="formMode == 'invite'">{{msg}}</p>
         </div>
   
@@ -151,17 +177,13 @@
             <div class="col-5">
               <div class="form-group nameSet">
                 <p *ngIf="product != 'corporate'"><label>Selected Group(s)</label></p>
-                <p *ngIf="product == 'corporate'"><label>Selected</label></p>
-               
-                <div class="input-group court"
-                     *ngFor="let sgrp of selectedGroups">
-  
-                    <input type="text" class="form-control textbox my-input" id="addedGrp"
-                           placeholder="{{sgrp.name}}" disabled>
+                <p *ngIf="product == 'corporate'"><label>Selected Department(s)</label></p>
+                <div *ngIf="!closeMode">
+                <div class="input-group court" *ngFor="let sgrp of selectedGroups">
+                    <input type="text" class="form-control textbox my-input" id="addedGrp" placeholder="{{sgrp.name}}" disabled>
                     <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup my-icon" 
-                       (click)="restore(sgrp)" 
-                       aria-hidden="true"></i>
-                
+                       (click)="restore(sgrp)" aria-hidden="true"></i>
+                </div>
                 </div>
               </div>
             </div>  
