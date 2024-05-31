@@ -13,6 +13,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
 import { ThemePalette } from '@angular/material/core';
+import { NgxSpinnerService } from 'ngx-spinner';
  
 
 
@@ -91,6 +92,8 @@ export class GeneralViewDetailsComponent implements OnInit {
   form: any; 
   isReadMore: boolean[] = [];
   isButtonClicked = false;
+  allowedFileTypes = ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/rtf','text/csv','text/rtf'];
+  docapi = environment.doc2pdf
   
 
   constructor(private matterService: MatterService, private httpservice: HttpService,
@@ -98,7 +101,8 @@ export class GeneralViewDetailsComponent implements OnInit {
     private confirmationDialogService: ConfirmationDialogService,
     private sanitizer: DomSanitizer,
     private docService: DocumentService,
-    private fb: FormBuilder) {
+    private fb: FormBuilder,
+    private spinnerService: NgxSpinnerService) {
 
   }
 
@@ -309,7 +313,12 @@ export class GeneralViewDetailsComponent implements OnInit {
   }
 
   //Corp notes
-  toggleReadMore(index: number) {
+  // toggleReadMore(index: number) {
+  //   this.isReadMore[index] = !this.isReadMore[index];
+  // }
+  
+  toggleReadMore(note: any,index:any) {
+    note.isReadMore = !note.isReadMore;
     this.isReadMore[index] = !this.isReadMore[index];
   }
 
@@ -347,7 +356,11 @@ export class GeneralViewDetailsComponent implements OnInit {
         (res: any) => {
           if (res) {
             this.selectedMembers = res.members;
-            this.selectedMembers.unshift(this.data.owner);
+            //this.selectedMembers.unshift(this.data.owner);
+            const ownerIndex = this.selectedMembers.findIndex((member: { id: any; }) => member.id === this.data.owner.id); //removed the ownerName from selectedMembers
+            if (ownerIndex === -1) {
+              this.selectedMembers.unshift(this.data.owner);
+            }
             this.membersLength = res.members.length;
             this.selectedClients = res.clients;
             this.selectedCorp = res.corporate;
@@ -509,6 +522,7 @@ export class GeneralViewDetailsComponent implements OnInit {
     } else {
       this.clientsList = this.selectedClients.concat(this.clientsList);
       this.selectedClients = [];
+      this.onFeatureClick('T&C');
     }
   }
   removeTeammember(group: any) {
@@ -599,22 +613,83 @@ export class GeneralViewDetailsComponent implements OnInit {
     });
   };
   viewDocument(item: any) {
-    let data = {
-      'id': item.docid
-    }
-    this.httpservice.sendGetRequest(URLUtils.viewDocuments(data)).subscribe((res: any) => {
-      if (res && res.data && !res.error) {
-        this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(res.data.url);
-        let obj = {
-          'isIframe': true,
-          'url': this.urlSafe
-        }
-        this.confirmationDialogService.confirm('View', obj,true, "Ok", "Close", false,"lg");
-      }
-      else {
-        alert(res.msg)
-      }
-    });
+      
+    if(item.added_encryption){
+       
+      var body = new FormData();
+      body.append('docid', item.docid)
+      body.append('shared_doc',true.toString())
+      let url = environment.apiUrl + URLUtils.decryptFile
+      this.httpservice.sendPostDecryptRequest(url,body).subscribe((res:any)=>{
+          const blob = new Blob([res], { type: item.contentType });
+          const url = URL.createObjectURL(blob);
+          this.spinnerService.show()
+          if(this.allowedFileTypes.includes(item.contentType)){
+              let fdata = new FormData();
+              fdata.append('file', blob);
+              this.httpservice.sendPostDecryptRequest(environment.DOC2FILE,fdata).subscribe((ans:any)=>{
+                  const ansBlob = new Blob([ans], { type: 'application/pdf' });
+                  const ansUrl = URL.createObjectURL(ansBlob);
+                  this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(ansUrl)
+                  this.spinnerService.hide()
+                  let obj = {
+                    'isIframe': true,
+                    'url': this.urlSafe
+                  }
+                  this.confirmationDialogService.confirm('View', obj, true, "Ok", "Close", false, "lg");
+              })
+
+          } else{
+            
+              this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+              this.spinnerService.hide()
+              let obj = {
+                'isIframe': true,
+                'url': this.urlSafe
+              }
+              this.confirmationDialogService.confirm('View', obj, true, "Ok", "Close", false, "lg");
+           
+          }   
+          this.spinnerService.hide()
+        
+      })
+  } 
+  if(item.added_encryption==false)  {
+    let id = {'id':item.docid}
+      this.httpservice.sendGetRequest(URLUtils.viewDocuments(id)).subscribe((res: any) => {
+          if(this.allowedFileTypes.includes(item.contentType)){
+              this.spinnerService.show()
+              this.httpservice.sendPostDocRequest(this.docapi,{'url':res.data.url}).subscribe((ans:any)=>{
+                  const blob = new Blob([ans], { type: 'application/pdf' });
+                  // Create a URL for the Blob
+                  const url = URL.createObjectURL(blob);
+                  this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(url)
+                  let obj = {
+                    'isIframe': true,
+                    'url': this.urlSafe
+                  }
+                  this.confirmationDialogService.confirm('View', obj, true, "Ok", "Close", false, "lg");
+                  this.spinnerService.hide()
+              })
+              
+
+          } else {
+            if (res && res.data && !res.error) {
+              this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(res.data.url);
+              let obj = {
+                'isIframe': true,
+                'url': this.urlSafe
+              }
+              this.confirmationDialogService.confirm('View', obj, true, "Ok", "Close", false, "lg");
+            }
+            else {
+              alert(res.msg)
+            }
+          }
+          
+          //console.log(" this.view    " + JSON.stringify(this.documents));
+      });
+  }
   }
   getMergeDocuments() {
     this.httpservice.sendGetRequest(URLUtils.getClientPdfDocuments).subscribe(
@@ -631,9 +706,14 @@ export class GeneralViewDetailsComponent implements OnInit {
         })
   }
   getDocuments() {
-    let grps = this.data.groups.map((obj: any) => obj.id);
+    var clients: string | any[] = []
+    let grps = this.data.groups.map((obj:any) => obj.id);
+     clients = this.data.clients.map((obj:any) => obj.id);
+    if (this.data.corporate.length > 0) {
+      clients = clients.concat(this.data.corporate.map((obj:any) => obj.id));
+    }
     this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements,
-      { 'group_acls': grps, 'attachment_type': 'documents' }).subscribe(
+      { 'group_acls': grps, 'attachment_type': 'documents' ,"clients":clients}).subscribe(
         (res: any) => {
           if (!res['error'] && res['documents']?.length > 0) {
             this.documentsList = res['documents'];
@@ -845,14 +925,15 @@ export class GeneralViewDetailsComponent implements OnInit {
               fdata.append('groups', JSON.stringify(ids))
             }
             fdata.append('file', this.files[i])
-            let sb: any = [];
-            let mtrs: any = [];
-            fdata.append('subcategories', sb.push(this.data?.title))
-            fdata.append('matters', mtrs.push(this.data.id))
-            fdata.append('clients', JSON.stringify(this.data?.clients.map((obj: any) => ({ "id": obj.id, "type": obj.type }))))
-            fdata.append('downloadDisabled', this.downloadDisabled == true ? "Yes" : "No");
+            let sb = [this.data?.title];
+            let mtrs = [this.data?.id];
+            // fdata.append('subcategories', JSON.stringify(sb))
+            fdata.append('matters', JSON.stringify(mtrs))
+            let clients = this.data.clients.concat(this.data.corporate);
+            fdata.append('clients', JSON.stringify(clients.map((obj: any) => ({ "id": obj.id, "type": obj.type }))))
+            fdata.append('downloadDisabled', this.downloadDisabled.toString());
             fdata.append('metadata', this.uploadedDocs[i].checked == true ? JSON.stringify(this.metaData) : '');
-            uploadPromises.push(this.upload(i, fdata));
+            uploadPromises.push(this.upload(i, fdata, this.uploadedDocs[i]));
           }
           Promise.all(uploadPromises)
             .then((results) => {
@@ -869,7 +950,7 @@ export class GeneralViewDetailsComponent implements OnInit {
       });
   }
   
-  upload(idx: any, file: any): Promise<any> {
+  upload(idx: any, file: any,data:any): Promise<any> {
     return new Promise((resolve, reject) => {
       this.httpservice.sendPostRequest(URLUtils.postDocumentsClient, file).subscribe(
         (res: any) => {
@@ -879,12 +960,21 @@ export class GeneralViewDetailsComponent implements OnInit {
               "doctype": 'general',
               "user_id": localStorage.getItem('user_id')
             }];
+            let doc = {
+              "docid": res.docid,
+              "doctype": 'general',
+              "user_id": localStorage.getItem('user_id'),
+              "name":data.name,
+              "description":data.name
+            }
+            this.selectedDocuments.push(doc)
             this.httpservice.sendPutRequest(URLUtils.generalHistoryDocumentsUpdate(this.data.id), { "documents": obj }).subscribe(
               (res: any) => {
                 //console.log(res);
               });
             resolve(res.msg);
           } else {
+            this.toast.error(res.msg)
             reject(res.msg);
           }
         }, 
