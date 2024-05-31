@@ -81,7 +81,7 @@
                 <div class="form-group nameSet">
                     <div class="input-group court" id="search">
                         <label for="title" class="lable-size"></label>
-                        <input type="text" class="form-control textbox seogroup"
+                        <input type="text" class="form-control textbox seogroup" oninput="this.value = this.value.replace(/[^A-Za-z0-9 ]|^ /g,'')"
                             placeholder="Search" [(ngModel)]="term">
                         <img style="top: 20px;" src="assets/img/search.svg"
                             class="calimg calitem input-group-append searchimg">
@@ -157,12 +157,12 @@
         <table class="table table-borderless tblgrid">
             <thead>
                 <tr class="theader">
-                    <th>
+                    <th style="width:20%">
                         <p class="thheadname"> Category</p>
                         <img src="/assets/img/SORT.PNG" class="sortico"
                             (click)="sortDocuments('name')">
                     </th>
-                    <th>
+                    <th style="width:20%">
                         <p class="thheadname"> Date & Time</p>
                         <img src="/assets/img/SORT.PNG" class="sortico"
                             (click)="sortDocuments('timestamp')">
@@ -175,16 +175,16 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="rone" *ngFor="let log of
-                    filterByCategory|filter:term| paginate: { itemsPerPage: 10,
-                    currentPage: p }">
+                <tr class="rone" *ngFor="let log of filterByCategory|filter:term| paginate: { itemsPerPage: 10, currentPage: p }">
                     <td *ngIf="log.name=='AUTH'">AUTHENTICATION</td>
-                    <td *ngIf="log.name!='AUTH'">{{log.name}}</td>
+                    <td *ngIf="log.name === 'GROUPS' && product === 'corporate'">DEPARTMENTS</td>
+                    <td *ngIf="log.name === 'GROUPS' && product !== 'corporate'">GROUPS</td>
+                    <td *ngIf="log.name !== 'AUTH' && log.name !== 'DEPARTMENTS' && log.name !== 'GROUPS'">{{log.name}}</td>
+                    <!-- <td *ngIf="log.name!='AUTH'">{{log.name}}</td> -->
                     <td>{{log.timestamp}}</td>
                     <td>{{log.message}}</td>
                 </tr>
             </tbody>
-
         </table>
         <div class="row">
             <div class="col-6"> <label for="">Showing <span>{{fromCount}}</span>to <span>{{toCount}}</span> of <span *ngIf="filterByCategory">{{filterByCategory.length}}</span> entries</label></div>
