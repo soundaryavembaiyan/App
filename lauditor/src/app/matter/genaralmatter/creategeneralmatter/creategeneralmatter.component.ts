@@ -30,6 +30,7 @@ export class CreategeneralmatterComponent implements OnInit {
   docsData: any = [];
   tempClients:any;
   corpClients:any;
+  corpData:any = [];
   pipe = new DatePipe('en-US');
   corporate:any =[];
   @Output() selectedClients:any;
@@ -85,6 +86,7 @@ export class CreategeneralmatterComponent implements OnInit {
   }
   corporateClients(clients:any){
     this.corpClients=clients;
+    this.corpData = this.corpClients
   }
   postData() {
     let legalMatter = {};
@@ -111,6 +113,9 @@ export class CreategeneralmatterComponent implements OnInit {
         if (confirmed) {
           this.httpService.sendPostRequest(URLUtils.createGeneralMatter, legalMatter).subscribe((res: any) => {
             if (!res.error) {
+              if(this.docsData.length>0){
+                this.add_documents_from_matter(res.matter_id)
+              }
               this.confirmationDialogService.confirm('Success', 'Congratulations! You have successfully created the ' + this.matterInfo.title,true, 'View Matter List','Add Matter',true)
                 .then((confirmed) => {
                   if (confirmed) {
@@ -133,5 +138,19 @@ export class CreategeneralmatterComponent implements OnInit {
         }
       })
       .catch(() => {});
+  }
+
+
+  add_documents_from_matter(matter_id:any){
+    const doc: string[] = this.docsData.map((item:any) => item.docid);
+    let data = {
+      "matter_id":matter_id,
+      documents: doc
+    }
+    this.httpService.sendPatchRequest(URLUtils.updateDocwithMatters,data).subscribe((res:any)=>{
+      console.log(res)
+    })
+
+
   }
 }
