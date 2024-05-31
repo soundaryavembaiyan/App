@@ -53,6 +53,7 @@ export class GeneralMatterCalenderComponent implements OnInit {
   display:boolean=false;
   alternate:any;
   showTime = true;
+  clientcorpList:any = [];
   
   public hrs: any = [];
   public tohrs: any = [];
@@ -104,8 +105,10 @@ export class GeneralMatterCalenderComponent implements OnInit {
           this.selectedTeammembers = this.editInfo.invitees_internal;
           this.selectedDocs = this.editInfo.attachments;
           this.selectedClients = this.editInfo.invitees_external;
+          this.selectedCorp = this.editInfo.invitees_corporate;
           this.selectedClients = this.selectedClients.map((item: any) => ({ "id": item.tmId, "name": item.tmName, "entityid": item.entityId }));
-          this.selectedconsumer = this.editInfo.invitees_consumer_external.map((item: any) => ({ "id": item.entityId, "name": item.tmName, "type": "consumer" }))
+          this.selectedCorp = this.selectedCorp.map((item: any) => ({ "id": item.tmId, "name": item.tmName, "entityid": item.entityId }));
+           this.selectedconsumer = this.editInfo.invitees_consumer_external.map((item: any) => ({ "id": item.entityId, "name": item.tmName, "type": "consumer" }))
           this.getTimeZones();
           //// this.addNotification();
           if (this.editInfo.allday) {
@@ -169,6 +172,7 @@ export class GeneralMatterCalenderComponent implements OnInit {
     this.httpservice.sendGetRequest(URLUtils.getGenMatterEventList).subscribe((res: any) => {
       this.matterList = [];
       this.matterList = res?.matters;
+      this.matterList = this.matterList.filter((matter:any) => matter.status !== 'Closed'); //Matter status=closed
       if (this.editInfo)
         this.onChangeMatter(null);
       //this.matterList = res?.matters?.owner;
@@ -270,6 +274,21 @@ export class GeneralMatterCalenderComponent implements OnInit {
       }
     })
   }
+  getCorpClients(id: any) {
+    this.httpservice.sendGetRequest(URLUtils.getEntityTms(id)).subscribe((res: any) => {
+      this.clientcorpList = [];
+      this.clientcorpList = res?.users;
+      this.clientcorpList.map((item: any) => item.entityid = id);
+      if (this.selectedCorp.length > 0) {
+        this.clientcorpList = this.clientcorpList.filter((el: any) => {
+          return !this.selectedCorp.find((element: any) => {
+            return element.id === el.id;
+          });
+        });
+      }
+      console.log(this.clientcorpList)
+    })
+  }
   getDocuments(id: any) {
     let matter = this.matterList.filter((m: any) => m.id == id);
     // this.httpservice.sendGetRequest(URLUtils.legalHistoryDocuments(id)).subscribe(
@@ -303,6 +322,7 @@ export class GeneralMatterCalenderComponent implements OnInit {
       this.selectedconsumer = []
       this.displayDuration = true
       this.showTime = true
+      this.clientcorpList = []
       //this.setTimes()
       this.notificationItems = []
       this.notificationItems.push({ time: "10", type: "minutes" });
@@ -421,6 +441,9 @@ export class GeneralMatterCalenderComponent implements OnInit {
     //console.log(event.target.value);
     this.getClients(event.target.value)
   }
+  onChangeCorp(event:any){
+    this.getCorpClients(event.target.value)
+  }
   addClient() {
     let client = this.clientsList?.find((d: any) => d.name === this.CalenderForm.value.invitees_external); //find index in your array
     if (client) {
@@ -433,14 +456,33 @@ export class GeneralMatterCalenderComponent implements OnInit {
     }
   }
 
+  // addCorp() {
+  //   console.log(this.selectedCorp)
+  //   let client = this.clientcorpList?.find((d: any) => d.name === this.CalenderForm.value.invitees_corporate); //find index in your array
+  //   this.selectedCorp?.push(client);
+  //   let index = this.clientcorpList?.findIndex((d: any) => d.id === client.id); //find index in your array
+  //   this.clientcorpList?.splice(index, 1);
+  //   this.CalenderForm.controls['invitees_corporate'].setValue('');
+  //   console.log(this.selectedCorp)
+  // }
+
+
   addCorp() {
-    let client = this.corpList.find((d: any) => d.name === this.CalenderForm.value.invitees_corporate); //find index in your array
+    let client = this.clientcorpList.find((d: any) => d.name === this.CalenderForm.value.invitees_corporate); //find index in your array
+    if(client){
     this.selectedCorp.push(client);
-    console.log('cc-client',client)
-    console.log('selectedCorp',this.selectedCorp)
-    let index = this.corpList.findIndex((d: any) => d.id === client.id); //find index in your array
-    this.corpList.splice(index, 1);
-    this.CalenderForm.controls['invitees_corporate'].setValue('');
+    let index = this.clientcorpList.findIndex((d: any) => d.id === client.id); //find index in your array
+    if (index > -1) {
+      this.clientcorpList.splice(index, 1);
+      this.CalenderForm.controls['invitees_corporate'].setValue('');
+    }
+    }
+  }
+  
+  removeCorp(client: any) {
+    let index = this.selectedCorp.findIndex((d: any) => d.id === client.id); //find index in your array
+    this.selectedCorp.splice(index, 1);
+    this.clientcorpList.push(client);
   }
 
   removeClient(client: any) {
@@ -633,6 +675,7 @@ export class GeneralMatterCalenderComponent implements OnInit {
       this.CalenderForm.value.timezone_location = this.CalenderForm?.value?.timezone_location?.split(',')[1];
       this.CalenderForm.value.notifications = this.notificationItems.map((obj: any) => (obj.time + '-' + obj.type));
       this.CalenderForm.value.invitees_internal = this.selectedTeammembers.map((obj: any) => (obj.id));
+      this.CalenderForm.value.invitees_corporate = this.selectedCorp.map((obj:any) =>(obj.entityid + '_' + obj.id))
       this.CalenderForm.value.attachments = this.selectedDocs.map((obj: any) => ({
         "docid": obj.docid,
         "doctype": obj.doctype
