@@ -54,7 +54,9 @@ export class MatterInfoComponent implements OnInit {
     })
     if (this.data) {
       this.caseRegister.patchValue(this.data);
+      if (this.data.date_of_filling) {
       this.caseRegister.controls["date_of_filling"].setValue(new Date(this.data.date_of_filling));
+      }
       this.selectedStatus = this.data.status;
       this.selectedPriority = this.data.priority;
     }
@@ -63,8 +65,16 @@ export class MatterInfoComponent implements OnInit {
         if (result) {
           this.editeMatterInfo = result;
           this.isEdit = true;
+          const tagObject = '' // Prevent[obj obj]-tags
+          this.caseRegister.controls['tags'].setValue(tagObject);
+          const transformedData = {
+            ...this.data,
+            tags: this.data.tags?.name || this.data.tags
+          };
           this.caseRegister.patchValue(this.editeMatterInfo);
+          if (this.editeMatterInfo.date_of_filling) {
           this.caseRegister.controls["date_of_filling"].setValue(new Date(this.editeMatterInfo.date_of_filling));
+          }
           this.selectedStatus = this.editeMatterInfo.status;
           this.selectedPriority = this.editeMatterInfo.priority;
           this.caseRegister.controls["case_number"].setValue(this.editeMatterInfo.caseNumber);
@@ -126,7 +136,8 @@ export class MatterInfoComponent implements OnInit {
       let data = {
         "title": this.caseRegister.value.title,
         "case_number": this.caseRegister.value.case_number,
-        "date_of_filling": this.pipe.transform(this.caseRegister.value.date_of_filling, 'dd-MM-yyyy'),
+        //"date_of_filling": this.pipe.transform(this.caseRegister.value.date_of_filling, 'dd-MM-yyyy'),
+        "date_of_filling": this.caseRegister.value.date_of_filling ? this.pipe.transform(this.caseRegister.value.date_of_filling, 'dd-MM-yyyy') : null,
         "description": this.caseRegister.value.description,
         "case_type": this.caseRegister.value.case_type,
         "court_name": this.caseRegister.value.court_name,
