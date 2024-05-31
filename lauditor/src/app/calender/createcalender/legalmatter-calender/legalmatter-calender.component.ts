@@ -42,6 +42,9 @@ export class LegalMatterCalenderComponent implements OnInit {
   selectedTeammembers: any = [];
   clientsList: any = [];
   selectedClients: any = [];
+  clientcorpList:any = [];
+  corpList: any = [];
+  selectedCorp:any =[];
   selectedconsumer: any = [];
   docsList: any = [];
   selectedDocs: any = [];
@@ -68,8 +71,6 @@ export class LegalMatterCalenderComponent implements OnInit {
   public editInfo: any = undefined;
   public editTitle: any;
 
-  corpList: any = [];
-  selectedCorp:any =[];
   
   constructor(private httpservice: HttpService,
     public fb: FormBuilder, private toast: ToastrService, 
@@ -100,10 +101,13 @@ export class LegalMatterCalenderComponent implements OnInit {
           this.CalenderForm.controls['attachments'].setValue('');
           this.CalenderForm.controls['invitees_consumer_external'].setValue('');
           this.CalenderForm.controls['invitees_external'].setValue('');
+          this.CalenderForm.controls['invitees_corporate'].setValue('');
           this.selectedTeammembers = this.editInfo.invitees_internal;
           this.selectedDocs = this.editInfo.attachments;
           this.selectedClients = this.editInfo.invitees_external;
+          this.selectedCorp = this.editInfo.invitees_corporate;
           this.selectedClients = this.selectedClients.map((item: any) => ({ "id": item.tmId, "name": item.tmName, "entityid": item.entityId }));
+          this.selectedCorp = this.selectedCorp.map((item: any) => ({ "id": item.tmId, "name": item.tmName, "entityid": item.entityId }));
           this.selectedconsumer = this.editInfo.invitees_consumer_external.map((item: any) => ({ "id": item.entityId, "name": item.tmName, "type": "consumer" }))
           this.getTimeZones();
           //this.addNotification();
@@ -141,6 +145,7 @@ export class LegalMatterCalenderComponent implements OnInit {
     matter_type: ['legal'],
     event_type: ['legal'],
     invitees_external: [''],
+    invitees_corporate: [''],
     invitees_consumer_external: [''],
     invitees_internal: [''],
     attachments: [''],
@@ -167,7 +172,8 @@ export class LegalMatterCalenderComponent implements OnInit {
   getLegalMatters() {
     this.httpservice.sendGetRequest(URLUtils.getLegalMatterEventList).subscribe((res: any) => {
       this.matterList = [];
-      this.matterList = res?.matters;
+      this.matterList = res?.matters;      
+      this.matterList = this.matterList.filter((matter:any) => matter.status !== 'Closed'); //Matter status=closed
       if (this.editInfo)
         this.onChangeMatter(null);
     });
@@ -220,19 +226,18 @@ export class LegalMatterCalenderComponent implements OnInit {
     //         this.entitycorpList = res?.relationships;
     //       })
     // }
-    if(this.product == 'lauditor'){
-      this.httpservice.getFeaturesdata(URLUtils.getCalenderExternal).subscribe((res: any) => {
-        //this.corpList = res?.corporate;
-        this.corpList = [];
-        this.corpList = res?.relationships;
-        console.log('corpList',this.corpList)
-    })
-    }
+    // if(this.product == 'lauditor'){
+    //   this.httpservice.getFeaturesdata(URLUtils.getCalenderExternal).subscribe((res: any) => {
+    //     //this.corpList = res?.corporate;
+    //     this.corpList = [];
+    //     this.corpList = res?.relationships;
+    //     console.log('corpList',this.corpList)
+    // })
+    // }
     
     if (matter?.length > 0){
       this.entityList = matter[0]?.clients.filter((rel:any) => rel.type === 'entity');
-      // console.log('Entitylist',this.entityList)
-      // console.log('Matterlist',this.matterList)
+      this.corpList = matter[0]?.corporate.filter((rel:any) => rel.type === 'corporate')
       this.conlist = matter[0]?.clients.filter((rel:any) => rel.type === 'consumer');
 
     }
@@ -256,6 +261,21 @@ export class LegalMatterCalenderComponent implements OnInit {
           });
         });
       }
+    })
+  }
+  getCorpClients(id: any) {
+    this.httpservice.sendGetRequest(URLUtils.getEntityTms(id)).subscribe((res: any) => {
+      this.clientcorpList = [];
+      this.clientcorpList = res?.users;
+      this.clientcorpList.map((item: any) => item.entityid = id);
+      if (this.selectedCorp.length > 0) {
+        this.clientcorpList = this.clientcorpList.filter((el: any) => {
+          return !this.selectedCorp.find((element: any) => {
+            return element.id === el.id;
+          });
+        });
+      }
+      console.log(this.clientcorpList)
     })
   }
   getDocuments(id: any) {
@@ -288,8 +308,10 @@ export class LegalMatterCalenderComponent implements OnInit {
       this.selectedDocs=[]
       this.selectedClients = []
       this.clientsList = []
+      this.clientcorpList = []
       this.selectedTeammembers = []
       this.selectedconsumer = []
+      this.selectedCorp = []
       this.displayDuration = true
       this.showTime = true
       //this.setTimes()
@@ -442,6 +464,9 @@ export class LegalMatterCalenderComponent implements OnInit {
     //console.log(event.target.value);
     this.getClients(event.target.value)
   }
+  onChangeCorp(event:any){
+    this.getCorpClients(event.target.value)
+  }
   addClient() {
     let client = this.clientsList?.find((d: any) => d.name === this.CalenderForm.value.invitees_external); //find index in your array
     if (client) {
@@ -452,6 +477,33 @@ export class LegalMatterCalenderComponent implements OnInit {
         this.CalenderForm.controls['invitees_external']?.setValue('');
       }
     }
+  }
+
+  // addCorp() {
+  //   console.log(this.selectedCorp)
+  //   let client = this.clientcorpList?.find((d: any) => d.name === this.CalenderForm.value.invitees_corporate); //find index in your array
+  //   this.selectedCorp?.push(client);
+  //   let index = this.clientcorpList?.findIndex((d: any) => d.id === client.id); //find index in your array
+  //   this.clientcorpList?.splice(index, 1);
+  //   this.CalenderForm.controls['invitees_corporate'].setValue('');
+  //   console.log(this.selectedCorp)
+  // }
+
+  addCorp() {
+    let client = this.clientcorpList.find((d: any) => d.name === this.CalenderForm.value.invitees_corporate); //find index in your array
+    if(client){
+    this.selectedCorp.push(client);
+    let index = this.clientcorpList.findIndex((d: any) => d.id === client.id); //find index in your array
+    if (index > -1) {
+      this.clientcorpList.splice(index, 1);
+      this.CalenderForm.controls['invitees_corporate'].setValue('');
+    }
+    }
+  }
+  removeCorp(client: any) {
+    let index = this.selectedCorp.findIndex((d: any) => d.id === client.id); //find index in your array
+    this.selectedCorp.splice(index, 1);
+    this.clientcorpList.push(client);
   }
   removeClient(client: any) {
     let index = this.selectedClients?.findIndex((d: any) => d.id === client.id); //find index in your array
@@ -651,6 +703,7 @@ export class LegalMatterCalenderComponent implements OnInit {
         "doctype": obj.doctype
       }));
       this.CalenderForm.value.invitees_external = this.selectedClients.map((obj: any) => (obj.entityid + '_' + obj.id));
+      this.CalenderForm.value.invitees_corporate = this.selectedCorp.map((obj:any) =>(obj.entityid + '_' + obj.id))
       this.CalenderForm.value.invitees_consumer_external = this.selectedconsumer.map((obj: any) => (obj.id))
       if (this.editInfo) {
         if (!this.CalenderForm.valid) {
