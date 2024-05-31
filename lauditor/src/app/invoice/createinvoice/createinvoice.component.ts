@@ -154,7 +154,7 @@ export class CreateinvoiceComponent {
       }
     )
   }
-  
+
   createInvoiceItem(): FormGroup {
     
     return this.fb.group({
@@ -602,6 +602,27 @@ export class CreateinvoiceComponent {
   public noWhitespaceValidator(control: FormControl) {
     //console.log(this.createinvoiceForm)
     return (control.value || '').trim().length? null : { 'whitespace': true };       
+}
+onKeydown(event: any) {
+}
+
+restrictSpaces(event: any) {
+  let inputValue: string = event.target.value;
+  // Replace multiple spaces with a single space
+  inputValue = inputValue.replace(/\s{2,}/g, ' ');
+  event.target.value = inputValue;
+  return
+}
+
+restrictFirstPosition(event: any) {
+  let inputValue: string = event.target.value;
+  if (inputValue.length > 0 && inputValue.charAt(0) === '0' || inputValue.charAt(0) === '1' || inputValue.charAt(0) === '2' || inputValue.charAt(0) === '3' ||
+    inputValue.charAt(0) === '4' || inputValue.charAt(0) === '5' || inputValue.charAt(0) === '6' ||
+    inputValue.charAt(0) === '7' || inputValue.charAt(0) === '8' || inputValue.charAt(0) === '9') {
+    inputValue = inputValue.substring(1);
+    event.target.value = inputValue;
+    return;
+  }
 }
 }
 
