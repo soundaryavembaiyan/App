@@ -38,6 +38,7 @@ export class ExternalPartnerComponent {
   selectedGroups: any[] = [];
   groupFilter: string = "";
   entityList: any[] = [];
+  lauditorList: any[] = [];
   selectedEntity = new FormControl("");
   selectedEntityObject = {entityId: ""};
   filteredEntities: any;
@@ -55,7 +56,7 @@ export class ExternalPartnerComponent {
   createdId: string = "";
   isDisabled=true;
   countries: any;
-  
+  closeMode: boolean = false;
 
 
   get f() { return this.createRelationform.controls; }
@@ -79,7 +80,8 @@ export class ExternalPartnerComponent {
                                     }),
                                                
     this.loadEntityList();
-    this.loadEntityLauditor();
+    // this.loadEntityLauditor();
+    // this.loadEntityCorp();
     this.filteredEntities = this.selectedEntity.valueChanges.pipe(
       startWith(''), 
       map(value => {
@@ -90,9 +92,8 @@ export class ExternalPartnerComponent {
         return this.entityList.filter(option => option.name.toLowerCase().includes(filterValue));
       })
     );
+
     this.loadCountries()
-
-
         //Get Country API
         this.httpservice.sendGetRequest(URLUtils.country).subscribe(
           (res: any) => {
@@ -111,6 +112,9 @@ export class ExternalPartnerComponent {
   onReset(){
     this.createRelationform.reset();
     this.showForm = false;
+    this.reqError.show = false;
+    this.msg = '';
+    this.closeMode = true; //remove the formMode msg & selectedGrps
   }
 
   onSubmit(){
@@ -123,7 +127,9 @@ export class ExternalPartnerComponent {
   
   searchEntity(){
     this.reqError.show = false;
+    this.closeMode = false;
     if(this.selectedEntityObject.entityId.length > 0){
+      
       this.emptySearchError = false;
       this.httpservice.sendGetRequest(URLUtils.relationshipEntityDetails(this.selectedEntityObject)).subscribe((res: any) => {
         if(!res.error){
@@ -146,7 +152,8 @@ export class ExternalPartnerComponent {
       })
     } else {
         if(this.selectedEntity.value == ""){
-          console.log('exval',this.selectedEntity.value)
+          // console.log('selEn',this.selectedEntity)
+          // console.log('exval',this.selectedEntity.value)
           this.emptySearchError = true;
           return;
         }
@@ -159,8 +166,8 @@ export class ExternalPartnerComponent {
         this.selname = this.createRelationform.value['entityName']
         //this.showForm = true
         this.showForm = false
-        console.log('exval',this.selectedEntity.value)
-        this.msg = `${this.selectedEntity.value} - not found. Please try again later.`
+        // console.log('exval',this.selectedEntity.value)
+        this.msg = `${this.selectedEntity.value} - not found.`
         //this.loadGroups()
         this.selectedGroups = []
         //window.location.reload()
@@ -176,33 +183,35 @@ export class ExternalPartnerComponent {
   }
   
   loadEntityList() {
+    
+    var list
+    if(this.product == 'corporate') {
+      list = 'lauditor'
+    } else {
+      list = 'corporate'
+    }
 
-    if (this.activeTab == 'corporate' || environment.product == 'corporate') {
-      this.httpservice.sendGetRequest(URLUtils.relationshipSearchEntities).subscribe((res: any) => {
-        this.entityList = res?.data;
-        this.cd.detectChanges()
-      })
-    }
-    else if (environment.product == 'corporate') {
-      this.httpservice.sendGetRequest(URLUtils.relationshipSearchLauditor).subscribe((res: any) => {
-        this.entityList = res?.data;
-        this.cd.detectChanges()
-    })
-    }
-    else {
-      this.httpservice.sendGetRequest(URLUtils.relationshipSearchCorporate).subscribe((res: any) => {
-        this.entityList = res?.data;
-        this.cd.detectChanges()
-      })
-    }
+    this.httpservice.sendGetRequest(URLUtils.relationshipAllList(list)).subscribe((res: any) => {
+      this.entityList = res?.data;
+      this.cd.detectChanges()
+  })
   }
+
 
   loadEntityLauditor(){
     this.httpservice.sendGetRequest(URLUtils.relationshipSearchLauditor).subscribe((res: any) => {
+        this.lauditorList = res?.data;
+        this.cd.detectChanges()
+    })
+  }
+
+  loadEntityCorp(){
+    this.httpservice.sendGetRequest(URLUtils.relationshipSearchCorporate).subscribe((res: any) => {
         this.entityList = res?.data;
         this.cd.detectChanges()
     })
   }
+
 
   loadCountries(){
     this.httpservice.sendGetRequest(URLUtils.getCountries).subscribe((res: any) => {
@@ -269,7 +278,7 @@ export class ExternalPartnerComponent {
             //console.log('resp',resp)
         },
         (error: HttpErrorResponse) => {
-            if (error.status === 401 || error.status === 403) {
+            if (error.status === 401 || error.status === 403 || error.status === 400) {
               const errorMessage = error.error.msg || 'Unauthorized';
               this.toast.error(errorMessage);
               console.log(error);
@@ -299,5 +308,13 @@ export class ExternalPartnerComponent {
       // }
     }
     
+    restrictSpaces(event: any) {
+      let inputValue: string = event.target.value;
+      if (inputValue.length > 0 && inputValue.charAt(0) === ' ') {
+        inputValue = inputValue.substring(1);
+        event.target.value = inputValue;
+        return;
+      }
+    }
 
 }
