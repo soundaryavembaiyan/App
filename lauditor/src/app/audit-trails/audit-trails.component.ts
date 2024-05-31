@@ -47,13 +47,14 @@ export class AuditTrailsComponent {
         { name: 'Merge PDF', value: 'MERGE PDF' },
         { name: 'Legal Matters', value: 'LEGAL MATTER' },
         { name: 'General Matters', value: 'GENERAL MATTER' },
+        //{ name: 'Matters', value: 'MATTERS' },
         // { name: 'Timesheets', value: '' }
     ]
 
     //for Corporate only
     categoryCorp: any = [
         { name: 'Authorization', value: 'AUTH' },
-        { name: 'Departments', value: 'DEPARTMENTS' },
+        { name: 'Departments', value: 'GROUPS' },
         { name: 'Team Members', value: "TEAM MEMBER" },
         { name: 'Relationships', value: 'RELATIONSHIP' },
         { name: 'Share', value: "SHARE" },
@@ -67,7 +68,7 @@ export class AuditTrailsComponent {
     //for Content GH-role only
     categoryContGH: any = [
         { name: 'Authorization', value: 'AUTH' },
-        { name: 'Departments', value: 'DEPARTMENTS' },
+        { name: 'Groups', value: 'GROUPS' },
         { name: 'Team Members', value: "TEAM MEMBER" },
         { name: 'Relationships', value: 'RELATIONSHIP' },
         { name: 'Share', value: "SHARE" },
@@ -78,7 +79,7 @@ export class AuditTrailsComponent {
     //for Connect GH-role only
     categoryConnectGH: any = [
         { name: 'Authorization', value: 'AUTH' },
-        { name: 'Departments', value: 'DEPARTMENTS' },
+        { name: 'Groups', value: 'GROUPS' },
         { name: 'Team Members', value: "TEAM MEMBER" },
         { name: 'Relationships', value: 'RELATIONSHIP' },
         { name: 'Share', value: "SHARE" },
