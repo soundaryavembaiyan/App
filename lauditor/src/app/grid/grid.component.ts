@@ -9,6 +9,11 @@ import { Router } from "@angular/router";
 import { AjaxService } from '../services/ajax.service';
 import { NonNullableFormBuilder } from '@angular/forms';
 import { environment } from 'src/environments/environment';
+declare let Strophe: any;
+declare let $msg: any;
+declare let $pres: any;
+declare let $iq: any;
+declare let $: any;
 
 @Component({
   selector: 'app-grid',
@@ -67,8 +72,21 @@ export class GridComponent implements OnInit {
 
   time = new Date();
   intervalId: any;
-  External:boolean = false
-
+  isAdmin = true;
+  firmName: any;
+  firmJid = '';
+  domain = environment.xmppDomain;
+  endUser: any;
+  messages: any;
+  USERNAME = ''; //prof_ravitejachakkadigicoffercom@devchat.digicoffer.com
+  PASSWORD: any;
+  sendUser: any;
+  URL = 'wss://' + this.domain + ':5443/ws';
+  unreadcountteam = 0;
+  unreadcountclient = 0;
+  clientlistguid:any[]=[];
+  teamlistguid:any[]=[];
+ 
 
   constructor(private httpservice: HttpService,
               private router: Router,
@@ -93,6 +111,7 @@ export class GridComponent implements OnInit {
     this.getExternal();
     this.getRelationships();
     this.getNotify();
+    this.getChatlist();
     if(this.product=='corporate'){
       this.getExternalMatters();
     }
@@ -106,6 +125,27 @@ export class GridComponent implements OnInit {
     this.intervalId = setInterval(() => {
       this.time = new Date();
     }, 1000);
+
+    
+
+  this.sendUser = localStorage.getItem('name');
+  this.messages = [];
+  // this.getTeams();
+  // this.getRelationships();
+  // this.getcorpRelationships();
+  this.firmName = URLUtils.get_firmName();
+  this.isAdmin =
+    URLUtils.get_userid() == null || URLUtils.get_userid() == 'admin'
+      ? true
+      : false;
+  this.PASSWORD = localStorage.getItem('TOKEN');
+  this.USERNAME = URLUtils.get_jid() + '@' + this.domain;
+
+  // this.xmppConnection()
+  var connection = new Strophe.Connection(this.URL);
+  connection.connect(this.USERNAME, this.PASSWORD, this.onConnect);
+  Strophe.ui = this;
+  Strophe.ui.conn = connection;
    
 
   }
@@ -124,10 +164,8 @@ export class GridComponent implements OnInit {
 
       if (res.error = "false") {
         this.meetingModel = res?.data;
-        console.log('this.meetingMessage1',this.meetingMessage)
         if (res.error = "true") {
           this.meetingMessage = res?.message;
-          console.log('this.meetingMessage2',this.meetingMessage)
         }
       }
 
@@ -264,5 +302,86 @@ export class GridComponent implements OnInit {
     window.location.href = link;
   }
 
+  onConnect(status: any) {
+    if (status == Strophe.Status.CONNECTING) {
+      console.log('Strophe is connecting.');
+    } else if (status == Strophe.Status.CONNFAIL) {
+      console.log('Strophe failed to connect.');
+    } else if (status == Strophe.Status.DISCONNECTING) {
+      console.log('Strophe is disconnecting.');
+    } else if (status == Strophe.Status.DISCONNECTED) {
+      console.log('Strophe is disconnected.');
+    } else if (status == Strophe.Status.CONNECTED) {
+      console.log('Strophe is connected.');
+      let count = 0;
+      var JID;
+      // Strophe.ui.ajax.success_alert("Connection Established")
+      Strophe.ui.conn.addHandler(Strophe.ui.stanzaHandler, null, 'message')
+      // Strophe.ui.conn.addHandler(function(stanza :any) {
+      //   console.log(stanza)
+      //   const isArchived = stanza.querySelector('archived') !== null;
+      //   if (!isArchived) {
+      //     JID = stanza.getAttribute('from');
+      //     count++;
+          
+      //   }
 
+      // }, null, 'message');
+      // if(count>0){
+      //   this.unreadcount = count
+      //   this.UpdateUnreadMsg(JID)
+      // }
+
+      // Strophe.ui.conn.addHandler(Strophe.ui.onOwnMessage, null, 'iq', 'set', null, null);
+      // Strophe.ui.conn.addHandler(Strophe.ui.on_presence, null, 'presence', null, null, null);
+      Strophe.ui.conn.send($pres().tree());
+    }
+  }
+  stanzaHandler(msg:any) {
+    // Strophe.ui.conn.addHandler(Strophe.ui.stanzaHandler, null, "message")
+    Strophe.ui.xmlParser(msg)
+    // Strophe.ui.conn.addHandler(Strophe.ui.stanzaHandler, null, "message");
+    return true
+  }
+  async xmlParser(msg:any) {
+   console.log(msg)
+    const JID = msg.getAttribute('from');
+    var id = JID.replace(/\.com.*/, ".com");
+    this.increment_count(id)
+    this.UpdateUnreadMsg(id);
+  }
+ 
+  UpdateUnreadMsg(fromjid:any){
+    let data = {"count": 1,"fromjid": fromjid,"tojid":this.USERNAME}
+    this.httpservice.sendPostChatRequest(URLUtils.updatemsgcount,data).subscribe((res:any)=>{
+      console.log(res)
+    })
+
+  }
+  increment_count(fromjid:any){
+    if(this.teamlistguid.filter((email:any) => email === fromjid).length > 0){
+      this.unreadcountteam++
+    } else {
+      this.unreadcountclient++
+    } 
+  }
+
+  getChatlist(){
+    this.httpservice.sendGetRequest(URLUtils.getChatList).subscribe((res:any)=>{
+      this.teamlistguid = res.team?.map((email:any) => email + "@" + this.domain);
+      this.clientlistguid = res.clients?.map((email:any) => email + "@" + this.domain);
+      if(this.teamlistguid || this,this.clientlistguid){
+        let data = { "fromjid":[...this.teamlistguid, ...this.clientlistguid],"tojid":this.USERNAME}
+        this.httpservice.sendPostChatRequest(URLUtils.getunreadcountlist,data).subscribe((res:any)=>{
+          if(res){
+            res.forEach((item:any) => {
+              this.increment_count(item.fromjid)
+            });
+
+          }
+          
+        })
+      }
+    })
+  }
 }
