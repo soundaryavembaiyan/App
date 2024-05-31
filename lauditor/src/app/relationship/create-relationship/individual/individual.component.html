@@ -4,24 +4,25 @@
     <div class="input-group court" id="search">
       <input type="email" 
              class="form-control textbox"
-             formControlName='email' oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@,.]|^ /g,'')"
+             formControlName='email' 
+             oninput="this.value = this.value.replace(/[^a-zA-Z0-9._-@]/g,'')"
              placeholder="Search by email"/>
 
       <button id="btnadd"
               type='submit'
-              class="input-group-append appendadd ">Search</button>
+              class="input-group-append appendadd">Search</button>
      </div>
      <div *ngIf="sfSubmitted">
-        <div class="invalid-feedback"
+        <div class="invalid-feedback alertEmail"
               *ngIf="email.errors?.required"> Email is required. </div>
-        <div class="invalid-feedback"
+        <div class="invalid-feedback alertEmail"
             *ngIf="email.errors?.pattern"> Please enter a valid email address. </div>
      </div>
 
      <!--Shown Messages-->
     <div class="text-center alertText">
       <p class="textDanger" *ngIf="reqError.show">{{reqError.msg}}</p>
-      <p class="textGreen" *ngIf="formMode == 'request'">{{msg}}</p>
+      <div *ngIf="!closeMode"><p class="textGreen" *ngIf="formMode == 'request'">{{msg}}</p></div>
       <p class="textDanger" *ngIf="formMode == 'invite'">{{msg}}</p>
     </div>
      <!--Shown Messages ends here..-->
@@ -108,15 +109,12 @@
           <div class="col-6">
             <div class="form-group nameSet forGroups">
               <label>Selected Group(s)</label>
-              <div class="input-group court" 
-                   *ngFor="let sgrp of selectedGroups">
-                  <input type="text"
-                         class="form-control textbox" 
-                         placeholder="{{sgrp.name}}" disabled>
+              <div *ngIf="!closeMode">
+              <div class="input-group court" *ngFor="let sgrp of selectedGroups">
+                  <input type="text" class="form-control textbox" id="addedGrp" placeholder="{{sgrp.name}}" disabled>
                   <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup"
-                     (click)="restore(sgrp)"
-                     aria-hidden="true"></i>
-              </div>
+                     (click)="restore(sgrp)" aria-hidden="true"></i>
+              </div></div>
             </div>
           </div>
           <div class="col-6">
@@ -130,7 +128,7 @@
                      class="form-control textbox"/>-->
 
               <div class="input-group group-custom-align court" id="search" *ngIf ="product !='corporate'">
-                    <input type="text" class="form-control textbox" autocomplete="off" placeholder="Search Group" formControlName='grpsearch' (keyup)="onGrpSearch($event)" />
+                    <input type="text" class="form-control textbox" autocomplete="off" placeholder="Search Groups" formControlName='grpsearch' (keyup)="onGrpSearch($event)" />
                     <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
              </div>
              <div class="input-group group-custom-align court" id="search" *ngIf ="product =='corporate'">
