@@ -13,6 +13,7 @@ import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
 import flatpickr from 'flatpickr';
 import { ThemePalette } from '@angular/material/core';
+import { NgxSpinnerService } from 'ngx-spinner';
   
 
 @Component({
@@ -91,14 +92,16 @@ export class ViewDetailsComponent implements OnInit {
   form: any; 
   isReadMore: boolean[] = [];
   isButtonClicked = false;
-  
+  allowedFileTypes = ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/rtf','text/csv','text/rtf'];
+  docapi = environment.doc2pdf
 
   constructor(private matterService: MatterService, private httpservice: HttpService,
     private router: Router, private toast: ToastrService,
     private confirmationDialogService: ConfirmationDialogService,
     private sanitizer: DomSanitizer,
     private docService: DocumentService,
-    private fb: FormBuilder) {
+    private fb: FormBuilder,
+    private spinnerService: NgxSpinnerService) {
 
   }
   
@@ -120,7 +123,6 @@ export class ViewDetailsComponent implements OnInit {
           if (res.error == false) {
             this.historyData = res.history;
             //console.log('this.historyData', this.historyData)
-
             this.notes_list = res.history?.notes_list;
             //this.noteList = res.history?.notes_list;
             //console.log('noteList', this.noteList);
@@ -142,6 +144,7 @@ export class ViewDetailsComponent implements OnInit {
 
     this.getCorporateData();
     //this.gethistoryData();
+    this.getClientsData();
   }
 
   onAdd() {
@@ -218,7 +221,7 @@ export class ViewDetailsComponent implements OnInit {
       //console.log('Bef-ITEM', item.notes_list.length + 1);
 
       if (item.notes_list.length + 1 > 5) {
-        this.toast.error("Corporate Notes only allow 5 Notes.");
+        this.toast.info("Corporate Notes only allow 5 Notes.");
         return
       }
 
@@ -312,11 +315,14 @@ export class ViewDetailsComponent implements OnInit {
   }
 
   //corp Notes
-  toggleReadMore(index: number) {
+  // toggleReadMore(index: number) {
+  //   this.isReadMore[index] = !this.isReadMore[index];
+  // }
+
+  toggleReadMore(note: any,index:any) {
+    note.isReadMore = !note.isReadMore;
     this.isReadMore[index] = !this.isReadMore[index];
   }
-
-
 
   get f() {
     return this.documentDetail.controls;
@@ -352,7 +358,11 @@ export class ViewDetailsComponent implements OnInit {
         (res: any) => {
           if (res) {
             this.selectedMembers = res.members;
-            this.selectedMembers.unshift(this.data.owner)
+            //this.selectedMembers.unshift(this.data.owner)
+            const ownerIndex = this.selectedMembers.findIndex((member: { id: any; }) => member.id === this.data.owner.id); //removed the ownerName from selectedMembers
+            if (ownerIndex === -1) {
+              this.selectedMembers.unshift(this.data.owner);
+            }
             this.membersLength = res.members.length;
             this.selectedClients = res.clients;
             this.selectedCorp = res.corporate;
@@ -360,6 +370,7 @@ export class ViewDetailsComponent implements OnInit {
             this.selectedVal == 'TM' ? this.getTmData() : this.getClientsData();
             // console.log('seleClientsView', this.selectedClients)
             // console.log('seleCopView', this.selectedCorp)
+            // console.log('selectedMembers', this.selectedMembers)
           }
         });
     }
@@ -376,9 +387,10 @@ export class ViewDetailsComponent implements OnInit {
         });
     }
   }
+
   onClick(val: string) {
     this.selectedVal = val;
-    this.selectedNotes = val;
+    //this.selectedNotes = val;
   }
   getTmData() {
     let grps = this.data.groups.map((obj: any) => obj.id);
@@ -396,19 +408,49 @@ export class ViewDetailsComponent implements OnInit {
           });
         });
   }
+  // getClientsData() {
+  //   let grps = this.data.groups?.map((obj: any) => obj.id);
+  //   this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements,
+  //     { 'group_acls': grps, 'attachment_type': 'clients' }).subscribe(
+  //       (res: any) => {
+  //         this.clientsList = res['clients'];
+  //         this.clientsList = this.clientsList.filter((el: any) => {
+  //           return !this.selectedClients.find((element: any) => {
+  //             return element.id === el.id;
+  //           });
+  //         });
+  //       });
+  // }
+
   getClientsData() {
     let grps = this.data.groups?.map((obj: any) => obj.id);
-    this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements,
-      { 'group_acls': grps, 'attachment_type': 'clients' }).subscribe(
-        (res: any) => {
+    var payload
+    if (this.product == 'corporate') {
+      payload = { 'group_acls': grps, 'attachment_type': 'corporate', 'product': 'corporate' }
+    }
+    else {
+      payload = { 'group_acls': grps, 'attachment_type': 'clients' }
+    }
+    this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, payload).subscribe(
+      (res: any) => {
+        if (this.product == 'corporate') {
+          this.clientsList = res['corporate'];
+        }
+        else {
           this.clientsList = res['clients'];
+        }
+        //console.log('cl',this.clientsList)
+        if (this.selectedClients && this.selectedClients.length > 0) {
           this.clientsList = this.clientsList.filter((el: any) => {
             return !this.selectedClients.find((element: any) => {
               return element.id === el.id;
             });
           });
-        });
+        };
+      })
   }
+          
+
   getCorporateData(){
     let grps = this.data.groups.map((obj: any) => obj.id);
     //console.log('grps',grps)
@@ -425,10 +467,7 @@ export class ViewDetailsComponent implements OnInit {
                     });
 
                   }
-                  
-                  //console.log('corporateList',this.corporateList)
-          }
-          )
+          })
   }
   selectTeammember(group: any) {
     this.isSaveEnableTM = false;
@@ -505,6 +544,7 @@ export class ViewDetailsComponent implements OnInit {
     } else {
       this.clientsList = this.selectedClients.concat(this.clientsList);
       this.selectedClients = [];
+      this.onFeatureClick('T&C');
     }
   }
 
@@ -594,22 +634,82 @@ export class ViewDetailsComponent implements OnInit {
     });
   };
   viewDocument(item: any) {
-    let data = {
-      'id': item.docid
+    if(item.added_encryption){
+       
+        var body = new FormData();
+        body.append('docid', item.docid)
+        body.append('shared_doc',true.toString())
+        let url = environment.apiUrl + URLUtils.decryptFile
+        this.httpservice.sendPostDecryptRequest(url,body).subscribe((res:any)=>{
+            const blob = new Blob([res], { type: item.contentType });
+            const url = URL.createObjectURL(blob);
+            if(this.allowedFileTypes.includes(item.contentType)){
+                let fdata = new FormData();
+                fdata.append('file', blob);
+                this.httpservice.sendPostDecryptRequest(environment.DOC2FILE,fdata).subscribe((ans:any)=>{
+                    const ansBlob = new Blob([ans], { type: 'application/pdf' });
+                    const ansUrl = URL.createObjectURL(ansBlob);
+                    this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(ansUrl)
+                    let obj = {
+                      'isIframe': true,
+                      'url': this.urlSafe
+                    }
+                    this.confirmationDialogService.confirm('View', obj, true, "Ok", "Close", false, "lg");
+                })
+
+            } else{
+             
+                this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+                let obj = {
+                  'isIframe': true,
+                  'url': this.urlSafe
+                }
+                this.confirmationDialogService.confirm('View', obj, true, "Ok", "Close", false, "lg");
+              
+              
+            }   
+            
+          
+        })
+    } 
+    if(item.added_encryption==false)  {
+      let id = {'id':item.docid}
+        this.httpservice.sendGetRequest(URLUtils.viewDocuments(id)).subscribe((res: any) => {
+            if(this.allowedFileTypes.includes(item.contentType)){
+                this.spinnerService.show()
+                this.httpservice.sendPostDocRequest(this.docapi,{'url':res.data.url}).subscribe((ans:any)=>{
+                    const blob = new Blob([ans], { type: 'application/pdf' });
+                    // Create a URL for the Blob
+                    const url = URL.createObjectURL(blob);
+                    this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(url)
+                    let obj = {
+                      'isIframe': true,
+                      'url': this.urlSafe
+                    }
+                    this.confirmationDialogService.confirm('View', obj, true, "Ok", "Close", false, "lg");
+                    this.spinnerService.hide()
+                })
+                
+
+            } else {
+              if (res && res.data && !res.error) {
+                this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(res.data.url);
+                let obj = {
+                  'isIframe': true,
+                  'url': this.urlSafe
+                }
+                this.confirmationDialogService.confirm('View', obj, true, "Ok", "Close", false, "lg");
+              }
+              else {
+                alert(res.msg)
+              }
+            }
+            
+            //console.log(" this.view    " + JSON.stringify(this.documents));
+        });
     }
-    this.httpservice.sendGetRequest(URLUtils.viewDocuments(data)).subscribe((res: any) => {
-      if (res && res.data && !res.error) {
-        this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(res.data.url);
-        let obj = {
-          'isIframe': true,
-          'url': this.urlSafe
-        }
-        this.confirmationDialogService.confirm('View', obj, true, "Ok", "Close", false, "lg");
-      }
-      else {
-        alert(res.msg)
-      }
-    });
+
+
   }
   getMergeDocuments() {
     this.httpservice.sendGetRequest(URLUtils.getClientPdfDocuments).subscribe(
@@ -626,9 +726,14 @@ export class ViewDetailsComponent implements OnInit {
       })
   }
   getDocuments() {
-    let grps = this.data.groups.map((obj: any) => obj.id);
+    var clients: string | any[] = []
+    let grps = this.data.groups.map((obj:any) => obj.id);
+     clients = this.data.clients.map((obj:any) => obj.id);
+    if (this.data.corporate.length > 0) {
+      clients = clients.concat(this.data.corporate.map((obj:any) => obj.id));
+    }
     this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements,
-      { 'group_acls': grps, 'attachment_type': 'documents' }).subscribe(
+      { 'group_acls': grps, 'attachment_type': 'documents','clients':clients }).subscribe(
         (res: any) => {
           if (!res['error'] && res['documents']?.length > 0) {
             this.documentsList = res['documents'];
@@ -843,14 +948,15 @@ export class ViewDetailsComponent implements OnInit {
               fdata.append('groups', JSON.stringify(ids))
             }
             fdata.append('file', this.files[i])
-            let sb: any = [];
-            let mtrs: any = [];
-            fdata.append('subcategories', sb.push(this.data?.title))
-            fdata.append('matters', mtrs.push(this.data.id))
-            fdata.append('clients', JSON.stringify(this.data?.clients.map((obj: any) => ({ "id": obj.id, "type": obj.type }))))
-            fdata.append('downloadDisabled', this.downloadDisabled == true ? "Yes" : "No");
+            let sb = [this.data?.title];
+            let mtrs = [this.data?.id];
+            // fdata.append('subcategories', JSON.stringify(sb))
+            fdata.append('matters', JSON.stringify(mtrs))
+            let clients = this.data.clients.concat(this.data.corporate);
+            fdata.append('clients', JSON.stringify(clients.map((obj: any) => ({ "id": obj.id, "type": obj.type }))))
+            fdata.append('downloadDisabled', this.downloadDisabled.toString());
             fdata.append('metadata', this.uploadedDocs[i].checked == true ? JSON.stringify(this.metaData) : '');
-            uploadPromises.push(this.upload(i, fdata));
+            uploadPromises.push(this.upload(i, fdata,this.uploadedDocs[i]));
           }
           Promise.all(uploadPromises)
             .then((results) => {
@@ -873,7 +979,7 @@ export class ViewDetailsComponent implements OnInit {
       );
   }
   
-  upload(idx: any, file: any): Promise<any> {
+  upload(idx: any, file: any,data:any): Promise<any> {
     return new Promise((resolve, reject) => {
       this.httpservice.sendPostRequest(URLUtils.postDocumentsClient, file).subscribe(
         (res: any) => {
@@ -883,12 +989,21 @@ export class ViewDetailsComponent implements OnInit {
               "doctype": 'general',
               "user_id": localStorage.getItem('user_id')
             }];
-            this.httpservice.sendPutRequest(URLUtils.legalHistoryDocumentsUpdate(this.data.id), { "documents": obj }).subscribe(
-              (res: any) => {
-                //console.log(res);
-              });
+            let doc = {
+              "docid": res.docid,
+              "doctype": 'general',
+              "user_id": localStorage.getItem('user_id'),
+              "name":data.name,
+              "description":data.name
+            }
+            this.selectedDocuments.push(doc)
+            // this.httpservice.sendPutRequest(URLUtils.legalHistoryDocumentsUpdate(this.data.id), { "documents": obj }).subscribe(
+            //   (res: any) => {
+            //     //console.log(res);
+            //   });
             resolve(res.msg);
           } else {
+            this.toast.error(res.msg)
             reject(res.msg);
           }
         }, 
