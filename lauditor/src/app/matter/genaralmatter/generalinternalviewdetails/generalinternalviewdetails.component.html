@@ -240,10 +240,10 @@
                   </div>
                   <!--Add, Edit Main Notes Action-->
                   <div id="narrow">
-                    <!-- <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!item.notes" matTooltip="Click To Add Notes"
+                    <!-- <img src="assets/img/addnotes.svg" class="col-1 addIcon" *ngIf="!item.notes" matTooltip="Click To Add Notes"
                       (click)="notes = item.notes;item.AddDesc=!item.AddDesc;submitted = false;" [ngClass]="item.AddDesc? 'onActive' : '' "> -->
                       <button class="plusBtn" (click)="onAdd();notes = item.notes; item.AddDesc = !item.AddDesc; submitted = false;" [disabled]="isButtonClicked">
-                        <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!item.notes" 
+                        <img src="assets/img/addnotes.svg" class="col-1 addIcon" *ngIf="!item.notes" 
                          matTooltip="Click To Add Notes" [ngClass]="item.AddDesc ? 'onActive' : ''">
                       </button>
                   </div>
@@ -732,7 +732,10 @@
               <td>{{doc.description}}</td>
               <td *ngIf="doc?.tags && doc.tags.length>0" [innerHTML]="doc?.tags[0]"></td>
               <td *ngIf="!doc?.tags"></td>
-              <td><img src="assets/img/eyesico.svg" (click)="viewDocument(doc)"></td>
+              <td>
+                <button (click)="viewDocument(doc)"><img src="assets/img/eyesico.svg"  /></button>
+                <!-- <img src="assets/img/eyesico.svg" (click)="viewDocument(doc)"> -->
+              </td>
               <td (click)="documentDelete(doc)" *ngIf="data?.type == 'internal'">
                 <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup removedoc" aria-hidden="true"></i>
               </td>
