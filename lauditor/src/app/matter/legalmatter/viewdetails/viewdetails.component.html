@@ -99,7 +99,7 @@
           </div>
           <div class="dashedborder">
             <div class="col-4" style="margin-top: 15px;">
-              <h6>Assign Team Member(s)</h6>
+              <h6 class="assign">Assign Team Member(s)</h6>
             </div>
             <div class="col-4">
               <div class="form-group" id="selectbx">
@@ -146,7 +146,7 @@
                   <span style="float: right;">
                   <!-- <img src="assets/img/mailnotif.svg" class="msgnotify1 mailicocls " > -->
                   <img src="assets/img/msgico.svg" class="msgnotify1 msgicocls" (click)="onMessageClick()">
-                  <img src="assets/img/delete.svg" class="msgnotify1 delicocls" *ngIf="selectedClients.length != 1" (click)="removeClient(member)">
+                  <!-- <img src="assets/img/delete.svg" class="msgnotify1 delicocls" *ngIf="selectedClients.length != 1" (click)="removeClient(member)"> -->
                 </span>
                 </p>
               </div>
@@ -169,8 +169,8 @@
   
           <div class="dashedborder">
             <div class="col-4" style="margin-top: 15px;">
-              <h6 *ngIf="product != 'corporate'">Assign Client(s)</h6>
-              <h6 *ngIf="product == 'corporate'">Assign External Counsel(s)</h6>
+              <h6 class="assign" *ngIf="product != 'corporate'">Assign Client(s)</h6>
+              <h6 class="assign" *ngIf="product == 'corporate'">Assign External Counsel(s)</h6>
             </div>
             <div class="col-2">
               <div class="form-group" id="selectbx">
@@ -253,30 +253,30 @@
               
                  <!-- <p>selected op: {{isChecked}}</p> -->
                 
-                <!--Add, Edit Main Notes Action-->
+                <!--Add, Edit Main Notes -->
                 <div id="narrow" *ngIf="isChecked === 'mainNote' && data?.type == 'internal'">
-                  <!-- <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!item.notes" matTooltip="Click To Add Notes"
+                  <!-- <img src="assets/img/addnotes.svg" class="col-1 addIcon" *ngIf="!item.notes" matTooltip="Click To Add Notes"
                          (click)="notes = item.notes;item.AddDesc=!item.AddDesc;
                           submitted = false;onAdd();notes = ''" [ngClass]="item.AddDesc? 'onActive' : ''"> -->
                   <button class="plusBtn" (click)="onAdd();notes = item.notes; item.AddDesc = !item.AddDesc; submitted = false;" [disabled]="isButtonClicked">
-                    <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!item.notes" 
+                    <img src="assets/img/addnotes.svg" class="col-1 addIcon" *ngIf="!item.notes" 
                      matTooltip="Click To Add Notes" [ngClass]="item.AddDesc ? 'onActive' : ''">
                   </button>
                 </div>
-                <!--Add, Edit Main Notes Action-->
+                <!--Add, Edit Main Notes -->
   
-                <!--Add Corporate Notes Action -->
+                <!--Add Corporate Notes  -->
                 <div id="narrow" *ngIf="isChecked === 'corpNote' && data?.type != 'internal'">
-                <!-- <img src="assets/img/+Add1.svg" class="col-1 addIcon" matTooltip="Click To Add Corporate Notes"
+                <!-- <img src="assets/img/addnotes.svg" class="col-1 addIcon" matTooltip="Click To Add Corporate Notes"
                 (click)="notes = item?.notes_list.notes;item?.notes_list.AddDesc=!item?.notes_list.AddDesc;submitted = false;" [ngClass]="item?.notes_list?.AddDesc? 'onActive' : '' "><!--*ngIf="item.notes_list.length != 5" -->
                 <button class="plusBtn" (click)="onAdd();notes = item?.notes_list.notes;item?.notes_list.AddDesc=!item?.notes_list.AddDesc;submitted = false;" [disabled]="isButtonClicked">
-                  <img src="assets/img/+Add1.svg" class="col-1 addIcon" *ngIf="!item.notes" 
+                  <img src="assets/img/addnotes.svg" class="col-1 addIcon" *ngIf="!item?.notes_list?.notes" 
                    matTooltip="Click To Add Corporate Notes" [ngClass]="item?.notes_list?.AddDesc? 'onActive' : ''">
                 </button>
                 </div>
               
              </div>
-                <!--Add Corporate Notes Action-->
+                <!--Add Corporate Notes -->
   
               
                 <!-- Main notes View -->
@@ -412,11 +412,11 @@
                         </mat-card> -->
 
                         <div *ngIf="!note.EditDesc">
-                            <p id="limitTextHeight" [ngClass]="{'limitTextHeight': !isReadMore[i]}">
+                            <p id="limitTextHeight" [ngClass]="{'limitTextHeight': !note.isReadMore}">
                               {{ note?.notes }}
                             </p>
-                            <a class="readMore"  (click)="toggleReadMore(i)">
-                             <u>{{ isReadMore[i] ? 'Read Less' : 'Read More' }}</u>
+                            <a class="readMore"  (click)="toggleReadMore(note,i)">
+                             <u>{{ note.isReadMore ? 'Read Less' : 'Read More' }}</u>
                             </a>
                         </div>
                         
@@ -525,7 +525,7 @@
                   <!-- for edit summary matter-->
                   <div class="form-group summarycitem">
                     <label for="title" class="editcase">Matter Tags </label>
-                    <div class='editable cnumber'>2021 - 2022</div>
+                    <div class='editable cnumber'></div>
                   </div>
                   <!-- for edit summary matter-->
                   <div class="form-group Judges summarycitem">
@@ -907,12 +907,18 @@
               <td>{{doc.description}}</td>
               <td *ngIf="doc?.tags && doc.tags.length>0" [innerHTML]="doc?.tags[0]"></td>
               <td *ngIf="!(doc?.tags)"></td>
-              <td><img src="assets/img/eyesico.svg" (click)="viewDocument(doc)"/></td>&nbsp;
-              <td (click)="documentDelete(doc)" *ngIf="data?.type == 'internal'">
-                <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup removedoc" aria-hidden="true"></i>
+              <td>
+                <button (click)="viewDocument(doc)"><img src="assets/img/eyesico.svg"  /></button>&nbsp;
+                <!-- <img src="assets/img/eyesico.svg" (click)="viewDocument(doc)"/>&nbsp; -->
+                <i (click)="documentDelete(doc)" *ngIf="data?.type == 'internal'"  class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup removedoc" aria-hidden="true"></i>
               </td>
+              <td></td>
+              <!-- <td (click)="documentDelete(doc)" *ngIf="data?.type == 'internal'">
+                <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup removedoc" aria-hidden="true"></i>
+              </td> -->
             </tr>
           </tbody>
+
   
         </table>
         <div class=" row main stepitem" *ngIf="isMergeEnable && selectedMergeDocuments?.length >=2">
@@ -925,6 +931,7 @@
         </div>
       </div>
     </div>
+    <ngx-spinner  size="medium" type="ball-clip-rotate"></ngx-spinner>
 </div>
   
   
