@@ -44,6 +44,7 @@ export class IndividualComponent {
     createRelationform: any = {};
     countries: any; 
     product = environment.product;
+    closeMode: boolean = false;
 
 
     ngOnInit(){
@@ -77,7 +78,8 @@ export class IndividualComponent {
     }
 
     search(){
-        this.sfSubmitted = true
+        this.sfSubmitted = true;
+        this.closeMode = false;
         this.reqError.show = false;
         if (this.searchForm.invalid) { return; }
         let semail = this.searchForm.value['email']
@@ -139,6 +141,10 @@ export class IndividualComponent {
         this.submitted = false;
         this.createRelationform.reset();
         this.showForm = false;
+        this.reqError.show = false;
+        this.msg = '';
+        this.sfSubmitted = false;
+        this.closeMode = true; //remove the formMode msg & selectedGrps
         this.searchForm.controls['email'].setValue("")
     }
     loadGroups(){
