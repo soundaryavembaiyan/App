@@ -9,6 +9,31 @@
 .optiontwo{
     padding: 8px 17px 8px 17px;
 }
+
+.nameandlist {
+    display: flex;
+    width: 157%;
+    justify-content: space-between;
+    align-items: center;
+}
+.immigrationtxt {
+    margin: 0; /* Remove default margin */
+}
+
+.pull-right {
+    margin-left: 10px; /* Adjust the margin as needed */
+}
+
+/* Add margin between <p> and <mat-select> */
+.immigrationtxt + .pull-right {
+    margin-left: 20px; /* Adjust the margin as needed */
+}
+
+/* If you want to limit the width of the block, you can add a max-width */
+.sharedgird {
+    max-width: 600px; /* Adjust the max-width as needed */
+    /* Add other styles as needed */
+}
 .sharedblock {
     background: #00b3a7;
     color: #fff;
@@ -142,3 +167,29 @@ opacity: 1;
     background: #00b3a7 !important;
     color: #fff;
   }
+.matS{
+    width: 100%;
+}
+.docName{
+    display: inline-block;
+    color: #00498ed9;
+    font-weight: 900;
+    font-size: 1.5rem;
+}
+.docmatter{
+    font-weight: 900;
+    font-size: 1.1rem;
+}
+.conf{
+    font-weight: 900;
+}
+.immigrationtxt {
+    display: flex; /* or display: grid; */
+    align-items: center; /* Align items vertically in the center */
+  }
+  
+  .matter-details {
+    margin-left: 10px;
+    margin-bottom: 1px;
+  }
+  
