@@ -14,11 +14,15 @@
   font-size: 18px;
   font-weight: bolder;
 }
-
-#addedGrp:hover {
+ 
+#addedGrp:hover{ 
   color: #fff;
   background-color: #00b3a7;
 }
+// #addedGrp #myIcon:hover{
+//   color: #fff;
+//   background-color: #00b3a7;
+// }
 
 .alertText {
   //font: normal normal 400 18px Gill Sans;
@@ -55,4 +59,10 @@
 
 .alertbutton {
   padding-bottom: 22px;
+}
+.alertEmail{
+  color: #FF0000;
+  font-size: 18px;
+  font-weight: bolder;
+  letter-spacing: 0px;
 }
