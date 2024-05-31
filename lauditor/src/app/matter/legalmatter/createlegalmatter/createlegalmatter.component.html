@@ -94,7 +94,7 @@
     (selectedTmsEvent)="selectedTeammemberes($event)"></matter-team-members>
 </div>
 <div *ngIf="selectedTabItem == 'matter-documents'">
-  <matter-documents [data]="InfotoOtherTabs" [groups]="groups" [clients]="clientsData"
+  <matter-documents [data]="InfotoOtherTabs" [groups]="groups" [clients]="clientsData" [corporate]="corpData"
     (selectedDocumentsEvent)="selectedDocuments($event)"></matter-documents>
 </div>
 <!-- <div class="btnbox" *ngIf="selectedTabItem == 'matter-documents'">
