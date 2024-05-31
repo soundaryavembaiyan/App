@@ -26,6 +26,7 @@ export class CreatelegalmatterComponent implements OnInit {
   teammembers: any = [];
   clientsData: any = [];
   groupsData: any = [];
+  corpData:any = [];
   teammembersData: any = [];
   docsData: any = [];
   tempClients:any;
@@ -60,13 +61,13 @@ export class CreatelegalmatterComponent implements OnInit {
   }
   selectedClient(clients: any) {
     this.clients = clients;
-    console.log('cli',this.clients)
+    //console.log('cli',this.clients)
     this.clientsData = this.clients.map((obj: any) => ({ "id": obj.id, "type": obj.type }));
-    console.log('clientsData',this.clientsData)
+    //console.log('clientsData',this.clientsData)
     this.selectedTabItem = 'matter-team-member';
     this.teammembers=[];
     this.selectedClients = this.corporate
-    console.log('selectedClients',this.corporate)
+    //console.log('selectedClients',this.corporate)
 
   }
   temporaryClients(clients:any){
@@ -74,6 +75,7 @@ export class CreatelegalmatterComponent implements OnInit {
   }
   corporateClients(clients:any){
     this.corpClients=clients;
+    this.corpData = this.corpClients
   }
   selectedTeammemberes(teammembers: any) {
     this.highLightTeamMem = true;
@@ -113,14 +115,17 @@ export class CreatelegalmatterComponent implements OnInit {
       "corporate":this.corpClients 
     }
 
-    console.log("clients",this.clientsData)
-    console.log("corporate",this.clients?.id)
+    // console.log("clients",this.clientsData)
+    // console.log("corporate",this.corpClients)
 
     this.confirmationDialogService.confirm('Confirmation', 'Are you sure you want to create ' + this.matterInfo.title +' ?',true,'Yes','No')
       .then((confirmed) => {
         if (confirmed) {
           this.httpService.sendPostRequest(URLUtils.createLegalMatter, legalMatter).subscribe((res: any) => {
             if (!res.error) {
+              if(this.docsData.length>0){
+                this.add_documents_from_matter(res.matter_id)
+              }
               this.confirmationDialogService.confirm('Success', 'Congratulations! You have successfully created the ' + this.matterInfo.title,true, 'View Matter List','Add Matter',true)
                 .then((confirmed) => {
                   if (confirmed) {
@@ -147,5 +152,19 @@ export class CreatelegalmatterComponent implements OnInit {
         
       })
       .catch(() => {});
+  }
+
+
+  add_documents_from_matter(matter_id:any){
+    const doc: string[] = this.docsData.map((item:any) => item.docid);
+    let data = {
+      "matter_id":matter_id,
+      documents: doc
+    }
+    this.httpService.sendPatchRequest(URLUtils.updateDocwithMatters,data).subscribe((res:any)=>{
+      console.log(res)
+    })
+
+
   }
 }
