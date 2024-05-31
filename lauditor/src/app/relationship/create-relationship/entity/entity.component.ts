@@ -53,6 +53,7 @@ export class EntityComponent implements OnInit {
   isDisabled=true;
   countries: any;
   body: any;
+  closeMode: boolean = false;
 
 
   get f() { return this.createRelationform.controls; }
@@ -111,18 +112,19 @@ export class EntityComponent implements OnInit {
 
   onReset(){
     /*
-    
     this.confirmationDialogService.confirm('Confirm', 'Changes you made will not be saved. Do you want to continue?' ,true, 'Yes', 'No')
     .then((confirmed) => {
         if (confirmed) {
             
         }
-
     });
     */
-
     this.createRelationform.reset();
+    this.selectedEntity.setValue(''); // Clear the input value
     this.showForm = false;
+    this.reqError.show = false;
+    this.msg = '';
+    this.closeMode = true; //remove the formMode msg & selectedGrps
   }
 
   onSubmit(){
@@ -135,6 +137,7 @@ export class EntityComponent implements OnInit {
   
   searchEntity(){
     this.reqError.show = false;
+    this.closeMode = false;
     if(this.selectedEntityObject.entityId.length > 0){
       this.emptySearchError = false;
       this.httpservice.sendGetRequest(URLUtils.relationshipEntityDetails(this.selectedEntityObject)).subscribe((res: any) => {
@@ -148,7 +151,7 @@ export class EntityComponent implements OnInit {
           this.formMode = 'request'
           this.showForm = true
           this.selname = res.data['entityName']
-          this.msg = `Entity ${res.data['entityName']} found!`
+          this.msg = `Entity ${res.data['entityName']} Found!`
           this.loadGroups()
           this.selectedEntity.setValue("")
           this.selectedGroups = []
@@ -170,7 +173,7 @@ export class EntityComponent implements OnInit {
         this.selname = this.createRelationform.value['entityName']
         this.showForm = true
         // this.showForm = false
-        this.msg = `${this.selectedEntity.value} - not found.  Please fill in the details below to send the relationship invite.`
+        this.msg = `${this.selectedEntity.value} - not found. Please fill in the details below to send the relationship invite.`
         this.loadGroups()
         this.selectedGroups = []
     }
@@ -234,6 +237,11 @@ export class EntityComponent implements OnInit {
         this.selname = val['entityName']
         if(val["email"] != val["confirmEmail"]){
           this.createRelationform.controls['confirmEmail'].setErrors({'mismatch': true})
+      }
+      if(val.confirmEmail == '' || val.contactPerson == '' || val.country == '' || val.email == '' || val.entityName == ''){
+        this.submitted = true
+        this.toast.error('Please confirm your details before sending the invite.')
+        return;
       }
     }
     this.submitted = true
@@ -301,6 +309,13 @@ export class EntityComponent implements OnInit {
       }
     }
 
-
+    restrictSpaces(event: any) {
+      let inputValue: string = event.target.value;
+      if (inputValue.length > 0 && inputValue.charAt(0) === ' ') {
+        inputValue = inputValue.substring(1);
+        event.target.value = inputValue;
+        return;
+      }
+    }
 
 }
