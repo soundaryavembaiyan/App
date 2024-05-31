@@ -47,9 +47,9 @@
                   </div> -->
                 </mat-form-field>
                 <!-- <img src="assets/img/calendor.svg" class="calimg calitem input-group-append calicon"> -->
-                <div *ngIf="submitted && f.date_of_filling.errors" class="invalid-feedback">
+                <!-- <div *ngIf="submitted && f.date_of_filling.errors" class="invalid-feedback">
                   <div *ngIf="f.date_of_filling.errors.required">Date is required</div>
-                </div>
+                </div> -->
               </div>
 
             </div>
@@ -69,8 +69,7 @@
 
             <div class="form-group">
               <label for="tags" class="fontbold">Matter Tags</label>
-              <input type="text" class="form-control textbox" id="tags" name="tags" placeholder="Type to add"
-                formControlName="tags">
+              <input type="text" class="form-control textbox" id="tags" name="tags" placeholder="Type to add" formControlName="tags">
             </div>
 
           </div>
