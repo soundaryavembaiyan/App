@@ -12,7 +12,7 @@
                    [ngClass]="{'green': showMemlist }">
                 </a>
               </div>
-              <div><p class="">Team Member Info</p> </div>
+              <div><p class="ptext">Team Member Info</p> </div>
             </div>
             <div class="col-sm-2 col-xs-3 round-icon">
               <div class="steprow">
@@ -22,8 +22,8 @@
                 </a>
               </div>
               <div>
-                <p class="" *ngIf="product != 'corporate'">Assign To Group</p> 
-                <p class="" *ngIf="product == 'corporate'">Assign To Department</p> 
+                <p class="ptext" *ngIf="product != 'corporate'">Assign to Group</p> 
+                <p class="ptext" *ngIf="product == 'corporate'">Assign to Department</p> 
              </div>
             </div>
             <div class="col-sm-3 col-xs-3"> </div>
@@ -196,7 +196,7 @@
      aria-hidden="true">
   <div class="modal-dialog">
       <div class="modal-content">
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <button type="button" class="btn-close remBtn" data-bs-dismiss="modal" aria-label="Close"></button>
           <div class="modal-body">
               <div class="alertpara">
                   <p class="alertparatxt"> Confirmation</p>
@@ -225,7 +225,7 @@
   <div class="modal-dialog">
       <div class="modal-content">
           <div class="modal-body">
-                        <div class="iconclose">X</div>
+                        <!-- <div class="iconclose">X</div> -->
                         <div class="alertpara">
                           <p class="alertparatxt"> Success</p>
                         </div>
