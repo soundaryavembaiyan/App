@@ -35,6 +35,7 @@ export class ViewlegalmatterComponent implements OnInit {
 
   itemsPerPage: number = 10; // Initialize with the number of items per page
   currentPage: number = 1;
+  //matterCount:any;
   
 
   constructor(private httpservice: HttpService, private http: HttpClient, private matterService: MatterService, 
@@ -56,6 +57,8 @@ export class ViewlegalmatterComponent implements OnInit {
     this.spinnerService.show()
     this.httpservice.sendGetRequest(URLUtils.getLegalMatter).subscribe((res: any) => {
       this.legalMatters = res && res["matters"];
+      //this.matterCount = this.legalMatters.length;
+      //console.log('this.legalMatters',this.legalMatters.length)
       this.spinnerService.hide()
     })
   }
@@ -64,6 +67,7 @@ export class ViewlegalmatterComponent implements OnInit {
     this.spinnerService.show()
     this.httpservice.sendGetRequest(URLUtils.getLegalExternalMatter).subscribe((res: any) => {
       this.legalMatters = res && res["matters"];
+      //this.matterCount = this.legalMatters.length;
       this.spinnerService.hide()
     })
   }
