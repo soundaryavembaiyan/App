@@ -93,7 +93,7 @@
 </div>
 <div *ngIf="selectedTabItem == 'matter-documents'">
   <matter-documents [data]="InfotoOtherTabs"
-                    [groups]="groups" [clients]="clientsData"
+                    [groups]="groups" [clients]="clientsData" [corporate]="corpData"
                     (selectedDocumentsEvent)="selectedDocuments($event)"></matter-documents>
 </div>
 <!-- <div class="btnbox">
