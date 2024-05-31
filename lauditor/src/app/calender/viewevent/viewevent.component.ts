@@ -9,6 +9,8 @@ import { ToastrService } from 'ngx-toastr';
 import { Pipe } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { ModalService } from 'src/app/model/model.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-viewevent',
@@ -26,35 +28,37 @@ export class ViewEventComponent implements OnInit {
   clients: any = [];
   OrganizerFirstLetter: any;
   selectedValue: string = 'Yes';
-  viewDoc=true;
+  viewDoc = true;
   //events = ['overhead','others','reminders'];
-  events = ['legal','general'];
+  events = ['legal', 'general'];
   expanded: boolean = false;
   product = environment.product;
+  pdfSrc: any;
+  docapi = environment.doc2pdf;
 
   toggleContent(): void {
     this.expanded = !this.expanded;
   }
 
   constructor(private httpservice: HttpService, private router: Router, private toaster: ToastrService,
-    private calenderService: CalenderService, private confirmationDialogService: ConfirmationDialogService) {
+    private calenderService: CalenderService, public sanitizer: DomSanitizer, private modalService: ModalService, private confirmationDialogService: ConfirmationDialogService) {
     this.data = this.router.getCurrentNavigation()?.extras.state;
   }
   ngOnInit() {
     if (this.data)
       this.getEventData();
-      //console.log('evInfo', this.eventInfo)
-      //console.log('this.selectedValue',this.selectedValue)
+    //console.log('evInfo', this.eventInfo)
+    //console.log('this.selectedValue',this.selectedValue)
   }
   getEventData() {
     this.httpservice.sendGetRequest(URLUtils.eventViewDetails(this.data)).subscribe(
       (res: any) => {
         if (res) {
           this.eventInfo = res.event;
-          console.log('evInfo', this.eventInfo)
+          //console.log('evInfo', this.eventInfo)
 
           for (let i = 0; i < this.events.length; i++) {
-            if(i == this.eventInfo.matter_type){
+            if (i == this.eventInfo.matter_type) {
               this.viewDoc = false;
               break;
             }
@@ -81,8 +85,8 @@ export class ViewEventComponent implements OnInit {
               this.teamMembers.push(teamMem);
             }
           }
-          let external = this.eventInfo.invitees_external.concat(this.eventInfo.invitees_consumer_external,this.eventInfo.invitees_corporate)
-          let clientsList = external.map((person: any) => ({ "entName": person.entityName, "tmName": person.tmName, "rsvp": person.rsvp ,"tmId": person.tmId}));
+          let external = this.eventInfo.invitees_external.concat(this.eventInfo.invitees_consumer_external, this.eventInfo.invitees_corporate)
+          let clientsList = external.map((person: any) => ({ "entName": person.entityName, "tmName": person.tmName, "rsvp": person.rsvp, "tmId": person.tmId }));
           this.clients = [];
           //console.log('clients',this.clients)
           if (clientsList && clientsList.length > 0) {
@@ -118,33 +122,42 @@ export class ViewEventComponent implements OnInit {
             //console.log("res" + res);
             this.router.navigate(['/meetings/view'])
           },
-          (error: HttpErrorResponse) => {
-            if (error.status === 401 || error.status === 403) {
-              const errorMessage = error.error.msg || 'Unauthorized';
-              this.toaster.error(errorMessage);
-              console.log(error);
+            (error: HttpErrorResponse) => {
+              if (error.status === 401 || error.status === 403) {
+                const errorMessage = error.error.msg || 'Unauthorized';
+                this.toaster.error(errorMessage);
+                //console.log(error);
+              }
             }
-          }
           );
         }
       })
   }
-  
+
   onClickAttending(val: string) {
     this.selectedValue = val;
-    console.log('this.selectedValue',this.selectedValue)
+    //console.log('this.selectedValue', this.selectedValue)
     this.httpservice.sendPutRequest(URLUtils.updateRSVP({ event_id: this.eventInfo.id }), { rsvp_response: this.selectedValue }).subscribe((res: any) => {
-      if (res.error==false) {
+      if (res.error == false) {
         this.toaster.success(res.msg);
       }
     },
-    (error: HttpErrorResponse) => {
-      if (error.status === 401 || error.status === 403) {
-        const errorMessage = error.error.msg || 'Unauthorized';
-        this.toaster.error(errorMessage);
-        console.log(error);
+      (error: HttpErrorResponse) => {
+        if (error.status === 401 || error.status === 403) {
+          const errorMessage = error.error.msg || 'Unauthorized';
+          this.toaster.error(errorMessage);
+          //console.log(error);
+        }
       }
-    }
     );
+  }
+
+
+  openModal(id: string) {
+    this.modalService.open(id);
+  }
+
+  closeModal(id: string) {
+    this.modalService.close(id);
   }
 }
