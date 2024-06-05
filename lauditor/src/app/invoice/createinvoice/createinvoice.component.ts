@@ -109,7 +109,7 @@ export class CreateinvoiceComponent {
     this.getLogo();
 
     this.bsValue = new Date();
-    console.log('mydate',this.bsValue);
+    //console.log('mydate',this.bsValue);
     // this.myDateValue = new Date();
     // console.log('mydate',this.myDateValue);
     //Date validation
@@ -155,19 +155,27 @@ export class CreateinvoiceComponent {
     )
   }
 
+  noZeroStart(control: AbstractControl): { [key: string]: boolean } | null {
+    const value = control.value;
+    if (value && value.length > 0 && value[0] === '0') {
+      return { 'noZeroStart': true };
+    }
+    return null;
+  }
+
   createInvoiceItem(): FormGroup {
-    
     return this.fb.group({
       name: ['', Validators.required],
-      unitPrice: ['', [Validators.required, Validators.pattern('^[0-9]*$'), Validators.minLength(1), Validators.maxLength(10)]],
-      quantity: ['', [Validators.required, Validators.pattern('^[0-9]*$'), Validators.minLength(1), Validators.maxLength(10)]],
+      unitPrice: ['', [Validators.required, this.noZeroStart, Validators.pattern('^[0-9]*$'), Validators.minLength(1), Validators.maxLength(10)]],
+      //unitPrice: ['', [Validators.required, this.noZeroStart, Validators.pattern('^[0-9]+$'), Validators.maxLength(10)]],
+      quantity: ['', [Validators.required, this.noZeroStart, Validators.pattern('^[0-9]*$'), Validators.minLength(1), Validators.maxLength(10)]],
       //quantity: ['', [Validators.required, Validators.min(0), Validators.max(10000000000), Validators.pattern(/^[1-9][0-9]{0,9}$/)]],
       //unitPrice: ['', [Validators.required, Validators.min(0), Validators.max(10000000000), Validators.pattern(/^[1-9][0-9]{0,9}$/)]] //Validators.max(10), Validators.min(1), Validators.pattern(/[0-9]+(\.[0-9]{1,2})?$/)
     });
   }
 
   setValue(controlName: string, value: any) {
-    console.log(value)
+    //console.log(value)
     this.createinvoiceForm.get(controlName)?.setValue(value);
   }
 
@@ -328,7 +336,7 @@ export class CreateinvoiceComponent {
       const quantity = item.get('quantity')?.value;
       const unitPrice = item.get('unitPrice')?.value;
 
-      if (!name || !quantity || !unitPrice) {
+      if (!name || !quantity || !unitPrice || unitPrice.startsWith('0') || quantity.startsWith('0')) {
         return true;
       }
     }
@@ -614,14 +622,10 @@ restrictSpaces(event: any) {
   return
 }
 
-restrictFirstPosition(event: any) {
-  let inputValue: string = event.target.value;
-  if (inputValue.length > 0 && inputValue.charAt(0) === '0' || inputValue.charAt(0) === '1' || inputValue.charAt(0) === '2' || inputValue.charAt(0) === '3' ||
-    inputValue.charAt(0) === '4' || inputValue.charAt(0) === '5' || inputValue.charAt(0) === '6' ||
-    inputValue.charAt(0) === '7' || inputValue.charAt(0) === '8' || inputValue.charAt(0) === '9') {
-    inputValue = inputValue.substring(1);
-    event.target.value = inputValue;
-    return;
+restrictFirstPosition(event: any): void {
+  const input = event.target.value;
+  if (input && input[0] === '0') {
+    event.target.value = input.substring(1);
   }
 }
 }
