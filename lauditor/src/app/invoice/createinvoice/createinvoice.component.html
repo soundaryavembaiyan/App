@@ -264,12 +264,14 @@
 
            <td style="padding: 25px;">
             <div class="form-group input-group">
-                 <input maxlength="10" (input)="onInput($event)" formControlName="unitPrice" class="form-control textbox txtS" placeholder="Rate" style="width: 100px;" required/> 
+                 <input maxlength="10" (input)="onInput($event);restrictFirstPosition($event)" formControlName="unitPrice" class="form-control textbox txtS" 
+                 placeholder="Rate" style="width: 100px;" oninput="this.value = this.value.replace(/[^A-Za-z0-9 ]|^ /g,'')" required/> 
             </div>
             <div *ngIf="submitted && createinvoiceForm.get('invoice_items').controls[i].get('unitPrice').invalid" class="errorStyle" style="height: 0px;">
               <small *ngIf="createinvoiceForm.get('invoice_items').controls[i].get('unitPrice').errors.required">This field is required</small>
               <small *ngIf="createinvoiceForm.get('invoice_items').controls[i].get('unitPrice').errors.pattern">Enter valid number</small>
               <small *ngIf="createinvoiceForm.get('invoice_items').controls[i].get('unitPrice').errors.minlength || createinvoiceForm.get('invoice_items').controls[i].get('unitPrice').errors.maxlength">Accepts only 10-digits</small>
+              <small *ngIf="createinvoiceForm.get('invoice_items').controls[i].get('unitPrice').errors.noZeroStart">Unit price cannot start with 0</small>
             </div>
           </td>
           <!-- <td style="padding: 25px;">
@@ -292,7 +294,8 @@
           <!-- Quantity -->
           <td style="padding: 25px;">
             <div class="form-group input-group">
-                 <input maxlength="10" (input)="onInput($event)" formControlName="quantity" class="form-control textbox txtS" placeholder="Quantity" style="width: 100px;" required/> 
+                 <input maxlength="10" (input)="onInput($event);restrictFirstPosition($event)" formControlName="quantity" class="form-control textbox txtS" 
+                 placeholder="Quantity" style="width: 100px;" oninput="this.value = this.value.replace(/[^A-Za-z0-9 ]|^ /g,'')" required/> 
             </div>
             <div *ngIf="submitted && createinvoiceForm.get('invoice_items').controls[i].get('quantity').invalid" class="errorStyle" style="height: 0px;">
               <small *ngIf="createinvoiceForm.get('invoice_items').controls[i].get('quantity').errors.required">This field is required</small>
@@ -441,7 +444,7 @@
     
     <div class="btnbox">
     <button type="reset" [routerLink]="['/invoice']" class="btn btn-default btncancel btnrightitem">Cancel</button>
-    <button type="button"  [disabled]="createinvoiceForm.invalid" (click)="onSubmit()" class="btn btn-primary btnsave savecls">Save</button>
+    <button type="button" [disabled]="createinvoiceForm.invalid" (click)="onSubmit()" class="btn btn-primary btnsave savecls">Save</button>
     <!--[disabled]="createinvoiceForm.invalid"-->
 
 </div>
