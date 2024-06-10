@@ -2,10 +2,11 @@ import { ConfirmationDialogService } from './../../../../confirmation-dialog/con
 import { URLUtils } from 'src/app/urlUtils';
 import { HttpService } from 'src/app/services/http.service';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { ValidatorFn } from '@angular/forms';
 
 @Component({
 
@@ -50,6 +51,7 @@ export class MatterClientsComponent implements OnInit {
     selectedprod='clients';
     selectedprodCorp='corporate';
     product = environment.product;
+    showTempForm: boolean = false;
 
     constructor(private httpservice: HttpService, private fb: FormBuilder,
         private confirmationDialogService: ConfirmationDialogService,
@@ -72,22 +74,33 @@ export class MatterClientsComponent implements OnInit {
         this.tempClient = this.fb.group({
             name: ['', Validators.required],
             lastName: ['', Validators.required],
-            email: ['', Validators.required],
-            confirmemail: ['', Validators.required],
+            email: ['', [Validators.required, Validators.email]],
+            confirmemail: ['', [Validators.required, Validators.email]],
             country: ['', Validators.required],
             phonenumber: [''],
             type: ['individual', Validators.required]
-        })
+        }, { validator: this.emailMatchValidator() });        
+
         this.getClients();
         this.entityClient = this.fb.group({
             fullname: ['', Validators.required],
             contact_person: ['', Validators.required],
-            email: ['', Validators.required],
-            confirmemail: ['', Validators.required],
+            email: ['', [Validators.required, Validators.email]],
+            confirmemail: ['',[ Validators.required, Validators.email]],
             country: ['', Validators.required],
             phonenumber: ['']
-        });
+        }, { validator: this.emailMatchValidator() });  
 
+    }
+
+    // Check emails of two fields match
+    emailMatchValidator(): ValidatorFn {
+        return (control: AbstractControl): { [key: string]: any } | null => {
+        const formGroup = control as FormGroup;
+        const email = formGroup.get('email')?.value;
+        const confirmEmail = formGroup.get('confirmemail')?.value;
+        return email && confirmEmail && email !== confirmEmail ? { emailMismatch: true } : null;
+        };
     }
 
     get f() {
@@ -109,18 +122,29 @@ export class MatterClientsComponent implements OnInit {
             // this.tooltipgroupslist = this.tooltipgroupslist.slice(1);
             this.tooltipgroupslist = tooltipGroupsArray.map((item: any, i: number) => item.name);
         }
-        this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements,
-            { 'group_acls': grps, 'attachment_type': 'clients' }
-            ).subscribe(
+        var payload
+        if(this.product=="corporate"){
+            payload = {'group_acls': grps,'attachment_type': 'corporate' ,'product':this.product}
+            
+        } else {
+            payload = { 'group_acls': grps, 'attachment_type': 'clients' }
+        }
+        this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements,payload).subscribe(
                 (res: any) => {
-                    console.log('clientres',res)
+                    //console.log('clientres',res)
 
-                    if (!res['error'] && res['clients']?.length > 0)
+                    if (!res['error'] && res['clients']?.length > 0){
                         this.clientsList = res['clients'];
+                    } else if(!res['error'] && res['corporate']?.length > 0){
+                        this.clientsList = res['corporate'];
+                    }
+                        
 
                     this.tempList.length = this.clientsList.length;
+                    //console.log('tlist',this.tempList)
                     if (this.clients && this.clients.length > 0) {
                         this.selectedClients = [...this.clients];
+                        //console.log('selectedClients....',this.selectedClients)
                         let res = this.clientsList.filter((el: any) => {
                             return !this.selectedClients.find((element: any) => {
                                 return element.id === el.id;
@@ -138,17 +162,15 @@ export class MatterClientsComponent implements OnInit {
                     }
                 }
                 )
-
-
                 this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements,
                     { 'group_acls': grps, 'attachment_type': 'corporate' ,'product':this.product}
                     ).subscribe(
                         (res: any) => {
-                            console.log('corpres',res)
+                            //console.log('corpres',res)
         
                             if (!res['error'] && res['corporate']?.length > 0)
                                 this.corporateList = res['corporate'];
-                                console.log('corporateList',this.corporateList)
+                                //console.log('corporateList',this.corporateList)
         
                             this.tempList.length = this.corporateList.length;
                             
@@ -161,7 +183,7 @@ export class MatterClientsComponent implements OnInit {
                                 });
 
                                 this.corporateList = res;
-                                console.log('Ifcorplist',this.corporateList)
+                                //console.log('Ifcorplist',this.corporateList)
                                 
                             }
                             if (this.selectedClients.length == 0) {
@@ -173,14 +195,16 @@ export class MatterClientsComponent implements OnInit {
                         )
     }
 
-
     onFilterValueChange() {
         this.tempList = this.clientsList.filter((data: any) => data?.name?.toLowerCase().includes(this.searchText?.toLowerCase()));
+        this.clientsList = this.tempList.filter((data: any) => data?.name?.toLowerCase().includes(this.searchText?.toLowerCase()));
         this.tempList = this.corporateList.filter((data: any) => data?.name?.toLowerCase().includes(this.searchText?.toLowerCase()));
+        //console.log('Onnnthis.filtered',this.clientsList )
     }
 
     selectAll(event: any) {
         if (event?.target?.checked) {
+            this.tempList = !this.tempList;
             if (this.clientsList?.length > 0) {
                 if (this.filteredData?.length > 0) {
                     this.selectedClients = this.selectedClients.concat(this.filteredData);
@@ -201,6 +225,7 @@ export class MatterClientsComponent implements OnInit {
     }
 
     selectCorp(event: any) {
+        //console.log(this.corporateList)
         if (event?.target?.checked) {
             if (this.corporateList?.length > 0) {
                 //console.log('CC',this.corporateList)
@@ -224,6 +249,7 @@ export class MatterClientsComponent implements OnInit {
 
     selectClient(group: any, value?: any) {
         this.selectedClients.push(group);
+        this.tempList = !this.tempList;
         let index = this.clientsList.findIndex((d: any) => d.id === group.id); //find index in your array
         this.clientsList.splice(index, 1);
         if (this.clientsList.length == 0) {
@@ -231,7 +257,7 @@ export class MatterClientsComponent implements OnInit {
             if (checkbox != null)
                 checkbox.checked = true;
         }
-        console.log("Cli selected clients "+JSON.stringify(this.selectedClients));
+        //console.log("Cli selected clients "+JSON.stringify(this.selectedClients));
     }
 
     selectCorporate(group: any, value?: any) {
@@ -243,7 +269,7 @@ export class MatterClientsComponent implements OnInit {
             if (checkbox != null)
                 checkbox.checked = true;
         }
-        console.log("Corp selected clients "+JSON.stringify(this.selectedClients));
+        //console.log("Corp selected clients "+JSON.stringify(this.selectedClients));
     }
 
     removeClient(group: any) {
@@ -269,7 +295,7 @@ export class MatterClientsComponent implements OnInit {
     onClickCorp() {
         let flag = false;
         for (let i = 0; i < this.selectedClients.length; i++) {
-            console.log("Corp selected clients",this.selectedClients)
+            //console.log("Corp selected clients",this.selectedClients)
             if (this.selectedClients[i].type === "corporate") {
                 this.selectedClients[i] = this.selectedOption;
                 flag = true;
@@ -288,14 +314,30 @@ export class MatterClientsComponent implements OnInit {
     }
     OnFormCancel() {
         this.searchText = ' ';
+        this.tempList = false;
+        this.showTempForm = false;
         this.onFilterValueChange();
         this.submitted = false;
         this.entitysubmitted = false;
+        //this.clientsList = this.clientsList.concat(this.selectedClients);
+        //this.selectedClients;
+        this.getClients();
+        this.clientsList = this.clientsList.concat(this.selectedClients);
+        this.selectedClients =[];
     }
     keyup() {
         if (this.searchText == ' ')
-            this.searchText = this.searchText.replace(/\s/g, "");
+        this.searchText = this.searchText.replace(/\s/g, "");
+        this.showTempForm = false;
         this.filteredData = this.clientsList.filter((item: any) => item.name.toLocaleLowerCase().includes(this.searchText));
+        //console.log('this.filteredData ',this.filteredData )
+        //debugger;
+        if(this.filteredData.length === 0){
+            this.showTempForm = true;
+        }
+        if(this.clientsList.length === 0){
+            this.showTempForm = true;
+        }
         let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
         if (checkbox != null)
             checkbox.checked = false;
@@ -333,13 +375,28 @@ export class MatterClientsComponent implements OnInit {
                             })
                     }
                 },
+                // (error: HttpErrorResponse) => {
+                //     if (error.status === 401) {
+                //       const errorMessage = error.error.msg || 'Unauthorized';
+                //       this.toastr.error(errorMessage);
+                //       //console.log(error);
+                //     }
+                //   }
                 (error: HttpErrorResponse) => {
                     if (error.status === 401) {
                       const errorMessage = error.error.msg || 'Unauthorized';
                       this.toastr.error(errorMessage);
-                      console.log(error);
+                    } else if (error.status === 400) {
+                      if (error.error.errors) {
+                        error.error.errors.forEach((err: { field: string; msg: string }) => {
+                          this.toastr.error(`${err.msg}`);
+                        });
+                      } else {
+                        this.toastr.error('Bad Request');
+                      }
+                    } else {
+                      this.toastr.error('An unexpected error occurred');
                     }
-              
                   }
               )
 
@@ -375,17 +432,32 @@ export class MatterClientsComponent implements OnInit {
                     }
                     // else{
                     //     this.confirmationDialogService.confirm('failed', 'sorry! You have sent duplicate  request ', false, 'Add Team Members', 'Cancel', true)
-
                     // }
                 },
+                // (error: HttpErrorResponse) => {
+                //     if (error.status === 401) {
+                //       let errorMessage = error.error.msg || 'Unauthorized';
+                //       this.toastr.error(errorMessage);
+                //       //console.log(error);
+                //     }
+                //   }
                 (error: HttpErrorResponse) => {
                     if (error.status === 401) {
                       const errorMessage = error.error.msg || 'Unauthorized';
                       this.toastr.error(errorMessage);
-                      console.log(error);
+                    } else if (error.status === 400) {
+                      if (error.error.errors) {
+                        error.error.errors.forEach((err: { field: string; msg: string }) => {
+                          this.toastr.error(`${err.msg}`);
+                        });
+                      } else {
+                        this.toastr.error('Bad Request');
+                      }
+                    } else {
+                      this.toastr.error('An unexpected error occurred');
                     }
-              
-                  })
+                  }
+                );      
         }
         
         this.onReset();
@@ -495,4 +567,10 @@ export class MatterClientsComponent implements OnInit {
         this.corporateData=false;
         this.tempList==true
     }
+    restricttextSpace(event: any) {
+        let inputValue: string = event.target.value;
+        inputValue = inputValue.replace(/^\s+/, '');
+        inputValue = inputValue.replace(/\s{2,}/g, ' ');
+        event.target.value = inputValue;
+      }
 }
