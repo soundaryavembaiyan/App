@@ -42,7 +42,7 @@
       <div class="col-6 matterpadding">
         <!--<div *ngIf="selectedClients.length>0">-->
           <h5 *ngIf="product != 'corporate'" class="float-left grpFont">Selected Client(s)</h5>
-          <h5 *ngIf="product == 'corporate'" class="float-left grpFont">Selected External Counsels</h5>
+          <h5 *ngIf="product == 'corporate'" class="float-left grpFont">Selected External Counsel(s)</h5>
           
           <div>
             <div class="form-group group-custom-align" *ngFor="let client of selectedClients">
@@ -74,7 +74,7 @@
       <div class="col-6 matterpadding">
         <!--<div class="col-3">-->
           <h5 class="float-left grpFont" *ngIf="product != 'corporate'">Add Client(s)<span class="mandate">*</span></h5> 
-          <h5 class="float-left grpFont" *ngIf="product == 'corporate'">Add External Counsels<span class="mandate">*</span></h5> 
+          <h5 class="float-left grpFont" *ngIf="product == 'corporate'">Add External Counsels</h5> 
         <!--</div>-->
 
 
@@ -122,7 +122,6 @@
                 <label for="country" class="fontbold alignleft addCC"> Add Corporate Clients </label> <!-- <span class="mandate">*</span> -->
                 <select class="form-select calendorselect" [(ngModel)]="selectedOption" required placeholder="d.ff">
                   <option hidden value="" disabled selected> Select Corporate Clients </option>
-                  <!-- <option hidden value="">Select Corporate Clients</option> -->
                   <option *ngFor="let client of corporateList" class="textbox" [ngValue]="client">{{client.name}}</option>
                 </select>
               </div>
@@ -133,7 +132,7 @@
           </div>
         
         <!-- Client lists-->
-        <div class="col-3" *ngIf="product != 'corporate' && !corporateData">
+        <div class="col-3" *ngIf="!corporateData">
           <div class="form-group" id="selectbx">
             <div class="input-group court" id="search">
               <div class="multicheck form-control textbox">
@@ -147,7 +146,7 @@
         </div>
 
         <!-- Corp lists-->
-        <div class="col-3" *ngIf="product == 'corporate' && !corporateData">
+        <!-- <div class="col-3" *ngIf="product == 'corporate' && !corporateData">
           <div class="form-group" id="selectbx">
             <div class="input-group court" id="search">
               <div class="multicheck form-control textbox">
@@ -158,28 +157,34 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
         <!--*ngIf="product != 'corporate'"-->
         
         <!-- Search Clients-->
-        <div class="form-group" *ngIf="!corporateData && product != 'corporate'"> <!--*ngIf="!corporateData"-->
-          <div class="input-group group-custom-align court" id="search">
+        <div class="form-group" *ngIf="!corporateData"> <!--*ngIf="!corporateData"-->
+          <div class="input-group group-custom-align court" id="search" *ngIf="product != 'corporate'">
             <input type="text" class="form-control textbox" placeholder="Search Client" [(ngModel)]="searchText"
-              (keyup)="keyup()" (ngModelChange)="onFilterValueChange()" />
+              (keyup)="keyup()" />
+            <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
+          </div>
+
+          <div class="input-group group-custom-align court" id="search" *ngIf="product == 'corporate'">
+            <input type="text" class="form-control textbox" placeholder="Search External Counsel" [(ngModel)]="searchText"
+              (keyup)="keyup()" />
             <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
           </div>
         </div>
 
-        <div class="form-group" *ngIf="!corporateData && product == 'corporate'"> <!--*ngIf="!corporateData"-->
+        <!-- <div class="form-group" *ngIf="!corporateData && product == 'corporate'"> 
           <div class="input-group group-custom-align court" id="search">
             <input type="text" class="form-control textbox" placeholder="Search External Counsels" [(ngModel)]="searchText"
               (keyup)="keyup()" (ngModelChange)="onFilterValueChange()" />
             <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
           </div>
-        </div>
+        </div> -->
 
         <!-- Clients lists-->
-        <div class="form-group" id="selectbx" *ngIf="tempList && tempList.length>0 && product != 'corporate'">
+        <div class="form-group" id="selectbx" ><!-- *ngIf="tempList && tempList.length>0 " -->
           <div class="input-group group-custom-align court matterpadding"
             id="search" *ngFor="let client of clientsList |filter:searchText">
             <div class="multicheck form-control textbox" *ngIf="!corporateData">
@@ -192,7 +197,7 @@
         </div>
 
         <!-- Corporate lists-->
-        <div class="form-group" id="selectbx" *ngIf="tempList && tempList.length>0 && product == 'corporate'">
+        <!-- <div class="form-group" id="selectbx" *ngIf="tempList && tempList.length>0 && product == 'corporate'">
           <div class="input-group group-custom-align court matterpadding"
             id="search" *ngFor="let client of corporateList |filter:searchText">
             <div class="multicheck form-control textbox" *ngIf="!corporateData">
@@ -202,18 +207,16 @@
                 (change)="selectCorporate(client, inputEl.checked)">
             </div>
           </div>
-        </div>
+        </div> -->
         
-
-        <div *ngIf="tempList && tempList.length==0 && !corporateData">
-          <span style="color:red"> {{searchText}} - not found.</span><br>
-          <span style="color:red">Please fill in the details below to add
-            {{searchText}} as client</span>
-
+        <div *ngIf="product != 'corporate'">
+        <!-- <div *ngIf="!tempList && tempList.length==0 && !corporateData"> -->
+          <div *ngIf="clientsList.length == 0 && tempList && tempList.length == 0 && !corporateData || showTempForm">
+          <span class="warn"> {{searchText}} - not found.</span><br>
+          <span class="warn">Please fill in the details below to add {{searchText}} as client</span>
 
           <div clas="form-group">
-            <label for="clienttype" class="fontbold alignleft">Client Type
-            </label>
+            <label for="clienttype" class="fontbold alignleft">Client Type </label>
             <ul class="nav nav-pills mb-3 btnaction float-left " id="pills-tab"
               role="tablist">
               <li class="nav-item">
@@ -241,205 +244,162 @@
             <div *ngSwitchCase="'individual'">
               <form [formGroup]="tempClient" (ngSubmit)="onindividualSubmit()">
                 <div class="form-group">
-                  <label for="name" class="fontbold alignleft"> First Name <span
-                      class="mandate">*</span>
-                  </label>
+                  <label for="name" class="fontbold alignleft"> First Name <span class="mandate">*</span> </label>
                   <input formControlName="name" type="text" class="form-control
-                    textbox" id="name" name="name">
-                  <div *ngIf="submitted && f.name.errors"
-                    class="invalid-feedback">
-                    <div *ngIf="f.name.errors.required">Name is required</div>
+                    textbox" id="name" name="name" (input)="restricttextSpace($event)">
+                  <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+                    <div class="warn" *ngIf="f.name.errors.required">First name is required</div>
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="lastName" class="fontbold alignleft"> Last Name
-                    <span class="mandate">*</span>
-                  </label>
-                  <input formControlName="lastName" type="text"
+                  <label for="lastName" class="fontbold alignleft"> Last Name <span class="mandate">*</span> </label>
+                  <input formControlName="lastName" type="text" (input)="restricttextSpace($event)"
                     class="form-control textbox" id="lastName" name="lastName">
-                  <div *ngIf="submitted && f.lastName.errors"
-                    class="invalid-feedback">
-                    <div *ngIf="f.lastName.errors.required">LastName is required</div>
+                  <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
+                    <div class="warn" *ngIf="f.lastName.errors.required">Last name is required</div>
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="email" class="fontbold alignleft">Email Address<span
-                      class="mandate">*</span>
-                  </label>
-                  <input formControlName="email" type="email"
+                  <label for="email" class="fontbold alignleft">Email Address<span  class="mandate">*</span>  </label>
+                  <input formControlName="email" type="email" (input)="restricttextSpace($event)"
                     class="form-control textbox" id="email" name="email"
                     pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
-                  <div *ngIf="submitted && f.email.errors"
-                    class="invalid-feedback">
-                    <div *ngIf="f.email.errors.required">Email is required</div>
-                    <div *ngIf="!f.email.errors.required">Email is invalid</div>
+                  <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                    <div class="warn" *ngIf="f.email.errors.required">Email is required</div>
+                    <div class="warn" *ngIf="!f.email.errors.required">Email is invalid</div>
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="confirmemail" class="fontbold alignleft">Confirm
-                    Email Address<span class="mandate">*</span>
-                  </label>
+                  <label for="confirmemail" class="fontbold alignleft">Confirm Email Address<span class="mandate">*</span> </label>
                   <input formControlName="confirmemail" type="email"
                     class="form-control textbox" id="confirmemail"
-                    name="confirmemail"
+                    name="confirmemail" (input)="restricttextSpace($event)"
                     pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
-                  <div *ngIf="submitted && f.confirmemail.errors"
-                    class="invalid-feedback">
-                    <div *ngIf="f.confirmemail.errors.required">Confirm Email is
-                      required</div>
-                    <div *ngIf="!f.confirmemail.errors.required">Confirm Email
-                      is invalid</div>
+                  <div *ngIf="submitted && f.confirmemail.errors" class="invalid-feedback">
+                    <div class="warn" *ngIf="f.confirmemail.errors.required">Confirm Email is required</div>
+                    <div class="warn" *ngIf="!f.confirmemail.errors.required">Confirm Email is invalid</div>
+                  </div>
+                  <div *ngIf="submitted && tempClient.errors?.emailMismatch" class="invalid-feedback">
+                    <div class="warn">Confirm Email does not match</div>
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="country" class="fontbold alignleft"> Country <span
-                      class="mandate">*</span>
-                  </label>
+                  <label for="country" class="fontbold alignleft"> Country <span class="mandate">*</span> </label>
                   <!-- <input formControlName="country" type="text"
                     class="form-control textbox" id="country" name="country"> -->
                     <select  class="form-control textbox" formControlName="country">
                       <option value="" hidden>Choose </option>
                       <option *ngFor="let city of csvContent" [ngValue]="city">{{city}}</option>
                     </select>
-                  <div *ngIf="submitted && f.country.errors"
-                    class="invalid-feedback">
-                    <div *ngIf="f.country.errors.required">Country is required</div>
+                  <div *ngIf="submitted && f.country.errors" class="invalid-feedback">
+                    <div class="warn" *ngIf="f.country.errors.required">Country is required</div>
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="phonenumber" class="fontbold alignleft">Phone
-                    Number
-                  </label>
-                  <input formControlName="phonenumber" type="tel"
+                  <label for="phonenumber" class="fontbold alignleft">Phone Number </label>
+                  <input formControlName="phonenumber" type="tel" (input)="restricttextSpace($event)"
                     class="form-control textbox" id="phonenumber"
                     name="phonenumber" minlength="10" maxlength="10">
-                  <div *ngIf="submitted && f.phonenumber.errors"
-                    class="invalid-feedback">
-                    <div *ngIf="f.phonenumber.errors.required">Phone Number is
-                      required</div>
-                    <div *ngIf="!f.phonenumber.errors.required">Phone Number is
-                      invalid</div>
+                  <div *ngIf="submitted && f.phonenumber.errors" class="invalid-feedback">
+                    <div class="warn" *ngIf="f.phonenumber.errors.required">Phone Number is required</div>
+                    <div class="warn" *ngIf="!f.phonenumber.errors.required">Phone Number is invalid</div>
                   </div>
                 </div>
 
                 <div class="btnbox">
                   <button type="reset" class="btn btn-default btncancel
                     btnrightitem" (click)="OnFormCancel()">Cancel</button>
-                  <button type="submit" class="btn btn-primary savecls"
-                    (click)="inputsubmit='temp'">Add as Temporary</button>
+                  <button type="submit" class="btn btn-primary btnsave savecls addTemp"
+                   (click)="inputsubmit='temp'">Add as Temporary</button>
                   <!-- <button type="submit" class="btn btn-primary btnsave savecls" (click)="inputsubmit='invite'">Send Invite</button> -->
                 </div>
               </form>
 
             </div>
             <div *ngSwitchCase="'entity'">
-
               <form [formGroup]="entityClient" (ngSubmit)="oneEntitySubmit()">
                 <div class="form-group">
-                  <label for="fullname" class="fontbold alignleft"> Firm Name 
-                    <span class="mandate">*</span>
-                  </label>
-                  <input formControlName="fullname" type="text"
-                    class="form-control textbox" id="fullname" name="fullname">
-                  <div *ngIf="entitysubmitted && f1.fullname.errors"
-                    class="invalid-feedback">
-                    <div *ngIf="f1.fullname.errors.required">FullName is
-                      required</div>
+                  <label for="fullname" class="fontbold alignleft"> Firm Name <span class="mandate">*</span> </label>
+                  <input formControlName="fullname" type="text" (input)="restricttextSpace($event)" class="form-control textbox" id="fullname" name="fullname">
+                  <div *ngIf="entitysubmitted && f1.fullname.errors" class="invalid-feedback">
+                    <div class="warn" *ngIf="f1.fullname.errors.required">Firm Name is required</div>
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="contact_person" class="fontbold alignleft">
-                    Contact Person<span class="mandate">*</span>
-                  </label>
+                  <label for="contact_person" class="fontbold alignleft">Contact Person<span class="mandate">*</span> </label>
                   <input formControlName="contact_person" type="text"
                     class="form-control textbox" id="contact_person"
-                    name="contact_person">
-                  <div *ngIf="entitysubmitted && f1.contact_person.errors"
-                    class="invalid-feedback">
-                    <div *ngIf="f1.contact_person.errors.required">Contact
-                      Person is required</div>
+                    name="contact_person" (input)="restricttextSpace($event)">
+                  <div *ngIf="entitysubmitted && f1.contact_person.errors" class="invalid-feedback">
+                    <div class="warn" *ngIf="f1.contact_person.errors.required">Contact Person is required</div>
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="email" class="fontbold alignleft">Email Address<span
-                      class="mandate">*</span>
-                  </label>
-                  <input formControlName="email" type="email"
+                  <label for="email" class="fontbold alignleft">Email Address<span class="mandate">*</span> </label>
+                  <input formControlName="email" type="email" (input)="restricttextSpace($event)"
                     class="form-control textbox" id="email" name="email"
                     pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
-                  <div *ngIf="entitysubmitted && f1.email.errors"
-                    class="invalid-feedback">
-                    <div *ngIf="f1.email.errors.required">Email is required</div>
-                    <div *ngIf="!f1.email.errors.required">Email is invalid</div>
+                  <div *ngIf="entitysubmitted && f1.email.errors" class="invalid-feedback">
+                    <div class="warn" *ngIf="f1.email.errors.required">Email is required</div>
+                    <div class="warn" *ngIf="!f1.email.errors.required">Email is invalid</div>
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="confirmemail" class="fontbold alignleft">Confirm
-                    Email Address<span class="mandate">*</span>
-                  </label>
+                  <label for="confirmemail" class="fontbold alignleft">Confirm Email Address<span class="mandate">*</span> </label>
                   <input formControlName="confirmemail" type="email"
                     class="form-control textbox" id="confirmemail"
-                    name="confirmemail"
+                    name="confirmemail" (input)="restricttextSpace($event)"
                     pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
-                  <div *ngIf="entitysubmitted && f1.confirmemail.errors"
-                    class="invalid-feedback">
-                    <div *ngIf="f1.confirmemail.errors.required">Confirm Email
-                      is required</div>
-                    <div *ngIf="!f1.confirmemail.errors.required">Confirm Email
-                      is invalid</div>
+                  <div *ngIf="entitysubmitted && f1.confirmemail.errors" class="invalid-feedback">
+                    <div class="warn" *ngIf="f1.confirmemail.errors.required">Confirm Email is required</div>
+                    <div class="warn" *ngIf="!f1.confirmemail.errors.required">Confirm Email is invalid</div>
+                  </div>
+                  <div *ngIf="entitysubmitted && entityClient.errors?.emailMismatch" class="invalid-feedback">
+                    <div class="warn">Confirm Email does not match</div>
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="country" class="fontbold alignleft"> Country <span
-                      class="mandate">*</span>
-                  </label>
+                  <label for="country" class="fontbold alignleft"> Country <span class="mandate">*</span>  </label>
                   <select  class="form-control textbox" formControlName="country">
                     <option value="" hidden>Choose </option>
                     <option *ngFor="let city of csvContent" [ngValue]="city">{{city}}</option>
                   </select>
                   <!-- <input formControlName="country" type="text"
                     class="form-control textbox" id="country" name="country"> -->
-                  <div *ngIf="entitysubmitted && f1.country.errors"
-                    class="invalid-feedback">
-                    <div *ngIf="f1.country.errors.required">Country is required</div>
+                  <div *ngIf="entitysubmitted && f1.country.errors" class="invalid-feedback">
+                    <div class="warn" *ngIf="f1.country.errors.required">Country is required</div>
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="phonenumber" class="fontbold alignleft">Phone
-                    Number
-                  </label>
-                  <input formControlName="phonenumber" type="tel"
+                  <label for="phonenumber" class="fontbold alignleft">Phone Number </label>
+                  <input formControlName="phonenumber" type="tel" (input)="restricttextSpace($event)"
                     class="form-control textbox" id="phonenumber"
                     name="phonenumber" minlength="10" maxlength="10">
-                  <div *ngIf="entitysubmitted && f1.phonenumber.errors"
-                    class="invalid-feedback">
-                    <div *ngIf="f1.phonenumber.errors.required">Phone Number is
-                      required</div>
-                    <div *ngIf="!f1.phonenumber.errors.required">Phone Number is
-                      invalid</div>
+                  <div *ngIf="entitysubmitted && f1.phonenumber.errors" class="invalid-feedback">
+                    <div class="warn" *ngIf="f1.phonenumber.errors.required">Phone Number is required</div>
+                    <div class="warn" *ngIf="!f1.phonenumber.errors.required">Phone Number is invalid</div>
                   </div>
                 </div>
 
                 <div class="btnbox">
                   <button type="reset" class="btn btn-default btncancel
                     btnrightitem" (click)="OnFormCancel()">Cancel</button>
-                  <button type="submit" class="btn btn-primary savecls" (click)="inputsubmit='entity'">Add as
-                    Temporary</button>
+                  <button type="submit" class="btn btn-primary btnsave savecls addTemp" 
+                  (click)="inputsubmit='entity'">Add as Temporary</button>
                   <!-- <button type="submit" class="btn btn-primary btnsave savecls" (click)="inputsubmit='invite'">Send Invite</button> -->
                 </div>
               </form>
             </div>
           </div>
-
-
-
+        </div>
         </div>
       </div>
 
-
       <div class="btnbox">
         <button type="reset" class="btn btn-default btncancel btnrightitem" (click)="OnCancel()">Cancel</button>
-        <button type="submit" class="btn btn-primary btnsave savecls" [disabled]="!(selectedClients?.length > 0 || tempClients?.length>0)"
+        <button *ngIf="product != 'corporate'" type="submit" class="btn btn-primary btnsave savecls" [disabled]="!(selectedClients?.length > 0 || tempClients?.length>0)"
+          (click)="saveClients()">Next</button>
+        <button *ngIf="product == 'corporate'" type="submit" class="btn btn-primary btnsave savecls"
           (click)="saveClients()">Next</button>
       </div>
     </div>
