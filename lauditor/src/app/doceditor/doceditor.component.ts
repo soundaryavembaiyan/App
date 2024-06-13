@@ -653,19 +653,24 @@ export class DoceditorComponent {
       return;
     }
 
-    this.myForm.reset(); //reset form.
-    this.documentname = ' '
-    window.location.reload();
+    // this.myForm.reset(); //reset form.
+    // this.documentname = ' '
+    //window.location.reload();
 
-    const preservedValues = {
-      // title: this.myForm.get('title').value,
-      // author: this.myForm.get('author').value,
-      // date: this.myForm.get('date').value,
-      title: 'New Document',
-      author: 'Author',
-      //date: new Date()
-    };
-    this.myForm.patchValue(preservedValues); //values back into the form
+    //Navigated at same loc.
+    setTimeout(() => { 
+      window.location.reload();
+    }, 500);
+
+    // const preservedValues = {
+    //   // title: this.myForm.get('title').value,
+    //   // author: this.myForm.get('author').value,
+    //   // date: this.myForm.get('date').value,
+    //   title: 'New Document',
+    //   author: 'Author',
+    //   //date: new Date()
+    // };
+    // this.myForm.patchValue(preservedValues); //values back into the form
   }
 
   getDocument() {
@@ -912,35 +917,40 @@ export class DoceditorComponent {
 
     for (let i = 0; i < contentListItems.length; i++) {
       const item = contentListItems.at(i);
-      // if (item) {
-      //   const getContent = item.get('content')?.value;
+      if (item) {
+        const getContent = item.get('content')?.value;
 
-      //   this.contentDataControl = item.get('contentData');
-      //   this.contentTitleControl = item.get('contentTitle');
+        this.contentDataControl = item.get('contentData');
+        this.contentTitleControl = item.get('contentTitle');
+        // console.log('getContent',getContent)
+        // console.log('contentDataControl',this.contentDataControl)
+        // console.log('contentTitleControl',this.contentTitleControl)
 
-      //   const data = this.contentDataControl.value;
-      //   if (getContent == 'Overview' || getContent == 'Section' || getContent == 'Sub Section' || getContent == 'Sub Sub Section' || getContent == 'Paragraph') {
-      //     if (data === '' || data === undefined || data === " " || data === null) {
-      //       this.toast.error('Please check the Content data');
-      //       return;
-      //     }
-      //   }
+        const data = this.contentDataControl.value;
+        //console.log('data',data)
+        if (getContent == 'Overview' || getContent == 'Section' || getContent == 'Sub Section' || getContent == 'Sub Sub Section' || getContent == 'Paragraph') {
+          if (data === '' || data === undefined || data === " " || data === null) {
+            this.toast.error(`${getContent} is mandatory. Please add the text.`);
+            return;
+          }
+        }
 
-      //   const orderListItems = item.get('orderListItems') as FormArray; // orderListItems within each item
-      //   for (let j = 0; j < orderListItems.length; j++) {
-      //     const itemo = orderListItems.at(j);
-      //     if (itemo) {
-      //       this.listData += `\\item ${itemo.get('contentData')?.value}`; //get all ordered & unordered lists
-      //       const data2 = itemo.value?.contentData;
-      //       if (getContent == 'Ordered List' || getContent == 'Unordered List') {
-      //         if (data2 === '' || data2 === undefined || data2 === " "|| data2 === null) {
-      //           this.toast.error('Please check the Content List data');
-      //           return;
-      //         }
-      //       }
-      //     }
-      //   }
-      // }
+        const orderListItems = item.get('orderListItems') as FormArray; // orderListItems within each item
+        // console.log('orrrr',orderListItems)
+        for (let j = 0; j < orderListItems.length; j++) {
+          const itemo = orderListItems.at(j);
+          if (itemo) {
+            this.listData += `\\item ${itemo.get('contentData')?.value}`; //get all ordered & unordered lists
+            const data2 = itemo.value?.contentData;
+            if (getContent == 'Numbered List' || getContent == 'Bulleted List') {
+              if (data2 === '' || data2 === undefined || data2 === " "|| data2 === null) {
+                this.toast.error(`${getContent} is mandatory. Please add the text.`);
+                return;
+              }
+            }
+          }
+        }
+      }
     }
 
     if (!this.documentId && contentListItems.length !== 0) {
@@ -1040,8 +1050,13 @@ export class DoceditorComponent {
         blocksProcessed++;
 
         // Append block content to the pageContent
+        //if(this.contentDataControl?.value.length > 0){
         pageContent += `<ltk>${this.getBlockContent(getContent)}`;
-
+        //}
+        // if(getContent == 'Page Break'){
+        //   pageContent += `<ltk>${this.getBlockContent(getContent)}`;
+        // }
+          
         // Check if the block count exceeds the threshold or it's the last item
         if (blocksProcessed > maxBlocks || i === contentListItems.length - 1) {
           //this.toast.info('Following content will move to next page')
@@ -1092,7 +1107,7 @@ export class DoceditorComponent {
           else{
             this.httpservice.sendPatchLatexRequest(URLUtils.updateDoc(this.pageId), reqq).subscribe(
               (resp: any) => {
-                // this.pid = this.pageId
+                //this.pid = this.pageId
                 //this.openId = this.pageId
                 //console.log('this.openId',this.pageId)
                 this.toast.success('Document updated successfully.');
@@ -1134,49 +1149,69 @@ export class DoceditorComponent {
   }
 
   // Get Block Contents
-  // getBlockContent(contentType: string) {
-  //   console.log('contenType',contentType)
-  //   switch (contentType) {
-  //     case 'Overview':
-  //       return `\\abstract ${this.contentDataControl.value}`;
-  //     case 'Section':
-  //       return `\\section{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`;
-  //     case 'Sub Section':
-  //       return `\\subsection{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`;
-  //     case 'Sub Sub Section':
-  //       return `\\subsubsection{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`;
-  //     case 'Paragraph':
-  //       return `\\paragraph{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`;
-  //     case 'Ordered List':
-  //       return `\\begin{enumerate}${this.listData}\\end{enumerate}`;
-  //     case 'Unordered List':
-  //       return `\\begin{itemize}${this.listData}\\end{itemize}`;
-  //     case 'Page Break':
-  //       return `\\newpage`;
-  //     default:
-  //       return ''; // Default case, handle appropriately
-  //   }
-  // }
-
   getBlockContent(contentType: string) {
-    // Trim leading and trailing whitespace including '\n' from this.contentDataControl.value
+    //console.log('contenType',contentType)
+    switch (contentType) {
+      case 'Overview':
+        return `\\abstract ${this.contentDataControl.value}`;
+      case 'Section':
+        return `\\section{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`;
+      case 'Sub Section':
+        return `\\subsection{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`;
+      case 'Sub Sub Section':
+        return `\\subsubsection{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`;
+      case 'Paragraph':
+        return `\\paragraph{${this.contentTitleControl.value || ''}}${this.contentDataControl.value || ''}`;
+      case 'Ordered List':
+        return `\\begin{enumerate}${this.listData}\\end{enumerate}`;
+      case 'Unordered List':
+        return `\\begin{itemize}${this.listData}\\end{itemize}`;
+      case 'Page Break':
+        return `\\newpage`;
+      default:
+        return ''; // Default case, handle appropriately
+    }
+  }
+
+  getBlockContento(contentType: string) {
     const contentData = this.contentDataControl.value ? this.contentDataControl.value.trim() : '';
     const contentTitle = this.contentTitleControl.value ? this.contentTitleControl.value.trim() : '';
   
     switch (contentType) {
       case 'Overview':
-        return `\\abstract ${contentData || ''}`;
+        if (contentTitle === '' && contentData === '') {
+          return ''; // Skip if there empty content data and title.
+        }
+        return `\\abstract ${contentData}`;
       case 'Section':
-        return `\\section{${contentTitle || ''}}${contentData || ''}`;
+        if (contentTitle === '' && contentData === '') {
+          return ''; // Skip if there empty content data and title.
+        }
+        return `\\section{${contentTitle}}${contentData}`;
       case 'Sub Section':
-        return `\\subsection{${contentTitle || ''}}${contentData || ''}`;
+        if (contentTitle === '' && contentData === '') {
+          return ''; // Skip if there empty content data and title.
+        }
+        return `\\subsection{${contentTitle}}${contentData}`;
       case 'Sub Sub Section':
-        return `\\subsubsection{${contentTitle || ''}}${contentData || ''}`;
+        if (contentTitle === '' && contentData === '') {
+          return ''; // Skip if there empty content data and title.
+        }
+        return `\\subsubsection{${contentTitle}}${contentData}`;
       case 'Paragraph':
-        return `\\paragraph{${contentTitle || ''}}${contentData || ''}`;
+        if (contentTitle === '' && contentData === '') {
+          return ''; // Skip if there empty content data and title.
+        }
+        return `\\paragraph{${contentTitle}}${contentData}`;
       case 'Numbered List':
+        if (contentTitle === '' && contentData === '') {
+          return ''; // Skip if there empty content data and title.
+        }
         return `\\begin{enumerate}${this.listData}\\end{enumerate}`;
       case 'Bulleted List':
+        if (contentTitle === '' && contentData === '') {
+          return ''; // Skip if there empty content data and title.
+        }
         return `\\begin{itemize}${this.listData}\\end{itemize}`;
       case 'Page Break':
         return `\\newpage`;
@@ -1616,7 +1651,10 @@ export class DoceditorComponent {
       this.httpservice.sendDeleteLatexRequest(URLUtils.deleteDocid(this.documentId)).subscribe((res: any) => {
         if (!res.error) {
           this.toast.success('Document deleted successfully.');
-          window.location.reload();
+          //window.location.reload();
+          setTimeout(() => {
+            window.location.reload();
+          }, 500);
         }
       },
         (error: HttpErrorResponse) => {
@@ -1964,6 +2002,15 @@ export class ViewDocComponent {
   }
   //serach func!!
   onKeydown(event: any) {
+  }
+
+  //Space restrict. at 1st.
+  restricttextSpace(event: any) {
+    let inputValue: string = event.target.value;
+    inputValue = inputValue.replace(/^\s+/, '');
+    inputValue = inputValue.replace(/\s{2,}/g, ' ');
+    event.target.value = inputValue;
+    return;
   }
 
   //sorting func!!
