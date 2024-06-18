@@ -17,12 +17,12 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './email.component.html',
   styleUrls: ['./email.component.scss']
 })
-export class EmailComponent implements OnInit,AfterViewInit{
+export class EmailComponent implements OnInit, AfterViewInit {
   metaData: any;
 
   constructor(private httpservice: HttpService, private confirmationDialogService: ConfirmationDialogService,
     private spinnerService: NgxSpinnerService, private modalService: ModalService,
-    private formBuilder: FormBuilder, private emailService: EmailService, private toast: ToastrService, 
+    private formBuilder: FormBuilder, private emailService: EmailService, private toast: ToastrService,
     private router: Router) { }
   messagesMap: Map<number, any> = new Map<number, any>();
   messages: any;
@@ -43,11 +43,11 @@ export class EmailComponent implements OnInit,AfterViewInit{
   groupViewItems: any;
   selectedGroupItems: any = [];
   composeForm: any = FormGroup;
-  controls:any;
-  selectedAttachments:any=[];
-  isAuthenticated:boolean=false;
-  reldata:any[]=[];
-  corpData:any[]=[];
+  controls: any;
+  selectedAttachments: any = [];
+  isAuthenticated: boolean = false;
+  reldata: any[] = [];
+  corpData: any[] = [];
 
 
   documents: any = [];
@@ -58,15 +58,23 @@ export class EmailComponent implements OnInit,AfterViewInit{
   viewItemsList: any;
   clientDetails: any;
   term: any;
-  matters ='';
+  matters = '';
   errorMsg: boolean = false;
-  selectedmatterType='internal';
-  categories='';
-  corp_matter_list:any[] = [];
+  selectedmatterType = 'internal';
+  categories = '';
+  corp_matter_list: any[] = [];
   uploadDocs: any = [];
-  files: File[] = []; 
+  files: File[] = [];
   clientId: any = [];
 
+  groupId: any = [];
+  selectedValue: any;
+  selectedDate: any;
+  errorMessage: string = '';
+  saveTag = false;
+  grouplist: any = [];
+  grpclientData: any;
+  check = false
 
   ngOnInit() {
     this.composeForm = this.formBuilder.group({
@@ -74,29 +82,30 @@ export class EmailComponent implements OnInit,AfterViewInit{
       subject: ['', Validators.required],
       body: [''],
       documents: [[], Validators.required]
-    }); 
-    let controls:any = localStorage.getItem('inputs');
-   this.controls=JSON.parse(controls);
+    });
+    let controls: any = localStorage.getItem('inputs');
+    this.controls = JSON.parse(controls);
     if (this.controls) {
       this.composeForm.patchValue(this.controls);
       localStorage.removeItem("inputs");
     }
     let docs = localStorage.getItem('docs');
     if (docs && docs.length > 0) {
-      this.selectedAttachments=JSON.parse(docs);
-      this.selectedAttachments=this.selectedAttachments.map((obj: any) => ({ "filename": obj.filename, "path": obj.path }));
+      this.selectedAttachments = JSON.parse(docs);
+      this.selectedAttachments = this.selectedAttachments.map((obj: any) => ({ "filename": obj.filename, "path": obj.path }));
       this.composeForm.controls['documents'].setValue(this.selectedAttachments);
       localStorage.removeItem("docs");
     }
     this.getMessageCount();
     this.get_all_matters(this.selectedmatterType)
     //this.emailAuthentication();
+    console.log('filter', this.filter)
   }
   get f() { return this.composeForm.controls; }
 
   ngAfterViewInit() {
-    if(this.controls)
-    this.modalService.open('compose-email');
+    if (this.controls)
+      this.modalService.open('compose-email');
   }
   emailAuthentication() {
     if (!localStorage.getItem('validationDone')) {
@@ -104,9 +113,9 @@ export class EmailComponent implements OnInit,AfterViewInit{
         (res: any) => {
           if (!res.error && res.url) {
             localStorage.setItem('validationDone', 'true');
-            if(!localStorage.getItem('popupOpened'))
-            window.open(res.url, 'coffergoogleAuthWin', "height = 450px, width = 750px");
-           localStorage.setItem('popupOpened','true');
+            if (!localStorage.getItem('popupOpened'))
+              window.open(res.url, 'coffergoogleAuthWin', "height = 450px, width = 750px");
+            localStorage.setItem('popupOpened', 'true');
             setTimeout(() => {
               location.reload()
             }, 1000)
@@ -121,15 +130,15 @@ export class EmailComponent implements OnInit,AfterViewInit{
     var globalVar = this;
     this.httpservice.sendGetEmailRequest(URLUtils.messagesCount({ "token": localStorage.getItem('TOKEN'), "labelid": 'INBOX' })).subscribe(
       (res: any) => {
-        if(!res.error){
-        this.count = res.data?.messagesTotal;
-        this.getMessages();
+        if (!res.error) {
+          this.count = res.data?.messagesTotal;
+          this.getMessages();
         }
       },
       (error: any) => {
         //setInterval(function () {
         localStorage.removeItem('validationDone');
-        this.isAuthenticated=false;
+        this.isAuthenticated = false;
         globalVar.emailAuthentication();
         //}, 10000);
       });
@@ -138,22 +147,22 @@ export class EmailComponent implements OnInit,AfterViewInit{
     var globalVar = this;
     this.httpservice.sendGetEmailRequest(URLUtils.emailMessages({ "token": localStorage.getItem('TOKEN'), "rows": 10 })).subscribe(
       (res: any) => {
-        if(!res.error){
-        this.isFirstPage = true;
-        this.nextToken = res.nextPageToken;
-        this.messages = res.messages;
-        this.pageNumber=1;
-        this.messagesMap.set(this.pageNumber, res);
-        this.messages.forEach((element: any) => {
-          element.fromName = element.from.split("<")[0];
-        });
-        this.isAuthenticated=true;
-      }
+        if (!res.error) {
+          this.isFirstPage = true;
+          this.nextToken = res.nextPageToken;
+          this.messages = res.messages;
+          this.pageNumber = 1;
+          this.messagesMap.set(this.pageNumber, res);
+          this.messages.forEach((element: any) => {
+            element.fromName = element.from.split("<")[0];
+          });
+          this.isAuthenticated = true;
+        }
       },
       (error: any) => {
         //setInterval(function () {
         localStorage.removeItem('validationDone');
-        this.isAuthenticated=false;
+        this.isAuthenticated = false;
         globalVar.emailAuthentication();
         //}, 10000);
       });
@@ -174,7 +183,7 @@ export class EmailComponent implements OnInit,AfterViewInit{
       (error: any) => {
         // setInterval(function () {
         localStorage.removeItem('validationDone');
-        this.isAuthenticated=false;
+        this.isAuthenticated = false;
         globalVar.emailAuthentication();
         //}, 10000);
       })
@@ -197,9 +206,9 @@ export class EmailComponent implements OnInit,AfterViewInit{
     if (this.pageNumber == 1) {
       this.isFirstPage = true;
     };
-    let data=this.messagesMap.get(this.pageNumber);
-    this.nextToken=data?.nextPageToken;
-    this.messages=data?.messages;
+    let data = this.messagesMap.get(this.pageNumber);
+    this.nextToken = data?.nextPageToken;
+    this.messages = data?.messages;
   }
   documentClick(msgid: any, partid: any) {
     this.msgAndpartId = {
@@ -209,11 +218,11 @@ export class EmailComponent implements OnInit,AfterViewInit{
     this.isDocument = true;
     //this.filter = 'client'
 
-    if(this.product == 'corporate'){
+    if (this.product == 'corporate') {
       this.filter = 'firm'
     }
-    else{
-    this.filter = 'client'
+    else {
+      this.filter = 'client'
     }
     this.getClients();
     this.getGroups();
@@ -221,15 +230,15 @@ export class EmailComponent implements OnInit,AfterViewInit{
   getClients() {
     this.relationshipSubscribe = this.httpservice.getFeaturesdata(URLUtils.getAllRelationship).subscribe((res: any) => {
       this.data = res?.data?.relationships;
-      console.log('data',this.data)
+      console.log('data', this.data)
       this.httpservice.getFeaturesdata(URLUtils.getCalenderExternal).subscribe((res: any) => {
-        this.corpData = res?.relationships.map((obj:any)=>({ "id": obj.id, "type": "corporate","name":obj.name}))
+        this.corpData = res?.relationships.map((obj: any) => ({ "id": obj.id, "type": "corporate", "name": obj.name }))
         this.data = this.data.concat(this.corpData)
-        console.log('corpData',this.corpData)
-    });
+        //console.log('corpData',this.corpData)
+      });
     });
   }
-  
+
   getGroups() {
     this.httpservice.sendGetRequest(URLUtils.getGroups).subscribe((res: any) => {
       this.groupViewItems = res?.data;
@@ -238,36 +247,39 @@ export class EmailComponent implements OnInit,AfterViewInit{
       })
     })
   }
-  selectEvent(item: any) {
-    // this.clients = [];
-    // if (this.filter === 'client') {
-    //   this.clients.push(item);
-    // }
+  // selectEventFirm(item: any) {
+  //   // this.clients = [];
+  //   // if (this.filter === 'client') {
+  //   //   this.clients.push(item);
+  //   // }
 
-    this.clients = [];
-    if (this.filter === 'client') {
-      this.clients.push(item);
-      this.clientDetails = item;
-      localStorage.setItem("clientData", JSON.stringify(item));
-      this.httpservice.sendGetRequest(URLUtils.getMattersByClient(item)).subscribe((res: any) => {
-          this.matterList = res?.matterList;
-          //console.log("matterList " + JSON.stringify(this.matterList));
-      })
-      //console.log("test   " + JSON.stringify(item));
-      //this.getAllDocuments();
-    }
-  }
-  selectGroup(val: boolean) {
-    this.isSelectGroup = val;
-  }
+  //   this.clients = [];
+  //   if (this.filter === 'client') {
+  //     this.clients.push(item);
+  //     this.clientDetails = item;
+  //     localStorage.setItem("clientData", JSON.stringify(item));
+  //     this.httpservice.sendGetRequest(URLUtils.getMattersByClient(item)).subscribe((res: any) => {
+  //         this.matterList = res?.matterList;
+  //         //console.log("matterList " + JSON.stringify(this.matterList));
+  //     })
+  //     //console.log("test   " + JSON.stringify(item));
+  //     //this.getAllDocuments();
+  //   }
+  // }
+  // selectGroupFirm(val: boolean) {
+  //   this.isSelectGroup = val;
+  // }
+
   saveFiles() {
     this.spinnerService.show();
-    this.filter == "client" ? this.selectedGroupItems = [] : this.clients = [];
+    this.filter == "client" ? this.selectedGroupItems = [] : this.clientId = [];
+    var matterList = []
+    matterList.push(this.matters)
     let obj =
     {
       "category": this.filter,
-      "clientids": this.clients.map((obj: any) => ({ "id": obj.id, "type": obj.type })),
-      "matters": this.matters,
+      "clientids": this.clientId.map((obj: any) => ({ "id": obj.id, "type": obj.type })),
+      "matters": matterList,
       "groupids": this.selectedGroupItems.map((obj: any) => obj.id),
       "enableDownload": true
     }
@@ -312,7 +324,7 @@ export class EmailComponent implements OnInit,AfterViewInit{
   close() {
     this.modalService.close('compose-email');
     this.composeForm.reset();
-    this.selectedAttachments=[];
+    this.selectedAttachments = [];
 
     setTimeout(() => {
       window.location.reload();
@@ -329,7 +341,7 @@ export class EmailComponent implements OnInit,AfterViewInit{
       this.router.navigate(['/documents/view/client']);
     }
   }
-  onRemoveAttachment(attachment:any){
+  onRemoveAttachment(attachment: any) {
     this.selectedAttachments = this.selectedAttachments.filter((item: any) => item.filename !== attachment.filename);
   }
 
@@ -339,103 +351,105 @@ export class EmailComponent implements OnInit,AfterViewInit{
     let selectedGroups: any = [];
     let clientId: any;
     this.selectedGroupItems?.forEach((item: any) => {
-        selectedGroups.push(item.id)
+      selectedGroups.push(item.id)
     })
     if (this.clientDetails) {
-        clientId = this.clientDetails?.id;
+      clientId = this.clientDetails?.id;
     }
+    var matterList = []
+    matterList.push(this.matters)
     let obj = {
-        "category": this.filterKey,
-        "clients": clientId,
-        "matters": this.matters,
-        "subcategories":this.categories,
-        "groups": selectedGroups,
-        "showPdfDocs": false
+      "category": this.filterKey,
+      "clients": clientId,
+      "matters": matterList,
+      "subcategories": this.categories,
+      "groups": selectedGroups,
+      "showPdfDocs": false
     }
     let url = this.viewMode == 1 ? URLUtils.getFilteredDocuments : URLUtils.filterMergeDoc;
     //console.log('url',url)
-    if (clientId || selectedGroups.length > 0 )
-        this.httpservice.sendPutRequest(url, obj).subscribe((res: any) => {
-            if (this.viewMode == 1)
-                this.documents = res?.data?.reverse();
-            else
-                this.documents = res?.data?.items?.reverse()
-            //console.log("documents " + JSON.stringify(this.documents));
-            this.documents.forEach((item: any) => {
-                item.expiration_date=item.expiration_date=='NA'?null:new Date(item.expiration_date);
-                
-                item.tags = Object.entries(item.tags);
-                item.isChecked = false;
-                if (this.viewItemsList && this.viewItemsList.length > 0) {
-                    this.viewItemsList?.forEach((val: any) => {
+    if (clientId || selectedGroups.length > 0)
+      this.httpservice.sendPutRequest(url, obj).subscribe((res: any) => {
+        if (this.viewMode == 1)
+          this.documents = res?.data?.reverse();
+        else
+          this.documents = res?.data?.items?.reverse()
+        //console.log("documents " + JSON.stringify(this.documents));
+        this.documents.forEach((item: any) => {
+          item.expiration_date = item.expiration_date == 'NA' ? null : new Date(item.expiration_date);
 
-                        if (item.name == val.name) {
-                            item.isChecked = true;
-                        }
-                    })
-                }
+          item.tags = Object.entries(item.tags);
+          item.isChecked = false;
+          if (this.viewItemsList && this.viewItemsList.length > 0) {
+            this.viewItemsList?.forEach((val: any) => {
+
+              if (item.name == val.name) {
+                item.isChecked = true;
+              }
             })
-            this.errorMsg = this.documents.length == 0 ? true : false;
-        });
+          }
+        })
+        this.errorMsg = this.documents.length == 0 ? true : false;
+      });
 
-}
+  }
 
   onChangeMatters(val: any) {
-        //console.log("value " + JSON.stringify(val.value));
-        this.matters = val.value;
-        //console.log('matt',this.matters)
-        this.categories = ''
-        //this.getAllDocuments();
-}
+    //console.log("value " + JSON.stringify(val.value));
+    this.matters = val.value;
+    //console.log('matt',this.matters)
+    this.categories = ''
+    //this.getAllDocuments();
+  }
 
-get_all_matters(type:any,event?:any){
-  this.spinnerService.show()
-  let selectedGroups: any = [];
-  this.selectedGroupItems?.forEach((item: any) => {
+  get_all_matters(type: any, event?: any) {
+    this.spinnerService.show()
+    let selectedGroups: any = [];
+    this.selectedGroupItems?.forEach((item: any) => {
       selectedGroups.push(item.id)
-  })
-  let payload = {"grp_acls":selectedGroups}
-  if(type=='internal'){
-      this.httpservice.sendPutRequest(URLUtils.getAllMatters,payload).subscribe((res:any)=>{
-          if(res.error == false){
-              this.corp_matter_list = res.matterList
-              this.spinnerService.hide()
-          } else {
-              this.spinnerService.hide()
-          }
-      },(err:any)=>{
-          //console.log(err)
+    })
+    let payload = { "grp_acls": selectedGroups }
+    if (type == 'internal') {
+      this.httpservice.sendPutRequest(URLUtils.getAllMatters, payload).subscribe((res: any) => {
+        if (res.error == false) {
+          this.corp_matter_list = res.matterList
           this.spinnerService.hide()
+        } else {
+          this.spinnerService.hide()
+        }
+      }, (err: any) => {
+        //console.log(err)
+        this.spinnerService.hide()
       })
-  }
-  if(type == 'external'){
-      this.httpservice.sendPutRequest(URLUtils.getAllExternalMatters,payload).subscribe((res:any)=>{
-          if(res){
-              this.corp_matter_list = res.matterList
-              this.spinnerService.hide()
-          }
-      },(err:any)=>{
+    }
+    if (type == 'external') {
+      this.httpservice.sendPutRequest(URLUtils.getAllExternalMatters, payload).subscribe((res: any) => {
+        if (res) {
+          this.corp_matter_list = res.matterList
           this.spinnerService.hide()
+        }
+      }, (err: any) => {
+        this.spinnerService.hide()
       })
 
+    }
   }
-}
 
   onSubmit() {
     this.spinnerService.show();
     if (!this.composeForm.valid) {
-        return;
+      return;
     }
-    this.httpservice.sendPostEmailRequest(URLUtils.sendMessage({ "token": localStorage.getItem('TOKEN')}), this.composeForm.value).subscribe((res: any) => {
+    this.httpservice.sendPostEmailRequest(URLUtils.sendMessage({ "token": localStorage.getItem('TOKEN') }), this.composeForm.value).subscribe((res: any) => {
       if (res) {
         this.spinnerService.hide();
         this.confirmationDialogService.confirm('Success', 'Mail sent successfully.', false, '', '', false, 'sm', false);
-        this.isDocument=false;
+        this.isDocument = false;
         this.composeForm.reset();
-        this.selectedAttachments=[];
+        this.selectedAttachments = [];
         this.modalService.close('compose-email');
       }
-    },(error)=>{
+    }, (error) => {
       this.spinnerService.hide();
       this.confirmationDialogService.confirm('Alert', 'Mail not sent successfully.', false, '', '', false, 'sm', false);
     });
@@ -445,4 +459,64 @@ get_all_matters(type:any,event?:any){
       this.relationshipSubscribe.unsubscribe();
     }
   }
+
+  selectEvent(item: any) {
+    localStorage.setItem("clientData", JSON.stringify(item));
+    if (this.filter === 'client') {
+      //this.check == true;
+      this.clientId.push(item);
+      this.httpservice.sendGetRequest(URLUtils.getMattersByClient(item)).subscribe((res: any) => {
+        this.matterList = res?.matterList;
+      });
+
+      let clientInfo = new Array();
+      this.clientId?.forEach((item: any) => {
+        let clientData = {
+          "id": item.id,
+          "type": item.type
+        };
+        clientInfo.push(clientData);
+      });
+
+      this.httpservice.sendPutRequest(URLUtils.getGrouplist, { "clients": clientInfo }).subscribe((res: any) => {
+        if (res.error == false) {
+          this.grouplist = res?.data;
+          //console.log('selectedGrps', this.grouplist);
+
+          //Filter and check groups based on the API res.
+          this.selectedGroupItems = this.groupViewItems.filter((groupItem: any) => {
+            groupItem.isChecked = this.grouplist.some((selectedGroup: any) => selectedGroup.id === groupItem.id);
+            return groupItem.isChecked;
+          });
+
+          //Update the checkboxes in groupViewItems
+          // this.groupViewItems.forEach((groupItem: any) => {
+          //     groupItem.isChecked = this.selectedGroupItems.some((selectedGroup: any) => selectedGroup.id === groupItem.id);
+          // });
+        }
+      });
+    }
+    else {
+      //this.check == false;
+      this.groupId.push(item?.id);
+    }
+  }
+
+  selectGroup(val: boolean) {
+    this.isSelectGroup = val;
+    if (!val) {
+      this.get_all_matters(this.selectedmatterType)
+    }
+  }
+  onChangeSearch(val: any) {
+    if (val == undefined) {
+      this.clientId = [];
+    }
+  }
+
+  onFocused(e: any) {
+  }
+  // gotoDetail(item: any): void {
+  //   this.router.navigate(['emails/' + this.filter, item]);
+  // }
 }
