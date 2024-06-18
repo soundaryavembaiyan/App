@@ -570,7 +570,7 @@ button:focus {
 }
 .customcss1{
 	display: inline-block;
-    margin-left: 58%;
+    //margin-left: 58%;
     color:#00498e ;
     font-weight: bold;
 }
@@ -922,4 +922,15 @@ word-wrap: break-word;
     font-size: 1rem;
     font-weight: 900;
     color: #00498E;
+}
+.cname{
+    font-weight: 900;
+    font-size: 1rem;
+}
+table td {
+    white-space: nowrap;
+}
+.tabclass {
+    white-space: nowrap;
+    border: 2px solid #eeeeee;
 }
