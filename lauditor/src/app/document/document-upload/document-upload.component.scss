@@ -16,6 +16,8 @@
 }
 .selectAll{
     padding-top: 7px;
+    margin-right: 10px;
+    margin-top: 10px;
 }
 
 label {
@@ -63,6 +65,9 @@ label {
     text-decoration: none;
 }
 
+.active{
+    color:#f8f8f8;
+}
 .btn:focus {
     outline: none;
     box-shadow: none;
@@ -86,7 +91,7 @@ label {
 }
 
 hr.new3 {
-    border-top: 2px dotted #969696;
+    border-top: 2px dotted #000000;
 }
 
 .upload-document .mat-form-field {
@@ -99,8 +104,14 @@ hr.new3 {
 }
 
 .disabled {
-    background: #004d87;
+    background: #8fadc4;
     color: #fff;
+}
+
+.disGrp {
+    background: #eeeeee3e;
+    color: #0000006e;
+    //pointer-events: none;
 }
 
 .inputEl {
@@ -110,9 +121,18 @@ hr.new3 {
 .multicheck.form-control.textbox {
     width: 100%;
 }
+// .input-group{
+//     border-top-left-radius: 0;
+//     border-top-right-radius: 0;
+//     border-bottom-right-radius: 0;
+//     border-bottom-left-radius: 0;
+// }
 
 .index {
     z-index: 99;
+}
+.calitem{
+    margin-top: 15px;
 }
 
 .metadata i.fa.fa-times-circle {
@@ -189,6 +209,7 @@ button:focus {
 .upload-btn {
     background: #DDDDDE;
     color: #111;
+    // width: 30%;
 }
 
 .multicheck label.callselect {
@@ -223,5 +244,54 @@ opacity: 1;
 margin: 25px 0 2px;
 }
 .ggg{
-    margin-left: 40px;
+    //margin-left: 40px;
+}
+.deptCls{
+    color: #004d87;
+    font-size: 18px;
+    font-weight: bolder;
+}
+.listStyle{
+    font-family: 'gill';
+    font-size: 17px;
+    font-weight: 600;
+}
+.grpCls {
+    opacity: 0.1;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.5);
+}
+.btnAdd{
+    background: #004D87;
+    color: white;
+}
+// .name-set{
+//     margin-left: 155px;
+//     width: 90%;
+//     margin-top: -35px;
+// }
+// .removeTag{
+//     margin-top: 20px;
+// }
+// @media only screen and (min-width: 768px) and (max-width: 1024px) {
+//     .name-set{
+//         margin-left: 106px;
+//     }
+// }
+.markX{
+    color: red;
+    font-size: 20px;
+}
+.remBot{
+    margin-top: 28px;
+}
+.fontbold{
+    font-weight: bolder;
+}
+.cong{
+    font-size: 1.1rem;
+    font-weight: bolder;
+}
+.alertbutton{
+    padding-bottom: 20px;
 }
