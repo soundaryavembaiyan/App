@@ -559,7 +559,7 @@
   </div>
   <div class="row" *ngIf="featureName == 'Document'">
     <div class="col-6" *ngIf="isNewDocument">
-      <h5>Attach Document(s)</h5>
+      <h5 class="cname">Attach Document(s)</h5>
       <ul class="nav nav-pills mb-3 btnaction float-left " id="pills-tab" role="tablist">
         <li class="nav-item">
           <button id="High" name="priority" class="selectprior optionhigh active" id="pills-home-tab" [ngClass]="{'active':AddExistingSelected}"
@@ -569,7 +569,7 @@
         <li class="nav-item" *ngIf ="product !='corporate'">
           <button id="Medium" name="priority" class="selectprior optionaling" id="pills-profile-tab" [ngClass]="{'active':UploadDocSelected}"
             data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile"
-            aria-selected="false" (click)="UploadDocSelected=true;AddExistingSelected=false">Upload New</button>
+            aria-selected="false" (click)="UploadDocSelected=true;AddExistingSelected=false;getClients()">Upload New</button>
         </li>
       </ul>
     </div>
@@ -595,11 +595,11 @@
               </thead>
               <tbody>
                 <tr class="rone" *ngFor="let document of selectedDocuments">
-                  <td>{{document.name}}</td>
-                  <td>{{document.description}}</td>
-                  <td *ngIf="document?.tags && document.tags.length>0" [innerHTML]="document?.tags[0]"></td>
-                  <td *ngIf="!(document?.tags?.length>0)"></td>
-                  <td ><i class="fa fa-regular fa-circle-xmark calimg input-group-append sgroup" aria-hidden="true"
+                  <td class="tabclass">{{document.name}}</td>
+                  <td class="tabclass">{{document.description}}</td>
+                  <td class="tabclass" *ngIf="document?.tags && document.tags.length>0" [innerHTML]="document?.tags[0]"></td>
+                  <td  class="tabclass"*ngIf="!(document?.tags?.length>0)"></td>
+                  <td class="tabclass"><i class="fa fa-regular fa-circle-xmark calimg input-group-append sgroup" aria-hidden="true"
                     (click)="removeDocument(document)"></i></td>
                 </tr>
               </tbody>
@@ -639,12 +639,11 @@
             </thead>
             <tbody>
               <tr class="rone" *ngFor="let document of documentsList |filter:searchText">
-                <td>{{document.name}}</td>
-                <td>{{document.description}}</td>
-                <td *ngIf="document?.tags && document.tags.length>0" [innerHTML]="document?.tags[0]"></td>
-                <td *ngIf="!(document?.tags?.length>0)"></td>
-                <td ><input class="" type="checkbox" id="flexCheckDefault"
-(change)="selectDocument(document)"></td>
+                <td class="tabclass">{{document.name}}</td>
+                <td class="tabclass">{{document.description}}</td>
+                <td class="tabclass" *ngIf="document?.tags && document.tags.length>0" [innerHTML]="document?.tags[0]"></td>
+                <td class="tabclass" *ngIf="!(document?.tags?.length>0)"></td>
+                <td class="tabclass"><input class="" type="checkbox" id="flexCheckDefault" (change)="selectDocument(document)"></td>
               </tr>
             </tbody>
           </table>
@@ -653,37 +652,113 @@
           <button type="reset" class="btn btn-default btncancel btnrightitem"
             (click)="cancelDocuments()">Cancel</button>
           <button type="submit" class="btn btn-primary btnsave savecls" (click)="saveDocuments()">Submit</button>
-
         </div>
       </div>
     </div>
     <div class="row" *ngIf="isNewDocument && UploadDocSelected">
-      <div *ngIf="DragAndDropView">
-      <div class="col-2"></div>
-      <div class="col-8">
-        <ngx-file-drop [dropZoneClassName] = "'customcss'" [contentClassName]="'customcss1'" dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)" (onFileOver)="fileOver($event)"
-          (onFileLeave)="fileLeave($event)" class="customcss1">
-          <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
-            Drag and Drop Documents to upload
-            <button class="brwsebutton" type="button" (click)="openFileSelector()">Browse</button>
-          </ng-template>
-        </ngx-file-drop>
-      </div>
-      <div class="row" *ngIf="uploadedDocs.length>0">
-        <div class="col-6" *ngFor="let item of uploadedDocs;let i=index;">
-            <div #itemlist class="documents-list ng-item" > {{item.name}}
-              <div class="icon-list">
-                <div class="icons"><i class="fa  fa-times-circle" style="color:red"
-                    (click)="removeNewDocument(item,i)"></i>
+    <div *ngIf="DragAndDropView">
+
+    <div class="row">
+        <div class="col-6" *ngIf="filter==='client'">
+          <div class="form-group" *ngIf="product != 'corporate'">
+            <label for="title" class="fontbold cname" *ngIf="product != 'content'">Client Name <span class="mandate">*</span></label>
+            <label for="title" class="fontbold cname" *ngIf="product == 'content'">Customer Name <span class="mandate">*</span></label>
+            <div class="ng-autocomplete textbox">
+              <form autocomplete="off" novalidate [formGroup]="reactiveForm" (ngSubmit)="uploadMore()">
+                <ng-autocomplete [data]="clientdata" [searchKeyword]="keyword"
+                  placeholder="Type to select" 
+                  (selected)='selectEvent($event)'
+                  (inputCleared)='onChangeSearch($event)'
+                  (inputFocused)='onFocused($event)'
+                  [itemTemplate]="itemTemplate"
+                  [notFoundTemplate]="notFoundTemplate">
+                  <!-- <i class="fa fa-chevron-down" aria-hidden="true"></i> -->
+                </ng-autocomplete>
+
+                <ng-template #itemTemplate let-item>
+                  <a [innerHTML]="item.name"></a>
+                </ng-template>
+
+                <ng-template #notFoundTemplate let-notFound>
+                  <div [innerHTML]="notFound"></div>
+                </ng-template>
+                <!-- <i class="fa fa-chevron-down"></i> -->
+              </form>
+
+              <ng-template #notFoundTemplate let-notFound>
+                <div [innerHTML]="notFound"></div>
+              </ng-template>
+              <!-- <i class="fa fa-chevron-down"></i> -->
+            </div>
+          </div>
+
+          <!--Groups added on Client doc-->
+          <div class="form-group" id="selectbx" *ngIf="clientId.length>0">
+            <div class="input-group court" id="search">
+              <!-- <p class="grpCls" *ngIf="product != 'corporate'">...</p> -->
+              <div class="multicheck form-control textbox" style="border-radius: 5px;">
+                <label class="callselect" *ngIf="product != 'corporate'">Select Group(s) <span class="mandate">*</span></label>
+                <i *ngIf="!isSelectGroup" class="fa fa-plus form-check-inpu calimg calitem input-group-append checkboxitem" aria-hidden="true" (click)="selectGroup(true)"></i>
+                <i *ngIf="isSelectGroup" class="fa fa-minus form-check-inpu calimg calitem input-group-append checkboxitem" aria-hidden="true" (click)="selectGroup(false)"></i>
+              </div>
+            </div>
+
+            <div class="" *ngIf="isSelectGroup">
+              <div class="input-group index court" id="search">
+                <div class="multicheck form-control textbox" *ngFor="let item of groupViewItems">
+                  <label class="callselect">{{item.name}}</label>
+                  <input type="checkbox" class="calimg calitem input-group-append checkboxitem" id="flexCheckDefault" 
+                  [checked]="item.isChecked" #inputEl (change)="selectGroupItem(item, inputEl.checked)">
                 </div>
               </div>
             </div>
+
+            <div class="row">
+              <div *ngIf="!isSelectGroup" class="codeAlign selected-group">
+                <div class="cod" *ngFor="let item of selectedGroupItems; let i = index">
+                  <div class="documents-list ng-item">{{item.name}}
+                    <div class="icon-list">
+                      <div class="icons"><i class="fa fa-regular fa-circle-xmark" style="color:red; font-size: 24px;" (click)="removeGroup(item)"></i></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Groups added on Client doc-->
+
         </div>
-      </div>
-        <div class="btnbox nextclass">
+
+         <div class="col-6 pull-left">
+            <ngx-file-drop [dropZoneClassName] = "'customcss'" [contentClassName]="'customcss1'" dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)" (onFileOver)="fileOver($event)"
+              (onFileLeave)="fileLeave($event)" class="customcss1">
+              <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+                Drag and Drop Documents to upload
+                <button class="brwsebutton" type="button" (click)="openFileSelector()">Browse</button>
+              </ng-template>
+            </ngx-file-drop>
+
+            <div class="row" *ngIf="uploadedDocs.length>0">
+              <div class="col-6" *ngFor="let item of uploadedDocs;let i=index;">
+                  <div #itemlist class="documents-list ng-item" > {{item.name}}
+                    <div class="icon-list">
+                      <div class="icons">
+                        <i class="fa  fa-times-circle" style="color:red" (click)="removeNewDocument(item,i)"></i>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+
+        <div class="btnbox">
           <button type="reset" class="btn btn-default btncancel" (click)="onUploadCancel()">Cancel</button>
-          <button type="submit" class="btn btn-default btnsave savecls" [ngClass]="{'disabled':uploadedDocs.length==0 }" (click)="DragAndDropView=false">Next</button>
+          <button type="submit" class="btn btn-default btnsave savecls" 
+          [ngClass]="{'disabled':!((uploadedDocs.length>0 && clientId.length===1 && selectedGroupItems.length>0))}"
+          (click)="DragAndDropView=false">Next</button>
         </div>
+
     </div>
     <div *ngIf="!DragAndDropView">
       <div class="col-12 main-width">
@@ -741,26 +816,36 @@
                       <label for="documentName" class="fontbold">Document Name <span class="mandate">*</span>
                       </label>
                       <input type="text" class="form-control textbox"  id="documentName"
-                        name="documentName" formControlName="name"
+                        name="documentName" formControlName="name" (input)="restricttextSpace($event)" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_ ]|^ /g,'')"
                         [ngClass]="{'is-invalid':submitted && f.name.errors}">
                       <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
                         <div *ngIf="f.name.errors.required">Document Name is required</div>
                       </div>
                     </div>
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                       <label for="title" class="fontbold"> Expiration Date</label>
                       <mat-form-field appearance="fill" class="form-group">
-                        <input matInput [matDatepicker]="disableTyping"    formControlName="date_of_filling" name="date_of_filling"
+                        <input matInput [matDatepicker]="disableTyping" formControlName="date_of_filling" name="date_of_filling"
                           class="form-control "  readonly>
                           <mat-datepicker-toggle matSuffix [for]="disableTyping">
                           </mat-datepicker-toggle>
                           <mat-datepicker #disableTyping></mat-datepicker>
                       </mat-form-field>
-                      
+                    </div> -->
+                    <div class="form-group">
+                      <label for="title" class="fontbold">Expiration Date</label>
+                      <div class="input-group">
+                      <mat-form-field appearance="fill" class="form-group">
+                        <input matInput [matDatepicker]="picker"
+                         placeholder="Choose a date" formControlName="date_of_filling" name="date_of_filling" readonly>
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                      </mat-form-field>
+                      </div> 
                     </div>
                     <div class="form-group">
                       <label for="filling date" class="fontbold">Description</label><!--<span class="mandate">*</span>-->
-                      <textarea rows="4" cols="50" class="form-control textbox"
+                      <textarea rows="4" cols="50" class="form-control textbox" (input)="restricttextSpace($event)" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_ ]|^ /g,'')"
                         formControlName="description" name="description"></textarea>
                       <!-- 
                         [ngClass]="{'is-invalid':submitted && f.description.errors}" maxlength="300"
@@ -863,30 +948,27 @@
               <p class="thheadname">Tags</p>
               <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('tags',selectedDocuments)">
             </th>  -->
-            <th></th>
-            <th></th>
           </tr>
         </thead>
         <tbody>
           <tr class="rone veiw-items" *ngFor="let doc of selectedDocuments |filter:searchText">
-            <td *ngIf="isMergeEnable">
+            <td class="tabclass" *ngIf="isMergeEnable">
               <input type="checkbox" [(ngModel)]="doc.checked" #inputE4 class="larger" name="checkBox2"
                 (change)="selectMergeDocument(inputE4.checked,doc)">
             </td>
-            <td *ngIf="!isMergeEnable">
-            </td>
-            <td>{{doc.name}}</td>
-            <td *ngIf="doc.addedBy">{{doc.addedBy}}</td>
-            <!-- <td *ngIf="doc.uploaded_by">{{doc.uploaded_by}}</td> -->
-            <td>{{doc.description}}</td>
-            <td *ngIf="doc?.tags && doc.tags.length>0" [innerHTML]="doc?.tags[0]"></td>
-            <td *ngIf="!doc?.tags"></td>
-            <td>
+            <td class="tabclass" *ngIf="!isMergeEnable"></td>
+            <td class="tabclass">{{doc.name}}</td>
+            <td class="tabclass">{{this.createdBy}}</td>
+            <!-- <td class="tabclass" *ngIf="doc.uploaded_by">{{doc.uploaded_by}}</td> -->
+            <td class="tabclass">{{doc.description}}</td>
+            <!-- <td class="tabclass" *ngIf="doc?.tags && doc.tags.length>0" [innerHTML]="doc?.tags[0]"></td>
+            <td class="tabclass" *ngIf="!doc?.tags"></td> -->
+            <td class="tabclass">
               <!-- <img src="assets/img/eyesico.svg" (click)="viewDocument(doc)">&nbsp; -->
-              <button (click)="viewDocument(doc)"><img src="assets/img/eyesico.svg"  /></button>&nbsp;
+              <button (click)="viewDocument(doc)"><img src="assets/img/eyesico.svg"/></button>&nbsp;
               <i (click)="documentDelete(doc)" *ngIf="data?.type == 'internal'"  class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup removedoc" aria-hidden="true"></i>
             </td>
-            <td></td>
+            <!-- <td class="tabclass"></td> -->
             <!-- <td (click)="documentDelete(doc)" *ngIf="data?.type == 'internal'">
               <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup removedoc" aria-hidden="true"></i>
             </td> -->
