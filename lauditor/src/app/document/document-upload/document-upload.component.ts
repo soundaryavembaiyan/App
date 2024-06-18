@@ -10,6 +10,7 @@ import { URLUtils } from 'src/app/urlUtils';
 import { environment } from 'src/environments/environment';
 import { DocumentService } from '../document.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
     selector: 'document-upload',
@@ -18,7 +19,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class DocumentUploadComponent implements OnInit {
 
-    @ViewChild('file') myInputVariable: ElementRef;
+    @ViewChild('file') myInputVariable!: ElementRef;
     reactiveForm: FormGroup;
     keyword = 'name';
     product = environment.product;
@@ -34,6 +35,7 @@ export class DocumentUploadComponent implements OnInit {
     uploadDocs: any = [];
     editMeta: any;
     downloadDisabled: boolean = false;
+    encryptDisabled = false;
     editMetaFlag: any = true;
     submitted = false;
     editDoc: boolean = false;
@@ -50,6 +52,7 @@ export class DocumentUploadComponent implements OnInit {
     metaData: any;
     matterList: any;
     matters: any;
+    categories:any;
     selectedValue: any;
     checker: any;
     successRes: any = [];
@@ -57,15 +60,23 @@ export class DocumentUploadComponent implements OnInit {
     allCheck: boolean = false;
     noOfDocs: number = 0;
     addTag: boolean = false;
+    errorMessage: string = '';
     @ViewChild('file')
-
+    reldata:any[]=[];
+    corpData:any[]=[];
+    selectedmatterType='internal';
+    matter_type: any[] = [{'title':'Internal Matter','value':'internal'},{'title':'External Matter','value':'external'}];
+    corp_matter_list:any[] = [];
+    saveTag = false;
+    grouplist:any=[];
+    grpclientData:any;
     // myInputVariable!: ElementRef;
 
     isDisableDoc: boolean = true;
     constructor(private httpservice: HttpService,
         private fb: FormBuilder,
         private router: Router,
-        private toastr: ToastrService, private modalService: ModalService, private documentService: DocumentService) {
+        private toastr: ToastrService, private modalService: ModalService, private documentService: DocumentService , private spinnerService: NgxSpinnerService) {
         this.filter = this.router.url.split("/").splice(-2)[1];
         this.router.events.subscribe((val) => {
             if (val instanceof NavigationEnd) {
@@ -88,15 +99,20 @@ export class DocumentUploadComponent implements OnInit {
                 item.isChecked = false;
             });
         }
+        if(this.selectedGroupItems.length > 0){
+            this.get_all_matters(this.selectedmatterType)
+        }
     }
 
     ngOnInit(): void {
-
+        this.get_all_matters(this.selectedmatterType)
         this.documentDetail = this.fb.group({
             name: ['', Validators.required],
             description: ['', Validators.required],
-            date_of_filling: ['']
+            expiration_date: ['']
         });
+        
+        //console.log('reactiveForm',this.reactiveForm)
         this.getClients();
         this.values.push({ tagtype: "", tag: "" });
 
@@ -106,54 +122,136 @@ export class DocumentUploadComponent implements OnInit {
                 item.isChecked = false;
             })
         })
-        this.httpservice.sendGetRequest(URLUtils.getLegalMatter).subscribe((res: any) => {
-            this.matterList = res?.matters;
-            // //console.log("matterList " + JSON.stringify(this.matterList));
-        })
-
-
+        // this.httpservice.sendGetRequest(URLUtils.getLegalMatter).subscribe((res: any) => {
+        //     this.matterList = res?.matters;
+        //     // //console.log("matterList " + JSON.stringify(this.matterList));
+        // })
         // this.contents = undefined;
-
         // this.docEnable("disable");
+
+        //console.log('values of ng', this.values)
     }
+
     get f() {
         return this.documentDetail.controls;
     }
     removevalue(i: any) {
+        // console.log('i',i)
+        // if( i === 0){
+        //     this.saveTag = false; //Disable the SaveBtn
+        // }
         this.values.splice(i, 1);
     }
 
     addvalue() {
+        //this.saveTag = true; //Disable the SaveBtn
         this.values.push({ tagtype: "", tag: "" });
     }
-    cancel() {
-        this.noOfDocs = 0
-        this.editMetaFlag = true;
-        this.addTag=false;
-    }
-    submit() {
-        this.noOfDocs = 0
-        this.editMetaFlag = true;
-        // //console.log(JSON.stringify(this.values));
-        let resultObj: any = {};
+    // cancel() {
+    //     this.noOfDocs = 0
+    //     this.editMetaFlag = true;
+    //     this.addTag=false;
+    //     let resultObj: any = {};
+    //     this.values.forEach((item: any) => {
+    //         resultObj[item.tagtype] = item.tag
+    //     });
+    //     this.metaData = resultObj;
+    // }
 
+    cancel() {
+        this.noOfDocs = 0;
+        this.editMetaFlag = true;
+        this.addTag = false;
+        this.values = []; // Resetting values array to an empty array
+        let resultObj: any = {};
+        this.metaData = resultObj;
+        this.addvalue(); //adding empty input field
+    }
+
+    
+    submit() {
+        //Check each item in the values
+        for (const item of this.values) {
+            if (!item.tag.trim() || !item.tagtype.trim()) {
+                this.toastr.error('Please fill all fields');
+                return; 
+            }
+        }
+
+        this.noOfDocs = 0
+        this.editMetaFlag = true;
+        console.log('valuesss', this.values)
+        console.log(JSON.stringify(this.values));
+        let resultObj: any = {};
         this.values.forEach((item: any) => {
             resultObj[item.tagtype] = item.tag
-
         });
         this.metaData = resultObj;
-        //console.log("tagsArray  " + JSON.stringify(resultObj));
+        console.log("tagsArray  " + JSON.stringify(resultObj));
         this.addTag=false;
     }
+
     onChange(val: any) {
         //console.log("value " + JSON.stringify(val.value));
-        this.matters = val.value;
+        if(this.selectedmatterType=='external'){
+            this.categories = val.value
+            this.matters = ''
+
+        } else {
+            this.matters = val.value;
+            this.categories = ''
+        }
+        console.log(this.categories)
+        console.log(this.matters)
+       
     }
+    trySelectGroup(enable: boolean) {
+        if (this.clientId.length > 0) {
+          this.selectGroup(enable);
+        }
+    }
+    
     selectGroup(val: boolean) {
         this.isSelectGroup = val;
+        if(!val){
+            this.get_all_matters(this.selectedmatterType)
+        }
     }
+    get_all_matters(type:any,event?:any){
+        this.spinnerService.show()
+        let selectedGroups: any = [];
+        this.selectedGroupItems?.forEach((item: any) => {
+            selectedGroups.push(item.id)
+        })
+        let payload = {"grp_acls":selectedGroups}
+        if(type=='internal'){
+            this.httpservice.sendPutRequest(URLUtils.getAllMatters,payload).subscribe((res:any)=>{
+                if(res.error == false){
+                    this.corp_matter_list = res.matterList
+                    this.spinnerService.hide()
+                } else {
+                    this.spinnerService.hide()
+                }
+            },(err:any)=>{
+                console.log(err)
+                this.spinnerService.hide()
+            })
+        }
+        if(type == 'external'){
+            this.httpservice.sendPutRequest(URLUtils.getAllExternalMatters,payload).subscribe((res:any)=>{
+                if(res){
+                    this.corp_matter_list = res.matterList
+                    this.spinnerService.hide()
+                }
+            },(err:any)=>{
+                this.spinnerService.hide()
+            })
+
+        }
+    }
+
     selectGroupItem(item: any, val: any) {
-        //console.log("selected item" + JSON.stringify(item) + val);
+        //console.log("--selected item" + JSON.stringify(item) + val);
         if (val) {
             item.isChecked = val;
             this.selectedGroupItems.push(item);
@@ -168,37 +266,84 @@ export class DocumentUploadComponent implements OnInit {
         localStorage.setItem("groupIds", JSON.stringify(this.selectedGroupItems));
         //console.log("selected " + JSON.stringify(this.selectedGroupItems));
     }
+
     removeGroup(item: any) {
         item.isChecked = false;
         let index = this.selectedGroupItems.findIndex((d: any) => d.id === item.id); //find index in your array
         this.selectedGroupItems.splice(index, 1);
+        this.get_all_matters(this.selectedmatterType)
     }
+
+    // getFileDetails(event: any) {
+    //     for (var i = 0; i < event.files.length; i++) {
+    //         let file: File = event.files[i]
+    //         this.files.push(file);
+
+    //         // let allowedTypes = ['.pdf'];
+    //         // if (!allowedTypes.includes(file.type)) {
+    //         //     this.toastr.error('Invalid format. Only PDF allowed')
+    //         // }
+
+    //         let object = {
+    //             name: event.files[i].name.split('.')[0],
+    //             description: event.files[i].name.split('.')[0],
+    //             type: event.files[i].type,
+    //             file: file,
+    //             groups: this.groupId,
+    //             client: this.clientId,
+    //             matter: this.matters,
+    //             subcategories: this.categories,
+    //             category: this.filter,
+    //             downloadDisabled: false,
+    //             custom_encrypt:false 
+    //         }
+    //         this.uploadDocs.push(object);
+    //     }
+    //     this.uploadDocs.forEach((item: any, i: any) => {
+    //         item.id = i;
+    //         //console.log("ids " + item.id);
+    //     })
+    //     //console.log("upload doc  " + JSON.stringify(this.uploadDocs));
+    // }
+
     getFileDetails(event: any) {
+      for (var i = 0; i < event.files.length; i++) {
+        let file: File = event.files[i];
+    
+        //allowed file types.
+        const allowedTypes = ['image/png', 'image/heif', 'image/webp', 'image/ico', 'image/jpg', 'image/jpeg', 'image/arw', 'image/bmp', 'image/svg', 'image/tiff', 
+        'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-powerpoint', 
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'application/vnd.ms-excel', 
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/rtf', 'text/csv', 'text/rtf', 'text/plain'];
 
-        for (var i = 0; i < event.files.length; i++) {
-            let file: File = event.files[i]
-            this.files.push(file);
-            let object = {
-
-                name: event.files[i].name.split('.')[0],
-                description: event.files[i].name.split('.')[0],
-                type: event.files[i].type,
-                file: file,
-                groups: this.groupId,
-                client: this.clientId,
-                matter: this.matters,
-                category: this.filter,
-                downloadDisabled: false
-            }
-            this.uploadDocs.push(object);
-
+        if (!allowedTypes.includes(file.type)) {
+          this.toastr.error('Invalid file format!');
+          continue;
         }
-        this.uploadDocs.forEach((item: any, i: any) => {
-            item.id = i;
-            //console.log("ids " + item.id);
-        })
-        //console.log("upload doc  " + JSON.stringify(this.uploadDocs));
+    
+        //If the file type is allowed, proceed with handling the file
+        this.files.push(file);
+    
+        let object = {
+          name: event.files[i].name.split('.')[0],
+          description: event.files[i].name.split('.')[0],
+          type: event.files[i].type,
+          file: file,
+          groups: this.groupId,
+          client: this.clientId,
+          matter: this.matters,
+          subcategories: this.categories,
+          category: this.filter,
+          downloadDisabled: false,
+          custom_encrypt: false
+        };
+        this.uploadDocs.push(object);
+      }
+      this.uploadDocs.forEach((item: any, i: any) => {
+        item.id = i;
+      });
     }
+    
 
     saveFiles() {
         let clientInfo = new Array();
@@ -209,6 +354,7 @@ export class DocumentUploadComponent implements OnInit {
             }
             clientInfo.push(clientData);
         })
+        var vale = true
 
         for (var i = 0; i < this.uploadDocs.length; i++) {
             //console.log("test   " + JSON.stringify(this.uploadDocs));
@@ -218,7 +364,7 @@ export class DocumentUploadComponent implements OnInit {
             const ids = this.selectedGroupItems.map((obj: any) => obj.id);
             fdata.append('name', this.uploadDocs[i].name);
             fdata.append('description', this.uploadDocs[i].description);
-            fdata.append('expiration_date', this.uploadDocs[i]?.date_of_filling ? this.uploadDocs[i]?.date_of_filling : '');
+            fdata.append('expiration_date', this.uploadDocs[i].expiration_date ? this.uploadDocs[i]?.expiration_date : '');
             fdata.append('filename', this.uploadDocs[i].name)
             fdata.append('content_type', this.uploadDocs[i].type)
             fdata.append('category', this.filter)
@@ -226,9 +372,11 @@ export class DocumentUploadComponent implements OnInit {
                 fdata.append('groups', JSON.stringify(ids))
             }
             if (this.matters) { fdata.append('matters', JSON.stringify(matterList)) }
-
+            let subcategories = [this.categories]
+            if(this.categories) { fdata.append('subcategories', JSON.stringify(subcategories))}
             fdata.append('file', this.files[i])
             fdata.append('clients', JSON.stringify(clientInfo))
+            fdata.append('custom_encrypt', this.uploadDocs[i].custom_encrypt);
             fdata.append('downloadDisabled', this.uploadDocs[i].downloadDisabled);
             fdata.append('tags', this.uploadDocs[i].checked == true ? JSON.stringify(this.metaData) : '');
             this.upload(i, fdata)
@@ -244,15 +392,18 @@ export class DocumentUploadComponent implements OnInit {
     upload(idx: any, file: any) {
         //console.log("test   " + JSON.stringify(file));
         this.myInputVariable.nativeElement.value = '';
+        this.spinnerService.show()
         this.httpservice.sendPostRequest(URLUtils.postDocumentsClient, file).subscribe(
             (res: any) => {
 
                 if (res.error == true) {
                     this.errorRes = false;
                     this.message = res.msg || res.msg.errors.clients || res.msg.errors.matters;
+                    this.spinnerService.hide()
                     this.toastr.error(this.message)
                 } else {
                     this.successRes.push(res);
+                    this.spinnerService.hide()
                     this.modalService.open('custom-modal-2');
                     this.errorRes = true;
                     this.toastr.success('upload success');
@@ -264,6 +415,7 @@ export class DocumentUploadComponent implements OnInit {
             // }
             
             (error: HttpErrorResponse) => {
+                this.spinnerService.hide()
                 if (error.status === 401 || error.status === 403) {
                   const errorMessage = error.error.msg || 'Unauthorized';
                   this.toastr.error(errorMessage);
@@ -273,9 +425,8 @@ export class DocumentUploadComponent implements OnInit {
                 );
     }
 
-
-
     removeDocument(item: any) {
+        this.editDoc = false; //close the editMeta tab
         let index = this.uploadDocs.findIndex((d: any) => d.name === item.name);
         // find index in your array
         // //console.log("index--->" + index);
@@ -315,6 +466,13 @@ export class DocumentUploadComponent implements OnInit {
         });
 
     }
+    encryptEnable(item: any) {
+        this.encryptDisabled = item == "enable" ? true : false;
+        this.uploadDocs.forEach((item: any) => {
+            item.custom_encrypt = this.encryptDisabled;
+        });
+       console.log(this.uploadDocs)
+    }
     disableDoc(val: any, enableFlag: boolean) {
         this.isDisableDoc = enableFlag;
         this.uploadDocs.forEach((item: any) => {
@@ -323,6 +481,17 @@ export class DocumentUploadComponent implements OnInit {
             }
         });
         this.checker = this.uploadDocs.every((v: any) => v.downloadDisabled === true);
+    }
+
+    encrypttoggle(val: any, enableFlag: boolean) {
+        this.uploadDocs.forEach((item: any) => {
+            if (item.name == val.name) {
+                item.custom_encrypt = !enableFlag;
+            }
+        });
+        console.log(this.uploadDocs)
+        
+        // this.checker = this.uploadDocs.every((v: any) => v.custom_encrypt === true);
     }
     checkAllItem(event: any) {
         if (event) {
@@ -344,6 +513,7 @@ export class DocumentUploadComponent implements OnInit {
         this.editMeta = JSON.parse(JSON.stringify(item));
     }
     onSubmit() {
+        //console.log('documentDetail form',this.documentDetail)
         this.selectedIdx = null;
         this.submitted = true;
         if (this.documentDetail.invalid) {
@@ -356,27 +526,81 @@ export class DocumentUploadComponent implements OnInit {
             if (val.id == this.editMeta.id) {
                 val.name = this.documentDetail.value.name;
                 val.description = this.documentDetail.value.description;
-                val.date_of_filling = this.documentDetail.value.date_of_filling;
+                val.expiration_date = this.documentDetail.value.expiration_date;
                 //console.log("val     " + JSON.stringify(val));
             }
         })
     }
 
+    // selectEvent(item: any) {
+    //     //console.log("test   " + JSON.stringify(item));
+    //     localStorage.setItem("clientData", JSON.stringify(item));
+    //     if (this.filter === 'client') {
+    //         this.clientId.push(item);
+    //         this.httpservice.sendGetRequest(URLUtils.getMattersByClient(item)).subscribe((res: any) => {
+    //             this.matterList = res?.matterList;
+    //             //console.log("test   " + JSON.stringify(res));
+    //         });
+
+    //         let clientInfo = new Array();
+    //         this.clientId?.forEach((item: any) => {
+    //             let clientData = {
+    //                 "id": item.id,
+    //                 "type": item.type
+    //             }
+    //             clientInfo.push(clientData);
+    //         })
+
+    //         this.httpservice.sendPutRequest(URLUtils.getGrouplist,{"clients":clientInfo}).subscribe((res: any) => {
+    //             if (res.error == false) {
+    //                 this.grouplist = res?.data;
+    //                 console.log('selectedGrps', this.grouplist)
+    //             }
+    //         })
+    //     } else {
+    //         this.groupId.push(item?.id)
+    //     }
+    // }
+
     selectEvent(item: any) {
-        //console.log("test   " + JSON.stringify(item));
         localStorage.setItem("clientData", JSON.stringify(item));
         if (this.filter === 'client') {
             this.clientId.push(item);
             this.httpservice.sendGetRequest(URLUtils.getMattersByClient(item)).subscribe((res: any) => {
                 this.matterList = res?.matterList;
-                //console.log("test   " + JSON.stringify(res));
-            },
-                (err: any) => { });
+            });
 
+            let clientInfo = new Array();
+            this.clientId?.forEach((item: any) => {
+                let clientData = {
+                    "id": item.id,
+                    "type": item.type
+                };
+                clientInfo.push(clientData);
+            });
+
+            this.httpservice.sendPutRequest(URLUtils.getGrouplist, { "clients": clientInfo }).subscribe((res: any) => {
+                if (res.error == false) {
+                    this.grouplist = res?.data;
+                    //console.log('selectedGrps', this.grouplist);
+
+                    //Filter and check groups based on the API res.
+                    this.selectedGroupItems = this.groupViewItems.filter((groupItem: any) => {
+                        groupItem.isChecked = this.grouplist.some((selectedGroup: any) => selectedGroup.id === groupItem.id);
+                        return groupItem.isChecked;
+                    });
+
+                    //Update the checkboxes in groupViewItems
+                    // this.groupViewItems.forEach((groupItem: any) => {
+                    //     groupItem.isChecked = this.selectedGroupItems.some((selectedGroup: any) => selectedGroup.id === groupItem.id);
+                    // });
+                }
+            });
         } else {
-            this.groupId.push(item?.id)
+            this.groupId.push(item?.id);
         }
     }
+
     // cancelClient() {
     //     this.clientId = [];
     //     this.matterList = [];
@@ -404,11 +628,14 @@ export class DocumentUploadComponent implements OnInit {
     }
     uploadMore() {
         this.uploadDocs = [];
+        // window.location.reload();
+        // this.router.navigate(['documents/upload/' + this.filter]);
         //  this.selectedGroupItems = [];
         // this.reactiveForm.reset();
     }
     cancelUpload() {
         this.uploadDocs = [];
+        this.router.navigate(['documents/view/' + this.filter]);
     }
     viewChanges() {
         this.router.navigate(['documents/view/' + this.filter]);
@@ -426,7 +653,34 @@ export class DocumentUploadComponent implements OnInit {
     }
     getClients() {
         this.relationshipSubscribe = this.httpservice.getFeaturesdata(URLUtils.getAllRelationship).subscribe((res: any) => {
-            this.data = res?.data?.relationships;
+            
+            this.reldata = res?.data?.relationships;
+            this.httpservice.getFeaturesdata(URLUtils.getCalenderExternal).subscribe((res: any) => {
+                this.corpData = res?.relationships.map((obj:any)=>({ "id": obj.id, "type": "corporate" ,"name":obj.name}))
+                this.data = this.reldata.concat(this.corpData)
+            });
+            
         });
     }
+    restrictSpaces(event: any) {
+        let inputValue: string = event.target.value;
+        // Replace multiple spaces with a single space
+        inputValue = inputValue.replace(/\s{2,}/g, ' ');
+        event.target.value = inputValue;
+      }
+    
+      restrictFirstCharacter(event: any) {
+        let inputValue: string = event.target.value;
+        // Check if the first character is hyphen '-' or underscore '_'
+        if (/^[-_]/.test(inputValue)) {
+          inputValue = inputValue.substring(1);
+          event.target.value = inputValue;
+        }
+      }
+      restricttextSpace(event: any) {
+        let inputValue: string = event.target.value;
+        inputValue = inputValue.replace(/^\s+/, '');
+        inputValue = inputValue.replace(/\s{2,}/g, ' ');
+        event.target.value = inputValue;
+      }
 }
