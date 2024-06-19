@@ -569,7 +569,7 @@
         <li class="nav-item" *ngIf ="product !='corporate'">
           <button id="Medium" name="priority" class="selectprior optionaling" id="pills-profile-tab" [ngClass]="{'active':UploadDocSelected}"
             data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile"
-            aria-selected="false" (click)="UploadDocSelected=true;AddExistingSelected=false;getClients()">Upload New</button>
+            aria-selected="false" (click)="UploadDocSelected=true;AddExistingSelected=false">Upload New</button>
         </li>
       </ul>
     </div>
@@ -659,7 +659,8 @@
     <div *ngIf="DragAndDropView">
 
     <div class="row">
-        <div class="col-6" *ngIf="filter==='client'">
+      <!-- <div class="col-6"></div> -->
+        <!--<div class="col-6" *ngIf="filter==='client'">
           <div class="form-group" *ngIf="product != 'corporate'">
             <label for="title" class="fontbold cname" *ngIf="product != 'content'">Client Name <span class="mandate">*</span></label>
             <label for="title" class="fontbold cname" *ngIf="product == 'content'">Customer Name <span class="mandate">*</span></label>
@@ -672,7 +673,6 @@
                   (inputFocused)='onFocused($event)'
                   [itemTemplate]="itemTemplate"
                   [notFoundTemplate]="notFoundTemplate">
-                  <!-- <i class="fa fa-chevron-down" aria-hidden="true"></i> -->
                 </ng-autocomplete>
 
                 <ng-template #itemTemplate let-item>
@@ -682,20 +682,17 @@
                 <ng-template #notFoundTemplate let-notFound>
                   <div [innerHTML]="notFound"></div>
                 </ng-template>
-                <!-- <i class="fa fa-chevron-down"></i> -->
               </form>
 
               <ng-template #notFoundTemplate let-notFound>
                 <div [innerHTML]="notFound"></div>
               </ng-template>
-              <!-- <i class="fa fa-chevron-down"></i> -->
             </div>
           </div>
 
-          <!--Groups added on Client doc-->
+          <!--Groups added on Client doc--
           <div class="form-group" id="selectbx" *ngIf="clientId.length>0">
             <div class="input-group court" id="search">
-              <!-- <p class="grpCls" *ngIf="product != 'corporate'">...</p> -->
               <div class="multicheck form-control textbox" style="border-radius: 5px;">
                 <label class="callselect" *ngIf="product != 'corporate'">Select Group(s) <span class="mandate">*</span></label>
                 <i *ngIf="!isSelectGroup" class="fa fa-plus form-check-inpu calimg calitem input-group-append checkboxitem" aria-hidden="true" (click)="selectGroup(true)"></i>
@@ -725,13 +722,13 @@
               </div>
             </div>
           </div>
-          <!--Groups added on Client doc-->
+          <!--Groups added on Client doc--
 
-        </div>
+        </div>-->
 
-         <div class="col-6 pull-left">
+         <div class="col-12">
             <ngx-file-drop [dropZoneClassName] = "'customcss'" [contentClassName]="'customcss1'" dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)" (onFileOver)="fileOver($event)"
-              (onFileLeave)="fileLeave($event)" class="customcss1">
+              (onFileLeave)="fileLeave($event)" class="customcss1 center-content">
               <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
                 Drag and Drop Documents to upload
                 <button class="brwsebutton" type="button" (click)="openFileSelector()">Browse</button>
@@ -755,7 +752,7 @@
         <div class="btnbox">
           <button type="reset" class="btn btn-default btncancel" (click)="onUploadCancel()">Cancel</button>
           <button type="submit" class="btn btn-default btnsave savecls" 
-          [ngClass]="{'disabled':!((uploadedDocs.length>0 && clientId.length===1 && selectedGroupItems.length>0))}"
+          [ngClass]="{'disabled':uploadedDocs.length==0}"
           (click)="DragAndDropView=false">Next</button>
         </div>
 
