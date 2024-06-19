@@ -142,19 +142,19 @@
                         <a href="javascript:void(0);" class="details doc-option client "
                             [ngClass]="{ 'active': filter=='client'}"
                             *ngIf="product != 'content' && product != 'corporate'" 
-                            (click)="filter='client';">Client</a>
+                            (click)="filter='client';removeCliExGroups()">Client</a>
 
                         <a href="javascript:void(0);" class="details doc-option client "
                             [ngClass]="{ 'active': filter=='client'}" *ngIf="product == 'content'"
-                            (click)="filter='client';">Customer</a>
+                            (click)="filter='client';removeCliExGroups()">Customer</a>
 
                         <a href="javascript:void(0);" class=" details doc-option firm"
                             [ngClass]="{ 'active': filter=='firm'}" *ngIf="product != 'corporate'"
-                            (click)="filter='firm';">Firm</a>
+                            (click)="filter='firm';removeFirmExGroups()">Firm</a>
 
                         <a href="javascript:void(0);" class=" details doc-option firm internalF"
                             [ngClass]="{ 'active': filter=='firm'}" *ngIf="product == 'corporate'"
-                            (click)="filter='firm';">Internal</a>
+                            (click)="filter='firm';removeFirmExGroups()">Internal</a>
                     </div>
                 </div>
             </div>
@@ -191,6 +191,7 @@
                                     </ng-template>
                                 </div>
 
+                            <div *ngIf="check">
                                 <!--Groups added on Client doc-->
                                 <div class="form-group" id="selectbx" *ngIf="clientId.length>0">
                                     <div class="input-group court" id="search">
@@ -250,6 +251,7 @@
                                     </div>
                                 </div>
                             </div>
+                            </div>
                         </div>
 
                         <div class="col-6" *ngIf="filter==='firm'">
@@ -281,7 +283,8 @@
                                             <div class="documents-list ng-item">
                                                 {{item.name}}
                                                 <div class="icon-list">
-                                                    <div class="icons"><i class="fa fa fa-regular fa-circle-xmark" style="color:red;font-size:24px;" (click)="removeGroup(item)"></i>
+                                                    <div class="icons"><i class="fa fa fa-regular fa-circle-xmark" style="color:red;font-size:24px;" 
+                                                        (click)="removeGroup(item)"></i>
                                                     </div>
                                                 </div>
                                             </div>
