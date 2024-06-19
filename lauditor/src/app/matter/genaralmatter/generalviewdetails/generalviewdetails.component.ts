@@ -947,15 +947,18 @@ export class GeneralViewDetailsComponent implements OnInit {
           for (var i = 0; i < this.uploadedDocs.length; i++) {
             let fdata = new FormData();
             const ids = this.data.groups.map((obj: any) => obj.id);
+            const groupAcls = this.data.groupAcls;
+
             fdata.append('name', this.uploadedDocs[i].name);
             fdata.append('description', this.uploadedDocs[i].name);
             fdata.append('filename', this.uploadedDocs[i].name)
             fdata.append('content_type', this.uploadedDocs[i].type)
             fdata.append('category', "client")
-            fdata.append('group_acls', JSON.stringify(this.data.groupAcls))
-            if (ids.length > 0) {
-              fdata.append('groups', JSON.stringify(ids))
-            }
+            //fdata.append('group_acls', JSON.stringify(this.data.groupAcls))
+            // if (ids.length > 0) {
+            //   fdata.append('groups', JSON.stringify(ids))
+            // }
+            fdata.append('groups', JSON.stringify(groupAcls))
             fdata.append('file', this.files[i])
             let sb = [this.data?.title];
             let mtrs = [this.data?.id];
@@ -977,7 +980,7 @@ export class GeneralViewDetailsComponent implements OnInit {
               this.toast.success('Files uploaded successfully!')
             })
             .catch((error) => {
-              this.showAlert(' ' + error, true);
+              //this.showAlert(' ' + error, true);
             });
         }
       });
