@@ -180,14 +180,14 @@ export class DocumentUploadComponent implements OnInit {
 
         this.noOfDocs = 0
         this.editMetaFlag = true;
-        console.log('valuesss', this.values)
-        console.log(JSON.stringify(this.values));
+        // console.log('valuesss', this.values)
+        // console.log(JSON.stringify(this.values));
         let resultObj: any = {};
         this.values.forEach((item: any) => {
             resultObj[item.tagtype] = item.tag
         });
         this.metaData = resultObj;
-        console.log("tagsArray  " + JSON.stringify(resultObj));
+        //console.log("tagsArray  " + JSON.stringify(resultObj));
         this.addTag=false;
     }
 
@@ -204,11 +204,6 @@ export class DocumentUploadComponent implements OnInit {
         console.log(this.categories)
         console.log(this.matters)
        
-    }
-    trySelectGroup(enable: boolean) {
-        if (this.clientId.length > 0) {
-          this.selectGroup(enable);
-        }
     }
     
     selectGroup(val: boolean) {
@@ -251,7 +246,7 @@ export class DocumentUploadComponent implements OnInit {
     }
 
     selectGroupItem(item: any, val: any) {
-        //console.log("--selected item" + JSON.stringify(item) + val);
+        //console.log("selected item" + JSON.stringify(item) + val);
         if (val) {
             item.isChecked = val;
             this.selectedGroupItems.push(item);
