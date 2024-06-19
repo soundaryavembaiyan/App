@@ -96,29 +96,30 @@ export class ViewDetailsComponent implements OnInit {
   docapi = environment.doc2pdf
 
   //Initializing docUpload Variables
-  reactiveForm: any;
-  keyword = 'name';
-  relationshipSubscribe: any;
-  uploadDocs: any = [];
-  message: any;
-  clientId: any = [];
-  filter: any = "client";
-  groupViewItems: any;
-  groupId: any = [];
-  isSelectGroup: boolean = false;
-  selectedGroupItems: any = [];
-  matterList: any;
-  matters: any;
-  categories:any;
-  selectedValue: any;
-  selectedDate: any;
-  reldata:any[]=[];
-  corpData:any[]=[];
-  selectedmatterType='internal';
-  corp_matter_list:any[] = [];
-  grouplist:any=[];
-  clientdata:any;
-  createdBy: any;
+  // reactiveForm: any;
+  // keyword = 'name';
+  // relationshipSubscribe: any;
+  // uploadDocs: any = [];
+  // message: any;
+  // clientId: any = [];
+  // filter: any = "client";
+  // groupViewItems: any;
+  // groupId: any = [];
+  // isSelectGroup: boolean = false;
+  // selectedGroupItems: any = [];
+  // matterList: any;
+  // matters: any;
+  // categories:any;
+  // selectedValue: any;
+  // selectedDate: any;
+  // reldata:any[]=[];
+  // corpData:any[]=[];
+  // selectedmatterType='internal';
+  // corp_matter_list:any[] = [];
+  // grouplist:any=[];
+  // clientdata:any;
+   createdBy: any;
+   legalMatters: any = [];
 
   constructor(private matterService: MatterService, private httpservice: HttpService,
     private router: Router, private toast: ToastrService,
@@ -171,14 +172,6 @@ export class ViewDetailsComponent implements OnInit {
     this.getCorporateData();
     //this.gethistoryData();
     this.getClientsData();
-    //this.createdBy = localStorage.getItem('name'); //Get value from localStorage
-
-  //   this.httpservice.sendGetRequest(URLUtils.getGroups).subscribe((res: any) => {
-  //     this.groupViewItems = res?.data;
-  //     this.groupViewItems.forEach((item: any) => {
-  //         item.isChecked = false;
-  //     })
-  // })
   }
 
   onAdd() {
@@ -188,8 +181,8 @@ export class ViewDetailsComponent implements OnInit {
 
   eventCheck(event: any) {
     this.toggleNote = event.target.checked;
-    console.log('eve',event.target.checked)
-    console.log('tN', this.toggleNote)
+    // console.log('eve',event.target.checked)
+    // console.log('tN', this.toggleNote)
     this.toggleNote = !this.toggleNote;
   }
 
@@ -985,6 +978,7 @@ export class ViewDetailsComponent implements OnInit {
             fdata.append('filename', this.uploadedDocs[i].name)
             fdata.append('content_type', this.uploadedDocs[i].type)
             fdata.append('category', "client")
+            fdata.append('group_acls', JSON.stringify(this.data.groupAcls))
             if (ids.length > 0) {
               fdata.append('groups', JSON.stringify(ids))
             }
@@ -1123,134 +1117,127 @@ export class ViewDetailsComponent implements OnInit {
     //console.log(startDate);
 }
 
-uploadMore() {
-  this.uploadDocs = [];
-}
+// Grouplist client functions
+// uploadMore() {
+//   this.uploadDocs = [];
+// }
+// selectGroupItem(item: any, val: any) {
+//   //console.log("--selected item" + JSON.stringify(item) + val);
+//   if (val) {
+//       item.isChecked = val;
+//       this.selectedGroupItems.push(item);
+//       //this.selectedGroupItems = this.selectedGroupItems.filter((el:any, i:any, a:any) => i === a.indexOf(el));
 
-selectGroupItem(item: any, val: any) {
-  //console.log("--selected item" + JSON.stringify(item) + val);
-  if (val) {
-      item.isChecked = val;
-      this.selectedGroupItems.push(item);
-      //this.selectedGroupItems = this.selectedGroupItems.filter((el:any, i:any, a:any) => i === a.indexOf(el));
+//   } else {
+//       item.isChecked = val;
+//       let index = this.selectedGroupItems.findIndex((d: any) => d.id === item.id);
+//       //console.log(item.id);
+//       this.selectedGroupItems.splice(index, 1);
+//   }
+//   localStorage.setItem("groupIds", JSON.stringify(this.selectedGroupItems));
+//   //console.log("selected " + JSON.stringify(this.selectedGroupItems));
+// }
+// removeGroup(item: any) {
+//   item.isChecked = false;
+//   let index = this.selectedGroupItems.findIndex((d: any) => d.id === item.id); //find index in your array
+//   this.selectedGroupItems.splice(index, 1);
+//   this.get_all_matters(this.selectedmatterType)
+// }
+// selectEvent(item: any) {
+//   localStorage.setItem("clientData", JSON.stringify(item));
+//       this.clientId.push(item);
+//       this.httpservice.sendGetRequest(URLUtils.getMattersByClient(item)).subscribe((res: any) => {
+//           this.matterList = res?.matterList;
+//       });
 
-  } else {
-      item.isChecked = val;
-      let index = this.selectedGroupItems.findIndex((d: any) => d.id === item.id);
-      //console.log(item.id);
-      this.selectedGroupItems.splice(index, 1);
-  }
-  localStorage.setItem("groupIds", JSON.stringify(this.selectedGroupItems));
-  //console.log("selected " + JSON.stringify(this.selectedGroupItems));
-}
+//       let clientInfo = new Array();
+//       this.clientId?.forEach((item: any) => {
+//           let clientData = {
+//               "id": item.id,
+//               "type": item.type
+//           };
+//           clientInfo.push(clientData);
+//       });
 
-removeGroup(item: any) {
-  item.isChecked = false;
-  let index = this.selectedGroupItems.findIndex((d: any) => d.id === item.id); //find index in your array
-  this.selectedGroupItems.splice(index, 1);
-  this.get_all_matters(this.selectedmatterType)
-}
+//       this.httpservice.sendPutRequest(URLUtils.getGrouplist, { "clients": clientInfo }).subscribe((res: any) => {
+//           if (res.error == false) {
+//               this.grouplist = res?.data;
+//               //Filter and check groups based on the API res.
+//               this.selectedGroupItems = this.groupViewItems.filter((groupItem: any) => {
+//                   groupItem.isChecked = this.grouplist.some((selectedGroup: any) => selectedGroup.id === groupItem.id);
+//                   return groupItem.isChecked;
+//               });
 
-selectEvent(item: any) {
-  localStorage.setItem("clientData", JSON.stringify(item));
-      this.clientId.push(item);
-      this.httpservice.sendGetRequest(URLUtils.getMattersByClient(item)).subscribe((res: any) => {
-          this.matterList = res?.matterList;
-      });
-
-      let clientInfo = new Array();
-      this.clientId?.forEach((item: any) => {
-          let clientData = {
-              "id": item.id,
-              "type": item.type
-          };
-          clientInfo.push(clientData);
-      });
-
-      this.httpservice.sendPutRequest(URLUtils.getGrouplist, { "clients": clientInfo }).subscribe((res: any) => {
-          if (res.error == false) {
-              this.grouplist = res?.data;
-              //Filter and check groups based on the API res.
-              this.selectedGroupItems = this.groupViewItems.filter((groupItem: any) => {
-                  groupItem.isChecked = this.grouplist.some((selectedGroup: any) => selectedGroup.id === groupItem.id);
-                  return groupItem.isChecked;
-              });
-
-              //Update the checkboxes in groupViewItems
-              // this.groupViewItems.forEach((groupItem: any) => {
-              //     groupItem.isChecked = this.selectedGroupItems.some((selectedGroup: any) => selectedGroup.id === groupItem.id);
-              // });
-          }
-      });
-}
-
-selectGroup(val: boolean) {
-  this.isSelectGroup = val;
-  if(!val){
-      this.get_all_matters(this.selectedmatterType)
-  }
-}
-
-onChangeSearch(val: any) {
-  if (val == undefined) {
-      this.clientId = [];
-  }
-}
-
-onFocused(e: any) {
-  //console.log("onFocused " + JSON.stringify(e));
-  // do something when input is focused
-}
-
-getClients() {
-  this.relationshipSubscribe = this.httpservice.getFeaturesdata(URLUtils.getAllRelationship).subscribe((res: any) => {
-      this.reldata = res?.data?.relationships;
-      this.httpservice.getFeaturesdata(URLUtils.getCalenderExternal).subscribe((res: any) => {
-          this.corpData = res?.relationships.map((obj:any)=>({ "id": obj.id, "type": "corporate" ,"name":obj.name}))
-          this.clientdata = this.reldata.concat(this.corpData)
-      });
+//               //Update the checkboxes in groupViewItems
+//               // this.groupViewItems.forEach((groupItem: any) => {
+//               //     groupItem.isChecked = this.selectedGroupItems.some((selectedGroup: any) => selectedGroup.id === groupItem.id);
+//               // });
+//           }
+//       });
+// }
+// selectGroup(val: boolean) {
+//   this.isSelectGroup = val;
+//   if(!val){
+//       this.get_all_matters(this.selectedmatterType)
+//   }
+// }
+// onChangeSearch(val: any) {
+//   if (val == undefined) {
+//       this.clientId = [];
+//   }
+// }
+// onFocused(e: any) {
+//   //console.log("onFocused " + JSON.stringify(e));
+//   // do something when input is focused
+// }
+// getClients() {
+//   this.relationshipSubscribe = this.httpservice.getFeaturesdata(URLUtils.getAllRelationship).subscribe((res: any) => {
+//       this.reldata = res?.data?.relationships;
+//       this.httpservice.getFeaturesdata(URLUtils.getCalenderExternal).subscribe((res: any) => {
+//           this.corpData = res?.relationships.map((obj:any)=>({ "id": obj.id, "type": "corporate" ,"name":obj.name}))
+//           this.clientdata = this.reldata.concat(this.corpData)
+//       });
       
-  });
+//   });
 
-  this.httpservice.sendGetRequest(URLUtils.getGroups).subscribe((res: any) => {
-    this.groupViewItems = res?.data;
-    this.groupViewItems.forEach((item: any) => {
-        item.isChecked = false;
-    })
-})
-}
+//   this.httpservice.sendGetRequest(URLUtils.getGroups).subscribe((res: any) => {
+//     this.groupViewItems = res?.data;
+//     this.groupViewItems.forEach((item: any) => {
+//         item.isChecked = false;
+//     })
+// })
+// }
+// get_all_matters(type:any,event?:any){
+//   this.spinnerService.show()
+//   let selectedGroups: any = [];
+//   this.selectedGroupItems?.forEach((item: any) => {
+//       selectedGroups.push(item.id)
+//   })
+//   let payload = {"grp_acls":selectedGroups}
+//   if(type=='internal'){
+//       this.httpservice.sendPutRequest(URLUtils.getAllMatters,payload).subscribe((res:any)=>{
+//           if(res.error == false){
+//               this.corp_matter_list = res.matterList
+//               this.spinnerService.hide()
+//           } else {
+//               this.spinnerService.hide()
+//           }
+//       },(err:any)=>{
+//           console.log(err)
+//           this.spinnerService.hide()
+//       })
+//   }
+//   if(type == 'external'){
+//       this.httpservice.sendPutRequest(URLUtils.getAllExternalMatters,payload).subscribe((res:any)=>{
+//           if(res){
+//               this.corp_matter_list = res.matterList
+//               this.spinnerService.hide()
+//           }
+//       },(err:any)=>{
+//           this.spinnerService.hide()
+//       })
 
-get_all_matters(type:any,event?:any){
-  this.spinnerService.show()
-  let selectedGroups: any = [];
-  this.selectedGroupItems?.forEach((item: any) => {
-      selectedGroups.push(item.id)
-  })
-  let payload = {"grp_acls":selectedGroups}
-  if(type=='internal'){
-      this.httpservice.sendPutRequest(URLUtils.getAllMatters,payload).subscribe((res:any)=>{
-          if(res.error == false){
-              this.corp_matter_list = res.matterList
-              this.spinnerService.hide()
-          } else {
-              this.spinnerService.hide()
-          }
-      },(err:any)=>{
-          console.log(err)
-          this.spinnerService.hide()
-      })
-  }
-  if(type == 'external'){
-      this.httpservice.sendPutRequest(URLUtils.getAllExternalMatters,payload).subscribe((res:any)=>{
-          if(res){
-              this.corp_matter_list = res.matterList
-              this.spinnerService.hide()
-          }
-      },(err:any)=>{
-          this.spinnerService.hide()
-      })
-
-  }
-}
+//   }
+// }
 
 }
