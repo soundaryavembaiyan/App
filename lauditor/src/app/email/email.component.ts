@@ -318,6 +318,24 @@ export class EmailComponent implements OnInit, AfterViewInit {
     let index = this.selectedGroupItems.findIndex((d: any) => d.id === item.id); //find index in your array
     this.selectedGroupItems.splice(index, 1);
   }
+
+  removeCliExGroups() {
+    // Reset the arrays
+    this.check=false;
+    this.selectedGroupItems.forEach((item:any) => item.isChecked = false);
+    this.selectedGroupItems = [];
+    // Update the local storage
+    localStorage.setItem('groupIds', JSON.stringify(this.selectedGroupItems));
+  }
+
+  removeFirmExGroups() {
+    // Reset the arrays
+    this.selectedGroupItems.forEach((item:any) => item.isChecked = false);
+    this.selectedGroupItems = [];
+    // Update the local storage
+    localStorage.setItem('groupIds', JSON.stringify(this.selectedGroupItems));
+  }
+
   onCompose() {
     this.modalService.open('compose-email');
   }
@@ -461,9 +479,9 @@ export class EmailComponent implements OnInit, AfterViewInit {
   }
 
   selectEvent(item: any) {
+    this.check=true
     localStorage.setItem("clientData", JSON.stringify(item));
     if (this.filter === 'client') {
-      //this.check == true;
       this.clientId.push(item);
       this.httpservice.sendGetRequest(URLUtils.getMattersByClient(item)).subscribe((res: any) => {
         this.matterList = res?.matterList;
@@ -497,7 +515,6 @@ export class EmailComponent implements OnInit, AfterViewInit {
       });
     }
     else {
-      //this.check == false;
       this.groupId.push(item?.id);
     }
   }
@@ -516,7 +533,4 @@ export class EmailComponent implements OnInit, AfterViewInit {
 
   onFocused(e: any) {
   }
-  // gotoDetail(item: any): void {
-  //   this.router.navigate(['emails/' + this.filter, item]);
-  // }
 }
