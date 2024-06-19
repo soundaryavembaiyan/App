@@ -570,7 +570,7 @@ button:focus {
 }
 .customcss1{
 	display: inline-block;
-    //margin-left: 58%;
+    margin-left: -100px;
     color:#00498e ;
     font-weight: bold;
 }
@@ -962,3 +962,12 @@ table td {
     white-space: nowrap;
     border: 2px solid #eeeeee;
 }
+.center-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    //height: 100%;
+}
+  
