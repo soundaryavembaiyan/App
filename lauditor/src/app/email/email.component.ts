@@ -11,6 +11,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ModalService } from '../model/model.service';
 import { EmailService } from './email.service';
 import { ToastrService } from 'ngx-toastr';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-email',
@@ -99,7 +100,7 @@ export class EmailComponent implements OnInit, AfterViewInit {
     this.getMessageCount();
     this.get_all_matters(this.selectedmatterType)
     //this.emailAuthentication();
-    console.log('filter', this.filter)
+    //console.log('filter', this.filter)
   }
   get f() { return this.composeForm.controls; }
 
@@ -230,7 +231,7 @@ export class EmailComponent implements OnInit, AfterViewInit {
   getClients() {
     this.relationshipSubscribe = this.httpservice.getFeaturesdata(URLUtils.getAllRelationship).subscribe((res: any) => {
       this.data = res?.data?.relationships;
-      console.log('data', this.data)
+      //console.log('data', this.data)
       this.httpservice.getFeaturesdata(URLUtils.getCalenderExternal).subscribe((res: any) => {
         this.corpData = res?.relationships.map((obj: any) => ({ "id": obj.id, "type": "corporate", "name": obj.name }))
         this.data = this.data.concat(this.corpData)
@@ -272,9 +273,14 @@ export class EmailComponent implements OnInit, AfterViewInit {
 
   saveFiles() {
     this.spinnerService.show();
-    this.filter == "client" ? this.selectedGroupItems = [] : this.clientId = [];
+    // this.filter == "client" ? this.selectedGroupItems = [] : this.clientId = [];
+    this.filter == "client";
     var matterList = []
+    if(this.matters !== ''){
     matterList.push(this.matters)
+    }
+    //this.selectedGroupItems
+    //console.log('this.selectedGroupItems',this.selectedGroupItems)
     let obj =
     {
       "category": this.filter,
@@ -284,17 +290,28 @@ export class EmailComponent implements OnInit, AfterViewInit {
       "enableDownload": true
     }
 
+    //console.log('obj',obj)
     this.httpservice.sendPostEmailRequest(URLUtils.MessageDocUpload({ "token": localStorage.getItem('TOKEN'), "msgid": this.msgAndpartId.msgId, "partid": this.msgAndpartId.partId }), obj).subscribe((res: any) => {
       if (res) {
         this.spinnerService.hide();
         this.confirmationDialogService.confirm('Success', res.msg, false, '', '', false, 'sm', false);
         this.isDocument = false;
       }
-    }, (error: any) => {
+    }, 
+    (error: any) => {
       this.spinnerService.hide();
       this.confirmationDialogService.confirm('Alert', error.error.msg, false, '', '', false, 'sm', false);
       this.isDocument = false;
-    });
+    }
+    // (error: HttpErrorResponse) => {
+    //   if (error.status === 400 || error.status === 403 || error.status === 500) {
+    //     const errorMessage = error.error.msg || 'Unauthorized';
+    //     this.toast.error(errorMessage);
+    //     this.isDocument = false;
+    //     return;
+    //   }
+    // }
+  );
   }
 
   selectGroupItem(item: any, val: any) {
@@ -467,10 +484,19 @@ export class EmailComponent implements OnInit, AfterViewInit {
         this.selectedAttachments = [];
         this.modalService.close('compose-email');
       }
-    }, (error) => {
+    }, 
+    (error) => {
       this.spinnerService.hide();
       this.confirmationDialogService.confirm('Alert', 'Mail not sent successfully.', false, '', '', false, 'sm', false);
-    });
+    }
+    // (error: HttpErrorResponse) => {
+    //   if (error.status === 400 || error.status === 403 || error.status === 500) {
+    //     const errorMessage = error.error.message || 'Unauthorized';
+    //     this.toast.error(errorMessage);
+    //     return;
+    //   }
+    // }
+  );
   }
   ngOnDestroy() {
     if (this.relationshipSubscribe) {
