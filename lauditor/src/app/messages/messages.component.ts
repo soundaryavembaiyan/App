@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
 //import { environment } from 'src/environments/environment.dev';
 import { HttpService } from '../services/http.service';
 import { environment } from 'src/environments/environment';
@@ -27,7 +28,12 @@ declare let $: any;
 })
 export class MessagesComponent implements OnInit {
   @ViewChild('scrollframe') scrollFrame: any;
-  @ViewChild('scrollMe') myScrollContainer: ElementRef | undefined;
+  @ViewChild('scrollMe') myScrollContainer!: ElementRef;
+
+  @ViewChildren('messageElements') messageElements!: QueryList<ElementRef>;
+  @ViewChild('chatContainer') private chatContainer!: ElementRef;
+  //@ViewChild('scrollMe', { static: false }) private scrollMe!: ElementRef;
+
   @ViewChildren('item')
   itemElements!: QueryList<any>;
   selectedValue: string = 'clients';
@@ -87,6 +93,7 @@ export class MessagesComponent implements OnInit {
   product = environment.product;
   data: any;
   relationshipSubscribe: any;
+  userRole: string = "AAM";
   // @HostListener('document:keyup', ['$event']) handleKeyUp(event:any) {
   //   if (event.ctrlKey && (event.which == 83)) {
   //     event.preventDefault()
@@ -98,7 +105,7 @@ export class MessagesComponent implements OnInit {
   constructor(
     private httpservice: HttpService,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService, private spinnerService: NgxSpinnerService
   ) {
     this.router.events.subscribe((val) => {
       if (val instanceof NavigationEnd) {
@@ -116,20 +123,33 @@ export class MessagesComponent implements OnInit {
   }
 
   toggle(index: any, val: any) {
+    this.messegeInput = '';
+    this.term = '';
     // toggle based on index
     this.userIndex = index;
+    //this.spinnerService.show()
     this.hideRuleContent[index] = !this.hideRuleContent[index];
+    //console.log('hideRuleContent[index]',this.hideRuleContent[index])
     this.usersList.forEach((item: any) => {
       if (item.id == val.id) item.isExpand = true;
       else  item.isExpand = false;
     });
+    //console.log('usersList',this.usersList)
     this.groups.forEach((item: any) => {
       if (item.id == val.id) item.isExpand = true;
       else item.isExpand = false;
     });
+    //console.log('groups',this.groups)
   }
 
   ngOnInit() {
+
+    var role = localStorage.getItem("role");
+    // console.log('role',role)
+    if(role != null){
+      this.userRole = role
+      //console.log('this.userRole',this.userRole)
+    }
 
    if(window.location.pathname == '/messages/clients'){
       this.selectedValue = 'clients';
@@ -168,7 +188,13 @@ export class MessagesComponent implements OnInit {
       this.getcorpRelationships();
     }
 
+    //this.scrollToBottom();
+
+    if (this.product !== 'corporate' && this.product !== 'content' && this.userRole === 'AAM') {
+      this.isActiveTeam('teams'); // Call isActiveTeam function with 'teams' as initial value
+    }
   }
+
   expandRow(val: any) {
     this.adminIndex = val;
   }
@@ -274,11 +300,11 @@ export class MessagesComponent implements OnInit {
     return value.toLowerCase();
   }
 
-  private onItemElementsChanged(): void {
-    if (this.isNearBottom) {
-      this.scrollToBottom();
-    }
-  }
+  // private onItemElementsChanged(): void {
+  //   if (this.isNearBottom) {
+  //     this.scrollToBottom();
+  //   }
+  // }
 
   // loadUsersData() {
   //   this.ajax.get(URLUtils.getRelationship).subscribe(
@@ -298,6 +324,7 @@ export class MessagesComponent implements OnInit {
             item.isSelected = false;
 
             this.selectedUser.push(item);
+            //console.log('seleUser',this.selectedUser)
           }
         });
         //console.log('chat clients ' + JSON.stringify(this.selectedUser));
@@ -318,7 +345,7 @@ export class MessagesComponent implements OnInit {
           }
         });
         //console.log('chat clients ' + JSON.stringify(this.selectedUser));
-        console.log('corp',this.usersList)
+        //console.log('corp',this.usersList)
       });
   }
 
@@ -347,12 +374,23 @@ export class MessagesComponent implements OnInit {
   //   )
   // }
 
+  // onEnter() {
+  //   this.sendMessage(this.messegeInput);
+  // }
+
+  // Handle Enter key to send msg.
+  onKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      this.sendMessage(this.messegeInput);
+    }
+  }
+
   sendMessage(message: any) {
     if (message.trim() == '') {
-      this.toastr.error('Please enter text');
+      this.toastr.error('Please enter text.');
       return;
     } else if (this.chatUserName == undefined || this.chatUserName == '') {
-      this.toastr.error('Please select client');
+      this.toastr.error('Please select client.');
       return;
     }
     if (message !== 0) {
@@ -382,7 +420,17 @@ export class MessagesComponent implements OnInit {
       });
       this.messegeInput = '';
     }
+    this.scrollToBottom();
   }
+
+
+  resetmsgcount(){
+    let data = { 'tojid':`${this.toJID}@${this.domain}` , 'fromjid': this.USERNAME}
+    this.httpservice.sendPostChatRequest(URLUtils.resetmsgcount,data).subscribe((res:any)=>{
+      //console.log(res)
+    })
+  }
+
 
   restoreMessages() {
     this.messages = [];
@@ -477,6 +525,17 @@ export class MessagesComponent implements OnInit {
   //   )
   // }
   selectChatUser(val: any) {
+    this.messegeInput = '';
+    this.term = '';
+    // Set focus on the inputfield
+    setTimeout(() => {
+      const textareas = document.querySelectorAll('.form-control.textbox.chatinput');
+      const lastTextarea = textareas[textareas.length - 1] as HTMLTextAreaElement;
+      if (lastTextarea) {
+        lastTextarea.focus();
+      }
+    });
+
     this.selectedUser.forEach((item: any) => {
       if (item.name == val.name) {
         item.isSelected = true;
@@ -490,20 +549,24 @@ export class MessagesComponent implements OnInit {
     //console.log('user' + JSON.stringify(val));
     this.toJID = val.guid;
     if (val.clientType == 'Entity') {
+      this.spinnerService.show()
       this.httpservice
         .sendGetRequest(URLUtils.getNotify(val))
         .subscribe((res: any) => {
+          this.spinnerService.hide()
           //console.log('notify ' + JSON.stringify(res));
           this.entityClients = res?.data?.users;
           //console.log("temp clients "+JSON.stringify(this.entityClients));
-          console.log('notify ' + JSON.stringify(res));
-          console.log('entityClients ',this.entityClients);
+          // console.log('notify ' + JSON.stringify(res));
+          // console.log('entityClients ',this.entityClients);
           
           this.restoreMessages();
+          this.resetmsgcount();
         });
     }
     this.messages = [];
     this.restoreMessages();
+    this.resetmsgcount();
   }
 
 
@@ -565,20 +628,46 @@ export class MessagesComponent implements OnInit {
     // this.scrollContainer = this.scrollFrame.nativeElement;
     // this.itemElements.changes.subscribe(_ => this.onItemElementsChanged());
   }
-  scrollToBottom() {
-    try {
-      if (this.myScrollContainer)
-        this.myScrollContainer.nativeElement.scroll({
-          top: this.myScrollContainer.nativeElement.scrollHeight,
-          left: 0,
-          behavior: 'smooth',
-        });
-    } catch (err) { }
-  }
 
+  // scrollToBottom() {
+  //   try {
+  //     if (this.myScrollContainer)
+  //       this.myScrollContainer.nativeElement.scroll({
+  //         top: this.myScrollContainer.nativeElement.scrollHeight,
+  //         left: 0,
+  //         behavior: 'smooth',
+  //       });
+  //   } catch (err) { }
+  // }
+
+   scrollToBottom() {
+    let scrollerContent = document.getElementById("coffer-chat");
+    document.getElementById('btn_send')?.addEventListener('click', function () {
+      if (scrollerContent?.lastElementChild) {
+        let newChild = scrollerContent.lastElementChild.cloneNode(true) as HTMLElement;
+        newChild.innerHTML = " " + (scrollerContent.children.length);
+        scrollerContent.appendChild(newChild);
+        scrollerContent.scrollTop = scrollerContent.scrollHeight; // Scroll to bottom
+      }
+    });
+  }
+  
   isActive(value: string) {
     this.selectedValue = value;
     this.selectedValue == 'clients' ? this.router.navigate(['/messages/clients']) : this.router.navigate(['/messages/teams']);
+  }
+
+  isActiveTeam(value: string): void {
+    this.selectedValue = value;
+    this.selectedValue === 'teams' ? this.router.navigate(['/messages/teams']) : this.router.navigate(['/messages/clients']);
+  }
+
+  restricttextSpace(event: any) {
+    let inputValue: string = event.target.value;
+    inputValue = inputValue.replace(/^\s+/, '');
+    inputValue = inputValue.replace(/\s{2,}/g, ' ');
+    event.target.value = inputValue;
+    return;
   }
 
 }
@@ -605,3 +694,5 @@ export class MessagesComponent implements OnInit {
 //         }
 //     }
 // }
+
+
