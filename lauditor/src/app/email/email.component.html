@@ -67,7 +67,7 @@
                     </div>
                 </div> -->
                     <div class="pdf-list-inbox" *ngIf="message.attachments.length>0">
-                        <div (click)="documentClick(message.msgId,attachment.partId)"
+                        <div (click)="documentClick(message.msgId,attachment.partId);removeCliExGroups()"
                             [hidden]="attachment.filename ===''" class="pdf-data"
                             *ngFor="let attachment of message.attachments">
                             <div><i class="fa-regular fa-file-pdf"></i></div>
@@ -242,7 +242,7 @@
                                         <div class="dropdown-select textbox">
                                             <select class="textbox" (change)="onChangeMatters($event.target)">
                                                 <option hidden value="">Select matter</option>
-                                                <option class="textbox" value="all">All Documents</option>
+                                                <!-- <option class="textbox" value="all">All Documents</option> -->
                                                 <option class="textbox" *ngFor="let i of matterList " value="{{i.id}}">
                                                     {{i.title}}</option>
                                             </select>
