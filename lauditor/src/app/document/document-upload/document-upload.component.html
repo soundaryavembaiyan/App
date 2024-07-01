@@ -168,7 +168,7 @@
             </div>
 
             <!-- Matter added on right side-->
-            <div *ngIf="clientId.length>0">
+            <div *ngIf="clientId.length>0 && filter == 'client'">
             <div class="form-group" *ngIf="product == 'lauditor' || product == 'corporate'">
               <label for="title" class="fontbold" *ngIf="product == 'lauditor'">Matter</label>
               <label for="title" class="fontbold" *ngIf="product == 'corporate'">Matter<span class="mandate">*</span></label>
