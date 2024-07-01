@@ -19,7 +19,7 @@ export class CreategeneralmatterComponent implements OnInit {
 
   selectedTabItem = 'matter-info';
   matterInfo: any;
-  highLightTeamMem:boolean=false;
+  highLightTeamMem: boolean = false;
   InfotoOtherTabs: any = {};
   groups: any = [];
   clients: any = [];
@@ -28,16 +28,17 @@ export class CreategeneralmatterComponent implements OnInit {
   groupsData: any = [];
   teammembersData: any = [];
   docsData: any = [];
-  tempClients:any;
-  corpClients:any;
-  corpData:any = [];
+  tempClients: any;
+  corpClients: any;
+  corpData: any = [];
   pipe = new DatePipe('en-US');
-  corporate:any =[];
-  @Output() selectedClients:any;
+  corporate: any = [];
+  @Output() selectedClients: any;
   product = environment.product;
+  tmGrp: any = [];
 
-  constructor(private httpService: HttpService, private toast: ToastrService, 
-    private router:Router,private confirmationDialogService: ConfirmationDialogService) { }
+  constructor(private httpService: HttpService, private toast: ToastrService,
+    private router: Router, private confirmationDialogService: ConfirmationDialogService) { }
 
   ngOnInit() {
 
@@ -50,107 +51,124 @@ export class CreategeneralmatterComponent implements OnInit {
         "Type": mInfo.case_type
       }
       this.matterInfo = mInfo;
-      this.selectedTabItem = 'matter-groups';
+      this.selectedTabItem = 'matter-clients';
     }
-
   }
+
   selectedGroups(groups: any) {
     this.groups = groups;
+    //this.selectedGroups = groups;
     this.groupsData = this.groups.map((obj: any) => obj.id);
-    this.selectedTabItem = 'matter-clients';
-    this.clients=[];
-    this.teammembers=[];
+    this.selectedTabItem = 'matter-team-member';
+    // this.clients=[];
+    // this.teammembers=[];
   }
+  selectedClientGrp(clients: any) {
+    this.clients = clients;
+  }
+
+  // selectedClient(clients: any) {
+  //   this.clients = clients;
+  //   this.clientsData = this.clients.map((obj: any) => ({ "id": obj.id, "type": obj.type }));
+  //   this.selectedTabItem = 'matter-groups';
+  //   this.teammembers = [];
+  //   this.selectedClients = this.corporate
+  // }
+  
   selectedClient(clients: any) {
     this.clients = clients;
-    this.clientsData = this.clients.map((obj: any) => ({ "id": obj.id, "type": obj.type }));
-    this.selectedTabItem = 'matter-team-member';
-    this.teammembers=[];
-    this.selectedClients = this.corporate
-    console.log('selectedClients',this.corporate)
+    const corporateClient = this.clients.find((client: any) => client.type === 'corporate');
+    this.corpClients = corporateClient ? corporateClient.id : '';
+
+    this.clientsData = this.clients.map((obj: any) => ({ id: obj.id, type: obj.type }));
+    this.selectedTabItem = 'matter-groups';
+    this.selectedClients = this.corpClients;
   }
-  temporaryClients(clients:any){
-    this.tempClients=clients;
+
+  temporaryClients(clients: any) {
+    this.tempClients = clients;
   }
   selectedTeammemberes(teammembers: any) {
-    this.highLightTeamMem =true;
+    this.highLightTeamMem = true;
     this.teammembers = teammembers;
     this.teammembersData = this.teammembers.map((obj: any) => ({ "id": obj.id }));
     this.selectedTabItem = 'matter-documents';
   }
+  selectedTmGrpId(tm: any) {
+    this.tmGrp = tm;
+    this.teammembers = this.tmGrp
+  }
   selectedDocuments(documents: any) {
-    this.docsData = documents.map((obj: any) => ({"docid": obj.docid,
-                                                  "doctype": obj.doctype,
-                                                  "user_id": obj.user_id}));
+    this.docsData = documents.map((obj: any) => ({
+      "docid": obj.docid,
+      "doctype": obj.doctype,
+      "user_id": obj.user_id
+    }));
     this.postData();
   }
-  corporateClients(clients:any){
-    this.corpClients=clients;
-    this.corpData = this.corpClients
+  corporateClients(clients: any) {
+    this.corpClients = clients;
   }
   postData() {
     let legalMatter = {};
     legalMatter = {
       "title": this.matterInfo.title,
       "matter_number": this.matterInfo.matterNumber,
-      "startdate": this.matterInfo.startdate&&this.pipe.transform(this.matterInfo.startdate, 'dd-MM-yyyy'),
+      "startdate": this.matterInfo.startdate && this.pipe.transform(this.matterInfo.startdate, 'dd-MM-yyyy'),
       "closedate": this.matterInfo.closedate && this.pipe.transform(this.matterInfo.closedate, 'dd-MM-yyyy'),
       "description": this.matterInfo.description,
       "matter_type": this.matterInfo.matterType,
-      "priority":this.matterInfo.priority,
+      "priority": this.matterInfo.priority,
       "status": this.matterInfo.status,
       "affidavit_isfiled": "na",
-      "affidavit_filing_date": "",  
+      "affidavit_filing_date": "",
       "clients": this.clientsData,
       "group_acls": this.groupsData,
       "members": this.teammembersData,
       "documents": this.docsData,
-      "temporaryClients":this.tempClients,
-      "corporate":this.corpClients 
+      "temporaryClients": this.tempClients,
+      "corporate": this.corpClients
     }
-    this.confirmationDialogService.confirm('Confirmation', 'Are you sure you want to create '+this.matterInfo.title+'?',true,'Yes','No')
+    this.confirmationDialogService.confirm('Confirmation', 'Are you sure you want to create ' + this.matterInfo.title + '?', true, 'Yes', 'No')
       .then((confirmed) => {
         if (confirmed) {
           this.httpService.sendPostRequest(URLUtils.createGeneralMatter, legalMatter).subscribe((res: any) => {
             if (!res.error) {
-              if(this.docsData.length>0){
+              if (this.docsData.length > 0) {
                 this.add_documents_from_matter(res.matter_id)
               }
-              this.confirmationDialogService.confirm('Success', 'Congratulations! You have successfully created the ' + this.matterInfo.title,true, 'View Matter List','Add Matter',true)
+              this.confirmationDialogService.confirm('Success', 'Congratulations! You have successfully created the ' + this.matterInfo.title, true, 'View Matter List', 'Add Matter', true)
                 .then((confirmed) => {
                   if (confirmed) {
                     this.router.navigate(['/matter/generalmatter/view']);
-                  }else{
+                  } else {
                     window.location.reload();
                   }
                 })
             }
-            else if(res.error)
-            this.toast.error(res.msg); 
+            else if (res.error)
+              this.toast.error(res.msg);
           },
-          (error: HttpErrorResponse) => {
-            if (error.status === 401 || error.status === 403) {
-              const errorMessage = error.error.msg || 'Unauthorized';
-              this.toast.error(errorMessage);
-              console.log(error);
-            }
-          })
+            (error: HttpErrorResponse) => {
+              if (error.status === 401 || error.status === 403) {
+                const errorMessage = error.error.msg || 'Unauthorized';
+                this.toast.error(errorMessage);
+                //console.log(error);
+              }
+            })
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }
 
-
-  add_documents_from_matter(matter_id:any){
-    const doc: string[] = this.docsData.map((item:any) => item.docid);
+  add_documents_from_matter(matter_id: any) {
+    const doc: string[] = this.docsData.map((item: any) => item.docid);
     let data = {
-      "matter_id":matter_id,
+      "matter_id": matter_id,
       documents: doc
     }
-    this.httpService.sendPatchRequest(URLUtils.updateDocwithMatters,data).subscribe((res:any)=>{
-      console.log(res)
+    this.httpService.sendPatchRequest(URLUtils.updateDocwithMatters, data).subscribe((res: any) => {
+      //console.log(res)
     })
-
-
   }
 }
