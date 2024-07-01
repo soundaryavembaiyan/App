@@ -19,7 +19,7 @@
             <div class="input-group multicheck court" id="selectedgroup">
               <div class="form-control textbox" [innerHtml]="group.name"></div>
               <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup" aria-hidden="true"
-                (click)="removeGroup(group)"></i>
+               (click)="removeGroup(group)"></i>
           </div>
         </div>
         </div>
@@ -41,18 +41,19 @@
             </div>
           </div>
         </div>
-        <div class="form-group ">
-
+        
+        <div class="form-group">
           <div class="input-group group-custom-align court" id="search" *ngIf ="product !='corporate'">
-            <input type="text" class="form-control textbox" placeholder="Search Group" [(ngModel)]="searchText" (keyup)="keyup()" />
+            <input type="text" class="form-control textbox searchtext" placeholder="Search Group" [(ngModel)]="searchText" (keyup)="keyup()" />
             <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
           </div>
           <div class="input-group group-custom-align court" id="search" *ngIf ="product =='corporate'">
-            <input type="text" class="form-control textbox" placeholder="Search Department" [(ngModel)]="searchText" (keyup)="keyup()" />
+            <input type="text" class="form-control textbox searchtext" placeholder="Search Department" [(ngModel)]="searchText" (keyup)="keyup()" />
             <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
           </div>
         </div>
-        <div class="form-group " id="selectbx ">
+
+        <div class="form-group" id="selectbx ">
           <div class="input-group group-custom-align court matterpadding" id="search"
             *ngFor="let group of groupsList |filter:searchText">
             <div class="multicheck form-control textbox">
@@ -68,9 +69,100 @@
     <div class="btnbox">
       <button type="reset" class="btn btn-default btncancel btnrightitem" (click)="OnCancel()">Cancel</button>
       <button type="submit" class="btn btn-primary btnsave savecls "
-        [disabled]="!(selectedGroups.length > 0 && isSaveEnable)" (click)="saveGroups()">Next</button>
-
+        [disabled]="!(selectedGroups.length > 0 && isSaveEnable)" 
+        [ngClass]="{'disabled': !(selectedGroups.length > 0 && isSaveEnable)}"
+        (click)="saveGroups()">Next</button>
     </div>
   </div>
 
+</div>
+
+
+
+<div *ngIf="editDoc" class="modal fade editInfoModal1" id="editInfoModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-xl">
+    <div class="modal-content">
+
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+      <div class="modal-body">
+        <div class="col-12  editdoc modal-content">
+
+
+            <div class="row width-alignment">
+
+              <label for="title" class="lable-size updateGroup" *ngIf="product !='corporate'">Update Group</label>
+              <label for="title" class="lable-size updateGroup" *ngIf="product =='corporate'">Update Department</label>
+    
+              <div class="groupContent" *ngIf="product !='corporate'">
+                <i class="fa fa-exclamation-circle" style="color: red;font-size:16px" aria-hidden="true"></i> &nbsp;
+                This <b style="font-weight: 900;">'{{editDoc.name}}'</b> group currently contains <b style="font-weight: 900;">25 Documents</b>. Before updating, please assign them to another active group.
+              </div>
+              <div class="groupContent" *ngIf="product =='corporate'">
+                <i class="fa fa-exclamation-circle" style="color: red;font-size:16px" aria-hidden="true"></i> &nbsp;
+                This <b style="font-weight: 900;">'{{editDoc.name}}'</b> department currently contains <b style="font-weight: 900;">25 Documents</b>. Before updating, please assign them to another active department.
+              </div>
+
+
+              <div class="col-5">
+                <div class="form-group nameSet listedGroup">
+                  <h5 class="float-left grpFont" *ngIf="product !='corporate'">Selected Group(s)</h5>
+                  <h5 class="float-left grpFont" *ngIf="product =='corporate'">Selected Department(s)</h5>
+                </div>
+            
+                <div class="form-group" id="selectbx">
+                  <div class="input-group group-custom-align court matterpadding" *ngFor="let group of selectedGroups"
+                    id="selectedgroup">
+                    <div class="multicheck form-control textbox">
+                      <div class="callselect" [innerHtml]="group.name"></div>
+                      <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-app end checkboxitem circlemark" aria-hidden="true"
+                      (click)="removeDialogGroup(group)"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-2"></div>
+              <div class="col-5">
+                <div class="form-group nameSet listedGroup">
+                  <h5 class="float-left grpFont" *ngIf="product !='corporate'">Assign to another active Group(s)<span class="mandate">*</span></h5>
+                  <h5 class="float-left grpFont" *ngIf="product =='corporate'">Assign to another active Department(s)<span class="mandate">*</span></h5>
+
+                  <div class="form-group">
+                    <div class="input-group group-custom-align court" id="search" *ngIf ="product !='corporate'">
+                      <input type="text" class="form-control textbox searchtext" placeholder="Search Group" [(ngModel)]="searchText" (keyup)="keyup()" />
+                      <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
+                    </div>
+                    <div class="input-group group-custom-align court" id="search" *ngIf ="product =='corporate'">
+                      <input type="text" class="form-control textbox searchtext" placeholder="Search Department" [(ngModel)]="searchText" (keyup)="keyup()" />
+                      <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
+                    </div>
+                  </div>
+
+                </div>
+            
+                <div class="form-group" id="selectbx">
+                  <div class="input-group group-custom-align court matterpadding" id="search"
+                    *ngFor="let group of groupsList |filter:searchText">
+                    <div class="multicheck form-control textbox">
+                      <div class="callselect" [innerHtml]="group.name"></div>
+                      <input class="form-check-inpu calimg calitem input-group-app end checkboxitem" 
+                      #inputEl type="checkbox" id="flexCheckDefault"
+                      (change)="selectGroup(group, inputEl.checked)">
+                    </div>
+                  </div>
+                </div>
+            
+              </div>
+            </div>
+            <div class="btnbox dialogbtn">
+              <button type="button" class="btn btn-default  test btncancel" data-bs-dismiss="modal" aria-label="Close"
+                >Cancel</button>
+              <button type="submit" class="btn btn-default btnsave" data-bs-dismiss="modal" aria-label="Close"
+                >Delete</button>
+            </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
