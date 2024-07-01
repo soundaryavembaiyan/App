@@ -17,3 +17,65 @@
 .optionhigh2{
    border-radius: 5px 5px 5px 5px;
 }
+.disabled {
+    background: #a0bbd0;
+    color: #fff;
+}
+.editInfoModal1 .modal-content {
+    position: relative;
+    display: block;
+    border: none;
+    padding-bottom: 30px;
+    // height: 600px;
+    // width: 1200px;
+    margin-top: 80px;
+    .btn-close {
+        float: right;
+        margin: 10px;
+    }
+}
+.groupContent{
+    font-size: 16px;
+    //font-weight: 800;
+    word-break: break-word;
+    //margin-left: 65px;
+    margin-left: 4px;
+    margin-bottom: 15px;
+}
+
+.updateGroup{
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: #004D87;
+    //margin-left: 65px;
+    margin-left: 4px;
+    margin-bottom: 12px;
+}
+
+.listedGroup{
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: #004D87;
+    margin-left: 4px;
+    margin-bottom: 12px;
+}
+
+.bordo{
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+.circlemark{
+    font-size: 20px;
+    color: red;
+    margin-top: 6px;
+    font-weight: 400;
+}
+.dialogbtn{
+    margin-top: 50px;
+    margin-left: 120px;
+}
+.searchtext::placeholder{
+    //background: #fff !important;
+    color: #004D87 !important;
+    font-weight: 900;
+}
