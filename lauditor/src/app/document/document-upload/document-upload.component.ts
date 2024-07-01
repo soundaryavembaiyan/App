@@ -315,10 +315,13 @@ export class DocumentUploadComponent implements OnInit {
           this.toastr.error('Invalid file format!');
           continue;
         }
+        //console.log('this.matters',this.matters)
     
         //If the file type is allowed, proceed with handling the file
         this.files.push(file);
     
+        this.matters = '';
+        
         let object = {
           name: event.files[i].name.split('.')[0],
           description: event.files[i].name.split('.')[0],
@@ -526,36 +529,6 @@ export class DocumentUploadComponent implements OnInit {
             }
         })
     }
-
-    // selectEvent(item: any) {
-    //     //console.log("test   " + JSON.stringify(item));
-    //     localStorage.setItem("clientData", JSON.stringify(item));
-    //     if (this.filter === 'client') {
-    //         this.clientId.push(item);
-    //         this.httpservice.sendGetRequest(URLUtils.getMattersByClient(item)).subscribe((res: any) => {
-    //             this.matterList = res?.matterList;
-    //             //console.log("test   " + JSON.stringify(res));
-    //         });
-
-    //         let clientInfo = new Array();
-    //         this.clientId?.forEach((item: any) => {
-    //             let clientData = {
-    //                 "id": item.id,
-    //                 "type": item.type
-    //             }
-    //             clientInfo.push(clientData);
-    //         })
-
-    //         this.httpservice.sendPutRequest(URLUtils.getGrouplist,{"clients":clientInfo}).subscribe((res: any) => {
-    //             if (res.error == false) {
-    //                 this.grouplist = res?.data;
-    //                 console.log('selectedGrps', this.grouplist)
-    //             }
-    //         })
-    //     } else {
-    //         this.groupId.push(item?.id)
-    //     }
-    // }
 
     selectEvent(item: any) {
         localStorage.setItem("clientData", JSON.stringify(item));
