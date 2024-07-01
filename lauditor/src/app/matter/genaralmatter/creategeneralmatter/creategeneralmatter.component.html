@@ -18,20 +18,7 @@
           </div>
           <div class="col-sm-2 col-xs-3">
             <div class="steprow">
-              <a (click)="matterInfo?selectedTabItem ='matter-groups':'' " class="stepone stepideal" [ngClass]="{'yallow' :selectedTabItem == 'matter-groups','green':groups.length>0 }">
-                <img src="assets/img/groups.svg" class="stepimg">
-              </a>
-            </div>
-            <div *ngIf="product != 'corporate'">
-              <p class="stptxt">Group(s)</p>
-            </div>
-            <div *ngIf="product == 'corporate'">
-              <p class="stptxt" style="margin-left: -20px;">Department(s)</p>
-            </div>
-          </div>
-          <div class="col-sm-2 col-xs-3">
-            <div class="steprow">
-              <a (click)="groups.length>0?selectedTabItem ='matter-clients':'' " class="stepone stepideal" [ngClass]="{'yallow' : selectedTabItem=='matter-clients','green':clients.length>0 || tempClients?.length>0  || selectedClients}">
+              <a (click)="selectedTabItem ='matter-clients'" class="stepone stepideal" [ngClass]="{'yallow' : selectedTabItem=='matter-clients','green':clients.length>0 || tempClients?.length>0  || selectedClients}">
                 <img src="assets/img/clients.svg" class="stepimg">
               </a>
             </div>
@@ -42,9 +29,24 @@
               <p class="stptxt" style="margin-left: -25px;">External Counsel(s)</p>
             </div>
           </div>
+          <!-- Groups -->
           <div class="col-sm-2 col-xs-3">
             <div class="steprow">
-              <a (click)="clients.length>0?selectedTabItem ='matter-team-member':''" class="stepone stepideal" [ngClass]="{'yallow' : selectedTabItem=='matter-team-member','green':(teammembers.length>0 || highLightTeamMem) }">
+              <a (click)="selectedTabItem ='matter-groups'" class="stepone stepideal" [ngClass]="{'yallow' :selectedTabItem == 'matter-groups','green':groups.length>0 }">
+                <img src="assets/img/groups.svg" class="stepimg">
+              </a>
+            </div>
+            <div *ngIf="product != 'corporate'">
+              <p class="stptxt">Group(s)</p>
+            </div>
+            <div *ngIf="product == 'corporate'">
+              <p class="stptxt" style="margin-left: -20px;">Department(s)</p>
+            </div>
+          </div>
+          <!-- Groups -->
+          <div class="col-sm-2 col-xs-3">
+            <div class="steprow">
+              <a (click)="selectedTabItem ='matter-team-member'" class="stepone stepideal" [ngClass]="{'yallow' : selectedTabItem=='matter-team-member','green':(teammembers.length>0 || highLightTeamMem) }">
                 <img src="assets/img/teams.svg" class="stepimg">
               </a>
             </div>
@@ -54,7 +56,7 @@
           </div>
           <div class="col-sm-2 col-xs-3">
             <div class="steprow">
-              <a (click)="matterInfo && groups.length>0 && clients.length>0?selectedTabItem ='matter-documents':''" class="stepone stepideal" [ngClass]="{'yallow' : selectedTabItem=='matter-documents','green':docsData.length>0 }">
+              <a (click)="selectedTabItem ='matter-documents'" class="stepone stepideal" [ngClass]="{'yallow' : selectedTabItem=='matter-documents','green':docsData.length>0 }">
                 <img src="assets/img/documents.svg" class="stepimg">
               </a>
             </div>
@@ -72,31 +74,20 @@
 <div *ngIf="selectedTabItem == 'matter-info'">
   <general-matter-info  [data]="matterInfo" (childButtonEvent)="receiveMatterIngo($event)"></general-matter-info>
 </div>
-<div *ngIf="selectedTabItem == 'matter-groups'">
-  <matter-groups [data]="InfotoOtherTabs"
-                 [groups]="groups"
-                 (selectedGroupsEvent)="selectedGroups($event)"></matter-groups>
-</div>
 <div *ngIf="selectedTabItem == 'matter-clients'">
-  <matter-clients [data]="InfotoOtherTabs"
-                  [clients]="clients"
-                  [groups]="groups"
-                  (selectedClientsEvent)="selectedClient($event)" 
-                  (temporaryClientsEvent)="temporaryClients($event)" 
-                  (corporateClientsEvent)="corporateClients($event)" ></matter-clients>
+  <matter-clients [data]="InfotoOtherTabs" [clients]="clients" [groups]="groups"  
+   (temporaryClientsEvent)="temporaryClients($event)"
+    (selectedClientsEvent)="selectedClient($event)"></matter-clients>
+</div>
+<div *ngIf="selectedTabItem == 'matter-groups'">
+  <matter-groups [data]="InfotoOtherTabs" [groups]="groups" [clients]="clients"
+    (selectedGroupsEvent)="selectedGroups($event)"></matter-groups>
 </div>
 <div *ngIf="selectedTabItem == 'matter-team-member'">
-  <matter-team-members [data]="InfotoOtherTabs"
-                       [teammembers]="teammembers"
-                       [groups]="groups"
-                       (selectedTmsEvent)="selectedTeammemberes($event)"></matter-team-members>
+  <matter-team-members [data]="InfotoOtherTabs" [teammembers]="teammembers" [groups]="groups" [clients]="clients"
+  (selectedTmsEvent)="selectedTeammemberes($event)"></matter-team-members>
 </div>
 <div *ngIf="selectedTabItem == 'matter-documents'">
-  <matter-documents [data]="InfotoOtherTabs"
-                    [groups]="groups" [clients]="clientsData" [corporate]="corpData"
-                    (selectedDocumentsEvent)="selectedDocuments($event)"></matter-documents>
+  <matter-documents [data]="InfotoOtherTabs" [groups]="groups" [clients]="clientsData" [corporate]="corpData"
+    (selectedDocumentsEvent)="selectedDocuments($event)"></matter-documents>
 </div>
-<!-- <div class="btnbox">
-  <button type="reset" class="btn btn-default btncancel">Cancel</button>
-  <button type="submit" class="btn btn-default btnsave">Next</button>
-</div> -->
