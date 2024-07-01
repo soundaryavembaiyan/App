@@ -13,6 +13,8 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { MatIconModule } from '@angular/material/icon';
  
 @Component({
     selector: 'document-view',
@@ -36,6 +38,10 @@ export class DocumentViewComponent implements OnInit {
     submitted: any;
     editDoc: any;
     isDelete: boolean = false;
+    editmetadata = false;
+    isEncypted = false;
+    isDecrypted = false;
+    docapi = environment.doc2pdf;
     bsValue: any;
     pipe = new DatePipe('en-US');
     viewMode = 1;
@@ -53,9 +59,9 @@ export class DocumentViewComponent implements OnInit {
     clientDetails: any;
     term: any;
     isSelectGroup: boolean = false;
-    selectedGroupItems: any = [];
-    groupViewItems: any = [];
-    matters: any;
+    selectedGroupItems: any[] = [];
+    groupViewItems: any[] = [];
+    matters ='';
     errorMsg: boolean = false;
     isReverse: boolean = false;
     selectedValue: any;
@@ -63,10 +69,20 @@ export class DocumentViewComponent implements OnInit {
     selectedAttachments: any = [];
     fromCount : any;
     toCount : any;
+    tabsel:any;
+    selected_doc : any;
+    reldata:any[]=[];
+    corpData:any[]=[];
+    selectedmatterType='internal';
+    matter_type: any[] = [{'title':'Internal Matter','value':'internal'},{'title':'External Matter','value':'external'}];
+    corp_matter_list:any[] = [];
+    categories='';
+    allowedFileTypes = ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/rtf','text/csv','text/rtf'];
+   
     constructor(private httpservice: HttpService, private toast: ToastrService,
         private router: Router, private formBuilder: FormBuilder, private modalService: ModalService, public sanitizer: DomSanitizer,
         private documentService: DocumentService, private emailService: EmailService,
-        private confirmationDialogService: ConfirmationDialogService) {
+        private confirmationDialogService: ConfirmationDialogService,private spinnerService: NgxSpinnerService) {
         this.urlSafe = '';
         this.filterKey = this.router.url.split("/").splice(-2)[1];
         this.router.events.subscribe((val: any) => {
@@ -77,7 +93,7 @@ export class DocumentViewComponent implements OnInit {
                 this.selectedGroupItems = [];
                 this.clientDetails = [];
                 // removeing checked items while tab change
-                this.groupViewItems.forEach((item: any) => {
+                this.groupViewItems?.forEach((item: any) => {
                     item.isChecked = false;
                 })
             }
@@ -85,6 +101,7 @@ export class DocumentViewComponent implements OnInit {
 
     }
     ngOnInit(): void {
+        this.get_all_matters(this.selectedmatterType)
         this.emailService.emailObservable.subscribe((result: any) => {
             if (result) {
                 this.isFromEmail = result;
@@ -93,15 +110,23 @@ export class DocumentViewComponent implements OnInit {
         let client: any = localStorage.getItem('clientData');
         this.clientDetails = JSON.parse(client);
         let groupids: any = localStorage.getItem('groupIds');
-        this.selectedGroupItems = JSON.parse(groupids);
+        if (groupids) {
+            this.selectedGroupItems = JSON.parse(groupids);
+        }
+        // this.selectedGroupItems = JSON.parse(groupids);
         //console.log("client data " + this.clientDetails);
         this.relationshipSubscribe = this.httpservice.getFeaturesdata(URLUtils.getAllRelationship).subscribe((res: any) => {
-            this.data = res?.data?.relationships;
-            this.data.forEach((item: any) => {
-                if (item.name == this.clientDetails?.name) {
-                    this.selectedValue = item;
-                }
-            })
+            this.reldata = res?.data?.relationships;
+            this.httpservice.getFeaturesdata(URLUtils.getCalenderExternal).subscribe((res: any) => {
+                this.corpData = res?.relationships.map((obj:any)=>({ "id": obj.id, "type": "corporate","name":obj.name}))
+                this.data = this.reldata.concat(this.corpData)
+                this.data.forEach((item: any) => {
+                    if (item.name == this.clientDetails?.name) {
+                        this.selectedValue = item;
+                    }
+                })
+            });
+            
             //console.log("selected value" + JSON.stringify(this.selectedValue));
         });
         this.viewItemsList = this.documentService.getItems();
@@ -117,6 +142,9 @@ export class DocumentViewComponent implements OnInit {
         });
         if (this.clientDetails || this.selectedGroupItems) {
             this.getAllDocuments();
+        }
+        if(this.selectedGroupItems){
+            this.get_all_matters(this.selectedmatterType)
         }
         // this.getAllDocuments();
         this.httpservice.sendGetRequest(URLUtils.getGroups).subscribe((res: any) => {
@@ -140,6 +168,9 @@ export class DocumentViewComponent implements OnInit {
             //console.log("res" + res);
             this.modalService.open('custom-modal-1');
             this.isDelete = true;
+            this.editmetadata = false;
+            this.isDecrypted = false;
+            this.isEncypted = false;
             this.getAllDocuments();
         },
         (error: HttpErrorResponse) => {
@@ -153,30 +184,53 @@ export class DocumentViewComponent implements OnInit {
     selectGroup(val: boolean) {
         this.isSelectGroup = val;
         if (!val) {
+            this.get_all_matters(this.selectedmatterType)
             this.getAllDocuments();
+            
         }
         //this.getAllDocuments();
-        console.log('isSelectGroup',this.isSelectGroup)
+        //console.log('isSelectGroup',this.isSelectGroup)
     }
+    // selectGroupItem(item: any, val: any) {
+    //     //console.log("selected item" + JSON.stringify(item) + val);
+    //     if (val) {
+    //         item.isChecked = val;
+    //         this.selectedGroupItems.push(item);
+    //         //this.selectedGroupItems = this.selectedGroupItems.filter((el:any, i:any, a:any) => i === a.indexOf(el));
+
+    //     } else {
+    //         item.isChecked = val;
+    //         let index = this.selectedGroupItems.findIndex((d: any) => d.id === item.id);
+    //         //console.log(item.id);
+    //         this.selectedGroupItems.splice(index, 1);
+    //     }
+    //     //console.log("selected " + JSON.stringify(this.selectedGroupItems));
+    // }
+
     selectGroupItem(item: any, val: any) {
         //console.log("selected item" + JSON.stringify(item) + val);
+        if (!this.selectedGroupItems) {
+            this.selectedGroupItems = []; // Empty array - null
+        }
+    
         if (val) {
             item.isChecked = val;
-            this.selectedGroupItems.push(item);
-            //this.selectedGroupItems = this.selectedGroupItems.filter((el:any, i:any, a:any) => i === a.indexOf(el));
-
+            this.selectedGroupItems?.push(item);
         } else {
             item.isChecked = val;
             let index = this.selectedGroupItems.findIndex((d: any) => d.id === item.id);
-            //console.log(item.id);
-            this.selectedGroupItems.splice(index, 1);
+            if (index !== -1) {
+                this.selectedGroupItems.splice(index, 1);
+            }
+            //console.log("selected " + JSON.stringify(this.selectedGroupItems));
         }
-        //console.log("selected " + JSON.stringify(this.selectedGroupItems));
     }
+
     removeGroup(item: any) {
         item.isChecked = false;
-        let index = this.selectedGroupItems.findIndex((d: any) => d.id === item.id); //find index in your array
-        this.selectedGroupItems.splice(index, 1);
+        let index = this.selectedGroupItems?.findIndex((d: any) => d.id === item.id); //find index in your array
+        this.selectedGroupItems?.splice(index, 1);
+        this.get_all_matters(this.selectedmatterType)
         this.getAllDocuments();
     }
     addEvent(test: any, val: any) {
@@ -185,8 +239,18 @@ export class DocumentViewComponent implements OnInit {
     }
     get f() { return this.editDocform.controls; }
 
-    editDocInfo(doc: any) {
+    editDocInfo(doc: any,tabsel?:any) {
+        
+        //console.log('form', this.editDocform)
         this.editDoc = JSON.parse(JSON.stringify(doc));
+
+        //console.log('this.editDoc',this.editDoc)
+
+        if(tabsel=='encrypt'){
+            this.tabsel = 'encrypt'
+        } else if(tabsel=='decrypt'){
+            this.tabsel = 'decrypt'
+        }
         //console.log("edit data " + JSON.stringify(this.editDoc));
     }
     onSubmit() {
@@ -203,6 +267,9 @@ export class DocumentViewComponent implements OnInit {
             //console.log("res---edir" + JSON.stringify(res));
             if (res.error == false) {
                 this.isDelete = false;
+                this.isDecrypted = false;
+                this.isEncypted = false;
+                this.editmetadata = true;
                 this.modalService.open('custom-modal-1');
                 this.getAllDocuments();
             }
@@ -211,17 +278,51 @@ export class DocumentViewComponent implements OnInit {
             if (error.status === 401 || error.status === 403) {
               const errorMessage = error.error.msg || 'Unauthorized';
               this.toast.error(errorMessage);
-              console.log(error);
+              //console.log(error);
             }
           }
         );
         this.reset();
     }
+    get_all_matters(type:any,event?:any){
+        this.spinnerService.show()
+        let selectedGroups: any = [];
+        this.selectedGroupItems?.forEach((item: any) => {
+            selectedGroups.push(item.id)
+        })
+        let payload = {"grp_acls":selectedGroups}
+        if(type=='internal'){
+            this.httpservice.sendPutRequest(URLUtils.getAllMatters,payload).subscribe((res:any)=>{
+                if(res.error == false){
+                    this.corp_matter_list = res.matterList
+                    this.onChangeMatters("")
+                    this.spinnerService.hide()
+                } else {
+                    this.spinnerService.hide()
+                }
+            },(err:any)=>{
+                //console.log(err)
+                this.spinnerService.hide()
+            })
+        }
+        if(type == 'external'){
+            this.httpservice.sendPutRequest(URLUtils.getAllExternalMatters,payload).subscribe((res:any)=>{
+                if(res){
+                    this.corp_matter_list = res.matterList
+                    this.onChangeMatters("")
+                    this.spinnerService.hide()
+                }
+            },(err:any)=>{
+                this.spinnerService.hide()
+            })
 
+        }
+    }
     contentLoaded() {
         //console.log('File loaded');
     }
     getAllDocuments() {
+        //console.log('get.documents',this.documents)
         this.documents = [];
         let selectedGroups: any = [];
         let clientId: any;
@@ -234,18 +335,20 @@ export class DocumentViewComponent implements OnInit {
         let obj = {
             "category": this.filterKey,
             "clients": clientId,
-            "matters": this.matters?this.matters:'',
+            "matters": this.matters,
+            "subcategories":this.categories,
             "groups": selectedGroups,
             "showPdfDocs": false
         }
         let url = this.viewMode == 1 ? URLUtils.getFilteredDocuments : URLUtils.filterMergeDoc;
-        if (clientId || selectedGroups.length > 0)
+        //console.log('url',url)
+        if (clientId || selectedGroups.length > 0 )
             this.httpservice.sendPutRequest(url, obj).subscribe((res: any) => {
                 if (this.viewMode == 1)
                     this.documents = res?.data?.reverse();
                 else
-                    this.documents = res?.data?.items?.reverse();
-                console.log("documents " + JSON.stringify(this.documents));
+                    this.documents = res?.data?.items?.reverse()
+                //console.log("documents " + JSON.stringify(this.documents));
                 this.documents.forEach((item: any) => {
                     item.expiration_date=item.expiration_date=='NA'?null:new Date(item.expiration_date);
                     
@@ -266,7 +369,7 @@ export class DocumentViewComponent implements OnInit {
                 if (error.status === 401 || error.status === 403) {
                   const errorMessage = error.error.msg || 'Unauthorized';
                   this.toast.error(errorMessage);
-                  console.log(error);
+                  //console.log(error);
                 }
               });
 
@@ -291,12 +394,59 @@ export class DocumentViewComponent implements OnInit {
         // do something when input is focused
     }
     viewDocument(item: any) {
-        this.httpservice.sendGetRequest(URLUtils.viewDocuments(item)).subscribe((res: any) => {
-            this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(res.data.url);
-            // this.pdfSrc = res.data.url;
-            //console.log(" this.view    " + JSON.stringify(this.documents));
-        });
-        this.pdfSrc = item.filename;
+        this.pdfSrc = ''
+        if(item.added_encryption){
+           
+            var body = new FormData();
+            body.append('docid', item.id)
+            let url = environment.apiUrl + URLUtils.decryptFile
+            this.spinnerService.show()
+            this.httpservice.sendPostDecryptRequest(url,body).subscribe((res:any)=>{
+                const blob = new Blob([res], { type: item.content_type });
+                const url = URL.createObjectURL(blob);
+                if(this.allowedFileTypes.includes(item.content_type)){
+                    let fdata = new FormData();
+                    fdata.append('file', blob);
+                    this.httpservice.sendPostDecryptRequest(environment.DOC2FILE,fdata).subscribe((ans:any)=>{
+                        const ansBlob = new Blob([ans], { type: 'application/pdf' });
+                        const ansUrl = URL.createObjectURL(ansBlob);
+                        this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(ansUrl)
+                        this.spinnerService.hide()
+                    })
+
+                } else{
+                    this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(url)
+                    this.spinnerService.hide()
+                }   
+                
+              
+                console.log(this.pdfSrc)
+            })
+            this.spinnerService.hide()
+        } 
+        if(item.added_encryption==false)  {
+            this.httpservice.sendGetRequest(URLUtils.viewDocuments(item)).subscribe((res: any) => {
+                if(this.allowedFileTypes.includes(item.content_type)){
+                    this.spinnerService.show()
+                    this.httpservice.sendPostDocRequest(this.docapi,{'url':res.data.url}).subscribe((ans:any)=>{
+                        const blob = new Blob([ans], { type: 'application/pdf' });
+                        // Create a URL for the Blob
+                        const url = URL.createObjectURL(blob);
+                        this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(url)
+                        this.spinnerService.hide()
+                    })
+                    
+    
+                } else {
+                    this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(res.data.url);
+                }
+                
+                //console.log(" this.view    " + JSON.stringify(this.documents));
+            });
+            this.pdfSrc = item.filename;
+
+        }
+    
     }
     viewDocumentAttachment(item: any, index: number) {
         this.httpservice.sendGetRequest(URLUtils.viewDocuments(item)).subscribe((res: any) => {
@@ -309,8 +459,9 @@ export class DocumentViewComponent implements OnInit {
     }
     viewMergedDocument(item: any) {
         this.httpservice.sendGetRequest(URLUtils.viewMergedDocuments(item)).subscribe((res: any) => {
+            
             this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(res.url);
-            //console.log(" this.view    " + JSON.stringify(this.urlSafe));
+            // console.log(" this.view    " + JSON.stringify(this.urlSafe));
             this.modalService.open('custom-modal-iframe');
             // //console.log(" this.view    " + JSON.stringify(this.documents));
         });
@@ -326,9 +477,17 @@ export class DocumentViewComponent implements OnInit {
     //<-----------------------------clent matters--------------->
     onChangeMatters(val: any) {
         //console.log("value " + JSON.stringify(val.value));
-        this.matters = val.value;
-        this.getAllDocuments();
+        if(this.selectedmatterType=='external'){
+            this.categories = val.value
+            this.matters = ''
+            this.getAllDocuments();
+        } else {
+            this.matters = val.value;
+            this.categories = ''
+            this.getAllDocuments();
+        }
     }
+    
     //<-----------------------------dropdown upload or merged--------------->
     onChange(category: any) {
         //console.log(category.value);
@@ -363,8 +522,43 @@ export class DocumentViewComponent implements OnInit {
     }
     editDocMetadata(doc: any) {
         this.dataToService(doc);
+        //console.log('doc',doc)
         this.router.navigate(['documents/editmetadata']);
+    }
 
+    encryptdoc(doc:any){
+        this.httpservice.sendPostRequest(URLUtils.encryptDoc(doc.id),'').subscribe((res:any)=>{
+            this.spinnerService.show()
+            if(res.error==false){
+                this.isEncypted = true
+                this.isDecrypted = false;
+                this.isDelete = false;
+                this.editmetadata = false;
+                this.modalService.open('custom-modal-1');
+                this.getAllDocuments()
+                this.spinnerService.hide()
+
+            }
+            this.spinnerService.hide()
+        })
+    }
+    
+    decryptdoc(doc:any){
+        this.httpservice.sendPostRequest(URLUtils.decryptDoc(doc.id),{'get_file':false}).subscribe((res:any)=>{
+            if(res.error==false){
+                this.spinnerService.show()
+                this.isDecrypted = true
+                this.isDelete = false;
+                this.editmetadata = false;
+                this.isEncypted = false;
+                this.modalService.open('custom-modal-1');
+                this.getAllDocuments()
+
+            }
+            this.spinnerService.hide()
+            
+
+        })
     }
 
     deletePdfDocument(doc: any) {
@@ -399,26 +593,53 @@ export class DocumentViewComponent implements OnInit {
         this.documentService.addToService(doc);
     }
     downloadDoc(doc: any) {
-        this.httpservice.sendGetRequest(URLUtils.downloadGeneralDocument(doc)).subscribe((res: any) => {
-            if (res.error == false) {
-                this.modalService.open('doc-download-success');
-                //console.log("url " + JSON.stringify(res));
-                window.open(res?.data?.url, "_blank");
-
-            }
-        });
-
+        if(doc.added_encryption){
+        this.spinnerService.show()
+        var body = new FormData();
+        body.append('docid', doc.id)
+        let url = environment.apiUrl + URLUtils.decryptFile
+        //console.log(url)
+        this.httpservice.sendPostDecryptRequest(url,body).subscribe((res:any)=>{
+            const blob = new Blob([res], { type: doc.content_type });
+            const url = URL.createObjectURL(blob);
+            var anchor = document.createElement("a");
+            anchor.download = doc?.filename;
+            anchor.href = url;
+            this.editDoc = doc;
+            this.modalService.open('doc-download-success');
+            anchor.click();
+            // window.open(url, "_blank");
+          })
+          this.spinnerService.hide()
+        } else{
+            this.httpservice.sendGetRequest(URLUtils.downloadGeneralDocument(doc)).subscribe((res: any) => {
+                if (res.error == false) {
+                    this.spinnerService.show();
+                    this.editDoc = doc;
+                    this.modalService.open('doc-download-success');
+                    //console.log("url " + JSON.stringify(res));
+                    //window.open(res?.data?.url, "_blank");
+                    this.spinnerService.hide()
+                }
+            });
+        }
     }
 
     downloadMergePDF(doc: any) {
         this.fileName = doc.name;
+        // console.log('fileName',this.fileName)
+        // console.log('doc',doc)
         this.httpservice.sendGetRequest(URLUtils.downloadMergepdfFile(doc)).subscribe((res: any) => {
             if (res.error == false) {
+                this.editDoc = doc;
                 this.modalService.open('doc-download-success');
                 window.open(res.url, "_blank");
+            }else {
+                this.toast.error(res.msg);
             }
         });
     }
+    
     sortDocuments(val: any) {
         this.isReverse = !this.isReverse;
         if (this.isReverse) {
@@ -459,5 +680,11 @@ export class DocumentViewComponent implements OnInit {
         this.fromCount = (val * 10) - 9;
         this.toCount = val * 10;
         //console.log("page change " + val);
+    }
+    restrictSpaces(event: any) {
+        let inputValue: string = event.target.value;
+        // Replace multiple spaces with a single space
+        inputValue = inputValue.replace(/\s{2,}/g, ' ');
+        event.target.value = inputValue;
     }
 }
