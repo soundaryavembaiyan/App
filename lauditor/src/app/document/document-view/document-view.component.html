@@ -7,7 +7,7 @@
         <div class="form-group" *ngIf="product != 'corporate'">
           <label for="title" class="fontbold">Client Name <span class="mandate">*</span></label>
           <div class="ng-autocomplete textbox">
-            <ng-autocomplete [data]="data" [searchKeyword]="keyword" placeholder="Type to select"
+            <ng-autocomplete class="ngauto" [data]="data" [searchKeyword]="keyword" placeholder="Type to select"
               (selected)='selectEvent($event)' (inputChanged)='onChangeSearch($event)' [initialValue]="selectedValue"
               (inputFocused)='onFocused($event)' [itemTemplate]="itemTemplate" [notFoundTemplate]="notFoundTemplate">
               <!-- <i class="fa fa-chevron-down" aria-hidden="true"></i> -->
@@ -23,12 +23,14 @@
             <!-- <i class="fa fa-chevron-down"></i> -->
           </div>
         </div>
-        <div class="form-group" >
-          <label for="title" class="fontbold" *ngIf="product != 'corporate'">Matter </label>
+
+        <div class="form-group" *ngIf="product === 'lauditor' || product === 'corporate'">
+          <label for="title" class="fontbold" *ngIf="product == 'lauditor'">Matter </label>
           <label for="title" class="fontbold" *ngIf="product == 'corporate'">Matter <span class="mandate">*</span></label>
           <div class="dropdown-select textbox">
             <select class="textbox" (change)="onChangeMatters($event.target)">
-              <option hidden value="">Type to select</option>
+              <option hidden value="">Select matter</option>
+              <option class="textbox" value="all">All Documents</option>
               <option class="textbox" *ngFor="let i of matterList " value="{{i.id}}">{{i.title}}</option>
             </select>
             <i class="fa fa-chevron-down"></i>
@@ -39,25 +41,22 @@
       <div class="col-6" *ngIf="filterKey==='firm'">
         <div class="form-group " id="selectbx">
           <div class="input-group court" id="search">
+            <p class="deptCls" *ngIf="product == 'corporate'">Department(s)<span class="mandate">*</span></p>
             <div class="multicheck form-control textbox">
               <label class="callselect" *ngIf="product != 'corporate'">Select Group(s) <span class="mandate">*</span></label>
-              <label class="callselect" *ngIf="product == 'corporate'">Select Department(s) <span class="mandate">*</span></label>
-              <i *ngIf="!isSelectGroup"
-                class=" fa fa-plus  calimg calitem input-group-append checkboxitem"
+              <label class="callselect" *ngIf="product == 'corporate'">Select Department(s)</label>
+              <i *ngIf="!isSelectGroup" class=" fa fa-plus  calimg calitem input-group-append checkboxitem"
                 aria-hidden="true" (click)="selectGroup(true)"></i>
-              <i *ngIf="isSelectGroup"
-                class=" fa fa-minus  calimg calitem input-group-append checkboxitem"
+              <i *ngIf="isSelectGroup" class=" fa fa-minus  calimg calitem input-group-append checkboxitem"
                 aria-hidden="true" (click)="selectGroup(false)"></i>
             </div>
           </div>
           <div class="" *ngIf="isSelectGroup">
             <div class="input-group index court" id="search">
               <div class="multicheck form-control textbox" *ngFor="let item of groupViewItems">
-
                 <label class="callselect">{{item.name}}</label>
-                <input type="checkbox" class="calimg calitem
-                input-group-append checkboxitem " 
-                value=""  id="flexCheckDefault" [checked]="item.isChecked"  #inputEl (change)="selectGroupItem(item,inputEl.checked)">
+                <input type="checkbox" class="calimg calitem input-group-append checkboxitem " 
+                value="" id="flexCheckDefault" [checked]="item.isChecked" #inputEl (change)="selectGroupItem(item,inputEl.checked)">
               </div>
             </div>
           </div>
@@ -79,16 +78,38 @@
           </div>
  
         </div>
-        <div class="form-group" *ngIf="!isFromEmail">
+        <div class="form-group" *ngIf="!isFromEmail && product !== 'corporate'">
           <label for="title" class="fontbold">Categories </label>
-          <input type="text" class="form-control textbox" id="caseType" name="caseno">
+          <input type="text" class="form-control textbox" id="caseType" placeholder="Type to select" 
+          (input)="restrictSpaces($event)" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_ ]|^ /g,'')" name="caseno">
+        </div>
+        <div class="form-group" *ngIf="product === 'corporate'">
+          <label for="title" class="fontbold deptCls">Matters </label> &nbsp;&nbsp;
+          <mat-radio-group
+            aria-labelledby="example-radio-group-label"
+            class="example-radio-group"
+            [(ngModel)]="selectedmatterType">
+            <mat-radio-button color="primary" (change)="get_all_matters(matter.value,$event)" *ngFor="let matter of matter_type" [value]="matter.value">
+              {{matter.title}}
+            </mat-radio-button>
+          </mat-radio-group> 
+            <!-- <label for="title" class="fontbold">Matter</label> -->
+            <div class="dropdown-select textbox">
+              <select class="textbox" (change)="onChangeMatters($event.target)">
+                <option hidden value="">Select matter</option>
+                <option class="textbox" *ngFor="let i of corp_matter_list "
+                  value="{{i.id}}">{{i.title}}</option>
+              </select>
+              <i class="fa fa-chevron-down"></i>
+            </div>
+                     
         </div>
       </div>
   
       <div class="col-6" >
         <div class="form-group float-right">
           <div class="input-group court" id="search">
-            <input type="text" class="form-control textbox" placeholder="Search " [(ngModel)]="term" />
+            <input type="text" class="form-control textbox" placeholder="Search" [(ngModel)]="term" oninput="this.value = this.value.replace(/[^A-Za-z0-9 ]|^ /g,'')"/>
             <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
           </div>
         </div>
@@ -132,18 +153,21 @@
 </div>
 <div [ngSwitch]="viewMode">
   <div *ngSwitchCase=0>
-    <div class="col-sm-12 gridtable  width-alignment">View All</div>
+    <div class="col-sm-12 gridtable width-alignment">View All</div>
   </div>
   <div *ngSwitchCase=1>
-    <div class="col-sm-12 gridtable  width-alignment">
+    <div class="col-sm-12 gridtable  width-alignment table-wrapper">
       <div *ngIf="filterKey==='client' && product !='corporate'" class="custusername tab-margin fontweight">List of Client Documents</div>
-
       <div *ngIf="filterKey==='firm' && product != 'corporate'" class="custusername tab-margin fontweight">List of Firm Documents</div>
-      <div *ngIf="filterKey==='firm' && product == 'corporate'" class="custusername tab-margin fontweight">List of Internal Documents</div>
 
-     <div *ngIf="documents && documents?.length==0 &&  errorMsg" class="custom-alert"> List of  Documents not available !!</div>
+      <div *ngIf="filterKey==='firm' && product == 'corporate' && selectedmatterType == 'internal'" class="custusername tab-margin fontweight">List of Internal Documents</div>
+      <div *ngIf="filterKey==='firm' && product == 'corporate' && selectedmatterType != 'internal'" class="custusername tab-margin fontweight">List of External Documents</div>      
+      <!-- <div *ngIf="filterKey==='firm' && product == 'corporate'" class="custusername tab-margin fontweight">List of Internal Documents</div> -->
+
+     <div *ngIf="documents && documents?.length==0 && errorMsg" class="custom-alert"> List of  Documents not available!!</div>
      <div *ngIf="documents.length>0">
-      <table  class="table table-borderless tblgrid">
+      <div class="table-scroll">
+      <table class="table table-borderless tblgrid">
         <thead>
           <tr class="theader">
             <th style="width:200px !important">
@@ -185,9 +209,19 @@
               <div *ngFor="let tag of document.tags">{{tag}}</div>
             </td>
             <!-- <i class="fa-light fa-arrow-down-to-line"></i> -->
+            <td *ngIf="document.added_encryption" >
+              <button class="lock" mat-icon-button (click)="editDocInfo(document,'decrypt');openModal('custom-modal-encrypt')"  matTooltip="Click To Decrypt Document">
+                <mat-icon>lock</mat-icon>
+              </button>
+            </td>
+            <td *ngIf="!document.added_encryption" >
+              <button class="lock"mat-icon-button (click)="editDocInfo(document,'encrypt');openModal('custom-modal-encrypt')"  matTooltip="Click To Encrypt Document">
+                <mat-icon>lock_open</mat-icon>
+              </button>
+            </td>
             <td><i class="fa-solid fa-arrow-down" aria-hidden="true" [class.disable]="!document.is_disabled"></i></td>
-            <td>
-              <div class="dropdown">
+            <td *ngIf="!isFromEmail">
+              <div><!--class="dropdown"-->
                 <button type="button" class="btn btn-primary  dropdown-toggle actionbtn" 
                 data-bs-toggle="dropdown" [ngClass]="{'disabled': document.isdisabled}">
                   Action
@@ -226,6 +260,7 @@
           </tr>
         </tbody>
       </table>
+      </div>
       <div class="row">
         <div class="col-6"> <label for="">Showing <span>{{fromCount}}</span>to <span>{{toCount}}</span> of <span *ngIf="documents">{{documents.length}}</span> entries</label></div>
         <div class="col-6">
@@ -242,7 +277,7 @@
               <button type="reset" class="btn btn-default
                   btncancel" (click)="cancelAttachments()" >Cancel</button>
               <button  type="submit"
-                  class="btn btn-default btnsave savecls"
+                  class="btn btn-default btnsaved savecls"
                   [ngClass]="{'disable':!(selectedAttachments.length>0)
                   }" (click)="saveAttachments()">Attach Documents</button>
           </div>
@@ -251,13 +286,13 @@
     </div>
   </div>
   <div *ngSwitchCase=2>
-    <div class="col-sm-12 gridtable  width-alignment">
+    <div class="col-sm-12 gridtable  width-alignment table-wrapper">
       <div class="custusername tab-margin fontweight">
         List of Merged Documents
-
       </div>
-      <div *ngIf="documents && documents?.length==0 && errorMsg" class="custom-alert"> List of merged Documents not available !!</div>
+      <div *ngIf="documents && documents?.length==0 && errorMsg" class="custom-alert"> List of merged Documents not available!!</div>
       <div *ngIf="documents.length>0">
+      <div class="table-scroll">
       <table class="table table-borderless tblgrid">
         <thead>
           <tr class="theader">
@@ -331,7 +366,6 @@
                   <li>
                     <a class="dropdown-item" (click)="addWatermark(document)">Add Watermark</a>
                   </li>
-
                   <li>
                     <a class="dropdown-item" (click)="addCustomPages(document)">Add Page Numbers</a>
                   </li>
@@ -347,6 +381,7 @@
           </tr>
         </tbody>
       </table>
+      </div>
       <div class="row">
         <div class="col-6"> <label for="">Showing <span>{{fromCount}}</span>to <span>{{toCount}}</span> of <span *ngIf="documents">{{documents.length}}</span> entries</label></div>
         <div class="col-6">
@@ -355,8 +390,6 @@
                 [responsive]="true" (pageChange)="pageChanged($event)" >
             </pagination-controls></div>
     </div>
-
-
     </div>
     </div>
   </div>
@@ -365,21 +398,13 @@
 
 
 <jw-modal id="view-doc-1" class=" view-doc-1 doc-view-scs ">
-  
-
     <div class="iconclose" (click)="closeModal('view-doc-1');">X</div>
-
-
       <iframe *ngIf="pdfSrc" height="100%" width="100%" [src]="pdfSrc"></iframe>
-
-
-
 </jw-modal>
 
 
 <!-- <div *ngIf="successMsg">
-    
-      {{successMsg}}
+        {{successMsg}}
   </div> -->
 
 <!-- Modal -->
@@ -396,15 +421,16 @@
             <div class="row width-alignment">
               <div class="col-6">
                 <div class="form-group nameSet">
-                  <label for="title" class="lable-size">Document Name <span class="mandate">*</span></label>
+                  <label for="title" class="lable-size">Document Named <span class="mandate">*</span></label>
                   <input type="text" formControlName="name" class="text-size form-control group-name-text"
                     [ngClass]="{ 'is-invalid': submitted && f.name.errors }" id="caseTitle" name="name"
-                    [(ngModel)]="editDoc.name">
+                    (input)="restrictSpaces($event)" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_ ]|^ /g,'')" 
+                    maxlength="50" [(ngModel)]="editDoc.name" autocomplete="off">
                   <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
                     <div *ngIf="f.name.errors.required">Document Name is required</div>
                   </div>
                   <div class="count-div">
-                    <div class="count-text" *ngIf="editDoc.name">{{editDoc.name.length}}/300</div>
+                    <div class="count-text" *ngIf="editDoc.name">{{editDoc.name.length}}/50</div>
                   </div>
                 </div>
               </div>
@@ -413,7 +439,8 @@
                   <label for="comment" class="lable-size">Description <span class="mandate">*</span></label>
                   <textarea formControlName="description" class="form-control text-size text-area-height"
                     [ngClass]="{ 'is-invalid': submitted && f.description.errors }" name="description"
-                    [(ngModel)]="editDoc.description"></textarea>
+                    (input)="restrictSpaces($event)" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_ ]|^ /g,'')" 
+                    maxlength="300" [(ngModel)]="editDoc.description"></textarea>
                   <div *ngIf="submitted && f.description.errors" class="invalid-feedback">
                     <div *ngIf="f.description?.errors?.required">Description is required</div>
                   </div>
@@ -425,19 +452,15 @@
                   <label for="title" class="fontbold"> Expiration Date</label>
                   <div class="input-group">
                     <input class="form-control" formControlName="expiration_date" bsDatepicker id="drp" #dp="bsDatepicker" 
-                      (bsValueChange)='selectDuration($event)'   [(ngModel)]="editDoc.expiration_date" readonly>
+                    [ngClass]="{ 'is-invalid': submitted && f.expiration_date.errors }"  (bsValueChange)='selectDuration($event)' [(ngModel)]="editDoc.expiration_date" readonly>
                     <span _ngcontent-syx-c6="" class="input-group-btn">
                       <a _ngcontent-syx-c6="" class="btn btn-default" (click)="dp.show()">
                         <i _ngcontent-syx-c6="" aria-hidden="true" class="fa fa-calendar"></i>
                       </a>
                     </span>
                   </div>
-
                 </div>
-
               </div>
-
-
             </div>
             <div class="btnbox">
               <button type="button" class="btn btn-default  test btncancel" data-bs-dismiss="modal" aria-label="Close"
@@ -471,15 +494,21 @@
       <div class="alertbox">
         <div class="close-x float-right" (click)="closeModal('custom-modal-1');">X</div>
         <div class="alertpara">
-          <p class="alertparatxt"> Success</p>
+          <p class="alertparatxt">Success</p>
         </div>
-        <div *ngIf="!isDelete" class="alertext">Congratulations!! You have successfully updated document information.
+        <div *ngIf="editmetadata" class="alertext">Congratulations!! You have successfully updated document information.
         </div>
-        <div *ngIf="isDelete" class="alertext">Congratulations!! You have successfully deleted <b>{{editDoc.name}}</b>
+        <div *ngIf="isDelete" class="alertext">Congratulations!! You have successfully deleted 
+          <b> {{ editDoc.name.length > 50 ? editDoc.name.substring(0, 50) + '... ' : editDoc.name }}</b> document.
+        </div>
+        <div *ngIf="isEncypted" class="alertext">Congratulations!! You have successfully encrypted <b>{{editDoc.name}}</b>
+          document.
+        </div>
+        <div *ngIf="isDecrypted" class="alertext">Congratulations!! You have successfully decrypted <b>{{editDoc.name}}</b>
           document.
         </div>
         <div class="center">
-          <button class="btn btn-primary  " (click)="closeModal('custom-modal-1')">OK</button>
+          <button class="btn btn-primary okbtn" (click)="closeModal('custom-modal-1')">OK</button>
         </div>
       </div>
     </div>
@@ -493,17 +522,18 @@
         <div class="">
           <div class="iconclose" (click)="closeModal('custom-modal-merge-pdf');">X</div>
           <div class="alertpara">
-            <p class="alertparatxt"> Alert</p>
+            <p class="alertparatxt alertpad">Alert</p>
           </div>
-          <div class="alertext">
+          <div class="alertext">This action cannot be undone.<br>
             Are you sure you want to delete<br>
-            <b>{{editDoc.name}}</b> document ?
+            <strong style="font-weight: 900;">
+              {{ editDoc.name.length > 50 ? editDoc.name.substring(0, 50) + '... ' : editDoc.name }}
+            </strong> document?
           </div>
         </div>
-        <div class="alertbutton">
-          <button class="btn btn-default  alertbtn alertbtnno" (click)="closeModal('custom-modal-merge-pdf');">No</button>
-          <button class="btn btn-default alertbtn alertbtnyes"
-            (click)="closeModal('custom-modal-merge-pdf');deletePdfDocument(editDoc)">Yes</button>
+        <div class="alertbutton delBtn">
+          <button class="btn btn-default alertbtn alertbtnyes" (click)="closeModal('custom-modal-merge-pdf');">No</button>
+          <button class="btn btn-default alertbtn alertbtnno movebtn" (click)="closeModal('custom-modal-merge-pdf');deletePdfDocument(editDoc)">Yes</button>
         </div>
       </div>
     </div>
@@ -521,7 +551,7 @@
           </div>
           <div class="alertext">
             Are you sure you want to delete<br>
-            <b>{{editDoc.name}}</b> document ?
+            <b>{{editDoc.name}}</b> document?
           </div>
         </div>
         <div class="alertbutton">
@@ -534,7 +564,31 @@
   </div>
 </jw-modal>
 
-
+<jw-modal id="custom-modal-encrypt" class="doc-view-scs">
+  <div class="doc-view-scs-body" *ngIf="editDoc" >
+    <div class="container">
+      <div class="row">
+        <div class="">
+          <div class="iconclose" (click)="closeModal('custom-modal-encrypt');">X</div>
+          <div class="alertpara">
+            <p class="alertparatxt"> Alert </p>
+          </div>
+          <div class="alertext">
+            Are you sure you want to {{tabsel}}<br>
+            <b>{{editDoc.name}}</b> document ?
+          </div>
+        </div>
+        <div class="alertbutton">
+          <button class="btn btn-default  alertbtn alertbtnno" (click)="closeModal('custom-modal-encrypt');">No</button>
+          <button *ngIf='tabsel=="decrypt"'class="btn btn-default alertbtn alertbtnyes"
+            (click)="closeModal('custom-modal-encrypt');decryptdoc(editDoc)">Yes</button>
+            <button  *ngIf='tabsel=="encrypt"' class="btn btn-default alertbtn alertbtnyes"
+            (click)="closeModal('custom-modal-encrypt');encryptdoc(editDoc)">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</jw-modal>
 
 
 <jw-modal id="custom-modal-iframe" class="doc-iframe-scs">
@@ -545,28 +599,27 @@
       <iframe height="100%" width="100%" [src]="urlSafe"></iframe>
     </div>
   </div>
+
 </jw-modal>
 
 <jw-modal id="doc-download-success" class="doc-del-success  alert-box">
-  <div class="doc-iframe-scs-body ">
-
+  <div class="doc-iframe-scs-body">
     <div class="container">
-      <div class="row" *ngIf="data">
+      <div class="row" *ngIf="editDoc">
         <div class="alertbox">
           <div class="close-x float-right" (click)="closeModal('doc-download-success');">X</div>
           <div class="alertpara">
-            <p class="alertparatxt"> Success</p>
+            <p class="alertparatxt">Success</p>
           </div>
-          <div class="alertext">Congratulations!! You have successfully downloaded {{data.name}} document.
-          </div>
+          <div class="alertext">Congratulations!! <br> You have successfully downloaded 
+             <strong>{{editDoc?.name}}</strong> document.</div>
           <div class="center">
-            <button class="btn btn-primary  " (click)="closeModal('doc-download-success')">OK</button>
-
+            <button class="btn btn-primary okbtn" (click)="closeModal('doc-download-success')">OK</button>
           </div>
-
         </div>
       </div>
     </div>
   </div>
 </jw-modal>
+<ngx-spinner  size="medium" type="ball-clip-rotate"></ngx-spinner>
 
