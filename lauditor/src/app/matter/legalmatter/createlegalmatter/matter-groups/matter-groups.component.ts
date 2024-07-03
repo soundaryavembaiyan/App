@@ -317,11 +317,13 @@ export class MatterGroupsComponent implements OnInit {
     }
   }
 
+  //Remove grps from the dialog
   removeDialogGroup(group: any) {
     console.log('grp', group)
 
     if (this.isEdit && group.canDelete == false) {
       this.toast.error('Clients are associated with this Group')
+      return
     }
 
     if ((this.isEdit && (group.canDelete == undefined || group.canDelete == true)) || (!this.isEdit)) {
