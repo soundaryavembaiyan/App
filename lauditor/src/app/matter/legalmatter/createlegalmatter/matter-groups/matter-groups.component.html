@@ -94,11 +94,11 @@
     
               <div class="groupContent" *ngIf="product !='corporate'">
                 <i class="fa fa-exclamation-circle" style="color: red;font-size:16px" aria-hidden="true"></i> &nbsp;
-                This <b style="font-weight: 900;">'{{editDoc.name}}'</b> group currently contains <b style="font-weight: 900;">25 Documents</b>. Before updating, please assign them to another active group.
+                This <b style="font-weight: 900;">'{{editDoc.name}}'</b> group currently contains <b style="font-weight: 900;">{{this.removegrpId?.documents}} Documents and {{this.removegrpId?.relationships}} Relationships.</b> Before updating, please assign them to another active group.
               </div>
               <div class="groupContent" *ngIf="product =='corporate'">
                 <i class="fa fa-exclamation-circle" style="color: red;font-size:16px" aria-hidden="true"></i> &nbsp;
-                This <b style="font-weight: 900;">'{{editDoc.name}}'</b> department currently contains <b style="font-weight: 900;">25 Documents</b>. Before updating, please assign them to another active department.
+                This <b style="font-weight: 900;">'{{editDoc.name}}'</b> department currently contains <b style="font-weight: 900;">{{this.removegrpId?.documents}} Documents and {{this.removegrpId?.relationships}} Relationships.</b> Before updating, please assign them to another active department.
               </div>
 
               <div class="col-5">
@@ -108,7 +108,7 @@
                 </div>
             
                 <div class="form-group" id="selectbx">
-                  <div class="input-group group-custom-align court matterpadding" *ngFor="let group of selectedGroups"
+                  <div class="input-group group-custom-align court matterpadding" *ngFor="let group of selectedtoupdateGroups"
                     id="selectedgroup">
                     <div class="multicheck form-control textbox">
                       <div class="callselect" [innerHtml]="group.name"></div>
@@ -143,7 +143,7 @@
                       <div class="callselect" [innerHtml]="group.name"></div>
                       <input class="form-check-inpu calimg calitem input-group-app end checkboxitem" 
                       #inputEl type="checkbox" id="flexCheckDefault"
-                      (change)="selectGroup(group, inputEl.checked)">
+                      (change)="selecttoUpdateGroup(group, inputEl.checked)">
                     </div>
                   </div>
                 </div>
@@ -154,7 +154,7 @@
               <button type="button" class="btn btn-default test btncancel" data-bs-dismiss="modal" aria-label="Close"
                 >Cancel</button>
               <button type="submit" class="btn btn-default btnsave" data-bs-dismiss="modal" aria-label="Close"
-                >Delete</button>
+                (click)="deleteGroup()" >Delete</button>
             </div>
         </div>
       </div>
