@@ -83,10 +83,27 @@
             <!-- message notifcation box one -->
             <!-- {{selectedUser|json}} -->
             <div class="msgscroll">
-            <div class="col-sm-12 messagecont msg-padding"
-                *ngFor="let client of selectedUser | filter:clientSearch;let i=index">
-                <div class="row meetingcontainer  legalboxleft container msgcontainer"
+            <div class="col-sm-12 messagecont msg-padding" *ngFor="let client of selectedUser | filter:clientSearch;let i=index">
+            <!--selected user chat for clients-->
+                <div class="row meetingcontainer legalboxleft container msgcontainer" *ngIf="client.clientType == 'Consumer'"
                     [ngClass]="{'active': client.isSelected}" (click)="selectChatUser(client)">
+                    <div class="col-sm-8 col-xs-8">
+                        <div class="row">
+                            <div class="col-sm-3 col-xs-3">
+                                <div class=" userprofile profile">
+                                    <div class="username icongroup icomeeting msgiconlist msglisa chatpro">{{client.name[0]}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-8 col-xs-9 msgalign">
+                                <p class="mname toalhours approxmeet meetone mlname"> {{client.name}} </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row meetingcontainer legalboxleft container msgcontainer" *ngIf="client.clientType === 'Entity'"
+                    [ngClass]="{'active': client.isSelected}">
                     <div class="col-sm-8 col-xs-8">
                         <div class="row">
                             <div class="col-sm-3 col-xs-3">
@@ -102,24 +119,27 @@
                     </div>
                     <div class="col-sm-4 col-xs-4">
                         <!-- !Corporate - chatPopup -->
-                        <div *ngIf="client.clientType == 'Entity' && product != 'corporate'" class="circlemsg" (click)="toggle(i,client)">
-                            <i class="fa " [ngClass]="hideRuleContent[i] || client.isExpand ? 'fa-minus-circle' : 'fa-plus-circle'" aria-hidden="true"></i>
+                        <div *ngIf="client.clientType == 'Entity' && product != 'corporate'" class="circlemsg">
+                            <i class="fa " (click)="toggle(i,client);selectChatUser(client)"
+                                [ngClass]="hideRuleContent[i] && client.isExpand ? 'fa-minus-circle' : 'fa-plus-circle'"
+                                aria-hidden="true"></i>
                         </div>
                         <!-- Corporate - chatPopup -->
-                        <div *ngIf="client.clientType == 'Entity' && product == 'corporate'" class="circlemsg" (click)="toggle(i,client)">
-                            <i class="fa " [ngClass]="hideRuleContent[i] && client.isExpand ? 'fa-minus-circle' : 'fa-plus-circle'" aria-hidden="true"></i>
+                        <div *ngIf="client.clientType == 'Entity' && product == 'corporate'" class="circlemsg">
+                            <i class="fa " (click)="toggle(i,client);selectChatUser(client)"
+                                [ngClass]="hideRuleContent[i] && client.isExpand ? 'fa-minus-circle' : 'fa-plus-circle'"
+                                aria-hidden="true"></i>
                         </div>
                     </div>
-
                 </div>
+            <!--selected user chat for clients-->
 
                 <!-- !Corporate - chatPopup -->
                 <div *ngIf="client.clientType == 'Entity' && product != 'corporate'">
                     <div class="expandCollapseContent" *ngIf="hideRuleContent[i] || client.isExpand">
                         <div *ngFor="let i of entityClients;let j = index">
                             <div class="col-sm-12 ">
-                                <div (click)="selectChatUser(i)"  
-                                    class="row meetingcontainer legalboxleft container msgcontainer toggelchat">
+                                <div class="row meetingcontainer legalboxleft container msgcontainer" (click)="selectChatUser(i)">
                                     <div class="col-sm-9 col-xs-9 toggleresponse">
                                         <div class="row">
                                             <div class="col-sm-2 col-xs-2">
@@ -129,7 +149,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-sm-10 col-xs-10  usertag ">
-                                                <p class="chatusertitle"> {{i.name}} </p>
+                                                <p class="chatusertito"> {{i.name}} </p>
                                             </div>
                                         </div>
                                     </div>
@@ -148,8 +168,7 @@
                     <div class="expandCollapseContent" *ngIf="hideRuleContent[i] && client.isExpand">
                         <div *ngFor="let i of entityClients;let j = index">
                             <div class="col-sm-12 ">
-                                <div (click)="selectChatUser(i)"  
-                                    class="row meetingcontainer legalboxleft container msgcontainer toggelchat">
+                                <div (click)="selectChatUser(i)" class="row meetingcontainer legalboxleft container msgcontainer">
                                     <div class="col-sm-9 col-xs-9 toggleresponse">
                                         <div class="row">
                                             <div class="col-sm-2 col-xs-2">
@@ -159,7 +178,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-sm-10 col-xs-10  usertag ">
-                                                <p class="chatusertitle"> {{i.name}} </p>
+                                                <p class="chatusertito"> {{i.name}} </p>
                                             </div>
                                         </div>
                                     </div>
@@ -206,7 +225,7 @@
             
             <div class="msgscroll">
             <div class="col-sm-12 messagecont" *ngFor="let result of groups |filter: teamSearch;let i = index">
-                <div class="row meetingcontainer legalboxleft container msgcontainer toggelchat">
+                <div class="row meetingcontainer legalboxleft container msgcontainer">
                     <div class="col-sm-9 col-xs-9 toggleresponse">
                         <div class="row">
                             <div class="col-sm-2 col-xs-2">
@@ -215,7 +234,7 @@
                                 </div>
                             </div>
                             <div class="col-sm-10 col-xs-10 usertag usertagadmin">
-                                <p class="chatusertitle"> {{result.groupName}} </p>
+                                <p class="chatusertito"> {{result.groupName}} </p>
                             </div>
                         </div>
                     </div>
@@ -234,7 +253,7 @@
                     <div *ngFor="let i of result.users;let j = index">
                         <div class="col-sm-12 ">
                             <div (click)="selectChatUser(i)"
-                                class="row meetingcontainer legalboxleft container msgcontainer toggelchat">
+                                class="row meetingcontainer legalboxleft container msgcontainer">
                                 <div class="col-sm-9 col-xs-9 toggleresponse">
                                     <div class="row">
                                         <div class="col-sm-2 col-xs-2">
@@ -246,7 +265,7 @@
                                             </div>
                                         </div>
                                         <div class="col-sm-10 col-xs-10  usertag ">
-                                            <p class="chatusertitle"> {{i.name}} </p>
+                                            <p class="chatusertito"> {{i.name}} </p>
                                         </div>
                                     </div>
                                 </div>
@@ -321,12 +340,8 @@
             <div class="col-sm-12">
                 <div class="row meetingcontainer legalboxleft container msgcontainerchat">
                     <div class="col-sm-7 col-xs-8">
-                        <div class="row">
+                        <div class="row" *ngIf="orgUser?.clientType !== 'Entity'">
                             <div class="col-sm-2" *ngIf="chatUserName">
-                                <!-- <div class=" userprofile profile">
-                        <div class="username icongroup icomeeting msgiconlist msglisa">{{chatUserName[0]}}</div>
-                      </div> -->
-                                <!-- <img src="assets/img/rightlarge.JPG" class="arrowlg"> -->
                                 <i class="fa fa-angle-left arrowlg" aria-hidden="true"></i>
                             </div>
                             <div class="col-sm-3 col-xs-3 mobilepadding" *ngIf="chatUserName">
@@ -340,13 +355,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-5" *ngIf="chatUserName">
-                        <div class="msgtime">
-                             <img src="assets/img/videocall.svg" class="msgvideo msgvideomob videocall"> 
-                             <!-- <img src="assets/img/audiocall.svg" class="msgcall msgcallmobile audiocall"> -->
-
-                            <!-- <img src="assets/img/video.JPG" class="msgvideo msgvideomob"> -->
-                            <!-- <img src="assets/img/call.JPG" class="msgcall msgcallmobile"> -->
+                    <div class="col-sm-5" *ngIf="orgUser?.clientType !== 'Entity'">
+                        <div class="msgtime" *ngIf="chatUserName">
+                            <div (click)="StartVideo()">
+                                <img src="assets/img/videocall.svg" class="msgvideo msgvideomob videocall"> 
+                                <!-- <img src="assets/img/audiocall.svg" class="msgcall msgcallmobile audiocall"> -->
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -369,7 +383,7 @@
                                 [class]="msg['action'] == 'SENT' ? 'coffer-me t' : 'coffer-you t'">
                                 <div *ngIf="msg.action=='SENT'" class="col-sm-12 textarea">
                                     <div class="row leftpara">
-                                        <div *ngIf="msg.action=='SENT' " class="userprofile profile">
+                                        <div *ngIf="msg.action == 'SENT' " class="userprofile profile">
                                             <div class="username msglisa" *ngIf="sendUser">{{sendUser[0]}}</div>
                                         </div>
                                         <div class="col-sm-10 mobcolumntwo">
@@ -377,7 +391,8 @@
                                                 <p class="chattxt"> {{msg.text}} </p>
                                                 <label class="chattxttime">
                                                     <!-- <p [class]="msg['action'] == 'SENT' ? 'coffer-time-me' : 'coffer-time-you'"> {{msg.timestamp}} </p> -->
-                                                    <p> {{msg.timestamp}} </p>
+                                                    <!-- <p> {{msg.timestamp}} </p> -->
+                                                    <p> {{msg.timestamp | date :"dd MMM, yyyy h:mm a"}} </p>
                                                 </label>
                                             </div>
                                         </div>
@@ -396,7 +411,7 @@
                                             <div class="chatpara rytwid">
                                                 <p class="chattxt"> {{msg?.text}} </p>
                                                 <label class="chattxttime">
-                                                    <p> {{msg.timestamp}} </p>
+                                                    <p> {{msg.timestamp | date :"dd MMM, yyyy h:mm a"}} </p>
                                                 </label>
                                             </div>
                                         </div>
@@ -411,24 +426,22 @@
                 <!-- box content for realtime chat ends here  -->
                 <div class="row meetingcontainer legalboxleft container msgcontainerchat">
                     <div class="col-sm-12 col-xs-12">
-                       
+                    
                         <div class="row">
-                            <!-- <div class="col-sm-2 col-xs-3">
-                      <img src="assets/img/plus.JPG" class="arrowlg">
-                    </div> -->
+                            <!-- <div class="col-sm-2 col-xs-3"> <img src="assets/img/plus.JPG" class="arrowlg"> </div> -->
                             <div class="col-sm-10 col-xs-10">
-                            
                                 <div class="form-group ">
-                                    <input type="text" class="form-control textbox chatinput" id="title" name="caseno"
-                                        #messege_input [(ngModel)]="messegeInput" required="" placeholder="Type your message here.."
-                                        (keydown)="onKeyDown($event)">
+                                    <input type="text" class="form-control textbox chatinput" id="title"
+                                        name="caseno" #messege_input [(ngModel)]="messegeInput" required=""
+                                        placeholder="Type your message.." (keydown)="onKeyDown($event)">
                                 </div>
                             </div>
-
+                    
                             <div class="col-sm-2 col-xs-2">
                                 <span class="text">
-                                    <i id="btn_send" class="fa fa-paper-plane" [ngClass]="{'disabled':  messegeInput.length==0}"  
-                                    (click)="sendMessage(messege_input.value)" aria-hidden="true"></i> 
+                                    <i id="btn_send" class="fa fa-paper-plane" 
+                                    [ngClass]="{'disabled':  messegeInput.length==0 || isMessageEmpty()}"
+                                    (click)="sendMessage(messege_input.value)" aria-hidden="true"></i>
                                 </span>
                             </div>
                         </div>
