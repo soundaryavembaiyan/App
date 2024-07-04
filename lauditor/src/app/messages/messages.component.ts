@@ -37,7 +37,7 @@ export class MessagesComponent implements OnInit {
   @ViewChildren('item')
   itemElements!: QueryList<any>;
   selectedValue: string = 'clients';
-
+  date:any;
   private itemContainer: any;
   private scrollContainer: any;
   private isNearBottom = true;
@@ -67,6 +67,7 @@ export class MessagesComponent implements OnInit {
   filterValue = '';
   cardData = { color: '#FFE599', transparent: '' };
   chatUserName: any;
+  orgUser:any;
   //if admin is presenet in team members
   // adminName = ''
   // adminGuid = ''
@@ -94,6 +95,7 @@ export class MessagesComponent implements OnInit {
   data: any;
   relationshipSubscribe: any;
   userRole: string = "AAM";
+  //messegeInput: string = '';
   // @HostListener('document:keyup', ['$event']) handleKeyUp(event:any) {
   //   if (event.ctrlKey && (event.which == 83)) {
   //     event.preventDefault()
@@ -101,6 +103,7 @@ export class MessagesComponent implements OnInit {
   //     return false
   //   }
   // }
+  isActivediv:boolean = false;
 
   constructor(
     private httpservice: HttpService,
@@ -122,6 +125,13 @@ export class MessagesComponent implements OnInit {
     Strophe.ui.conn.disconnect();
   }
 
+  onFocus(): void {
+    this.isActivediv = true;
+  }
+  onBlur(): void {
+    this.isActivediv = false;
+  }
+
   toggle(index: any, val: any) {
     this.messegeInput = '';
     this.term = '';
@@ -141,9 +151,14 @@ export class MessagesComponent implements OnInit {
     });
     //console.log('groups',this.groups)
   }
+  isMessageEmpty(): boolean {
+    return !this.messegeInput.trim();
+  }
 
   ngOnInit() {
 
+    //this.router.navigate(['/messages/clients']);
+  
     var role = localStorage.getItem("role");
     // console.log('role',role)
     if(role != null){
@@ -198,7 +213,11 @@ export class MessagesComponent implements OnInit {
   expandRow(val: any) {
     this.adminIndex = val;
   }
-
+  StartVideo(){
+    let token = localStorage.getItem('TOKEN')
+    // const link =  `${environment.AVChat}?logintype=pro&token=${token}&jid=${URLUtils.get_jid()}&name=${this.chatUserName}`;
+    // window.location.href = link;
+  }
   stanzaHandler(msg: any) {
     // Strophe.ui.conn.addHandler(Strophe.ui.stanzaHandler, null, "message")
     Strophe.ui.xmlParser(msg);
@@ -319,6 +338,7 @@ export class MessagesComponent implements OnInit {
       .getFeaturesdata(URLUtils.getChatRelationship)
       .subscribe((res: any) => {
         this.usersList = res?.data?.relationships;
+        //console.log('usersList',this.usersList)
         this.usersList.forEach((item: any) => {
           if (item.isAccepted) {
             item.isSelected = false;
@@ -386,10 +406,24 @@ export class MessagesComponent implements OnInit {
   }
 
   sendMessage(message: any) {
+    // console.log('msg',message)
+    // console.log('messages',this.messages)
+    // console.log('this.chatUserName',this.chatUserName)
+    //console.log('this.orgUser',this.orgUser)
+
+    // Set focus on the inputfield
+    setTimeout(() => {
+      const textareas = document.querySelectorAll('.form-control.textbox.chatinput');
+      const lastTextarea = textareas[textareas.length - 1] as HTMLTextAreaElement;
+      if (lastTextarea) {
+        lastTextarea.focus();
+      }
+    });
+
     if (message.trim() == '') {
       this.toastr.error('Please enter text.');
       return;
-    } else if (this.chatUserName == undefined || this.chatUserName == '') {
+    } else if (this.chatUserName == undefined || this.chatUserName == '' || this.orgUser.clientType === "Entity") {
       this.toastr.error('Please select client.');
       return;
     }
@@ -418,19 +452,21 @@ export class MessagesComponent implements OnInit {
         action: 'SENT',
         timestamp: timeStamp,
       });
+      console.log('text', Strophe.ui.messages)
       this.messegeInput = '';
+      this.term = '';
     }
-    this.scrollToBottom();
+    //this.scrollToBottom();
   }
-
 
   resetmsgcount(){
+    //this.toastr.info('calling...')
     let data = { 'tojid':`${this.toJID}@${this.domain}` , 'fromjid': this.USERNAME}
+    //console.log('data',data)
     this.httpservice.sendPostChatRequest(URLUtils.resetmsgcount,data).subscribe((res:any)=>{
-      //console.log(res)
+    //console.log(res)
     })
   }
-
 
   restoreMessages() {
     this.messages = [];
@@ -462,29 +498,47 @@ export class MessagesComponent implements OnInit {
   }
 
   async xmlParser(msg: any) {
-    var timeStamp = '';
+    var timeStamp;
     var action = 'RECEIVE';
     var from = '';
     var messaageBody = $(msg).find('forwarded')[0];
     var body = '';
+    // if (messaageBody != undefined) {
+    //   var messaage = $(messaageBody).find('message')[0];
+    //   var to = $(messaage).attr('to');
+    //   from = $(messaage).attr('from');
+    //   this.timeStamp = $(messaageBody).find('delay').attr('stamp');
+    //   this.timeStamp = new DatePipe('en-US').transform(
+    //     timeStamp,
+    //     'MMM dd yyyy HH:mm'
+    //   );
+    // } else {
+    //   var to = $(msg).attr('to');
+    //   from = $(msg).attr('from');
+    //   this.timeStamp = new DatePipe('en-US').transform(
+    //     new Date(),
+    //     'MMM dd yyyy HH:mm'
+    //   );
+    // }
+      
     if (messaageBody != undefined) {
       var messaage = $(messaageBody).find('message')[0];
-      // //console.log(messaage)
       var to = $(messaage).attr('to');
       from = $(messaage).attr('from');
-      this.timeStamp = $(messaageBody).find('delay').attr('stamp');
-      this.timeStamp = new DatePipe('en-US').transform(
+      timeStamp = $(messaageBody).find('delay').attr('stamp');
+      timeStamp = new DatePipe('en-US').transform(
         timeStamp,
         'MMM dd yyyy HH:mm'
       );
-      // //console.log(to)
+      // console.log('timeStamp inside if:', timeStamp);
     } else {
-      var to = $(msg).attr('to');
+      const to = $(msg).attr('to');
       from = $(msg).attr('from');
-      this.timeStamp = new DatePipe('en-US').transform(
+      timeStamp = new DatePipe('en-US').transform(
         new Date(),
         'MMM dd yyyy HH:mm'
       );
+      // console.log('timeStamp inside else:', timeStamp);
     }
 
     if (from.indexOf('/') != -1) from = from.split('/')[0];
@@ -499,10 +553,8 @@ export class MessagesComponent implements OnInit {
         action: action,
         timestamp: timeStamp,
       });
-
-    this.scrollToBottom();
   }
-
+  
   // loadFirmUsers(panelOpenState:any, item:any) {
   //   this.selectedFirm = ""
   //   this.selectedFirmJid = ""
@@ -525,6 +577,7 @@ export class MessagesComponent implements OnInit {
   //   )
   // }
   selectChatUser(val: any) {
+    //console.log('val',val)
     this.messegeInput = '';
     this.term = '';
     // Set focus on the inputfield
@@ -546,6 +599,7 @@ export class MessagesComponent implements OnInit {
 
     this.toJID = '';
     this.chatUserName = val.name;
+    this.orgUser = val
     //console.log('user' + JSON.stringify(val));
     this.toJID = val.guid;
     if (val.clientType == 'Entity') {
@@ -624,7 +678,7 @@ export class MessagesComponent implements OnInit {
   }
   ngAfterViewInit() {
     // this.getRelationships();
-    this.scrollToBottom();
+    //this.scrollToBottom();
     // this.scrollContainer = this.scrollFrame.nativeElement;
     // this.itemElements.changes.subscribe(_ => this.onItemElementsChanged());
   }
@@ -645,7 +699,7 @@ export class MessagesComponent implements OnInit {
     document.getElementById('btn_send')?.addEventListener('click', function () {
       if (scrollerContent?.lastElementChild) {
         let newChild = scrollerContent.lastElementChild.cloneNode(true) as HTMLElement;
-        newChild.innerHTML = " " + (scrollerContent.children.length);
+        newChild.innerHTML = "" + (scrollerContent.children.length);
         scrollerContent.appendChild(newChild);
         scrollerContent.scrollTop = scrollerContent.scrollHeight; // Scroll to bottom
       }
