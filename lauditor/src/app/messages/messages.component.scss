@@ -82,15 +82,18 @@ input.form-control.textbox {
     }
 }
 
-.msgcontainer.active {
-    color: #fff;
+.msgcontainer.active,
+.msgcontainer.focus {
+    color: #fff !important;
     background: #00b3a7 !important;
 }
 
-.actived {
-    color: #fff;
-    background: #00b3a7 !important;
-}
+// .chatusertitle.active,
+// .chatusertitle.focus {
+//     color: #fff !important;
+//     background: #578ad6 !important;
+// }
+
 
 .disable {
     cursor: not-allowed;
@@ -211,3 +214,18 @@ input::placeholder {
     width: 27px;
     margin-left: 10px;
 }
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+    .videocall{
+        width: 33px;
+    }
+    .rytpara {
+        margin-left: -5px;
+    }
+}
+.chatusertito {
+    font-weight: 900;
+    padding-top: 15px;
+    word-break: break-all;
+    font-size: 19px;
+    //color: #fff !important;
+  }
