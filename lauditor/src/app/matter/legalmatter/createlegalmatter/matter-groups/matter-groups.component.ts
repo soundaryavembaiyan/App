@@ -30,6 +30,7 @@ export class MatterGroupsComponent implements OnInit {
 
   groupsList: any = [];
   selectedGroups: any = [];
+  selectedtoupdateGroups: any =[];
   searchText: any = '';
   editGroupIds: any = [];
   isEdit: boolean = false;
@@ -50,6 +51,8 @@ export class MatterGroupsComponent implements OnInit {
   groupViewItems: any;
   groupsLists: any = [];
   editDoc: any;
+  removegrpId: any;
+  memData: any;
 
   constructor(private httpservice: HttpService,
     private matterService: MatterService,
@@ -271,26 +274,35 @@ export class MatterGroupsComponent implements OnInit {
     this.selectedGroups.push(group);
     let index = this.groupsList.findIndex((d: any) => d.id === group.id); //find index in your array
     this.groupsList.splice(index, 1);
+    
     if (this.groupsList.length == 0) {
       let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
       if (checkbox != null)
         checkbox.checked = true;
     }
   }
+  selecttoUpdateGroup(group: any, value?: any) {
+    this.isSaveEnable = true;
+    this.selectedtoupdateGroups.push(group);
+    let index = this.groupsList.findIndex((d: any) => d.id === group.id); //find index in your array
+    this.groupsList.splice(index, 1);
+    if (this.groupsList.length == 0) {
+      let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
+      if (checkbox != null)
+        checkbox.checked = true;
+    }
+  }
+
   removeGroup(group: any) {
-
-    // if (this.isEdit && group.canDelete == false) {
-    //   // if (this.product != 'corporate') {
-    //   //   this.confirmationDialogService.confirm('Alert', 'Clients are associated with this Group. So you cannot delete this group', false, 'OK', 'Cancel', true)
-    //   // }
-    //   // if (this.product == 'corporate') {
-    //   //   this.confirmationDialogService.confirm('Alert', 'External Counsels are associated with this Department. So you cannot delete this department', false, 'OK', 'Cancel', true)
-    //   // }
-    //   this.editDoc = JSON.parse(JSON.stringify(group));
-    // }
-
+    this.memData = group;
     if (this.isEdit && group.canDelete === false) {
       this.editDoc = JSON.parse(JSON.stringify(group));
+      this.selectedtoupdateGroups = [];
+
+      this.httpservice.sendGetRequest(URLUtils.updateMatterAccess(this.editMatter.id, group.id)).subscribe((res: any) => {
+        this.removegrpId = res.counts;
+        //console.log('removegrpId',this.removegrpId)
+      })
 
       setTimeout(() => {
         // Trigger the modal
@@ -319,25 +331,54 @@ export class MatterGroupsComponent implements OnInit {
 
   //Remove grps from the dialog
   removeDialogGroup(group: any) {
-    console.log('grp', group)
-
-    if (this.isEdit && group.canDelete == false) {
-      this.toast.error('Clients are associated with this Group')
-      return
-    }
-
     if ((this.isEdit && (group.canDelete == undefined || group.canDelete == true)) || (!this.isEdit)) {
       this.isSaveEnable = true;
-      let index = this.selectedGroups.findIndex((d: any) => d.id === group.id); //find index in your array
-      this.selectedGroups.splice(index, 1);
-      this.groupsList.push(group);
-      if (this.selectedGroups.length == 0 || this.groupsList.length == 1) {
+      let index = this.selectedtoupdateGroups.findIndex((d: any) => d.id === group.id); //find index in your array
+      this.selectedtoupdateGroups.splice(index, 1);
+      //this.groupsList.push(group);
+      if (this.selectedtoupdateGroups.length == 0 || this.groupsList.length == 1) {
         let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
         if (checkbox != null)
           checkbox.checked = false;
       }
     }
   }
+
+  deleteGroup() {
+    const idsArray = this.selectedtoupdateGroups.map((group: any) => group.id);
+    const payload = { "new_groups": idsArray };
+
+    this.httpservice.sendPatchRequest(URLUtils.updateMatterAccess(this.editMatter.id, this.memData.id), payload)
+      .subscribe((res: any) => {
+        if (this.product !== 'corporate') {
+          this.toast.success("Successfully reassigned to another active Groups")
+        }
+        else if (this.product === 'corporate') {
+          this.toast.success("Successfully reassigned to another active Department")
+        }
+        else {
+          this.toast.success(res.msg)
+        }
+
+        // Remove the selected group from selectedGroups array
+        const indexToRemove = this.selectedGroups.findIndex((g: any) => g.id === this.memData.id);
+        if (indexToRemove !== -1) {
+          this.selectedGroups.splice(indexToRemove, 1);
+        }
+        // Update selectedGroups based on API response
+        this.selectedtoupdateGroups.forEach((group: any) => {
+          const index = this.selectedGroups.findIndex((g: any) => g.id === group.id);
+          if (index === -1) {
+            this.selectedGroups.push(group); // Add reassigned groups to selectedGroups if not already present
+          }
+        });
+
+        this.groupsList.push(this.memData); // Update groupsList based on API response, if needed
+        this.selectedtoupdateGroups = [];
+      });
+  }
+  
+  
 
   saveGroups() {
     if (this.isEdit) {
