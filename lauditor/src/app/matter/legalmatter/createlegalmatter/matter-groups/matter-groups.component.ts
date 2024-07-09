@@ -30,7 +30,7 @@ export class MatterGroupsComponent implements OnInit {
 
   groupsList: any = [];
   selectedGroups: any = [];
-  selectedtoupdateGroups: any =[];
+  selectedtoupdateGroups: any = [];
   searchText: any = '';
   editGroupIds: any = [];
   isEdit: boolean = false;
@@ -179,16 +179,16 @@ export class MatterGroupsComponent implements OnInit {
   // }
 
   getGrouplists() {
-  
+
     if (Array.isArray(this.clients)) {
       this.client = this.clients.map((client: any) => ({ id: client.id, type: client.type }));
       this.clientId.push(this.client.map((c: any) => c.id));
-  
+
       let clientData = {
         "attachment_type": "groups",
         "clients": this.client
       };
-  
+
       this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, clientData).subscribe(
         (res: any) => {
           // console.log('g-res', res)
@@ -208,7 +208,7 @@ export class MatterGroupsComponent implements OnInit {
             if (checkbox != null)
               checkbox.checked = false;
           }
-  
+
         })
     } else {
       //console.error('this.clients is not an array', this.clients);
@@ -274,7 +274,7 @@ export class MatterGroupsComponent implements OnInit {
     this.selectedGroups.push(group);
     let index = this.groupsList.findIndex((d: any) => d.id === group.id); //find index in your array
     this.groupsList.splice(index, 1);
-    
+
     if (this.groupsList.length == 0) {
       let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
       if (checkbox != null)
@@ -377,8 +377,6 @@ export class MatterGroupsComponent implements OnInit {
         this.selectedtoupdateGroups = [];
       });
   }
-  
-  
 
   saveGroups() {
     if (this.isEdit) {
@@ -458,7 +456,7 @@ export class MatterGroupsComponent implements OnInit {
       checkbox.checked = false;
   }
 
-  editDocInfo(doc: any,tabsel?:any) {
+  editDocInfo(doc: any, tabsel?: any) {
     //console.log('form', this.editDocform)
     this.editDoc = JSON.parse(JSON.stringify(doc));
   }
