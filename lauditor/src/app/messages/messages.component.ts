@@ -215,8 +215,8 @@ export class MessagesComponent implements OnInit {
   }
   StartVideo(){
     let token = localStorage.getItem('TOKEN')
-    // const link =  `${environment.AVChat}?logintype=pro&token=${token}&jid=${URLUtils.get_jid()}&name=${this.chatUserName}`;
-    // window.location.href = link;
+    const link =  `${environment.AVChat}?logintype=pro&token=${token}&jid=${URLUtils.get_jid()}&name=${this.chatUserName}`;
+    window.location.href = link;
   }
   stanzaHandler(msg: any) {
     // Strophe.ui.conn.addHandler(Strophe.ui.stanzaHandler, null, "message")
@@ -707,11 +707,19 @@ export class MessagesComponent implements OnInit {
   }
   
   isActive(value: string) {
+    this.clientSearch = '';
+    this.teamSearch = '';
+    this.messegeInput = '';
+    this.term = ''; //clear value on search
     this.selectedValue = value;
     this.selectedValue == 'clients' ? this.router.navigate(['/messages/clients']) : this.router.navigate(['/messages/teams']);
   }
 
   isActiveTeam(value: string): void {
+    this.clientSearch = '';
+    this.teamSearch = '';
+    this.messegeInput = '';
+    this.term = ''; //clear value on search
     this.selectedValue = value;
     this.selectedValue === 'teams' ? this.router.navigate(['/messages/teams']) : this.router.navigate(['/messages/clients']);
   }
