@@ -173,11 +173,23 @@ ul {
 }
 
 .username {
-  margin-top: 3px;
-  font-size: 29px;
-  font-weight: 600;
+  // margin-top: 3px;
+  // font-size: 29px;
+  // font-weight: 600;
+  margin-top: 7px;
+  font-size: 30px;
+  font-weight: 900;
   vertical-align: middle;
   color: #fff;
+}
+.cap{
+  margin-top: 6px;
+  margin-left: 1px;
+  font-size: 2rem;
+  font-weight: 900;
+  vertical-align: middle;
+  color: #fff;
+  text-transform: capitalize;  
 }
 
 .dashboard_notification {
@@ -2900,7 +2912,7 @@ label.msglabel {
 
 .msgcontainerchatbox {
   // max-height: 620px;
-  overflow-y: auto;
+  //overflow-y: auto;
   border-top: none !important;
   border-top-left-radius: 0px;
   border-top-right-radius: 0px;
@@ -5398,6 +5410,31 @@ mwl-calendar-week-view-event {
   width: 70% !important;
   height: 70%;
 }
+
+#custom-modal-0 .jw-modal-body {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: none !important;
+  border: none !important;
+  top: 5%;
+  left: 30px;
+  overflow-y: hidden;
+  width: 1358px !important;
+  height: 600px;
+}
+
+// #custom-modal-2 jw-modal{
+//   background: #ffffff 0% 0% no-repeat padding-box;
+//   box-shadow: 0px 2px 2px #00000067;
+//   border: 1px solid #e2e2e2;
+//   border-radius: 5px;
+//   width: 33%;
+//   height: 300px;
+//   //left: 300px;
+//   overflow: hidden;
+// }
+
+
 div#suggestions a:not([href]):not([class]), a:not([href]):not([class]):hover {
     color: inherit;
     text-decoration: none;
