@@ -37,7 +37,7 @@ input.form-control.textbox {
 
 .circlemsg {
     text-align: right;
-    margin-top: 14px;
+    margin-top: 17px;
 }
 
 .fa-plus-circle:before,
@@ -229,3 +229,14 @@ input::placeholder {
     font-size: 19px;
     //color: #fff !important;
   }
+.adminTeam{
+    height: 42px;
+    font-size: 1.2rem;
+    font-weight: 800;
+    padding-top: 8px;
+    width: 100px;
+}
+.mlname {
+    margin-left:-10px;
+    width: 280px;
+}
