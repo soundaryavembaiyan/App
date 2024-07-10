@@ -1,10 +1,11 @@
 <div class="headers">
 	<div class="row">
 		<header class="header">
-			<!-- Logo -->
-			<div class="logo_ico" *ngIf="product != 'corporate'"> <img class="logoicon" src="assets/img/logo.svg"> </div>
-			<!-- <div class="logo_ico" *ngIf="product == 'corporate'"> <img class="logoicon logoPad" src="assets/img/DGH1.svg"> </div> -->
+			<!-- Logo sections for all products-->
+			<div class="logo_ico" *ngIf="product == 'lauditor'"> <img class="logoicon" src="assets/img/logo.svg"> </div>
 			<div class="logo_icox" *ngIf="product == 'corporate'"> <img class="logoicono" src="assets/img/DGH2.png"> </div>
+			<div class="logo_icox" *ngIf="product == 'content'"> <img class="logoicono" src="/assets/site/images/contentcoffer-logo.png"> </div>
+			<div class="logo_icox" *ngIf="product == 'connect'"> <img class="logoicono" src="/assets/site/images/cofferconnect-logo.png"> </div>
 
 			<div class="title"> <span class="headtitle">{{categoryName}}</span> </div>
 			<!-- Hamburger icon -->
@@ -33,7 +34,7 @@
 					<img src="/assets/img/dashboard_ico.svg">
 				</div>
 				<div class="userprofile">
-					<p class="username" data-bs-container="body" data-bs-toggle="popover" title="title"
+					<p class="username cap" data-bs-container="body" data-bs-toggle="popover" title="title"
 						data-bs-placement="bottom" data-bs-content="Right popover" (click)="logout()">{{name[0]}} </p>
 				</div>
 				<ul class="menu webmenu">
