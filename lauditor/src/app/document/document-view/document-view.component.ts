@@ -2,7 +2,7 @@ import { map } from 'rxjs/operators';
 import { ConfirmationDialogService } from './../../confirmation-dialog/confirmation-dialog.service';
 import { EmailService } from './../../email/email.service';
 import { DatePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavigationEnd, Router } from '@angular/router';
 import { ModalService } from 'src/app/model/model.service';
@@ -78,7 +78,7 @@ export class DocumentViewComponent implements OnInit {
     corp_matter_list:any[] = [];
     categories='';
     allowedFileTypes = ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/rtf','text/csv','text/rtf'];
-   
+    
     constructor(private httpservice: HttpService, private toast: ToastrService,
         private router: Router, private formBuilder: FormBuilder, private modalService: ModalService, public sanitizer: DomSanitizer,
         private documentService: DocumentService, private emailService: EmailService,
@@ -153,7 +153,8 @@ export class DocumentViewComponent implements OnInit {
                 item.isChecked = false;
             })
         })
-        //console.log("checked item " + JSON.stringify(this.groupViewItems));
+        //console.log("checked item " + JSON.stringify(this.groupViewItems));    
+        // this.term = '';
     }
     selectDuration(date: any) {
         this.bsValue = date;
@@ -686,5 +687,12 @@ export class DocumentViewComponent implements OnInit {
         // Replace multiple spaces with a single space
         inputValue = inputValue.replace(/\s{2,}/g, ' ');
         event.target.value = inputValue;
+    }
+    restricttextSpace(event: any) {
+        let inputValue: string = event.target.value;
+        inputValue = inputValue.replace(/^\s+/, '');
+        inputValue = inputValue.replace(/\s{2,}/g, ' ');
+        event.target.value = inputValue;
+        return;
     }
 }
