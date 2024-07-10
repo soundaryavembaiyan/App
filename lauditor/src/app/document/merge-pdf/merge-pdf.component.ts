@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Renderer2 } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { NavigationEnd, Router } from '@angular/router';
 import { idLocale } from 'ngx-bootstrap';
@@ -8,6 +8,8 @@ import { DocumentModel } from 'src/app/shared/config-model';
 import { URLUtils } from 'src/app/urlUtils';
 import { DocumentService } from '../document.service';
 import { environment } from 'src/environments/environment';
+import { HttpErrorResponse } from '@angular/common/http';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
     selector: 'merge-pdf',
@@ -21,6 +23,7 @@ export class MergePdfComponent implements OnInit {
     documents: any;
     keyword = 'name';
     isChecked: boolean = false;
+    remItem: boolean = true;
     selectedItem: any;
     selectedDoc: any = [];
     matterList: any;
@@ -39,10 +42,17 @@ export class MergePdfComponent implements OnInit {
     errorMsg: boolean = false;
     selectedGroups: any = [];
     selectedName: any;
+    objectKeys = Object.keys;
+    reldata:any[]=[];
+    corpData:any[]=[];
+    selectedmatterType='internal';
+    matter_type: any[] = [{'title':'Internal Matter','value':'internal'},{'title':'External Matter','value':'external'}];
+    corp_matter_list:any[] = [];
+    
     public selectedValue: any;
     constructor(private httpservice: HttpService,
         private router: Router, private formBuilder: FormBuilder,
-        private modalService: ModalService, private docService: DocumentService) {
+        private modalService: ModalService, private docService: DocumentService, private renderer: Renderer2, private spinnerService: NgxSpinnerService) {
         this.router.events.subscribe((val) => {
             if (val instanceof NavigationEnd) {
                 this.filter = window.location.pathname.split("/").splice(-2)[1];
@@ -55,18 +65,28 @@ export class MergePdfComponent implements OnInit {
                 }
                 this.documents = [];
             }
+
                 this.selectedGroupItems = [];
                 // removeing checked items while tab change
                 this.groupViewItems?.forEach((item: any) => {
                     item.isChecked = false;
                 })
+
+                // if(this.selectedGroupItems.length > 0){
+                //     this.get_all_matters(this.selectedmatterType)
+                // }
         });
 
     }
 
     ngOnInit(): void {
+        this.get_all_matters(this.selectedmatterType)
         this.relationshipSubscribe = this.httpservice.getFeaturesdata(URLUtils.getAllRelationship).subscribe((res: any) => {
-            this.data = res?.data?.relationships;
+            this.reldata = res?.data?.relationships;
+            this.httpservice.getFeaturesdata(URLUtils.getCalenderExternal).subscribe((res: any) => {
+                this.corpData = res?.relationships.map((obj:any)=>({ "id": obj.id, "type": "corporate","name":obj.name}))
+                this.data = this.reldata.concat(this.corpData)
+            });
 
         });
         this.httpservice.sendGetRequest(URLUtils.getGroups).subscribe((res: any) => {
@@ -75,8 +95,41 @@ export class MergePdfComponent implements OnInit {
                 item.isChecked = false;
             })
         })
-        this.getAllDocuments();
+        //this.getAllDocuments();
     }
+    get_all_matters(type:any,event?:any){
+        this.spinnerService.show()
+        let selectedGroups: any = [];
+        this.selectedGroupItems?.forEach((item: any) => {
+            selectedGroups.push(item.id)
+        })
+        let payload = {"grp_acls":selectedGroups}
+        if(type=='internal'){
+            this.httpservice.sendPutRequest(URLUtils.getAllMatters,payload).subscribe((res:any)=>{
+                if(res.error == false){
+                    this.corp_matter_list = res.matterList
+                    this.spinnerService.hide()
+                } else {
+                    this.spinnerService.hide()
+                }
+            },(err:any)=>{
+                console.log(err)
+                this.spinnerService.hide()
+            })
+        }
+        if(type == 'external'){
+            this.httpservice.sendPutRequest(URLUtils.getAllExternalMatters,payload).subscribe((res:any)=>{
+                if(res){
+                    this.corp_matter_list = res.matterList
+                    this.spinnerService.hide()
+                }
+            },(err:any)=>{
+                this.spinnerService.hide()
+            })
+
+        }
+    }
+    
     getAllDocuments() {
         let clientData: any = localStorage.getItem('clientDetail');
         let client = JSON.parse(clientData);
@@ -104,6 +157,7 @@ export class MergePdfComponent implements OnInit {
             this.httpservice.sendPutRequest(URLUtils.getFilteredDocuments, obj).subscribe((res: any) => {
                 //console.log(JSON.stringify(res));
                 this.documents = res?.data;
+                //console.log('filter doc',this.documents)
                 this.documents.forEach((e: any) => {
                     e.isChecked = false;
                 });
@@ -129,6 +183,7 @@ export class MergePdfComponent implements OnInit {
                             this.selectedClient = item;
                             this.httpservice.sendGetRequest(URLUtils.getMattersByClient(item)).subscribe((res: any) => {
                                 this.matterList = res?.matterList;
+                                //console.log('matter doc',this.matterList)
                                 this.matterList.forEach((item: any) => {
                                     if (item.id == selectedDocs.matters[0]) {
                                         this.selectedMatterItem = item.id
@@ -140,9 +195,12 @@ export class MergePdfComponent implements OnInit {
                         }
 
                     })
-                } else {
-
+                } 
+                 else {
+                // this.errorMsg = this.documents.length == 0 ? true : false;  // selectedGroupItems.length==0
+                // this.errorMsg = false
                 }
+                //this.errorMsg = false
             })
         } else {
             this.errorMsg = false
@@ -150,7 +208,6 @@ export class MergePdfComponent implements OnInit {
 
     }
     checkItem(event: any, doc: any) {
-
         if (event) {
             doc.isChecked = true;
             this.selectedDoc.push(doc);
@@ -221,7 +278,6 @@ export class MergePdfComponent implements OnInit {
         // do something when input is focused
     }
     mergeDoc() {
-
         this.documentModel.doclist = this.selectedDoc;
         localStorage.setItem("selectedDocs", JSON.stringify(this.selectedDoc));
         // this.docService.addToService(this.documentModel);
@@ -229,18 +285,27 @@ export class MergePdfComponent implements OnInit {
         // //console.log("postModel " + JSON.stringify(this.documentModel));
         // //console.log("clients " + JSON.stringify(this.documentModel.clients));
         //console.log('docModel',this.documentModel)
-
         this.router.navigate(['documents/pdfmergedoc/' + this.filter]);
-
-
     }
+    // mergeCancel(doc?:any){
+    //     //this.isChecked = false;
+    // }
+    mergeCancel() {
+        this.selectedDoc.forEach((doc: any) => {
+          doc.isChecked = false;
+        });
+        this.selectedDoc = []; // Clear the selected documents array
+      }
+      
     onChange(val: any) {
         //console.log("value " + JSON.stringify(val.value));
         this.selectedLevel = val.value;
         this.matters = val.value;
         this.documentModel.matters.push(this.matters);
-
-        // this.getAllDocuments();
+        if(this.matters){
+            this.getAllDocuments(); //get the client matter documents
+        }
+        //this.getAllDocuments();
     }
     selectGroup(val: boolean) {
         this.isSelectGroup = val;
@@ -282,12 +347,28 @@ export class MergePdfComponent implements OnInit {
     }
     removeGroup(item: any) {
         item.isChecked = false;
+        //this.remItem = false;
         let index = this.selectedGroupItems.findIndex((d: any) => d.id === item.id); //find index in your array
         this.selectedGroupItems.splice(index, 1);
+        this.getAllDocuments();
+
     }
     ngOnDestroy() {
         if (this.relationshipSubscribe) {
             this.relationshipSubscribe.unsubscribe();
         }
+    }
+    restrictSpaces(event: any) {
+        let inputValue: string = event.target.value;
+        // Replace multiple spaces with a single space
+        inputValue = inputValue.replace(/\s{2,}/g, ' ');
+        event.target.value = inputValue;
+    }
+    restricttextSpace(event: any) {
+        let inputValue: string = event.target.value;
+        inputValue = inputValue.replace(/^\s+/, '');
+        inputValue = inputValue.replace(/\s{2,}/g, ' ');
+        event.target.value = inputValue;
+        return;
     }
 }
