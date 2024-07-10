@@ -28,7 +28,7 @@
 
 <div class="row width-alignment center" *ngIf="product != 'corporate' && product != 'content' && userRole === 'AAM'">
     <div #useThisTemplateVar class="switch  cswitch cswitchtwo msgswitch">
-        <a href="javascript:void(0);" class="optiontwo teamtwo" [ngClass]="{ 'active' : selectedValue === 'teams' }"
+        <a href="javascript:void(0);" class="optiontwo teamtwo adminTeam" [ngClass]="{ 'active' : selectedValue === 'teams' }"
             (click)="isActiveTeam('teams')">Teams</a>
     </div>
 </div>
