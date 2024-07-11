@@ -114,70 +114,6 @@ export class MatterGroupsComponent implements OnInit {
     //console.log('clients of grp',this.client); 
   }
 
-  // getGrouplists01() {
-  //   // Assuming clients in client objects
-  //   this.client = this.clients.map((client: any) => ({ id: client.id, type: client.type }));
-  //   this.clientId.push(this.client.map((c: any) => c.id));
-
-  //   let clientData = {
-  //     "attachment_type": "groups",
-  //     "clients": this.client
-  //   };
-
-  //   this.httpservice.sendPutRequest(URLUtils.getGrouplist, clientData).subscribe((res: any) => {
-  //     if (res.error == false) {
-  //       this.groupsList = res?.data?.map((client: any) => client);
-  //       // console.log('g-groupsList',this.groupsList)
-  //       // console.log('g-selectedGroups',this.selectedGroups)
-  //     }
-
-  //     if (this.groups && this.groups.length > 0) {
-  //       this.selectedGroups = [...this.groups];
-  //       let res = this.groupsList.filter((el: any) => {
-  //         return !this.selectedGroups.find((element: any) => {
-  //           return element.id === el.id;
-  //         });
-  //       });
-  //       this.groupsList = res
-  //     }
-  //     if (this.selectedGroups.length == 0) {
-  //       let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
-  //       if (checkbox != null)
-  //         checkbox.checked = false;
-  //     }
-  //   });
-  // }
-
-  // getGrouplists02() {
-  //   this.client = this.clients.map((client: any) => ({ id: client.id, type: client.type }));
-  //   this.clientId.push(this.client.map((c: any) => c.id));
-
-  //   let clientData = {
-  //     "attachment_type": "groups",
-  //     "clients": this.client
-  //   };
-
-  //   this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, clientData).subscribe(
-  //     (res: any) => {
-  //       this.groupsList = res?.groups?.map((client: any) => client);
-  //       if (this.groups && this.groups.length > 0) {
-  //         this.selectedGroups = [...this.groups];
-  //         let res = this.groupsList.filter((el: any) => {
-  //           return !this.selectedGroups.find((element: any) => {
-  //             return element.id === el.id;
-  //           });
-  //         });
-  //         this.groupsList = res
-  //       }
-  //       if (this.selectedGroups.length == 0) {
-  //         let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
-  //         if (checkbox != null)
-  //           checkbox.checked = false;
-  //       }
-
-  //     })
-  // }
-
   getGrouplists() {
 
     if (Array.isArray(this.clients)) {
@@ -274,7 +210,6 @@ export class MatterGroupsComponent implements OnInit {
     this.selectedGroups.push(group);
     let index = this.groupsList.findIndex((d: any) => d.id === group.id); //find index in your array
     this.groupsList.splice(index, 1);
-
     if (this.groupsList.length == 0) {
       let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
       if (checkbox != null)
@@ -298,10 +233,8 @@ export class MatterGroupsComponent implements OnInit {
     if (this.isEdit && group.canDelete === false) {
       this.editDoc = JSON.parse(JSON.stringify(group));
       this.selectedtoupdateGroups = [];
-
       this.httpservice.sendGetRequest(URLUtils.updateMatterAccess(this.editMatter.id, group.id)).subscribe((res: any) => {
         this.removegrpId = res.counts;
-        //console.log('removegrpId',this.removegrpId)
       })
 
       setTimeout(() => {
@@ -312,10 +245,10 @@ export class MatterGroupsComponent implements OnInit {
           modalInstance.show();
         }
       }, 0);
-    } else {
-      this.editDoc = null;
-    }
-
+    } 
+    // else {
+    //   this.editDoc = null;
+    // }
     if ((this.isEdit && (group.canDelete == undefined || group.canDelete == true)) || (!this.isEdit)) {
       this.isSaveEnable = true;
       let index = this.selectedGroups.findIndex((d: any) => d.id === group.id); //find index in your array
@@ -335,7 +268,7 @@ export class MatterGroupsComponent implements OnInit {
       this.isSaveEnable = true;
       let index = this.selectedtoupdateGroups.findIndex((d: any) => d.id === group.id); //find index in your array
       this.selectedtoupdateGroups.splice(index, 1);
-      //this.groupsList.push(group);
+      this.groupsList.push(group); 
       if (this.selectedtoupdateGroups.length == 0 || this.groupsList.length == 1) {
         let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
         if (checkbox != null)
