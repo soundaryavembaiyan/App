@@ -127,7 +127,7 @@
   <div class="modal-dialog  modal-xl">
     <div class="modal-content">
 
-      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="loadGroups()"></button>
 
       <div class="modal-body">
         <div class="col-12  editdoc modal-content">
@@ -197,9 +197,9 @@
             </div>
             <div class="btnbox dialogbtn">
               <button type="button" class="btn btn-default test btncancel" data-bs-dismiss="modal" aria-label="Close"
-                >Cancel</button>
+              (click)="loadGroups()">Cancel</button>
               <button type="submit" class="btn btn-default btnsave" data-bs-dismiss="modal" aria-label="Close"
-                (click)="deleteGroup()" >Delete</button>
+              (click)="deleteGroup()" >Delete</button>
             </div>
         </div>
       </div>
