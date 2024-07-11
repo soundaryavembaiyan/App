@@ -250,7 +250,7 @@ export class RelationshipGroupAccessComponent implements OnInit {
 
       // this.assignGrp = this.groupList.push(group); //removed grp on AG
     } else {
-      this.editDoc = null;
+      //this.editDoc = null;
       this.handleGroupRemoval(group);
     }
 
@@ -271,7 +271,6 @@ export class RelationshipGroupAccessComponent implements OnInit {
   handleGroupRemoval(group: any) {
     if ((this.isEdit && (group.canDelete == undefined || group.canDelete == true)) || (!this.isEdit)) {
       this.isSaveEnable = true;
-  
       if (group.canDelete == undefined || group.canDelete == true) {
         let index = this.selectedGroups.findIndex((d: any) => d.id === group.id); //find index in your array
         if (index > -1) {
@@ -294,7 +293,7 @@ export class RelationshipGroupAccessComponent implements OnInit {
       this.isSaveEnable = true;
       let index = this.selectedtoupdateGroups.findIndex((d: any) => d.id === group.id); //find index in your array
       this.selectedtoupdateGroups.splice(index, 1);
-      //this.groupsList.push(group);
+      this.groupList.push(group);
       if (this.selectedtoupdateGroups.length == 0 || this.groupList.length == 1) {
         let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
         if (checkbox != null)
