@@ -62,11 +62,34 @@ export class MatterGroupsComponent implements OnInit {
   ngOnInit() {
     this.pathName = window.location.pathname.includes("legalmatter") ? "legalmatter" : "generalmatter";
     const path = window.location.pathname;
-    //console.log('path',path)
+
     if (path.indexOf("updateGroups") > -1) {
       if (path.includes("legal")) {
         this.matterService.editLegalMatterObservable.subscribe((result: any) => {
+          const clientIds = result.clients.map((client: any) => client);
           if (result) {
+            this.selectedGroups = result?.groups?.map((g: any) => g);
+
+            this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements,
+              { "attachment_type": "groups", "clients": clientIds }).subscribe(
+                (res: any) => {
+                  this.groupsList = res?.groups?.map((client: any) => client);
+
+                  if (this.groupsList && this.selectedGroups && this.selectedGroups.length > 0) {
+                    this.groupsList = this.groupsList.filter((group: any) => {
+                      return !this.selectedGroups.find((selectedGroup: any) => {
+                        return selectedGroup.id === group.id;
+                      });
+                    });
+                  }
+                  if (this.selectedGroups.length === 0) {
+                    let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
+                    if (checkbox != null) {
+                      checkbox.checked = false;
+                    }
+                  }
+                });
+
             this.editMatter = result;
             this.editGroupIds = result.groups;
             this.isEdit = true;
@@ -76,11 +99,37 @@ export class MatterGroupsComponent implements OnInit {
       }
       else if (path.includes("general")) {
         this.matterService.editGeneralMatterObservable.subscribe((result: any) => {
+          const clientIds = result.clients.map((client: any) => client);
+
           if (result) {
+            this.selectedGroups = result?.groups?.map((g: any) => g);
+            this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements,
+              { "attachment_type": "groups", "clients": clientIds }).subscribe(
+                (res: any) => {
+                  ;
+                  this.groupsList = res?.groups?.map((client: any) => client);
+
+                  if (this.groupsList && this.selectedGroups && this.selectedGroups.length > 0) {
+                    this.groupsList = this.groupsList.filter((group: any) => {
+                      return !this.selectedGroups.find((selectedGroup: any) => {
+                        return selectedGroup.id === group.id;
+                      });
+                    });
+                  }
+
+                  if (this.selectedGroups.length === 0) {
+                    let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
+                    if (checkbox != null) {
+                      checkbox.checked = false;
+                    }
+                  }
+                });
+
             this.editMatter = result;
             this.editGroupIds = result.groups;
             this.isEdit = true;
             this.cantDeleteItems = this.editGroupIds.filter((item: any) => item.canDelete == false).map((obj: any) => obj.id);
+            //console.log('editMatter', this.editMatter);
           }
         });
       }
@@ -108,10 +157,7 @@ export class MatterGroupsComponent implements OnInit {
     // }
 
     this.getGrouplists();
-    this.getGroups();
-
-    //this.client = this.clients.map((client:any) => client.id);
-    //console.log('clients of grp',this.client); 
+    //this.getGroups();
   }
 
   getGrouplists() {
