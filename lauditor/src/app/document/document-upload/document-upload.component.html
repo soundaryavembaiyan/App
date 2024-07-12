@@ -51,7 +51,7 @@
 
               <div class="" *ngIf="isSelectGroup">
                 <div class="input-group index court" id="search">
-                  <div class="multicheck form-control textbox" *ngFor="let item of groupViewItems">
+                  <div class="multicheck form-control textbox" *ngFor="let item of grouplist">
                     <label class="callselect">{{item.name}}</label>
                     <input type="checkbox" class="calimg calitem input-group-append checkboxitem" id="flexCheckDefault" 
                     [checked]="item.isChecked" #inputEl (change)="selectGroupItem(item, inputEl.checked)">
@@ -316,7 +316,7 @@
                         <input matInput [matDatepicker]="picker"
                           placeholder="Choose a date"
                           formControlName="expiration_date"
-                          [(ngModel)]="editMeta.expiration_date">
+                          [(ngModel)]="editMeta.expiration_date" [readonly]="isReadOnly">
                         <mat-datepicker-toggle matSuffix [for]="picker"
                           (dateChange)="setNewDepartureDate()"></mat-datepicker-toggle>
                         <mat-datepicker #picker></mat-datepicker>
