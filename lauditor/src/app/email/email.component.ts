@@ -5,6 +5,7 @@ import { ConfirmationDialogService } from './../confirmation-dialog/confirmation
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { SafeResourceUrl } from '@angular/platform-browser';
 import { HttpService } from '../services/http.service';
+import { MatDialog } from '@angular/material/dialog';
 import { URLUtils } from '../urlUtils';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -12,6 +13,8 @@ import { ModalService } from '../model/model.service';
 import { EmailService } from './email.service';
 import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-email',
@@ -24,7 +27,7 @@ export class EmailComponent implements OnInit, AfterViewInit {
   constructor(private httpservice: HttpService, private confirmationDialogService: ConfirmationDialogService,
     private spinnerService: NgxSpinnerService, private modalService: ModalService,
     private formBuilder: FormBuilder, private emailService: EmailService, private toast: ToastrService,
-    private router: Router) { }
+    private router: Router, private dialog: MatDialog) { }
   messagesMap: Map<number, any> = new Map<number, any>();
   messages: any;
   product = environment.product;
@@ -75,7 +78,8 @@ export class EmailComponent implements OnInit, AfterViewInit {
   saveTag = false;
   grouplist: any = [];
   grpclientData: any;
-  check = false
+  check = false;
+  editDoc: any;
 
   ngOnInit() {
     this.composeForm = this.formBuilder.group({
@@ -97,7 +101,7 @@ export class EmailComponent implements OnInit, AfterViewInit {
       this.composeForm.controls['documents'].setValue(this.selectedAttachments);
       localStorage.removeItem("docs");
     }
-    this.getMessageCount();
+    this.getMessageCount(); //dialog
     this.get_all_matters(this.selectedmatterType)
     //this.emailAuthentication();
     //console.log('filter', this.filter)
@@ -108,18 +112,18 @@ export class EmailComponent implements OnInit, AfterViewInit {
     if (this.controls)
       this.modalService.open('compose-email');
   }
+
   emailAuthentication() {
     if (!localStorage.getItem('validationDone')) {
       this.httpservice.sendGetEmailRequest(URLUtils.emailAuthentication({ "token": localStorage.getItem('TOKEN') })).subscribe(
         (res: any) => {
           if (!res.error && res.url) {
             localStorage.setItem('validationDone', 'true');
-            if (!localStorage.getItem('popupOpened'))
-              window.open(res.url, 'coffergoogleAuthWin', "height = 450px, width = 750px");
+            if (!localStorage.getItem('popupOpened')) {
+              this.openDialog(res.url); // Open dialog of (google/outlook)
+              //window.open(res.url, 'coffergoogleAuthWin', "height = 450px, width = 750px");
+            }
             localStorage.setItem('popupOpened', 'true');
-            setTimeout(() => {
-              location.reload()
-            }, 1000)
           }
         });
     }
@@ -127,6 +131,7 @@ export class EmailComponent implements OnInit, AfterViewInit {
       this.getMessageCount();
     }
   }
+
   getMessageCount() {
     var globalVar = this;
     this.httpservice.sendGetEmailRequest(URLUtils.messagesCount({ "token": localStorage.getItem('TOKEN'), "labelid": 'INBOX' })).subscribe(
@@ -144,6 +149,32 @@ export class EmailComponent implements OnInit, AfterViewInit {
         //}, 10000);
       });
   }
+
+  openDialog(authUrl: string): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: { editDoc: this.editDoc, authUrl: authUrl },
+      width: '500px',
+      height: '255px',
+      hasBackdrop: true,
+      panelClass: 'hello',
+      disableClose: true
+    });
+
+   dialogRef.afterClosed().subscribe(result => {
+    if (result === 'continue') {
+      // Open the authentication window
+      const popupWindow = window.open(authUrl, 'coffergoogleAuthWin', "height=450px,width=750px");
+      // Check if the popup window is closed or not
+      const checkPopupClosed = setInterval(() => {
+        if (popupWindow?.closed) {
+          clearInterval(checkPopupClosed); // Stop checking once closed
+          location.reload(); // Refresh the page
+        }
+      }, 1000);
+    }
+  });
+}
+
   getMessages() {
     var globalVar = this;
     this.httpservice.sendGetEmailRequest(URLUtils.emailMessages({ "token": localStorage.getItem('TOKEN'), "rows": 10 })).subscribe(
@@ -276,8 +307,8 @@ export class EmailComponent implements OnInit, AfterViewInit {
     // this.filter == "client" ? this.selectedGroupItems = [] : this.clientId = [];
     this.filter == "client";
     var matterList = []
-    if(this.matters !== ''){
-    matterList.push(this.matters)
+    if (this.matters !== '') {
+      matterList.push(this.matters)
     }
     //this.selectedGroupItems
     //console.log('this.selectedGroupItems',this.selectedGroupItems)
@@ -297,21 +328,21 @@ export class EmailComponent implements OnInit, AfterViewInit {
         this.confirmationDialogService.confirm('Success', res.msg, false, '', '', false, 'sm', false);
         this.isDocument = false;
       }
-    }, 
-    (error: any) => {
-      this.spinnerService.hide();
-      this.confirmationDialogService.confirm('Alert', error.error.msg, false, '', '', false, 'sm', false);
-      this.isDocument = false;
-    }
-    // (error: HttpErrorResponse) => {
-    //   if (error.status === 400 || error.status === 403 || error.status === 500) {
-    //     const errorMessage = error.error.msg || 'Unauthorized';
-    //     this.toast.error(errorMessage);
-    //     this.isDocument = false;
-    //     return;
-    //   }
-    // }
-  );
+    },
+      (error: any) => {
+        this.spinnerService.hide();
+        this.confirmationDialogService.confirm('Alert', error.error.msg, false, '', '', false, 'sm', false);
+        this.isDocument = false;
+      }
+      // (error: HttpErrorResponse) => {
+      //   if (error.status === 400 || error.status === 403 || error.status === 500) {
+      //     const errorMessage = error.error.msg || 'Unauthorized';
+      //     this.toast.error(errorMessage);
+      //     this.isDocument = false;
+      //     return;
+      //   }
+      // }
+    );
   }
 
   selectGroupItem(item: any, val: any) {
@@ -338,8 +369,8 @@ export class EmailComponent implements OnInit, AfterViewInit {
 
   removeCliExGroups() {
     // Reset the arrays
-    this.check=false;
-    this.selectedGroupItems.forEach((item:any) => item.isChecked = false);
+    this.check = false;
+    this.selectedGroupItems.forEach((item: any) => item.isChecked = false);
     this.selectedGroupItems = [];
     // Update the local storage
     localStorage.setItem('groupIds', JSON.stringify(this.selectedGroupItems));
@@ -347,7 +378,7 @@ export class EmailComponent implements OnInit, AfterViewInit {
 
   removeFirmExGroups() {
     // Reset the arrays
-    this.selectedGroupItems.forEach((item:any) => item.isChecked = false);
+    this.selectedGroupItems.forEach((item: any) => item.isChecked = false);
     this.selectedGroupItems = [];
     // Update the local storage
     localStorage.setItem('groupIds', JSON.stringify(this.selectedGroupItems));
@@ -484,19 +515,19 @@ export class EmailComponent implements OnInit, AfterViewInit {
         this.selectedAttachments = [];
         this.modalService.close('compose-email');
       }
-    }, 
-    (error) => {
-      this.spinnerService.hide();
-      this.confirmationDialogService.confirm('Alert', 'Mail not sent successfully.', false, '', '', false, 'sm', false);
-    }
-    // (error: HttpErrorResponse) => {
-    //   if (error.status === 400 || error.status === 403 || error.status === 500) {
-    //     const errorMessage = error.error.message || 'Unauthorized';
-    //     this.toast.error(errorMessage);
-    //     return;
-    //   }
-    // }
-  );
+    },
+      (error) => {
+        this.spinnerService.hide();
+        this.confirmationDialogService.confirm('Alert', 'Mail not sent successfully.', false, '', '', false, 'sm', false);
+      }
+      // (error: HttpErrorResponse) => {
+      //   if (error.status === 400 || error.status === 403 || error.status === 500) {
+      //     const errorMessage = error.error.message || 'Unauthorized';
+      //     this.toast.error(errorMessage);
+      //     return;
+      //   }
+      // }
+    );
   }
   ngOnDestroy() {
     if (this.relationshipSubscribe) {
@@ -505,7 +536,7 @@ export class EmailComponent implements OnInit, AfterViewInit {
   }
 
   selectEvent(item: any) {
-    this.check=true
+    this.check = true
     localStorage.setItem("clientData", JSON.stringify(item));
     if (this.filter === 'client') {
       this.clientId.push(item);
@@ -560,3 +591,47 @@ export class EmailComponent implements OnInit, AfterViewInit {
   onFocused(e: any) {
   }
 }
+
+
+@Component({
+  selector: 'app-confirmation-dialog',
+  template: `
+  <div mat-dialog-content>
+  <div class="closeDialog">
+        <i class="fa fa-times closeBtn" (click)="closeDialog()" aria-hidden="true"></i>
+    </div>
+
+   <h1 mat-dialog-title class="mailoption">Choose a Mail account provider…</h1>
+      <mat-radio-group aria-label="Select an option">
+        <mat-radio-button value="1"><img class="gImg" src="assets/img/outlook.svg"/></mat-radio-button>
+        <mat-radio-button value="2"><img class="oImg" src="assets/img/google.svg"/></mat-radio-button>
+      </mat-radio-group>
+      <div mat-dialog-actions class="overviewSave savefilenameBtn">
+          <button type="reset" class="btn btn-default btncancel btnfont" (click)="closeDialog()">Cancel</button> 
+           <button type="submit" class="btn btn-default btnsave savefile pull-right btnfont" (click)="continue()">Continue</button> 
+      </div> 
+  </div>
+`,
+  styleUrls: ['./email.component.scss']
+})
+export class ConfirmationDialogComponent {
+  editDoc: any;
+
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialogRef: MatDialogRef<ConfirmationDialogComponent>
+  ) { }
+
+  ngOnInit() {
+
+  }
+
+  continue() {
+    this.dialogRef.close('continue');
+  }
+  closeDialog() {
+    this.dialogRef.close()
+  }
+
+}
+
