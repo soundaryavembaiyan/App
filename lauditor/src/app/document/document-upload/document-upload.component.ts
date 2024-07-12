@@ -70,6 +70,7 @@ export class DocumentUploadComponent implements OnInit {
     saveTag = false;
     grouplist:any=[];
     grpclientData:any;
+    isReadOnly = true
     // myInputVariable!: ElementRef;
 
     isDisableDoc: boolean = true;
@@ -301,6 +302,7 @@ export class DocumentUploadComponent implements OnInit {
     //     //console.log("upload doc  " + JSON.stringify(this.uploadDocs));
     // }
 
+    
     getFileDetails(event: any) {
       for (var i = 0; i < event.files.length; i++) {
         let file: File = event.files[i];
@@ -319,8 +321,7 @@ export class DocumentUploadComponent implements OnInit {
     
         //If the file type is allowed, proceed with handling the file
         this.files.push(file);
-    
-        this.matters = '';
+        //this.matters = '';
         
         let object = {
           name: event.files[i].name.split('.')[0],
@@ -553,7 +554,7 @@ export class DocumentUploadComponent implements OnInit {
                     //console.log('selectedGrps', this.grouplist);
 
                     //Filter and check groups based on the API res.
-                    this.selectedGroupItems = this.groupViewItems.filter((groupItem: any) => {
+                    this.selectedGroupItems = this.grouplist.filter((groupItem: any) => {
                         groupItem.isChecked = this.grouplist.some((selectedGroup: any) => selectedGroup.id === groupItem.id);
                         return groupItem.isChecked;
                     });
@@ -596,6 +597,7 @@ export class DocumentUploadComponent implements OnInit {
     }
     uploadMore() {
         this.uploadDocs = [];
+        this.matters = ''
         // window.location.reload();
         // this.router.navigate(['documents/upload/' + this.filter]);
         //  this.selectedGroupItems = [];
