@@ -6,7 +6,12 @@ export const environment = {
     apiUrl: 'https://api.staging.digicoffer.com/professional',
     emailApi:"https://mailapi.digicoffer.com/api/v1",
     paymentgatway:"https://staging.payment.digicoffer.com/",
+    doc2pdf:"https://dev.utils.doc2pdf.digicoffer.com/api/v1/doc2pdf",
+    DOC2FILE :'https://dev.utils.doc2pdf.digicoffer.com/api/v1/docfile2pdf',
+    AVChat:'https://staging.avchat.digicoffer.com/',
+    chatops:' https://dev.utils.chat.digicoffer.com',
     xmppDomain: 'chat.vitacape.com',
+    lateXAPI: ' https://stagingapi.latex.digicoffer.com',
     product: 'connect',
     production: true
   };
