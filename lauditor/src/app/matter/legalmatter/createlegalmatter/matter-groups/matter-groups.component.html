@@ -19,7 +19,7 @@
             <div class="input-group multicheck court" id="selectedgroup">
               <div class="form-control textbox" [innerHtml]="group.name"></div>
               <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup" aria-hidden="true"
-               (click)="removeGroup(group)"></i>
+               (click)="removeGroup(group);searchText = ''"></i>
           </div>
         </div>
         </div>
@@ -58,8 +58,7 @@
             *ngFor="let group of groupsList |filter:searchText">
             <div class="multicheck form-control textbox">
               <div class="callselect" [innerHtml]="group.name"></div>
-              <input class="form-check-inpu calimg calitem input-group-app
-                                      end checkboxitem" #inputEl type="checkbox" id="flexCheckDefault"
+              <input class="form-check-inpu calimg calitem input-group-app end checkboxitem" #inputEl type="checkbox" id="flexCheckDefault"
                 (change)="selectGroup(group, inputEl.checked)">
             </div>
           </div>
@@ -82,7 +81,7 @@
   <div class="modal-dialog  modal-xl">
     <div class="modal-content">
 
-      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="getGrouplists()"></button>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="remGroups()"></button>
 
       <div class="modal-body">
         <div class="col-12  editdoc modal-content">
@@ -94,11 +93,11 @@
     
               <div class="groupContent" *ngIf="product !='corporate'">
                 <i class="fa fa-exclamation-circle" style="color: red;font-size:16px" aria-hidden="true"></i> &nbsp;
-                This <b style="font-weight: 900;">'{{editDoc.name}}'</b> group currently contains <b style="font-weight: 900;">{{this.removegrpId?.documents}} Documents and {{this.removegrpId?.relationships}} Relationships.</b> Before updating, please assign them to another active group.
+                This <b style="font-weight: 900;">'{{editDoc.name}}'</b> group currently contains <b style="font-weight: 900;color: #004D87;">{{this.removegrpId?.documents}} Documents and {{this.removegrpId?.relationships}} Relationships.</b> Before updating, please assign them to another active group.
               </div>
               <div class="groupContent" *ngIf="product =='corporate'">
                 <i class="fa fa-exclamation-circle" style="color: red;font-size:16px" aria-hidden="true"></i> &nbsp;
-                This <b style="font-weight: 900;">'{{editDoc.name}}'</b> department currently contains <b style="font-weight: 900;">{{this.removegrpId?.documents}} Documents and {{this.removegrpId?.relationships}} Relationships.</b> Before updating, please assign them to another active department.
+                This <b style="font-weight: 900;">'{{editDoc.name}}'</b> department currently contains <b style="font-weight: 900;color: #004D87;">{{this.removegrpId?.documents}} Documents and {{this.removegrpId?.relationships}} Relationships.</b> Before updating, please assign them to another active department.
               </div>
 
               <div class="col-5">
@@ -152,9 +151,9 @@
             </div>
             <div class="btnbox dialogbtn">
               <button type="button" class="btn btn-default test btncancel" data-bs-dismiss="modal" aria-label="Close"
-                (click)="getGrouplists()">Cancel</button>
+                (click)="remGroups();searchText = ''">Cancel</button>
               <button type="submit" class="btn btn-default btnsave" data-bs-dismiss="modal" aria-label="Close"
-                (click)="deleteGroup()" >Delete</button>
+                (click)="deleteGroup();searchText = ''" [disabled]="selectedtoupdateGroups.length === 0">Delete</button>
             </div>
         </div>
       </div>
