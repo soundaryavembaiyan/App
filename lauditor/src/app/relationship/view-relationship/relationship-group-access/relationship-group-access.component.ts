@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ConfirmationDialogService } from 'src/app/confirmation-dialog/confirmation-dialog.service';
 declare var bootstrap: any;
 
 @Component({
@@ -42,7 +43,7 @@ export class RelationshipGroupAccessComponent implements OnInit {
   assignGrp:any;
 
   constructor(private formBuilder: FormBuilder, private toast: ToastrService,
-    private httpService: HttpService, private fb: FormBuilder) {
+    private httpService: HttpService, private fb: FormBuilder, private confirmationDialogService: ConfirmationDialogService) {
   }
 
   ngOnInit() {
@@ -231,8 +232,9 @@ export class RelationshipGroupAccessComponent implements OnInit {
 
   removeGroup(group: any) {
     this.memData = group;
+    // console.log('group',group)
 
-    if (!group.can_delete && this.selectedIds.includes(group.id) && this.selectedDel.includes(group.can_delete)) {
+    if (group.can_delete === true && group.can_assign_docs === true && this.selectedIds.includes(group.id) && this.selectedDel.includes(group.can_assign_docs || group.can_delete)) {
       this.editDoc = JSON.parse(JSON.stringify(group));
       this.selectedtoupdateGroups = [];
       this.httpService.sendGetRequest(URLUtils.updateRelationshipAccess(this.reldata.client_id, group.id)).subscribe((res: any) => {
@@ -249,7 +251,15 @@ export class RelationshipGroupAccessComponent implements OnInit {
       }, 0);
 
       // this.assignGrp = this.groupList.push(group); //removed grp on AG
-    } else {
+    } 
+    else if((group.can_delete === false && (group.can_assign_docs === false || group.can_assign_docs === true) && this.selectedIds.includes(group.id) && this.selectedDel.includes(group.can_assign_docs || group.can_delete))){
+      if(this.product != 'corporate'){
+        this.confirmationDialogService.confirm('Alert', 'Matters are associated with this Group. So you cannot delete this group', false, 'OK', 'Cancel', true)
+      }else{
+        this.confirmationDialogService.confirm('Alert', 'Matters are associated with this Department. So you cannot delete this department', false, 'OK', 'Cancel', true)
+      }
+    }
+    else {
       //this.editDoc = null;
       this.handleGroupRemoval(group);
     }
