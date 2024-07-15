@@ -36,6 +36,7 @@ export class URLUtils {
     static getNewClients = `/v3/dashboard/new-clients`
     static getDashboardRelations = `/v3/dashboard/relationships`
     static getExternalCounsels = '/v3/dashboard/external-counsels'
+    static getExternalMatters = '/v3/dashboard/external-matters'
     
     static postDocumentsClient = '/v3/document/upload'
     static postDocumentsFirm = '/v3/documents/firm'
@@ -151,7 +152,7 @@ export class URLUtils {
     static deletePartners(args: any) {
         return `/partners/${args.email}/delete`
     }
-
+    static updateDocwithMatters = '/v3/update'
     // Audit Trails
     static getAuditTrails = `/audit`
     static getAudit = `/v3/auditlogs`
@@ -197,6 +198,7 @@ export class URLUtils {
         return `/members/${args.id}/admin`
     }
     static getChatUsers = `/chatusers`
+    static getChatList = '/v3/chatlist'
 
     //Documents
     static getFirmDocuments = `/v3/documents/firm`;
@@ -407,6 +409,10 @@ export class URLUtils {
     static getMattersByClient(args: any) {
         return `/v3/matter/all/${args.id}`
     }
+    static getAllMatters =`/v3/matter/all`
+    static getGrouplist = `/v3/documents/groupslist`
+    static getAllExternalMatters = '/v3/sharedmatter/all'
+    
     static editMergepdfFile(args: any) {
         return `/v3/mergepdf/${args.id}`
     }
@@ -600,7 +606,16 @@ export class URLUtils {
     }
 
 
-    //General
+    //Matter Enhancement
+    static updateMatterAccess(matterid:any, id: any) {
+        return `/v3/matter/groups/${matterid}/${id}`
+    }
+
+    //Relationship Enhancement
+    static updateRelationshipAccess(relid:any, id: any) {
+        return `/v3/relationship/groups/${relid}/${id}`
+    }
+
     static getGeneralMatter = `/matter/general`
     static getGenMatterEventList = '/v3/matter/general'
     static createGeneralMatter = '/matter/general/create'
@@ -682,6 +697,14 @@ export class URLUtils {
     }
 
     static allMatterList = `/v2/matter/all`
+
+    // unread chat
+
+    static resetmsgcount = '/api/v1/resetunreadcount'
+    static updatemsgcount = '/api/v1/updateunreadcount'
+    static getunreadcount = '/api/v1/getunreadcount'
+    static getunreadcountlist = '/api/v1/getunreadcountlist'
+    //static getgroup
 
     static timeDiffCalc(dateFuture: any, dateNow: any) {
         var futureTime = new DatePipe('en-US').transform(dateFuture, 'HH:mm')
