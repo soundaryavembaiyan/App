@@ -53,6 +53,7 @@ export class MatterGroupsComponent implements OnInit {
   editDoc: any;
   removegrpId: any;
   memData: any;
+  cli:any
 
   constructor(private httpservice: HttpService,
     private matterService: MatterService,
@@ -67,28 +68,40 @@ export class MatterGroupsComponent implements OnInit {
       if (path.includes("legal")) {
         this.matterService.editLegalMatterObservable.subscribe((result: any) => {
           const clientIds = result.clients.map((client: any) => client);
+          const corpIds = result.corporate.map((client: any) => client);
+      
           if (result) {
             this.selectedGroups = result?.groups?.map((g: any) => g);
-
-            this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements,
-              { "attachment_type": "groups", "clients": clientIds }).subscribe(
+            if (result.clients.length > 0) {
+              this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, { "attachment_type": "groups", "clients": clientIds }).subscribe(
                 (res: any) => {
                   this.groupsList = res?.groups?.map((client: any) => client);
-
-                  if (this.groupsList && this.selectedGroups && this.selectedGroups.length > 0) {
-                    this.groupsList = this.groupsList.filter((group: any) => {
-                      return !this.selectedGroups.find((selectedGroup: any) => {
-                        return selectedGroup.id === group.id;
-                      });
-                    });
-                  }
-                  if (this.selectedGroups.length === 0) {
-                    let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
-                    if (checkbox != null) {
-                      checkbox.checked = false;
-                    }
-                  }
-                });
+                  this.filterGroupsList();
+                }
+              );
+            } else if (result.corporate.length > 0) {
+              this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, { "attachment_type": "groups", "clients": corpIds }).subscribe(
+                (res: any) => {
+                  this.groupsList = res?.groups?.map((client: any) => client);
+                  this.filterGroupsList();
+                }
+              );
+            } 
+            else if(clientIds && corpIds){
+              this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, { "attachment_type": "groups", "clients": corpIds }).subscribe(
+                (res: any) => {
+                  this.groupsList = res?.groups?.map((client: any) => client);
+                  this.filterGroupsList();
+                }
+              );
+              this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, { "attachment_type": "groups", "clients": clientIds }).subscribe(
+                (res: any) => {
+                  this.groupsList = res?.groups?.map((client: any) => client);
+                  this.filterGroupsList();
+                }
+              );
+            }
+            else{}   
 
             this.editMatter = result;
             this.editGroupIds = result.groups;
@@ -100,41 +113,49 @@ export class MatterGroupsComponent implements OnInit {
       else if (path.includes("general")) {
         this.matterService.editGeneralMatterObservable.subscribe((result: any) => {
           const clientIds = result.clients.map((client: any) => client);
-
+          const corpIds = result.corporate.map((client: any) => client);
+      
           if (result) {
             this.selectedGroups = result?.groups?.map((g: any) => g);
-            this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements,
-              { "attachment_type": "groups", "clients": clientIds }).subscribe(
+            if (result.clients.length > 0) {
+              this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, { "attachment_type": "groups", "clients": clientIds }).subscribe(
                 (res: any) => {
-                  ;
                   this.groupsList = res?.groups?.map((client: any) => client);
-
-                  if (this.groupsList && this.selectedGroups && this.selectedGroups.length > 0) {
-                    this.groupsList = this.groupsList.filter((group: any) => {
-                      return !this.selectedGroups.find((selectedGroup: any) => {
-                        return selectedGroup.id === group.id;
-                      });
-                    });
-                  }
-
-                  if (this.selectedGroups.length === 0) {
-                    let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
-                    if (checkbox != null) {
-                      checkbox.checked = false;
-                    }
-                  }
-                });
-
+                  this.filterGroupsList();
+                }
+              );
+            } else if (result.corporate.length > 0) {
+              this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, { "attachment_type": "groups", "clients": corpIds }).subscribe(
+                (res: any) => {
+                  this.groupsList = res?.groups?.map((client: any) => client);
+                  this.filterGroupsList();
+                }
+              );
+            } 
+            else if(clientIds && corpIds){
+              this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, { "attachment_type": "groups", "clients": corpIds }).subscribe(
+                (res: any) => {
+                  this.groupsList = res?.groups?.map((client: any) => client);
+                  this.filterGroupsList();
+                }
+              );
+              this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, { "attachment_type": "groups", "clients": clientIds }).subscribe(
+                (res: any) => {
+                  this.groupsList = res?.groups?.map((client: any) => client);
+                  this.filterGroupsList();
+                }
+              );
+            }
+            else{}        
+      
             this.editMatter = result;
             this.editGroupIds = result.groups;
             this.isEdit = true;
             this.cantDeleteItems = this.editGroupIds.filter((item: any) => item.canDelete == false).map((obj: any) => obj.id);
-            //console.log('editMatter', this.editMatter);
           }
         });
       }
     }
-
     // if (window.location.pathname.indexOf("updateGroups") > -1) {
     //   this.matterService.editLegalMatterObservable.subscribe((result: any) => {
     //     if (result) {
@@ -158,6 +179,24 @@ export class MatterGroupsComponent implements OnInit {
 
     this.getGrouplists();
     //this.getGroups();
+  }
+
+
+  filterGroupsList() {
+    if (this.groupsList && this.selectedGroups && this.selectedGroups.length > 0) {
+      this.groupsList = this.groupsList.filter((group: any) => {
+        return !this.selectedGroups.find((selectedGroup: any) => {
+          return selectedGroup.id === group.id;
+        });
+      });
+    }
+  
+    if (this.selectedGroups.length === 0) {
+      let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
+      if (checkbox != null) {
+        checkbox.checked = false;
+      }
+    }
   }
 
   getGrouplists() {
@@ -197,7 +236,104 @@ export class MatterGroupsComponent implements OnInit {
     }
   }
 
-  getGroups() {
+  remGroups(){
+    this.pathName = window.location.pathname.includes("legalmatter") ? "legalmatter" : "generalmatter";
+    const path = window.location.pathname;
+
+    if (path.indexOf("updateGroups") > -1) {
+      if (path.includes("legal")) {
+        this.matterService.editLegalMatterObservable.subscribe((result: any) => {
+          const clientIds = result.clients.map((client: any) => client);
+          const corpIds = result.corporate.map((client: any) => client);
+      
+          if (result) {
+            this.selectedGroups = result?.groups?.map((g: any) => g);
+            if (result.clients.length > 0) {
+              this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, { "attachment_type": "groups", "clients": clientIds }).subscribe(
+                (res: any) => {
+                  this.groupsList = res?.groups?.map((client: any) => client);
+                  this.filterGroupsList();
+                }
+              );
+            } else if (result.corporate.length > 0) {
+              this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, { "attachment_type": "groups", "clients": corpIds }).subscribe(
+                (res: any) => {
+                  this.groupsList = res?.groups?.map((client: any) => client);
+                  this.filterGroupsList();
+                }
+              );
+            } 
+            else if(clientIds && corpIds){
+              this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, { "attachment_type": "groups", "clients": corpIds }).subscribe(
+                (res: any) => {
+                  this.groupsList = res?.groups?.map((client: any) => client);
+                  this.filterGroupsList();
+                }
+              );
+              this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, { "attachment_type": "groups", "clients": clientIds }).subscribe(
+                (res: any) => {
+                  this.groupsList = res?.groups?.map((client: any) => client);
+                  this.filterGroupsList();
+                }
+              );
+            }
+            else{}   
+
+            this.editMatter = result;
+            this.editGroupIds = result.groups;
+            this.isEdit = true;
+            this.cantDeleteItems = this.editGroupIds.filter((item: any) => item.canDelete == false).map((obj: any) => obj.id);
+          }
+        });
+      }
+      else if (path.includes("general")) {
+        this.matterService.editGeneralMatterObservable.subscribe((result: any) => {
+          const clientIds = result.clients.map((client: any) => client);
+          const corpIds = result.corporate.map((client: any) => client);
+      
+          if (result) {
+            this.selectedGroups = result?.groups?.map((g: any) => g);
+            if (result.clients.length > 0) {
+              this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, { "attachment_type": "groups", "clients": clientIds }).subscribe(
+                (res: any) => {
+                  this.groupsList = res?.groups?.map((client: any) => client);
+                  this.filterGroupsList();
+                }
+              );
+            } else if (result.corporate.length > 0) {
+              this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, { "attachment_type": "groups", "clients": corpIds }).subscribe(
+                (res: any) => {
+                  this.groupsList = res?.groups?.map((client: any) => client);
+                  this.filterGroupsList();
+                }
+              );
+            } 
+            else if(clientIds && corpIds){
+              this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, { "attachment_type": "groups", "clients": corpIds }).subscribe(
+                (res: any) => {
+                  this.groupsList = res?.groups?.map((client: any) => client);
+                  this.filterGroupsList();
+                }
+              );
+              this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, { "attachment_type": "groups", "clients": clientIds }).subscribe(
+                (res: any) => {
+                  this.groupsList = res?.groups?.map((client: any) => client);
+                  this.filterGroupsList();
+                }
+              );
+            }
+            else{}        
+      
+            this.editMatter = result;
+            this.editGroupIds = result.groups;
+            this.isEdit = true;
+            this.cantDeleteItems = this.editGroupIds.filter((item: any) => item.canDelete == false).map((obj: any) => obj.id);
+          }
+        });
+      }
+    }
+  }  
+ getGroups() {
     this.httpservice.sendGetRequest(URLUtils.getGroups).subscribe((res: any) => {
       if (res && res['data'] && res['data']?.length > 0)
         this.groupsList = res['data'];
