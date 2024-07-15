@@ -79,3 +79,10 @@
     color: #004D87 !important;
     font-weight: 900;
 }
+.btnsave:disabled,
+.btnsave[disabled] {
+  background: #004d87 0% 0% no-repeat padding-box;
+  border-radius: 5px;
+  color: #fff;
+  border: none !important;
+}
