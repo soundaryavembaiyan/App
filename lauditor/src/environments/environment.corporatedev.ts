@@ -9,6 +9,8 @@ export const environment = {
     doc2pdf:"https://dev.utils.doc2pdf.digicoffer.com/api/v1/doc2pdf",
     DOC2FILE :'https://dev.utils.doc2pdf.digicoffer.com/api/v1/docfile2pdf',
     lateXAPI: 'https://devapi.latex.digicoffer.com',
+    chatops:' https://dev.utils.chat.digicoffer.com',
+    AVChat:'https://dev.testavchat.digicoffer.com/',
     xmppDomain: 'devchat.vitacape.com',
     product: 'corporate',
     production: false
