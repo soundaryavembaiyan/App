@@ -7,8 +7,10 @@ export const environment = {
   emailApi:"https://dev.utils.mail.digicoffer.com/api/v1",
   paymentgatway:"https://dev2.payment.digicoffer.com/",
   doc2pdf:"https://dev.utils.doc2pdf.digicoffer.com/api/v1/doc2pdf",
+  chatops:' https://dev.utils.chat.digicoffer.com',
   lateXAPI: 'https://devapi.latex.digicoffer.com',
   DOC2FILE :'https://dev.utils.doc2pdf.digicoffer.com/api/v1/docfile2pdf',
+  AVChat:'https://dev.testavchat.digicoffer.com/',
   xmppDomain: 'devchat.vitacape.com',
   product: 'content',
   production: false
