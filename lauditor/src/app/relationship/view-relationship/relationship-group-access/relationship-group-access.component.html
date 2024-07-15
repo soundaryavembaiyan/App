@@ -139,11 +139,11 @@
 
               <div class="groupContent" *ngIf="product !='corporate'">
                 <i class="fa fa-exclamation-circle" style="color: red;font-size:16px" aria-hidden="true"></i> &nbsp;
-                This <b style="font-weight: 900;">'{{editDoc.name}}'</b> group currently contains <b style="font-weight: 900;">{{this.removegrpId?.documents}} Documents.</b> Before updating, please assign them to another active group.
+                This <b style="font-weight: 900;">'{{editDoc.name}}'</b> group currently contains <b style="font-weight: 900;color: #004D87;">{{this.removegrpId?.documents}} Documents.</b> Before updating, please assign them to another active group.
               </div>
               <div class="groupContent" *ngIf="product =='corporate'">
                 <i class="fa fa-exclamation-circle" style="color: red;font-size:16px" aria-hidden="true"></i> &nbsp;
-                This <b style="font-weight: 900;">'{{editDoc.name}}'</b> department currently contains <b style="font-weight: 900;">{{this.removegrpId?.documents}} Documents.</b> Before updating, please assign them to another active department.
+                This <b style="font-weight: 900;">'{{editDoc.name}}'</b> department currently contains <b style="font-weight: 900;color: #004D87;">{{this.removegrpId?.documents}} Documents.</b> Before updating, please assign them to another active department.
               </div>
 
               <div class="col-5">
@@ -199,7 +199,7 @@
               <button type="button" class="btn btn-default test btncancel" data-bs-dismiss="modal" aria-label="Close"
               (click)="loadGroups()">Cancel</button>
               <button type="submit" class="btn btn-default btnsave" data-bs-dismiss="modal" aria-label="Close"
-              (click)="deleteGroup()" >Delete</button>
+              (click)="deleteGroup()" [disabled]="selectedtoupdateGroups.length === 0">Delete</button>
             </div>
         </div>
       </div>
