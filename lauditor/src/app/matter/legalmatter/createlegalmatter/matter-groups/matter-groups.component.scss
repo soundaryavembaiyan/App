@@ -86,3 +86,64 @@
   color: #fff;
   border: none !important;
 }
+.mat-mdc-radio-button~.mat-mdc-radio-button {
+    margin-left: 16px;
+}
+
+.mailoption {
+    font-size: 25px;
+    font-family: "Gill Sans", sans-serif;
+    font-weight: 400;
+    color: #004D87;
+    margin-left: 170px;
+}
+
+.hello {
+    backdrop-filter: blur(50px);
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.closeDialog {
+    float: right;
+}
+.closeBtn {
+    font-size: 20px;
+}
+.gImg {
+    width: 70px;
+    height: 70px;
+}
+.oImg {
+    width: 70px;
+    height: 70px;
+}
+
+.savefilenameBtn {
+    margin-left: 185px;
+    position: fixed;
+    position: absolute;
+    margin-bottom: 20px;
+}
+.overviewSave {
+    float: right;
+    margin-bottom: -10px;
+}
+
+.savefile{
+    font-size: 18px;
+    font-weight: 500;
+    font-family: "Gill Sans";
+    height: 43px;
+    background: #004d87 0% 0% no-repeat padding-box;
+    border-radius: 5px;
+    color: #fff;
+    border: none !important;
+}
+.alertxt{
+    font-size: 20px;
+    font-family: "Gill Sans", sans-serif;
+    font-weight: 300;
+    color: black;
+    margin-left: 20px;
+    padding: 10px;
+}
