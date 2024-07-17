@@ -41,6 +41,7 @@ export class RelationshipGroupAccessComponent implements OnInit {
   removegrpId: any;
   memData: any;
   assignGrp:any;
+  initialSelectedGroups: any[] = [];
 
   constructor(private formBuilder: FormBuilder, private toast: ToastrService,
     private httpService: HttpService, private fb: FormBuilder, private confirmationDialogService: ConfirmationDialogService) {
@@ -232,9 +233,9 @@ export class RelationshipGroupAccessComponent implements OnInit {
 
   removeGroup(group: any) {
     this.memData = group;
-    // console.log('group',group)
+    //console.log('group',group)
 
-    if (group.can_delete === true && group.can_assign_docs === true && this.selectedIds.includes(group.id) && this.selectedDel.includes(group.can_assign_docs || group.can_delete)) {
+    if (group.can_delete === true && group.can_assign_docs === true && this.selectedIds.includes(group.id) && this.selectedDel.includes(group.can_assign_docs || group.can_delete) || !group.can_delete) {
       this.editDoc = JSON.parse(JSON.stringify(group));
       this.selectedtoupdateGroups = [];
       this.httpService.sendGetRequest(URLUtils.updateRelationshipAccess(this.reldata.client_id, group.id)).subscribe((res: any) => {
@@ -249,10 +250,15 @@ export class RelationshipGroupAccessComponent implements OnInit {
           modalInstance.show();
         }
       }, 0);
-
       // this.assignGrp = this.groupList.push(group); //removed grp on AG
     } 
-    else if((group.can_delete === false && (group.can_assign_docs === false || group.can_assign_docs === true) && this.selectedIds.includes(group.id) && this.selectedDel.includes(group.can_assign_docs || group.can_delete))){
+    else if(
+      (group.can_delete === false ||
+      (group.can_assign_docs === false || group.can_assign_docs === true) && 
+      (group.can_delete == false && group.can_assign_docs == true) && 
+      this.selectedIds.includes(group.id) && 
+      this.selectedDel.includes(group.can_assign_docs || group.can_delete))
+      ){
       if(this.product != 'corporate'){
         this.confirmationDialogService.confirm('Alert', 'Matters are associated with this Group. So you cannot delete this group', false, 'OK', 'Cancel', true)
       }else{
@@ -360,6 +366,10 @@ export class RelationshipGroupAccessComponent implements OnInit {
     }
     this.isSaveDisabled = this.selectedIds.length === 0;
   }
+
+  remGroups(){
+    this.initialSelectedGroups = [...this.selectedGroups];
+  }  
 
 }
 
