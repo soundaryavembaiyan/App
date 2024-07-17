@@ -53,7 +53,7 @@ export class MatterGroupsComponent implements OnInit {
   editDoc: any;
   removegrpId: any;
   memData: any;
-  cli:any
+  initialSelectedGroups: any[] = [];
 
   constructor(private httpservice: HttpService,
     private matterService: MatterService,
@@ -181,7 +181,6 @@ export class MatterGroupsComponent implements OnInit {
     //this.getGroups();
   }
 
-
   filterGroupsList() {
     if (this.groupsList && this.selectedGroups && this.selectedGroups.length > 0) {
       this.groupsList = this.groupsList.filter((group: any) => {
@@ -237,101 +236,7 @@ export class MatterGroupsComponent implements OnInit {
   }
 
   remGroups(){
-    this.pathName = window.location.pathname.includes("legalmatter") ? "legalmatter" : "generalmatter";
-    const path = window.location.pathname;
-
-    if (path.indexOf("updateGroups") > -1) {
-      if (path.includes("legal")) {
-        this.matterService.editLegalMatterObservable.subscribe((result: any) => {
-          const clientIds = result.clients.map((client: any) => client);
-          const corpIds = result.corporate.map((client: any) => client);
-      
-          if (result) {
-            this.selectedGroups = result?.groups?.map((g: any) => g);
-            if (result.clients.length > 0) {
-              this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, { "attachment_type": "groups", "clients": clientIds }).subscribe(
-                (res: any) => {
-                  this.groupsList = res?.groups?.map((client: any) => client);
-                  this.filterGroupsList();
-                }
-              );
-            } else if (result.corporate.length > 0) {
-              this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, { "attachment_type": "groups", "clients": corpIds }).subscribe(
-                (res: any) => {
-                  this.groupsList = res?.groups?.map((client: any) => client);
-                  this.filterGroupsList();
-                }
-              );
-            } 
-            else if(clientIds && corpIds){
-              this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, { "attachment_type": "groups", "clients": corpIds }).subscribe(
-                (res: any) => {
-                  this.groupsList = res?.groups?.map((client: any) => client);
-                  this.filterGroupsList();
-                }
-              );
-              this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, { "attachment_type": "groups", "clients": clientIds }).subscribe(
-                (res: any) => {
-                  this.groupsList = res?.groups?.map((client: any) => client);
-                  this.filterGroupsList();
-                }
-              );
-            }
-            else{}   
-
-            this.editMatter = result;
-            this.editGroupIds = result.groups;
-            this.isEdit = true;
-            this.cantDeleteItems = this.editGroupIds.filter((item: any) => item.canDelete == false).map((obj: any) => obj.id);
-          }
-        });
-      }
-      else if (path.includes("general")) {
-        this.matterService.editGeneralMatterObservable.subscribe((result: any) => {
-          const clientIds = result.clients.map((client: any) => client);
-          const corpIds = result.corporate.map((client: any) => client);
-      
-          if (result) {
-            this.selectedGroups = result?.groups?.map((g: any) => g);
-            if (result.clients.length > 0) {
-              this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, { "attachment_type": "groups", "clients": clientIds }).subscribe(
-                (res: any) => {
-                  this.groupsList = res?.groups?.map((client: any) => client);
-                  this.filterGroupsList();
-                }
-              );
-            } else if (result.corporate.length > 0) {
-              this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, { "attachment_type": "groups", "clients": corpIds }).subscribe(
-                (res: any) => {
-                  this.groupsList = res?.groups?.map((client: any) => client);
-                  this.filterGroupsList();
-                }
-              );
-            } 
-            else if(clientIds && corpIds){
-              this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, { "attachment_type": "groups", "clients": corpIds }).subscribe(
-                (res: any) => {
-                  this.groupsList = res?.groups?.map((client: any) => client);
-                  this.filterGroupsList();
-                }
-              );
-              this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, { "attachment_type": "groups", "clients": clientIds }).subscribe(
-                (res: any) => {
-                  this.groupsList = res?.groups?.map((client: any) => client);
-                  this.filterGroupsList();
-                }
-              );
-            }
-            else{}        
-      
-            this.editMatter = result;
-            this.editGroupIds = result.groups;
-            this.isEdit = true;
-            this.cantDeleteItems = this.editGroupIds.filter((item: any) => item.canDelete == false).map((obj: any) => obj.id);
-          }
-        });
-      }
-    }
+    this.initialSelectedGroups = [...this.selectedGroups];
   }  
  getGroups() {
     this.httpservice.sendGetRequest(URLUtils.getGroups).subscribe((res: any) => {
@@ -412,7 +317,14 @@ export class MatterGroupsComponent implements OnInit {
 
   removeGroup(group: any) {
     this.memData = group;
-    if (this.isEdit && group.canDelete === false) {
+    //console.log('group',group)
+
+    if(this.groupsList.length === 0){
+      this.toast.error('This Group should not be remove!!!');
+      return;
+    }
+
+    if (this.isEdit && group.canDelete === false || !group.canDelete) {
       this.editDoc = JSON.parse(JSON.stringify(group));
       this.selectedtoupdateGroups = [];
       this.httpservice.sendGetRequest(URLUtils.updateMatterAccess(this.editMatter.id, group.id)).subscribe((res: any) => {
@@ -428,9 +340,7 @@ export class MatterGroupsComponent implements OnInit {
         }
       }, 0);
     } 
-    // else {
-    //   this.editDoc = null;
-    // }
+
     if ((this.isEdit && (group.canDelete == undefined || group.canDelete == true)) || (!this.isEdit)) {
       this.isSaveEnable = true;
       let index = this.selectedGroups.findIndex((d: any) => d.id === group.id); //find index in your array
