@@ -235,7 +235,24 @@ export class RelationshipGroupAccessComponent implements OnInit {
     this.memData = group;
     //console.log('group',group)
 
-    if (group.can_delete === true && group.can_assign_docs === true && this.selectedIds.includes(group.id) && this.selectedDel.includes(group.can_assign_docs || group.can_delete) || !group.can_delete) {
+    if (group.can_delete === true && group.can_assign_docs === true && this.selectedIds.includes(group.id) && this.selectedDel.includes(group.can_assign_docs || group.can_delete)) {
+      this.editDoc = JSON.parse(JSON.stringify(group));
+      this.selectedtoupdateGroups = [];
+      this.httpService.sendGetRequest(URLUtils.updateRelationshipAccess(this.reldata.client_id, group.id)).subscribe((res: any) => {
+        this.removegrpId = res.counts;
+      })
+
+      setTimeout(() => {
+        // Trigger the modal
+        let modalElement = document.getElementById('editInfoModal1') as HTMLElement;
+        if (modalElement) {
+          const modalInstance = new bootstrap.Modal(modalElement);
+          modalInstance.show();
+        }
+      }, 0);
+      // this.assignGrp = this.groupList.push(group); //removed grp on AG
+    } 
+    else if (group.isdisabled === false) {
       this.editDoc = JSON.parse(JSON.stringify(group));
       this.selectedtoupdateGroups = [];
       this.httpService.sendGetRequest(URLUtils.updateRelationshipAccess(this.reldata.client_id, group.id)).subscribe((res: any) => {
@@ -255,7 +272,7 @@ export class RelationshipGroupAccessComponent implements OnInit {
     else if(
       (group.can_delete === false ||
       (group.can_assign_docs === false || group.can_assign_docs === true) && 
-      (group.can_delete == false && group.can_assign_docs == true) && 
+      (group.can_delete == false && group.can_assign_docs == false) &&
       this.selectedIds.includes(group.id) && 
       this.selectedDel.includes(group.can_assign_docs || group.can_delete))
       ){
