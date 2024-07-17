@@ -7,6 +7,10 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
+import { ModalService } from 'src/app/model/model.service';
+import { MatDialog } from '@angular/material/dialog';
+import { Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 declare var bootstrap: any;
 
 
@@ -54,11 +58,12 @@ export class MatterGroupsComponent implements OnInit {
   removegrpId: any;
   memData: any;
   initialSelectedGroups: any[] = [];
+  delDoc = false;
 
   constructor(private httpservice: HttpService,
     private matterService: MatterService,
-    private router: Router, private toast: ToastrService,
-    private confirmationDialogService: ConfirmationDialogService) { }
+    private router: Router, private toast: ToastrService,private modalService: ModalService,
+    private confirmationDialogService: ConfirmationDialogService,private dialog: MatDialog) { }
 
   ngOnInit() {
     this.pathName = window.location.pathname.includes("legalmatter") ? "legalmatter" : "generalmatter";
@@ -319,12 +324,17 @@ export class MatterGroupsComponent implements OnInit {
     this.memData = group;
     //console.log('group',group)
 
+    // if(this.groupsList.length === 0){
+    //   this.confirmationDialogService.confirm('Alert', 'To update matter groups, the client should be linked to more than one group. Please assign the client to more groups.', false, 'OK', 'Cancel', true)
+    //   return;
+    // }
+
     if(this.groupsList.length === 0){
-      this.toast.error('This Group should not be remove!!!');
+      this.openDialog();
       return;
     }
 
-    if (this.isEdit && group.canDelete === false || !group.canDelete) {
+    if (this.isEdit && group.canDelete === false || group.canDelete == undefined) {
       this.editDoc = JSON.parse(JSON.stringify(group));
       this.selectedtoupdateGroups = [];
       this.httpservice.sendGetRequest(URLUtils.updateMatterAccess(this.editMatter.id, group.id)).subscribe((res: any) => {
@@ -340,8 +350,7 @@ export class MatterGroupsComponent implements OnInit {
         }
       }, 0);
     } 
-
-    if ((this.isEdit && (group.canDelete == undefined || group.canDelete == true)) || (!this.isEdit)) {
+    else if ((this.isEdit && (group.canDelete == true)) || (!this.isEdit)) {
       this.isSaveEnable = true;
       let index = this.selectedGroups.findIndex((d: any) => d.id === group.id); //find index in your array
       this.selectedGroups.splice(index, 1);
@@ -352,7 +361,19 @@ export class MatterGroupsComponent implements OnInit {
           checkbox.checked = false;
       }
     }
+    else{}
   }
+
+  openDialog() {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: { delDoc: this.delDoc,  product: environment.product  },
+      width: '500px',
+      height: '290px',
+      hasBackdrop: true,
+      panelClass: 'hello',
+      disableClose: true
+    });
+}
 
   //Remove grps from the dialog
   removeDialogGroup(group: any) {
@@ -485,5 +506,50 @@ export class MatterGroupsComponent implements OnInit {
     //console.log('form', this.editDocform)
     this.editDoc = JSON.parse(JSON.stringify(doc));
   }
+  closeModal(id: any) {
+    this.modalService.close(id);
+}
+}
+
+@Component({
+  selector: 'app-confirmation-dialog',
+  template: `
+  <div mat-dialog-content>
+  <div class="closeDialog">
+        <i class="fa fa-times closeBtn" (click)="closeDialog()" aria-hidden="true"></i>
+    </div>
+
+   <h1 mat-dialog-title class="mailoption">Alert</h1>
+      <div>
+      <p *ngIf="data.product !== 'corporate'" class="alertxt">To update matter groups, the client should be linked to more than one group.<br> Please assign the client to more groups. </p>
+      <p *ngIf="data.product === 'corporate'" class="alertxt">To update matter departments, the client should be linked to more than one department.<br> Please assign the client to more departments.</p>
+      </div>
+      <div mat-dialog-actions class="overviewSave savefilenameBtn">
+           <button type="submit" class="btn btn-default savefile" (click)="continue()">OK</button>
+      </div>
+  </div>
+`,
+  styleUrls: ['matter-groups.component.scss']
+})
+export class ConfirmationDialogComponent {
+  editDoc: any;
+  product = environment.product;
+
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialogRef: MatDialogRef<ConfirmationDialogComponent>
+  ) { }
+
+  ngOnInit() {
+  
+  }
+
+  continue() {
+    this.dialogRef.close('continue');
+  }
+  closeDialog() {
+    this.dialogRef.close()
+  }
+
 }
 
