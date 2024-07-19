@@ -30,7 +30,6 @@
 
         <p class="textDanger" *ngIf="formMode == 'invite'">{{msg}}</p>
       </div>
-
        <!--Shown Messages ends here..-->
 
 </div>
@@ -119,8 +118,8 @@
                        formControlName="confirmEmail"
                        [ngClass]="{'is-invalid':submitted && f.confirmEmail.errors}">
                  <div *ngIf="submitted && f.confirmEmail.errors" class=" invalid-feedback">
-                  <div *ngIf="f.confirmEmail.errors.mismatch">Confirm email is mismatch.</div>
-                  <div *ngIf="f.confirmEmail.errors.required">Confirm email is Required</div>
+                  <div *ngIf="f.confirmEmail.errors.mismatch">Confirm email does not mismatch.</div>
+                  <div *ngIf="f.confirmEmail.errors.required">Confirm email is Required.</div>
                 </div>
               </div>
           </div>
@@ -154,7 +153,7 @@
               <p *ngIf="product != 'corporate'"><label>Selected Group(s)</label></p>
               <p *ngIf="product == 'corporate'"><label>Selected Department(s)</label></p>
              <div *ngIf="!closeMode">
-              <div class="input-group court" *ngFor="let sgrp of selectedGroups">
+              <div class="input-group court padBot" *ngFor="let sgrp of selectedGroups">
                   <input type="text" class="form-control textbox my-input" id="addedGrp" placeholder="{{sgrp.name}}" disabled>
                   <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup my-icon" 
                   id="myIcon" (click)="restore(sgrp)" aria-hidden="true"></i>
