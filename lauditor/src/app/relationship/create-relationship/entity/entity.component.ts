@@ -66,40 +66,38 @@ export class EntityComponent implements OnInit {
 
   ngOnInit(): void {
     this.createRelationform = this.fb.group({
-                                      entityName: [{value: '', disabled: this.isDisabled}, Validators.required],
-                                      email: [{value: '', disabled: this.isDisabled}, Validators.required],
-                                      confirmEmail:[{value: '', disabled: this.isDisabled}, Validators.required],
-                                      contactPerson:[{value: '', disabled: this.isDisabled},Validators.required],
-                                      contactPhone: [{value: '', disabled: this.isDisabled}, Validators.required, Validators.pattern('^[0-9]*$')],
-                                      grpsearch: [''],
-                                      country: [{value: '', disabled: this.isDisabled}, Validators.required],
-                                      //selectedEntity:['',Validators.pattern(this.NoWhitespaceRegExp)]
-                                    }),
-        //console.log('CR',this.createRelationform)
-                                               
-    this.loadEntityList();
+      entityName: [{ value: '', disabled: this.isDisabled }, Validators.required],
+      email: [{ value: '', disabled: this.isDisabled }, Validators.required],
+      confirmEmail: [{ value: '', disabled: this.isDisabled }, Validators.required],
+      contactPerson: [{ value: '', disabled: this.isDisabled }, Validators.required],
+      contactPhone: [{ value: '', disabled: this.isDisabled }, Validators.required, Validators.pattern('^[0-9]*$')],
+      grpsearch: [''],
+      country: [{ value: '', disabled: this.isDisabled }, Validators.required],
+      //selectedEntity:['',Validators.pattern(this.NoWhitespaceRegExp)]
+    }),
+      //console.log('CR',this.createRelationform)
+
+      this.loadEntityList();
     //this.loadEntityLauditor();
 
     this.filteredEntities = this.selectedEntity.valueChanges.pipe(
-      startWith(''), 
+      startWith(''),
       map(value => {
         let filterValue = value;
-        if(typeof(value) == 'string'){
+        if (typeof (value) == 'string') {
           filterValue = value.toLowerCase()
         }
         return this.entityList.filter(option => option.name.toLowerCase().includes(filterValue));
       })
     );
     this.loadCountries()
-
-
-        //Get Country API
-        this.httpservice.sendGetRequest(URLUtils.country).subscribe(
-          (res: any) => {
-            this.countries = res.data.countries;
-            this.countries.shift();
-          }
-        )
+    //Get Country API
+    this.httpservice.sendGetRequest(URLUtils.country).subscribe(
+      (res: any) => {
+        this.countries = res.data.countries;
+        this.countries.shift();
+      }
+    )
   }
 
   ngOnDestroy() {
@@ -107,8 +105,6 @@ export class EntityComponent implements OnInit {
         this.relationshipSubscribe.unsubscribe();
     }
   }
-
-
 
   onReset(){
     /*
@@ -160,22 +156,26 @@ export class EntityComponent implements OnInit {
         }
       })
     } else {
-        if(this.selectedEntity.value == ""){
+        if(this.selectedEntity.value === ' '){
           this.emptySearchError = true;
+          this.msg = ` `
           return;
         }
-        this.emptySearchError = false;
+        // this.emptySearchError = false;
         ['entityName','email','contactPhone', 'contactPerson', 'country', 'confirmEmail'].forEach((item: any, index: number) => {
               this.createRelationform.controls[item].setValue("")
               this.createRelationform.controls[item].enable()
         })
+        if(this.selectedEntity.value !== ' '){
+        this.emptySearchError = false;
         this.formMode = 'invite'
         this.selname = this.createRelationform.value['entityName']
         this.showForm = true
-        // this.showForm = false
         this.msg = `${this.selectedEntity.value} - not found. Please fill in the details below to send the relationship invite.`
+        }
         this.loadGroups()
         this.selectedGroups = []
+        this.selectedEntity.setValue("")
     }
   }
 
@@ -231,20 +231,27 @@ export class EntityComponent implements OnInit {
     }
   }
 
-  getConfirmation(){
+  getConfirmation() {
     let val = this.createRelationform.value
-    if(this.formMode == 'invite'){
-        this.selname = val['entityName']
-        if(val["email"] != val["confirmEmail"]){
-          this.createRelationform.controls['confirmEmail'].setErrors({'mismatch': true})
+    //console.log('val',val)
+    if (this.formMode == 'invite') {
+      this.submitted = true
+      this.selname = val['entityName']
+      // Check if confirm email matches
+      if (val.email !== val.confirmEmail && val.confirmEmail != '') {
+        this.createRelationform.controls['confirmEmail'].setErrors({ 'mismatch': true });
       }
-      if(val.confirmEmail == '' || val.contactPerson == '' || val.country == '' || val.email == '' || val.entityName == ''){
+      else{
+        //this.createRelationform.controls['confirmEmail'].setErrors({ 'required': true });
+      }
+
+      if (val.confirmEmail == '' || val.contactPerson == '' || val.country == '' || val.email == '' || val.entityName == '') {
         this.submitted = true
-        this.toast.error('Please confirm your details before sending the invite.')
+        this.toast.error(' Please verify all your information before sending the invite.')
         return;
       }
     }
-    this.submitted = true
+    //this.submitted = true
     if (this.createRelationform.invalid) { return; }
     this.showConfirm = true
   }
