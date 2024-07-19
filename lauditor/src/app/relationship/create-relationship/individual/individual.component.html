@@ -4,7 +4,7 @@
     <div class="input-group court" id="search">
       <input type="email" 
              class="form-control textbox"
-             formControlName='email' 
+             formControlName='email' (input)="restricttextSpace($event)"
              oninput="this.value = this.value.replace(/[^a-zA-Z0-9._-@]/g,'')"
              placeholder="Search by email"/>
 
