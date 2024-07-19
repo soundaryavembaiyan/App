@@ -124,6 +124,13 @@ export class IndividualComponent {
 
     getConfirmation(){
         let vals = this.createRelationform.value
+        //console.log('val',vals)
+        if (vals.firstName == '' || vals.lastName == '' || vals.confirmEmail == null || vals.country == null) {
+            this.submitted = true
+            this.toast.error(' Please verify all your information before sending the invite.')
+            return;
+        }
+        
         if(this.formMode == 'invite'){
             this.selname = `${vals['firstName']} ${vals['lastName']}`
         }
@@ -247,5 +254,11 @@ export class IndividualComponent {
               )
         }
     }
-
+    restricttextSpace(event: any) {
+        let inputValue: string = event.target.value;
+        inputValue = inputValue.replace(/^\s+/, '');
+        inputValue = inputValue.replace(/\s{2,}/g, ' ');
+        event.target.value = inputValue;
+        return;
+      }
 }
