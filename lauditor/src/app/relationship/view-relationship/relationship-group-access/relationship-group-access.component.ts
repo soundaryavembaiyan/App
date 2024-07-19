@@ -384,9 +384,15 @@ export class RelationshipGroupAccessComponent implements OnInit {
     this.isSaveDisabled = this.selectedIds.length === 0;
   }
 
-  remGroups(){
+  remGroups() {
     this.initialSelectedGroups = [...this.selectedGroups];
-  }  
+    // Assuming selected-Groups to groupList individually
+    this.selectedtoupdateGroups.forEach((group:any) => {
+      this.groupList.push(group);
+    });
+    this.selectedtoupdateGroups = [];
+  }
+  
 
 }
 
