@@ -30,7 +30,7 @@
                       <div class="input-group multicheck court" id="selectedgroup">
                         <div class="form-control textbox" [innerHtml]="group.name"></div>
                         <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup" aria-hidden="true"
-                        (click)="removeGroup(group)"></i>
+                        (click)="removeGroup(group);searchText = ''"></i>
                     </div>
                   </div>
                   </div>
@@ -127,7 +127,7 @@
   <div class="modal-dialog  modal-xl">
     <div class="modal-content">
 
-      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="loadGroups()"></button>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="remGroups();searchText = ''"></button>
 
       <div class="modal-body">
         <div class="col-12  editdoc modal-content">
@@ -197,9 +197,9 @@
             </div>
             <div class="btnbox dialogbtn">
               <button type="button" class="btn btn-default test btncancel" data-bs-dismiss="modal" aria-label="Close"
-              (click)="loadGroups()">Cancel</button>
+              (click)="remGroups();searchText = ''">Cancel</button>
               <button type="submit" class="btn btn-default btnsave" data-bs-dismiss="modal" aria-label="Close"
-              (click)="deleteGroup()" [disabled]="selectedtoupdateGroups.length === 0">Delete</button>
+              (click)="deleteGroup();searchText = ''" [disabled]="selectedtoupdateGroups.length === 0">Delete</button>
             </div>
         </div>
       </div>
