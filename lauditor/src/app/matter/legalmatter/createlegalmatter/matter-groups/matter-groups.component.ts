@@ -242,6 +242,10 @@ export class MatterGroupsComponent implements OnInit {
 
   remGroups(){
     this.initialSelectedGroups = [...this.selectedGroups];
+      this.selectedtoupdateGroups.forEach((group:any) => {
+        this.groupsList.push(group);
+      });
+      this.selectedtoupdateGroups = [];
   }  
  getGroups() {
     this.httpservice.sendGetRequest(URLUtils.getGroups).subscribe((res: any) => {
