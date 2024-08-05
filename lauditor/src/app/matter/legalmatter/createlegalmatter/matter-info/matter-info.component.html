@@ -1,6 +1,6 @@
 <form [formGroup]="caseRegister" (ngSubmit)="onSubmit()">
   <div class="row main main-width stepitem ">
-
+    <p class="editMat" *ngIf="isEdit">Edit Matter Info</p>
     <div class="col-xs-12 col-sm-12 col-md-6">
       <!-- Form Component -->
       <!-- left row card 1 layout -->
@@ -13,7 +13,7 @@
             <div class="form-group">
               <label for="title" class="fontbold">Case Title <span class="mandate">*</span>
               </label>
-              <input formControlName="title" type="text" class="form-control textbox" id="title" name="title"
+              <input formControlName="title" type="text" maxlength="350" (input)="restricttextSpace($event)" class="form-control textbox" id="title" name="title"
                 [ngClass]="{'is-invalid':submitted && f.title.errors}">
               <div *ngIf="submitted && f.title.errors" class="invalid-feedback">
                 <div *ngIf="f.title.errors.required">Case Title is required</div>
@@ -25,7 +25,7 @@
             <div class="form-group">
               <label for="title" class="fontbold">Case Number <span class="mandate">*</span>
               </label>
-              <input type="text" class="form-control textbox" id="caseNumbr" name="case_number"
+              <input type="text" class="form-control textbox" (input)="restricttextSpace($event)" id="caseNumbr" name="case_number"
                 formControlName="case_number" [ngClass]="{'is-invalid':submitted && f.case_number.errors}">
               <div *ngIf="submitted && f.case_number.errors" class="invalid-feedback">
                 <div *ngIf="f.case_number.errors.required">Case Number is required</div>
@@ -56,7 +56,7 @@
             <!-- text area -->
             <div class="form-group">
               <label for="filling date" class="fontbold">Description</label>
-              <textarea rows="4"  cols="50" class="form-control textbox" formControlName="description"
+              <textarea rows="4" (input)="restricttextSpace($event)" cols="50" class="form-control textbox" formControlName="description"
                 name="description" [ngClass]="{'is-invalid':submitted && f.description.errors}"
                 maxlength="300" #description></textarea>
               <div *ngIf="submitted && f.description.errors" class="invalid-feedback">
@@ -69,7 +69,7 @@
 
             <div class="form-group">
               <label for="tags" class="fontbold">Matter Tags</label>
-              <input type="text" class="form-control textbox" id="tags" name="tags" placeholder="Type to add" formControlName="tags">
+              <input type="text" (input)="restricttextSpace($event)" class="form-control textbox" id="tags" name="tags" placeholder="Type to add" formControlName="tags">
             </div>
 
           </div>
@@ -86,7 +86,7 @@
             <!-- input field  -->
             <div class="form-group">
               <label for="title" class="fontbold">Case Type </label>
-              <input type="text" class="form-control textbox" id="case_type" name="case_type"
+              <input type="text" (input)="restricttextSpace($event)" class="form-control textbox" id="case_type" name="case_type"
                 formControlName="case_type" [ngClass]="{'is-invalid':submitted && f.case_type.errors}">
               <div *ngIf="submitted && f.case_type.errors" class="invalid-feedback">
                 <div *ngIf="f.case_type.errors.required">CaseType is required</div>
@@ -96,7 +96,7 @@
             <div class="form-group">
               <label for="court" class="fontbold">Court</label>
               <div class="input-group court" id="court_name">
-                <input type="text" class="form-control textbox" name="court_name" formControlName="court_name"
+                <input type="text" class="form-control textbox" (input)="restricttextSpace($event)" name="court_name" formControlName="court_name"
                   [ngClass]="{'is-invalid':submitted && f.court_name.errors}" />
                 <img src="assets/img/court.svg" class="calimg calitem input-group-append courtimg">
                 <div *ngIf="submitted && f.court_name.errors" class="invalid-feedback">
@@ -108,7 +108,7 @@
             <div class="form-group">
               <label for="judges" class="fontbold">Judge(s)</label>
               <div class="input-group judges" id="judges">
-                <input type="text" class="form-control textbox" name="judges" formControlName="judges"
+                <input type="text" class="form-control textbox" (input)="restricttextSpace($event)" name="judges" formControlName="judges"
                   [ngClass]="{'is-invalid':submitted && f.judges.errors}" />
                 <img src="assets/img/judge.svg" class="calimg calitem input-group-append courtimg">
                 <div *ngIf="submitted && f.judges.errors" class="invalid-feedback">
@@ -237,8 +237,10 @@
     </div>
     <div class="btnbox">
       <button type="reset" class="btn btn-default btncancel btnrightitem" (click)="OnCancel()">Cancel</button>
-      <button type="submit" class="btn btn-primary btnsave savecls" [disabled]="isAddDisable"><span *ngIf="!isEdit">Next</span><span *ngIf="isEdit">Save</span></button>
-
+      <button type="submit" class="btn btn-primary btnsave savecls" [disabled]="isAddDisable">
+        <span *ngIf="!isEdit">Next</span>
+        <span *ngIf="isEdit">Save</span>
+      </button>
     </div>
   </div>
   <!-- grid ends here -->
