@@ -65,13 +65,18 @@ export class MatterInfoComponent implements OnInit {
         if (result) {
           this.editeMatterInfo = result;
           this.isEdit = true;
-          const tagObject = '' // Prevent[obj obj]-tags
-          this.caseRegister.controls['tags'].setValue(tagObject);
-          const transformedData = {
-            ...this.data,
-            tags: this.data.tags?.name || this.data.tags
-          };
-          this.caseRegister.patchValue(this.editeMatterInfo);
+
+          let transformedTags = '';
+          if (this.editeMatterInfo.tags) {
+            transformedTags = this.editeMatterInfo.tags.name || '';
+          }
+    
+          // Patch the form value with the transformed tags
+          this.caseRegister.patchValue({
+            ...this.editeMatterInfo,
+            tags: transformedTags
+          });
+          //this.caseRegister.patchValue(this.editeMatterInfo);
           if (this.editeMatterInfo.date_of_filling) {
           this.caseRegister.controls["date_of_filling"].setValue(new Date(this.editeMatterInfo.date_of_filling));
           }
@@ -161,7 +166,7 @@ export class MatterInfoComponent implements OnInit {
       this.httpService.sendPutRequest(URLUtils.updateLegalMatter(this.editeMatterInfo.id), data).subscribe((res: any) => {
         console.log('up',res);
         if(!res.error){
-          this.confirmationDialogService.confirm('Success', 'Congratulations! You have successfully updated the matter information for '+ this.caseRegister.value.title,false,'View Matter List','Cancel',true)
+          this.confirmationDialogService.confirm('Success', 'Congratulations! You have successfully updated the matter information.',false,'View Matter List','Cancel',true)
           .then((confirmed) => {
             if (confirmed) {
               this.router.navigate(['/matter/legalmatter/view']);
@@ -195,5 +200,12 @@ export class MatterInfoComponent implements OnInit {
     } else {
       this.caseRegister.reset();
     }
+  }
+  restricttextSpace(event: any) {
+    let inputValue: string = event.target.value;
+    inputValue = inputValue.replace(/^\s+/, '');
+    inputValue = inputValue.replace(/\s{2,}/g, ' ');
+    event.target.value = inputValue;
+    return;
   }
 }
