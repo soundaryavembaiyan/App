@@ -52,3 +52,30 @@
 .space{
     padding-top: 20px;
 }
+.warn{
+    color: red;
+    font-weight: 900;
+}
+.addTemp{
+    width: auto;
+}
+.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+.casetito {
+    cursor: pointer;
+    height: auto;
+    width: 230px;
+}
+.selectto{
+    margin-left: 20px;
+}
+.textAl{
+    text-align: start;
+}
+.dataText{
+    font-size: 17px;
+    font-weight: 800;
+    margin-top: -12px;
+}
