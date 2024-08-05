@@ -16,6 +16,7 @@ export class MatterDocumentsComponent {
     @Input() data: any = {};
     @Input() groups: any[] = [];
     @Input() clients: any[] = [];
+    @Input() corporate:any[] = [];
     files: File[] = [];
     currentTab: string = 'existingdoc';
     documentsList: any = [];
@@ -34,8 +35,11 @@ export class MatterDocumentsComponent {
     metaData: any;
     submitted = false;
     documentDetail: any = FormGroup;
-    @ViewChild('file') myInputVariable: ElementRef;
+    @ViewChild('file')
+    myInputVariable!: ElementRef;
     filteredData:any;
+    isSelectAllVisible = true;
+
     constructor(private httpservice: HttpService,
         private fb: FormBuilder,
         private confirmationDialogService: ConfirmationDialogService
@@ -73,10 +77,15 @@ export class MatterDocumentsComponent {
         //console.log("tagsArray  " + JSON.stringify(resultObj));
     }
     getDocuments() {
+        var cli =[]
         let grps = this.groups.map((obj: any) => obj.id);
+        cli = this.clients.map((obj:any) => obj.id);
+        cli.push(this.corporate)
+        
         this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements,
-            { 'group_acls': grps, 'attachment_type': 'documents' }).subscribe(
+            { 'group_acls': grps, 'attachment_type': 'documents' ,'clients':cli}).subscribe(
                 (res: any) => {
+                    //console.log('res',res)
                     if (!res['error'] && res['documents']?.length > 0) {
                         this.documentsList = res['documents'];
                     }
@@ -91,6 +100,7 @@ export class MatterDocumentsComponent {
             if (checkbox != null)
               checkbox.checked = true;
           }
+        this.searchText = '';
     }
     removeDocument(doc: any) {
         let index = this.selectedDocuments.findIndex((d: any) => d.docid === doc.docid); //find index in your array
@@ -124,7 +134,7 @@ export class MatterDocumentsComponent {
         if (event?.target?.checked) {
             if (this.documentsList?.length > 0) {
                 if(this.filteredData?.length>0){
-                    this.selectedDocuments = this.selectedDocuments.concat(this.filteredData);
+                    this.selectedDocuments = this.selectedDocuments.concat(this.documentsList);
                     this.documentsList = this.documentsList.filter((el: any) => {
                       return !this.selectedDocuments.find((element: any) => {
                         return element.docid === el.docid;
@@ -139,6 +149,7 @@ export class MatterDocumentsComponent {
             this.documentsList = this.selectedDocuments.concat(this.documentsList);
             this.selectedDocuments = [];
         }
+        this.searchText = '';
     }
     saveDocuments() {
         if (this.currentTab == 'existingdoc' || this.uploadDocs.length==0) {
@@ -278,13 +289,36 @@ export class MatterDocumentsComponent {
     OnCancel() {
         this.documentsList = this.documentsList.concat(this.selectedDocuments);
         this.selectedDocuments = [];
+        const checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
+        if (checkbox) {
+            checkbox.checked = false;
+        }
     }
-    keyup(){
-        if(this.searchText == ' ')
-        this.searchText=this.searchText.replace(/\s/g, "");
-        this.filteredData = this.documentsList.filter((item:any) =>item.name.toLocaleLowerCase().includes(this.searchText));
+    // keyup(){
+    //     if(this.searchText == ' ')
+    //     this.searchText=this.searchText.replace(/\s/g, "");
+    //     this.filteredData = this.documentsList.filter((item:any) =>item.name.toLocaleLowerCase().includes(this.searchText));
+    //     let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
+    //     if (checkbox != null)
+    //       checkbox.checked = false;
+    //   }
+    keyup() {
+        if (this.searchText == ' ') {
+          this.searchText = this.searchText.replace(/\s/g, '');
+        }
+        this.filteredData = this.documentsList.filter((item: any) => item.name.toLocaleLowerCase().includes(this.searchText));
+        // Update visibility based on the filtered data
+        this.isSelectAllVisible = this.filteredData.length > 0;
+    
         let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
-        if (checkbox != null)
+        if (checkbox != null) {
           checkbox.checked = false;
+        }
       }
+      truncateString(text: string): string {
+        if (text.length > 25) {
+          return text.slice(0, 25) + '...';
+        }
+        return text;
+    }  
 }
