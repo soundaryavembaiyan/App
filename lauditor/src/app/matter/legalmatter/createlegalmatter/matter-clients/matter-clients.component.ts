@@ -20,8 +20,10 @@ export class MatterClientsComponent implements OnInit {
     @Output() corporateClientsEvent: EventEmitter<any> = new EventEmitter();
     @Input() data: any = {};
     @Input() clients: any = {};
+    @Input() corpClients: any = {};
     @Input() groups: any[] = [];
     @Output() temporaryClientsEvent: EventEmitter<any> = new EventEmitter();
+    @Output() childButtonEvent: EventEmitter<any> = new EventEmitter();
 
     displayMouseOver: boolean = false;
     clientsList: any = [];
@@ -38,20 +40,27 @@ export class MatterClientsComponent implements OnInit {
     selectedType: string = 'individual';
     selectedClient: string = 'addclient';
     submitted = false;
-    entitysubmitted:boolean=false;
+    entitysubmitted: boolean = false;
     tempClients: any = [];
-    ClientType:string='individual';
-    CorpType:string='corporate';
-    csvContent:any=[];
+    ClientType: string = 'individual';
+    CorpType: string = 'corporate';
+    csvContent: any = [];
 
-    corporateList:  any = [];
-    corporateData:boolean=false;
-    corpClients:any =[];
-    selectedOption="";
-    selectedprod='clients';
-    selectedprodCorp='corporate';
+    corporateList: any = [];
+    corporateData: boolean = false;
+    //corpClients: any = [];
+    selectedOption = "";
+    selectedprod = 'clients';
+    selectedprodCorp = 'corporate';
     product = environment.product;
     showTempForm: boolean = false;
+
+    relationshipSubscribe: any;
+    reldata: any[] = [];
+    clidata: any;
+    corpData: any[] = [];
+    isSelectAllVisible = true;
+    successModel: boolean = false;
 
     constructor(private httpservice: HttpService, private fb: FormBuilder,
         private confirmationDialogService: ConfirmationDialogService,
@@ -60,7 +69,7 @@ export class MatterClientsComponent implements OnInit {
 
     ngOnInit() {
         this.httpservice.sendGetRequest(URLUtils.getCountry).subscribe((res: any) => {
-            res.data.countries.forEach((item:any)=>{
+            res.data.countries.forEach((item: any) => {
                 // console.log("item is "+JSON.stringify(item[0]));
                 this.csvContent.push(item[0]);
             })
@@ -79,27 +88,129 @@ export class MatterClientsComponent implements OnInit {
             country: ['', Validators.required],
             phonenumber: [''],
             type: ['individual', Validators.required]
-        }, { validator: this.emailMatchValidator() });        
+        }, { validator: this.emailMatchValidator() });
 
-        this.getClients();
+        //this.getClients();
         this.entityClient = this.fb.group({
             fullname: ['', Validators.required],
             contact_person: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]],
-            confirmemail: ['',[ Validators.required, Validators.email]],
+            confirmemail: ['', [Validators.required, Validators.email]],
             country: ['', Validators.required],
             phonenumber: ['']
-        }, { validator: this.emailMatchValidator() });  
+        }, { validator: this.emailMatchValidator() });
 
+        //this.getClientsData(); //doc. list clients
+
+        if(this.product == 'corporate'){
+            this.getClients();
+        }
+        else{
+            this.getClientsData();
+        }
+    }
+
+    // getClientsData() {
+    //     this.relationshipSubscribe = this.httpservice.getFeaturesdata(URLUtils.getAllRelationship).subscribe((res: any) => {
+    //         this.clientsList = res?.data?.relationships;
+    //         //console.log('rel-cli',this.reldata)
+    //         this.httpservice.getFeaturesdata(URLUtils.getCalenderExternal).subscribe((res: any) => {
+    //             this.corporateList = res?.relationships.map((obj: any) => ({ "id": obj.id, "type": "corporate", "name": obj.name }))
+    //             this.clients = this.clientsList.concat(this.corporateList)
+    //         });
+
+    //         this.tempList.length = this.clientsList.length;
+    //         this.corporateList.length = this.clientsList.length;
+        
+    //         // console.log('rel-clients',this.clients)
+    //         // console.log('rel-corp',this.corpClients)
+    //         // console.log('rel-selectedcli',this.selectedClients)
+
+    //         if (this.clients && this.clients.length > 0) {
+    //             this.selectedClients = [...this.clients];
+    //             //console.log('selectedClients....',this.selectedClients)
+    //             let res = this.clientsList.filter((el: any) => {
+    //                 return !this.selectedClients.find((element: any) => {
+    //                     return element.id === el.id;
+    //                 });
+    //             });
+    //             this.clientsList = res;
+    //         }
+
+    //         if (this.corpClients && this.corpClients.length > 0) {
+    //             this.selectedClients = [...this.corpClients];
+    //             //console.log('selectedClients....',this.selectedClients)
+    //             let res = this.clientsList.filter((el: any) => {
+    //                 return !this.selectedClients.find((element: any) => {
+    //                     return element.id === el.id;
+    //                 });
+    //             });
+    //             this.clientsList = res;
+    //         }
+
+    //         if (this.selectedClients.length == 0) {
+    //             let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
+    //             if (checkbox != null)
+    //                 checkbox.checked = false;
+    //         }
+    //     });
+
+    // }
+
+    getClientsData() {
+        this.relationshipSubscribe = this.httpservice.getFeaturesdata(URLUtils.getAllRelationship).subscribe((res: any) => {
+            this.clientsList = res?.data?.relationships;
+            
+            this.httpservice.getFeaturesdata(URLUtils.getCalenderExternal).subscribe((res: any) => {
+                this.corporateList = res?.relationships.map((obj: any) => ({ "id": obj.id, "type": "corporate", "name": obj.name }));
+                
+                // Filter selected clients from clientsList and corporateList
+                const selectedClientIds = this.selectedClients.map((client: { id: any; }) => client.id);
+                this.clientsList = this.clientsList.filter((client: { id: any; }) => !selectedClientIds.includes(client.id));
+                this.corporateList = this.corporateList.filter((client: { id: any; }) => !selectedClientIds.includes(client.id));
+    
+                // Combine clientsList and corporateList into clients
+                this.clients = [...this.clientsList, ...this.corporateList];
+            });
+    
+            this.tempList.length = this.clientsList.length;
+            this.corporateList.length = this.corporateList.length;
+    
+            if (this.clients && this.clients.length > 0) {
+                this.selectedClients = [...this.clients];
+                
+                // Update clientsList to exclude selected clients
+                this.clientsList = this.clientsList.filter((el: any) => {
+                    return !this.selectedClients.find((element: any) => element.id === el.id);
+                });
+            }
+    
+            if (this.corpClients && this.corpClients.length > 0) {
+                this.selectedClients = [...this.corpClients];
+                
+                // Update corporateList to exclude selected clients
+                this.corporateList = this.corporateList.filter((el: any) => {
+                    return !this.selectedClients.find((element: any) => element.id === el.id);
+                });
+            }
+            // Final update of combined clients list
+            this.clients = [...this.clientsList, ...this.corporateList];
+    
+            if (this.selectedClients.length == 0) {
+                let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
+                if (checkbox != null)
+                    checkbox.checked = false;
+            }
+        });
     }
 
     // Check emails of two fields match
     emailMatchValidator(): ValidatorFn {
         return (control: AbstractControl): { [key: string]: any } | null => {
-        const formGroup = control as FormGroup;
-        const email = formGroup.get('email')?.value;
-        const confirmEmail = formGroup.get('confirmemail')?.value;
-        return email && confirmEmail && email !== confirmEmail ? { emailMismatch: true } : null;
+            const formGroup = control as FormGroup;
+            const email = formGroup.get('email')?.value;
+            const confirmEmail = formGroup.get('confirmemail')?.value;
+            return email && confirmEmail && email !== confirmEmail ? { emailMismatch: true } : null;
         };
     }
 
@@ -125,7 +236,7 @@ export class MatterClientsComponent implements OnInit {
         var payload
         if(this.product=="corporate"){
             payload = {'group_acls': grps,'attachment_type': 'corporate' ,'product':this.product}
-            
+
         } else {
             payload = { 'group_acls': grps, 'attachment_type': 'clients' }
         }
@@ -138,7 +249,7 @@ export class MatterClientsComponent implements OnInit {
                     } else if(!res['error'] && res['corporate']?.length > 0){
                         this.clientsList = res['corporate'];
                     }
-                        
+
 
                     this.tempList.length = this.clientsList.length;
                     //console.log('tlist',this.tempList)
@@ -153,7 +264,7 @@ export class MatterClientsComponent implements OnInit {
                         this.clientsList = res;
                         // console.log('clist',this.clientsList)
                         // console.log('slist',this.selectedClients)
-                        
+
                     }
                     if (this.selectedClients.length == 0) {
                         let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
@@ -167,13 +278,13 @@ export class MatterClientsComponent implements OnInit {
                     ).subscribe(
                         (res: any) => {
                             //console.log('corpres',res)
-        
+
                             if (!res['error'] && res['corporate']?.length > 0)
                                 this.corporateList = res['corporate'];
                                 //console.log('corporateList',this.corporateList)
-        
+
                             this.tempList.length = this.corporateList.length;
-                            
+
                             if (this.clients && this.clients.length > 0) {
                                 this.selectedClients = [...this.clients];
                                 let res = this.corporateList.filter((el: any) => {
@@ -184,7 +295,7 @@ export class MatterClientsComponent implements OnInit {
 
                                 this.corporateList = res;
                                 //console.log('Ifcorplist',this.corporateList)
-                                
+
                             }
                             if (this.selectedClients.length == 0) {
                                 let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
@@ -207,7 +318,8 @@ export class MatterClientsComponent implements OnInit {
             this.tempList = !this.tempList;
             if (this.clientsList?.length > 0) {
                 if (this.filteredData?.length > 0) {
-                    this.selectedClients = this.selectedClients.concat(this.filteredData);
+                    //this.selectedClients = this.selectedClients.concat(this.filteredData);
+                    this.selectedClients = this.selectedClients.concat(this.clientsList);
                     this.clientsList = this.clientsList.filter((el: any) => {
                         return !this.selectedClients.find((element: any) => {
                             return element.id === el.id;
@@ -222,6 +334,7 @@ export class MatterClientsComponent implements OnInit {
             this.clientsList = this.selectedClients.concat(this.clientsList);
             this.selectedClients = [];
         }
+        this.searchText = '';
     }
 
     selectCorp(event: any) {
@@ -257,6 +370,7 @@ export class MatterClientsComponent implements OnInit {
             if (checkbox != null)
                 checkbox.checked = true;
         }
+        this.searchText = '';
         //console.log("Cli selected clients "+JSON.stringify(this.selectedClients));
     }
 
@@ -273,23 +387,36 @@ export class MatterClientsComponent implements OnInit {
     }
 
     removeClient(group: any) {
-        let index = this.selectedClients.findIndex((d: any) => d.id === group.id); //find index in your array
-        this.selectedClients.splice(index, 1);
-        this.clientsList.push(group);
+        // let index = this.selectedClients.findIndex((d: any) => d.id === group.id); //find index in your array
+        // this.selectedClients.splice(index, 1);
+        // this.clientsList.push(group);
+        let index = this.selectedClients.findIndex((d: any) => d.id === group.id);
+        if (index > -1) {
+            this.selectedClients.splice(index, 1);
+        }
+        // If the group is not 'corporate', push back to clientsList
+        if (group.type !== 'corporate') {
+            this.clientsList.push(group);
+        }
         if (this.selectedClients.length == 0 || this.clientsList.length == 1) {
             let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
             if (checkbox != null)
                 checkbox.checked = false;
         }
     }
+    
     saveClients() {
         let selectedIds = this.tempClients.map((s: any) => s.id);
         this.temporaryClientsEvent.emit(selectedIds)
-        let clients = this.selectedClients.filter((element:any) => element.type !== "corporate");
-        this.selectedClientsEvent.emit(clients);
-        let corp = this.selectedClients.find((element:any) => element.type === "corporate");
-        this.corporateClientsEvent.emit(corp.id);
 
+        let clients = this.selectedClients.filter((element: any) => element);
+        this.selectedClientsEvent.emit(clients);
+        //console.log('clientsclients',clients)
+
+        // let clients = this.selectedClients.filter((element: any) => element.type !== "corporate");
+        // this.selectedClientsEvent.emit(clients);
+        // let corp = this.selectedClients.find((element: any) => element.type === "corporate");
+        // this.corporateClientsEvent.emit(corp.id);
     }
 
     onClickCorp() {
@@ -307,160 +434,245 @@ export class MatterClientsComponent implements OnInit {
         }
     }
 
-
     OnCancel() {
         this.clientsList = this.clientsList.concat(this.selectedClients);
         this.selectedClients = [];
+        const checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
+        if (checkbox) {
+            checkbox.checked = false;
+        }
     }
     OnFormCancel() {
         this.searchText = ' ';
         this.tempList = false;
         this.showTempForm = false;
-        this.onFilterValueChange();
+        this.entityClient.reset();
+        this.tempClient.reset();
+        //this.onFilterValueChange();
         this.submitted = false;
         this.entitysubmitted = false;
         //this.clientsList = this.clientsList.concat(this.selectedClients);
         //this.selectedClients;
-        this.getClients();
-        this.clientsList = this.clientsList.concat(this.selectedClients);
-        this.selectedClients =[];
+        //this.getClients();
+        //this.getClientsData();
+        this.childButtonEvent.emit(this.clients);
+        // this.clientsList = this.clientsList.concat(this.selectedClients);
+        // this.selectedClients =[];
     }
+
+    // keyup() {
+    //     if (this.searchText == ' ')
+    //         this.searchText = this.searchText.replace(/\s/g, "");
+    //     this.showTempForm = false;
+    //     this.filteredData = this.clientsList.filter((item: any) => item.name.toLocaleLowerCase().includes(this.searchText));
+    //     //console.log('this.filteredData ',this.filteredData )
+    //     //debugger;
+    //     if (this.filteredData.length === 0) {
+    //         this.showTempForm = true;
+    //     }
+    //     if (this.clientsList.length === 0) {
+    //         this.showTempForm = true;
+    //     }
+    //     let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
+    //     if (checkbox != null)
+    //         checkbox.checked = false;
+    // }
+
+
+    // keyup() {
+    //     if (this.searchText == ' ') {
+    //       this.searchText = this.searchText.replace(/\s/g, '');
+    //     }
+    //     this.showTempForm = false;
+    //     this.filteredData = this.clientsList.filter((item: any) => item.name.toLocaleLowerCase().includes(this.searchText));
+    //     // Update visibility based on the filtered data
+    //     if (this.filteredData.length === 0) {
+    //         this.showTempForm = true;
+    //     }
+    //     if (this.clientsList.length === 0) {
+    //         this.showTempForm = true;
+    //     }
+    //     this.isSelectAllVisible = this.filteredData.length > 0;
+    
+    //     let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
+    //     if (checkbox != null) {
+    //       checkbox.checked = false;
+    //     }
+    //   }
+
     keyup() {
-        if (this.searchText == ' ')
-        this.searchText = this.searchText.replace(/\s/g, "");
+        if (this.searchText.trim() === '') {
+            this.searchText = this.searchText.trim();
+        }
         this.showTempForm = false;
-        this.filteredData = this.clientsList.filter((item: any) => item.name.toLocaleLowerCase().includes(this.searchText));
-        //console.log('this.filteredData ',this.filteredData )
-        //debugger;
-        if(this.filteredData.length === 0){
+    
+        // Convert search text to lowercase for case-insensitive search
+        const searchLower = this.searchText.toLowerCase();
+        this.filteredData = this.clientsList.filter((item: any) => item.name.toLowerCase().includes(searchLower));
+    
+        // Update visibility based on the filtered data
+        if (this.filteredData.length === 0) {
             this.showTempForm = true;
         }
-        if(this.clientsList.length === 0){
-            this.showTempForm = true;
-        }
-        let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
-        if (checkbox != null)
+    
+        this.isSelectAllVisible = this.filteredData.length > 0;
+    
+        const checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
+        if (checkbox) {
             checkbox.checked = false;
+        }
     }
-    getType(e:any,type:any) {
-        this.ClientType=e.target.name;
-        this.CorpType
-        this.tempClient.controls.type.patchValue(type);
+    
+    // successResp(action: string){
+    //     if(action == 'yes'){
+    //         this.successModel = false
+    //         this.onReset();
+    //         this.onResetentity();
+    //     }
+    //     if(action == 'no'){
+    //       this.successModel = false
+    //     }
+    //   }
+    // getType(e: any, type: any) {
+    //     if (this.tempClient.dirty) {
+    //         this.successModel = true;
+    //         return;
+    //     }
+    //     else if (this.entityClient.dirty) {
+    //         this.successModel = true;
+    //         return;
+    //     }
+    //     else{
+    //         this.ClientType = e.target.name;
+    //         this.CorpType
+    //         this.tempClient.controls.type.patchValue(type);
+    //     }
+    // }
+
+    getType(e: any, type: any) {
+        if (this.tempClient.dirty) {
+            this.toastr.error('Please save your changes to proceed');
+            return;
+        }
+        else if (this.entityClient.dirty) {
+            this.toastr.error('Please save your changes to proceed');
+            return;
+        }
+        else{
+            this.ClientType = e.target.name;
+            this.CorpType
+            this.tempClient.controls.type.patchValue(type);
+        }
     }
-    oneEntitySubmit(){
+
+    oneEntitySubmit() {
         this.entitysubmitted = true;
         if (this.entityClient.invalid) {
             return;
         }
-        if(this.inputsubmit=='entity'){
-            let object={
-                "fullname":this.entityClient.value.fullname,
-                "contact_person":this.entityClient.value.contact_person,
-                "email":this.entityClient.value.email,
-                "contact_phone":this.entityClient.value.phonenumber,
-                "country":this.entityClient.value.country,
-                "group_acls":this.groups.map((obj: any) => obj.id)
+        if (this.inputsubmit == 'entity') {
+            let object = {
+                "fullname": this.entityClient.value.fullname,
+                "contact_person": this.entityClient.value.contact_person,
+                "email": this.entityClient.value.email,
+                "contact_phone": this.entityClient.value.phonenumber,
+                "country": this.entityClient.value.country,
+                "group_acls": this.groups.map((obj: any) => obj.id)
             }
+
             this.httpService.sendPostRequest(URLUtils.matterEntity, object).subscribe((res: any) => {
-                    if (!res.error) {
-                        let dObj={
-                            id:res?.createdId,
-                            name:res?.name,
-                            type:'entity'
-                        }
-                        this.selectedClients.push(dObj);
-                        this.confirmationDialogService.confirm('Success for Entity', `Congratulations! You have successfully created Entity  ${this.tempClient.value.name} to  ${this.data.Title}`, false, 'Add Team Members', 'Cancel', true)
-                            .then((confirmed) => {
-                                this.OnFormCancel();
-                            })
+                if (!res.error) {
+                    let dObj = {
+                        id: res?.createdId,
+                        name: res?.name,
+                        type: 'entity'
                     }
-                },
-                // (error: HttpErrorResponse) => {
-                //     if (error.status === 401) {
-                //       const errorMessage = error.error.msg || 'Unauthorized';
-                //       this.toastr.error(errorMessage);
-                //       //console.log(error);
-                //     }
-                //   }
+                    this.selectedClients.push(dObj);
+                    this.toastr.success('Temporary client added successfully.')
+                    this.onResetentity();
+                    this.OnFormCancel();
+                    // this.confirmationDialogService.confirm('Success for Entity', `Congratulations! You have successfully created Entity  ${this.tempClient.value.name} to  ${this.data.Title}`, false, 'Add Team Members', 'Cancel', true)
+                    //     .then((confirmed) => {
+                    //         this.onResetentity();
+                    //         this.OnFormCancel();
+                    //     })
+                }
+            },
                 (error: HttpErrorResponse) => {
                     if (error.status === 401) {
-                      const errorMessage = error.error.msg || 'Unauthorized';
-                      this.toastr.error(errorMessage);
+                        const errorMessage = error.error.msg || 'Unauthorized';
+                        this.toastr.error(errorMessage);
                     } else if (error.status === 400) {
-                      if (error.error.errors) {
-                        error.error.errors.forEach((err: { field: string; msg: string }) => {
-                          this.toastr.error(`${err.msg}`);
-                        });
-                      } else {
-                        this.toastr.error('Bad Request');
-                      }
+                        if (error.error.errors) {
+                            error.error.errors.forEach((err: { field: string; msg: string }) => {
+                                this.toastr.error(`${err.msg}`);
+                            });
+                        } else {
+                            this.toastr.error('Bad Request');
+                        }
                     } else {
-                      this.toastr.error('An unexpected error occurred');
+                        this.toastr.error('An unexpected error occurred');
                     }
-                  }
-              )
+                }
+            )
 
         }
-        this.onResetentity();
+        //this.onResetentity();
     }
-    onindividualSubmit(){
+    onindividualSubmit() {
         this.submitted = true;
-       if (this.tempClient.invalid) {
-        return;
+        if (this.tempClient.invalid) {
+            return;
         }
-        if(this.inputsubmit=='temp'){
+        if (this.inputsubmit == 'temp') {
 
-           let obj= {
-                "first_name":this.tempClient.value.name,
-                "last_name":this.tempClient.value.lastName,
-                "email":this.tempClient.value.email,
-                "country":this.tempClient.value.country,
-                "group_acls":this.groups.map((obj: any) => obj.id)
+            let obj = {
+                "first_name": this.tempClient.value.name,
+                "last_name": this.tempClient.value.lastName,
+                "email": this.tempClient.value.email,
+                "country": this.tempClient.value.country,
+                "group_acls": this.groups.map((obj: any) => obj.id)
             }
             this.httpService.sendPostRequest(URLUtils.matterIndiviuals, obj).subscribe((res: any) => {
-                    if (!res.error) {
-                        let dObj={
-                            id:res?.createdId,
-                            name:res?.name,
-                            type:'consumer'
-                        }
-                        this.selectedClients.push(dObj);
-                        this.confirmationDialogService.confirm('Success', 'Congratulations! You have successfully sent relationship request ', false, 'Add Team Members', 'Cancel', true)
-                            .then((confirmed) => {
-                                this.OnFormCancel();
-                            })
+                if (!res.error) {
+                    let dObj = {
+                        id: res?.createdId,
+                        name: res?.name,
+                        type: 'consumer'
                     }
-                    // else{
-                    //     this.confirmationDialogService.confirm('failed', 'sorry! You have sent duplicate  request ', false, 'Add Team Members', 'Cancel', true)
-                    // }
-                },
-                // (error: HttpErrorResponse) => {
-                //     if (error.status === 401) {
-                //       let errorMessage = error.error.msg || 'Unauthorized';
-                //       this.toastr.error(errorMessage);
-                //       //console.log(error);
-                //     }
-                //   }
+                    this.selectedClients.push(dObj);
+                    this.toastr.success('Temporary client added successfully.')
+                    this.onReset();
+                    this.OnFormCancel();
+                    // this.confirmationDialogService.confirm('Success', 'Congratulations! You have successfully sent relationship request ', false, 'Add Team Members', 'Cancel', true)
+                    //     .then((confirmed) => {
+                    //         this.onReset();
+                    //         this.OnFormCancel();
+                    //     })
+                }
+                // else{
+                //     this.confirmationDialogService.confirm('failed', 'sorry! You have sent duplicate  request ', false, 'Add Team Members', 'Cancel', true)
+                // }
+            },
                 (error: HttpErrorResponse) => {
                     if (error.status === 401) {
-                      const errorMessage = error.error.msg || 'Unauthorized';
-                      this.toastr.error(errorMessage);
+                        const errorMessage = error.error.msg || 'Unauthorized';
+                        this.toastr.error(errorMessage);
                     } else if (error.status === 400) {
-                      if (error.error.errors) {
-                        error.error.errors.forEach((err: { field: string; msg: string }) => {
-                          this.toastr.error(`${err.msg}`);
-                        });
-                      } else {
-                        this.toastr.error('Bad Request');
-                      }
+                        if (error.error.errors) {
+                            error.error.errors.forEach((err: { field: string; msg: string }) => {
+                                this.toastr.error(`${err.msg}`);
+                            });
+                        } else {
+                            this.toastr.error('Bad Request');
+                        }
                     } else {
-                      this.toastr.error('An unexpected error occurred');
+                        this.toastr.error('An unexpected error occurred');
                     }
-                  }
-                );      
+                }
+            );
         }
-        
-        this.onReset();
+        //this.onReset();
     }
 
     // onSubmit() {
@@ -517,14 +729,14 @@ export class MatterClientsComponent implements OnInit {
     //             this.tempClients.push(res);
     //             localStorage.setItem('tempClients', JSON.stringify(this.tempClients));
     //             this.onReset();
-                //  this.tempClient.reset();
+    //  this.tempClient.reset();
 
-                // if (!res.error) {
-                //     this.confirmationDialogService.confirm('Success', `${res.msg}`, false, 'Add Team Members', 'Cancel', true)
-                //         .then((confirmed) => {
-                //             this.OnFormCancel();
-                //         })
-                // }
+    // if (!res.error) {
+    //     this.confirmationDialogService.confirm('Success', `${res.msg}`, false, 'Add Team Members', 'Cancel', true)
+    //         .then((confirmed) => {
+    //             this.OnFormCancel();
+    //         })
+    // }
     //         }, error => {
     //             //console.log("error "+JSON.stringify(error)); 
     //             this.toastr.error(error.error.errors[0].msg)
@@ -559,18 +771,25 @@ export class MatterClientsComponent implements OnInit {
     }
 
 
-    getCorp(){
-        this.corporateData=true;
+    getCorp() {
+        this.corporateData = true;
     }
 
-    getClient(){
-        this.corporateData=false;
-        this.tempList==true
+    getClient() {
+        this.corporateData = false;
+        this.tempList == true
     }
     restricttextSpace(event: any) {
         let inputValue: string = event.target.value;
         inputValue = inputValue.replace(/^\s+/, '');
         inputValue = inputValue.replace(/\s{2,}/g, ' ');
         event.target.value = inputValue;
-      }
+    }
+
+    truncateString(text: string): string {
+        if (text.length > 25) {
+          return text.slice(0, 25) + '...';
+        }
+        return text;
+    }   
 }
