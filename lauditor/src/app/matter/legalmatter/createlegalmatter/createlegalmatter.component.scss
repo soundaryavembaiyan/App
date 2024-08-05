@@ -25,7 +25,7 @@
         -webkit-box-shadow: 0 0 10px #fff;
         box-shadow: 0 0 10px #e8e8e8;
         border-radius: 5px;
-        width:45%;
+        width: 45%;
         margin: 20px;
     }
 
@@ -68,7 +68,8 @@
         font-size: 25px;
         color: #437CA7;
         font-weight: 100;
-        .btn{
+
+        .btn {
             float: right;
         }
     }
@@ -85,5 +86,29 @@
         .btn-lg {
             width: 20%;
         }
+    }
+}
+
+// .centro{
+//     margin-left:80px;
+// }
+@media (min-width: 768px) and (max-width: 1023px) {
+    .centro {
+        margin-left: 30px;
+    }
+}
+@media (min-width: 1024px) and (max-width: 1439px) {
+    .centro {
+        margin-left: 50px;
+    }
+}
+@media (min-width: 1440px) and (max-width: 3839px) {
+    .centro {
+        margin-left: 80px;
+    }
+}
+@media (min-width: 3840px) {
+    .centro {
+        margin-left: 160px;
     }
 }
