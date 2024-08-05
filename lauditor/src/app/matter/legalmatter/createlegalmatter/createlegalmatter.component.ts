@@ -52,14 +52,25 @@ export class CreatelegalmatterComponent implements OnInit {
         "Type": mInfo.case_type
       }
       this.matterInfo = mInfo;
-      this.selectedTabItem = 'matter-clients';
+      if(this.product == 'corporate'){
+        this.selectedTabItem = 'matter-groups';
+      }
+      else{
+        this.selectedTabItem = 'matter-clients';
+      }
     }
   }
   selectedGroups(groups: any) {
     this.groups = groups;
     //this.selectedGroups = groups;
     this.groupsData = this.groups.map((obj: any) => obj.id);
-    this.selectedTabItem = 'matter-team-member';
+    //this.selectedTabItem = 'matter-team-member';
+    if(this.product == 'corporate'){
+      this.selectedTabItem = 'matter-clients';
+    }
+    else{
+      this.selectedTabItem = 'matter-team-member';
+    }
     // this.clients=[];
     // this.teammembers=[];
   }
@@ -83,7 +94,13 @@ export class CreatelegalmatterComponent implements OnInit {
     this.corpClients = corporateClient ? corporateClient.id : '';
 
     this.clientsData = this.clients.map((obj: any) => ({ id: obj.id, type: obj.type }));
-    this.selectedTabItem = 'matter-groups';
+    //this.selectedTabItem = 'matter-groups';
+    if(this.product == 'corporate'){
+      this.selectedTabItem = 'matter-team-member';
+    }
+    else{
+      this.selectedTabItem = 'matter-groups';
+    }
     this.selectedClients = this.corpClients;
   }
 
@@ -136,7 +153,7 @@ export class CreatelegalmatterComponent implements OnInit {
       "corporate": this.corpClients
     }
 
-     console.log("legalMatter",legalMatter)
+     //console.log("legalMatter",legalMatter)
     // console.log("corporate",this.corpClients)
 
     this.confirmationDialogService.confirm('Confirmation', 'Are you sure you want to create ' + this.matterInfo.title + ' ?', true, 'Yes', 'No')
@@ -147,7 +164,7 @@ export class CreatelegalmatterComponent implements OnInit {
               if (this.docsData.length > 0) {
                 this.add_documents_from_matter(res.matter_id)
               }
-              this.confirmationDialogService.confirm('Success', 'Congratulations! You have successfully created the ' + this.matterInfo.title, true, 'View Matter List', 'Add Matter', true)
+              this.confirmationDialogService.confirm('Success', 'Congratulations! You have successfully created the matter.', true, 'View Matter List', 'Add New Matter', true)
                 .then((confirmed) => {
                   if (confirmed) {
                     localStorage.removeItem('tempClients');
