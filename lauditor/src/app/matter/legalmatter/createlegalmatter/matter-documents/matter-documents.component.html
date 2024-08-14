@@ -4,7 +4,11 @@
     <div class="col-sm-3 col-xs-1"></div>
     <div class="col-sm-2 col-xs-3 round-icon">
       <div>
-        <p class="selectprior optionhigh2 casetito" [matTooltip]="data.Title" matTooltipPosition="after"> {{truncateString(data.Title)}} </p> 
+        <div class="flex-container">
+          <p class="selectprior optionhigh2 casetito" [matTooltip]="data.Title" matTooltipPosition="after"> {{truncateString(data.Title)}} </p> 
+          <div class="selectpriorGrp optionhigh2 flexo" *ngFor="let item of groupName"> {{truncateString(item)}} </div> 
+        </div>
+        <!-- <p class="selectprior optionhigh2 casetito" [matTooltip]="data.Title" matTooltipPosition="after"> {{truncateString(data.Title)}} </p>  -->
         <!-- <p class="">{{data.Type}}</p> -->
       </div>
     </div>
@@ -46,9 +50,9 @@
             <div class="form-group" id="selectbx">
               <div class="input-group court" id="search">
                 <div class="multicheck form-control textbox" *ngIf="isSelectAllVisible">
-                  <label class="callselect">Select All</label>
+                  <label class="callselect selAl">Select All</label>
                   <input class="form-check-inpu calimg calitem input-group-append checkboxitem" type="checkbox" value=""
-                    id="selectAll" (change)="selectAll($event)">
+                    id="selectAll" (change)="selectAll($event)" #selectAllCheckbox>
                 </div>
               </div>
             </div>
