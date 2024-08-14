@@ -171,9 +171,40 @@ button:focus {
     height: auto;
     width: 230px;
 }
-.textAl{
+.textAl {
+    text-align: start;
+    margin-top: 3px;
+}
+
+.selAl {
+    text-align: start;
+    margin-top: 3px;
+    margin-right: 60px;
+}
+
+.flex-container {
+    display: flex;
+    flex-flow: wrap;
+    width: 750px;
+    align-items: stretch;
+}
+
+.flex-container > div {
+    width: auto;
+    //cursor: pointer;
+    margin: 10px;
     text-align: start;
 }
+.selectpriorGrp {
+    height: 39px;
+    background: #eeeeee 0% 0% no-repeat padding-box;
+    padding: 8px 20px 10px 20px;
+    color: #000;
+    font-size: 16px;
+    display: inline-block;
+    margin-top: 10px;
+    //cursor: default;
+  }
 
 
 
