@@ -3,7 +3,7 @@
     <div class="col-12">
       <div class="row">
         <!-- client code  -->
-        <div class="col-6">
+        <div class="col-6 matterView">
           <div class="case_title">Matter Details - {{data?.title}}</div>
           <ul class="nav nav-pills mb-3 btnaction float-left " id="pills-tab" role="tablist">
             <li class="nav-item">
@@ -30,15 +30,14 @@
                 External Counsel(s)</button>
             </li>
           </ul>
-
         </div>
         <div class="col-6" *ngIf="featureName == 'Document'">
-          <div class="form-group float-right">
+          <!-- <div class="form-group float-right">
             <div class="input-group court" id="search">
-              <input type="text" class="form-control textbox" placeholder="Search Documents" [(ngModel)]="searchText" (keyup)="keyup('doc')" />
+              <input type="text" class="form-control textbox" placeholder="Search" [(ngModel)]="searchText" (keyup)="keyup('doc')" />
               <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
             </div>
-          </div>
+          </div> -->
 
         </div>
 
@@ -69,7 +68,7 @@
           </li>
 
         </ul>
-        <ul>
+        <!-- <ul>
           <li class="nav-item">
             <button id="Medium" name="priority" class="selectprior optionaling active" id="pills-profile-tab"
               data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab"
@@ -79,9 +78,11 @@
               <span *ngIf="selectedVal=='Clients' && product == 'corporate'">Add External Counsel</span>
             </button>
           </li>
-        </ul>
+        </ul> -->
       </div>
       <div *ngIf="selectedVal == 'TM'">
+        <p class="thheadname">Name</p>
+        <img src="assets/img/SORT.PNG" class="sortico" (click)="sortMembers()">
         <div *ngFor="let member of selectedMembers;let i=index;">
           <div class="form-group msgicofile">
             <div class="input-group court" id="court">
@@ -89,8 +90,8 @@
                 <img *ngIf="i == 0" src="assets/img/tree.svg" class="notfiy_tree">
                 <label class="notify_mdg"> {{member.name}}</label>
                <span style="float: right;">
-                 <!-- <img src="assets/img/mailnotif.svg" class="msgnotify1 mailicocls " > -->
-                 <img src="assets/img/msgico.svg" class="msgnotify1 msgicocls" (click)="onMessageClick()">
+                 <img src="assets/img/mailnotif.svg" class="msgnotify1 mailicocls" (click)="onMailClick()"> &nbsp;
+                 <img src="assets/img/msgico.svg" class="msgnotify1 msgicocls" (click)="onMessageClickTM()"> &nbsp;
                  <img src="assets/img/delete.svg" *ngIf="i != 0" (click)="removeTeammember(member)" class="msgnotify1 delicocls ">
               </span>
               </p>
@@ -98,7 +99,7 @@
           </div>
         </div>
         <div class="dashedborder">
-          <div class="col-4" style="margin-top: 15px;">
+          <!-- <div class="col-4" style="margin-top: 15px;">
             <h6 class="assign">Assign Team Member(s)</h6>
           </div>
           <div class="col-4">
@@ -111,12 +112,19 @@
                 </div>
               </div>
             </div>
+          </div> -->
+          <div class="row" style="margin-top: 15px;">
+            <h6 class="col-6 assign">Assign Team Member(s)</h6>
+            <div class="col-6 selOn">
+              <label class="callselect">Select All</label>&nbsp;
+              <input type="checkbox" value="" id="selectAllMembers" (change)="selectAllMembers($event)">
+            </div>
           </div>
           <div class="form-group">
             <div class="input-group group-custom-align court" id="search">
               <input type="text" class="form-control textbox" placeholder="Search Team Member"
                 [(ngModel)]="searchTextMembers" (keyup)="keyup('tm')" />
-              <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
+              <img src="assets/img/search.svg" class="calimg calitemo input-group-append searchimg">
             </div>
           </div>
           <div class="form-group" id="selectbx ">
@@ -137,13 +145,15 @@
         </div>
       </div>
       <div *ngIf="selectedVal == 'Clients'">
+        <p class="thheadname">Name</p>
+        <img src="assets/img/SORT.PNG" class="sortico" (click)="sortClients()">
         <div *ngFor="let member of selectedClients;let i=index;">
           <div class="form-group msgicofile">
             <div class="input-group court" id="court">
               <p class="form-control textbox msgitemcls">
                 <label class="notify_mdg"> {{member.name}}</label>
                 <span style="float: right;">
-                <!-- <img src="assets/img/mailnotif.svg" class="msgnotify1 mailicocls " > -->
+                <img src="assets/img/mailnotif.svg" class="msgnotify1 mailicocls" (click)="onMailClick()"> &nbsp;
                 <img src="assets/img/msgico.svg" class="msgnotify1  msgicocls" (click)="onMessageClick()">
                 <!-- <img src="assets/img/delete.svg" class="msgnotify1 delicocls " *ngIf="selectedClients.length != 1" (click)="removeClient(member)"> -->
               </span>
@@ -159,7 +169,7 @@
                 <label class="notify_mdg"> {{member.name}}</label>
                 <span style="float: right;">
                 <img src="assets/img/msgico.svg" class="msgnotify1 msgicocls" (click)="onMessageClick()">
-                <img src="assets/img/delete.svg" class="msgnotify1 delicocls " *ngIf="selectedCorp.length != 1" (click)="removeClient(member)">
+                <!-- <img src="assets/img/delete.svg" class="msgnotify1 delicocls " *ngIf="selectedCorp.length != 1" (click)="removeClient(member)"> -->
               </span>
               </p>
             </div>
@@ -167,7 +177,7 @@
         </div>
         
         <div class="dashedborder">
-          <div class="col-4" style="margin-top: 15px;">
+          <!-- <div class="col-4" style="margin-top: 15px;">
             <h6 class="assign" *ngIf="product != 'corporate'">Assign Client(s)</h6>
             <h6 class="assign" *ngIf="product == 'corporate'">Assign External Counsel(s)</h6>
           </div>
@@ -175,23 +185,33 @@
             <div class="form-group" id="selectbx">
               <div class="input-group court" id="search">
                 <div class="multicheck form-control textbox">
-                  <label class="callselect">SelectAll</label>
+                  <label class="callselect">Select All</label>
                   <input class="form-check-inpu calimg calitem input-group-append checkboxitem" type="checkbox" value=""
                     id="selectAllClients" (change)="selectAllClients($event)">
                 </div>
               </div>
             </div>
+          </div> -->
+
+          <div class="row" style="margin-top: 15px;">
+            <h6 class="col-6 assign" *ngIf="product != 'corporate'">Assign Client(s)</h6>
+            <h6 class="col-6 assign" *ngIf="product == 'corporate'">Assign External Counsel(s)</h6>
+            <div class="col-6 selOn">
+              <label class="callselect">Select All</label>&nbsp;
+              <input type="checkbox" value="" id="selectAllClients" (change)="selectAllClients($event)">
+            </div>
           </div>
+
           <div class="form-group">
             <div class="input-group group-custom-align court" id="search" *ngIf="product != 'corporate'">
               <input type="text" class="form-control textbox" placeholder="Search Client"
                 [(ngModel)]="searchTextClient" (keyup)="keyup('clnt')" />
-              <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
+              <img src="assets/img/search.svg" class="calimg calitemo input-group-append searchimg">
             </div>
             <div class="input-group group-custom-align court" id="search" *ngIf="product == 'corporate'">
               <input type="text" class="form-control textbox" placeholder="Search External Counsels"
                 [(ngModel)]="searchTextClient" (keyup)="keyup('clnt')" />
-              <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
+              <img src="assets/img/search.svg" class="calimg calitemo input-group-append searchimg">
             </div>
           </div>
           <div class="form-group " id="selectbx ">
@@ -245,7 +265,7 @@
            
             <div class="lgalitem">
               <p class="pnumber pleagalsubitem">{{item.title}}</p>
-              <p class="lgalsubitem">{{item.from_ts}}</p>
+              <p class="lgalsubitem">{{item.from_ts | date: 'MMMM dd, yyyy | h:mm a'}}</p>
             </div>
 
             <!--Notes section-->
@@ -256,7 +276,7 @@
             <div id="wide" class="radBtn">
               <mat-radio-group [(ngModel)]="isChecked">
                   <mat-radio-button color="primary" id="mainNote" value="mainNote"> <p class="smallRadio">Notes</p> </mat-radio-button>
-                  <mat-radio-button color="primary" id="corpNote" value="corpNote" style="margin: 20px;"> <p class="smallRadio">Corporate Notes</p></mat-radio-button>
+                  <mat-radio-button color="primary" *ngIf="showCorporateNotes" id="corpNote" value="corpNote" style="margin: 20px;"> <p class="smallRadio">Corporate Notes</p></mat-radio-button>
               </mat-radio-group> 
             </div>
                <!-- <p>selected op: {{isChecked}}</p> -->
@@ -288,18 +308,21 @@
                 <!--Add, Edit Textbox-->
                 <div class="c-align c-dec" *ngIf="item.AddDesc || item.EditDesc && item.id != ''">
                   <form [formGroup]="form">
-                    <textarea formControlName="notes" [(ngModel)]="notes" rows="3" cols="50" maxlength="150" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@!$%*|+=?`~<>,. ]|^ /g,'')"></textarea>
+                    <textarea class="row container tex" formControlName="notes" [(ngModel)]="notes" rows="3" cols="50" maxlength="150" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@!$%*|+=?`~<>,. ]|^ /g,'')"></textarea>
+                    <div class="count-text">{{ form.get('notes')?.value?.length || 0 }}/150</div>
                     <div *ngIf="form.get('notes').errors && submitted" class="errorStyle">
                       <div *ngIf="form.get('notes').errors.required">Note is required</div>
                     </div>
+
+                    <div class="" style="text-align:end">
+                      <button type="reset" class="btn btn-default btncancel"
+                        (click)="item.EditDesc=false; item.AddDesc=false; notes = '';isButtonClicked=false;">Cancel</button>
+                      <button type="submit" class="btn btn-default btnsave"
+                        (click)="item.EditDesc=false; item.AddDesc=false; item.notes = notes;addNotes(item);isButtonClicked=false;"
+                        [ngClass]="{ 'disableMode': !form.valid || !form.dirty }"
+                        [attr.disabled]="!form.valid || !form.dirty ? true : null">Save</button>
+                    </div>
                   </form>
-                
-                  <div class="btnbox">
-                    <button type="reset" class="btn btn-default btncancel"
-                      (click)="item.EditDesc=false; item.AddDesc=false; notes = '';isButtonClicked=false;">Cancel</button>
-                    <button type="submit" class="btn btn-default btnsave"
-                      (click)="item.EditDesc=false; item.AddDesc=false; item.notes = notes;addNotes(item);isButtonClicked=false;">Save</button>
-                  </div>
                 </div>
                 <!--Add, Edit Textbox-->
 
@@ -339,19 +362,21 @@
                    <!--Add Textbox for Corp. notes -->
                   <div class="c-align c-dec" *ngIf="item?.notes_list.AddDesc">
                     <form [formGroup]="form">
-                      <textarea formControlName="notes" [(ngModel)]="notes" rows="3" cols="50" maxlength="152" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@!$%*|+=?`~<>,. ]|^ /g,'')"></textarea>
+                      <textarea class="row container tex" formControlName="notes" [(ngModel)]="notes" rows="3" cols="50" maxlength="152" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@!$%*|+=?`~<>,. ]|^ /g,'')"></textarea>
+                      <div class="count-text">{{ form.get('notes')?.value?.length || 0 }}/150</div>
                       <div *ngIf="form.get('notes').errors && submitted" class="errorStyle">
                         <div *ngIf="form.get('notes').errors.required">Note is required</div>
                       </div>
-                    </form>
 
-                      <div class="btnbox">
+                      <div class="" style="text-align:end">
                         <button type="reset" class="btn btn-default btncancel"
                           (click)="item?.notes_list.EditDesc=false; item?.notes_list.AddDesc=false; notes = '';isButtonClicked=false;">Cancel</button>
                         <button type="submit" class="btn btn-default btnsave"
-                          (click)="item?.notes_list.EditDesc=false; item?.notes_list.AddDesc=false; item?.notes_list.notes = notes;addCorpNotes(item,item.notes_list);isButtonClicked=false;">Save</button>
+                          (click)="item?.notes_list.EditDesc=false; item?.notes_list.AddDesc=false; item?.notes_list.notes = notes;addCorpNotes(item,item.notes_list);isButtonClicked=false;"
+                          [ngClass]="{ 'disableMode': !form.valid || !form.dirty }"
+                          [attr.disabled]="!form.valid || !form.dirty ? true : null">Save</button>
                       </div>
-                      
+                    </form>  
                   </div>
                    <!--Add Textbox for Corp. notes -->
 
@@ -379,17 +404,21 @@
                       <!--Corp. note Edit textbox-->
                       <div class="c-align c-dec" *ngIf="note.EditDesc && note.id != '' ">
                         <form [formGroup]="form">
-                         <textarea formControlName="notes" [(ngModel)]="notes" rows="3" cols="50" maxlength="152" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@!$%*|+=?`~<>,. ]|^ /g,'')"></textarea>
+                         <textarea class="row container tex" formControlName="notes" [(ngModel)]="notes" rows="3" cols="50" maxlength="152" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_/#&+()@!$%*|+=?`~<>,. ]|^ /g,'')"></textarea>
+                         <div class="count-text">{{ form.get('notes')?.value?.length || 0 }}/150</div>
                           <div *ngIf="form.get('notes').errors && submitted" class="errorStyle">
                              <div *ngIf="form.get('notes').errors.required">Note is required</div>
                           </div>
+
+                          <div class="" style="text-align:end">
+                            <button type="reset" class="btn btn-default btncancel"
+                              (click)="note.EditDesc=false; note.AddDesc=false; notes = '';isButtonClicked=false;">Cancel</button>
+                            <button type="submit" class="btn btn-default btnsave"
+                              (click)="note.EditDesc=false; note.AddDesc=false; note.notes = notes;updateCorpNotes(item,note);isButtonClicked=false;"
+                              [ngClass]="{ 'disableMode': !form.valid || !form.dirty }"
+                              [attr.disabled]="!form.valid || !form.dirty ? true : null">Save</button>
+                          </div>
                       </form>
-                        <div class="btnbox">
-                          <button type="reset" class="btn btn-default btncancel"
-                            (click)="note.EditDesc=false; note.AddDesc=false; notes = '';isButtonClicked=false;">Cancel</button>
-                          <button type="submit" class="btn btn-default btnsave"
-                            (click)="note.EditDesc=false; note.AddDesc=false; note.notes = notes;updateCorpNotes(item,note);isButtonClicked=false;">Save</button>
-                        </div>
                       </div>
 
                       <!--Corp. note Edit textbox-->
@@ -548,7 +577,7 @@
     <div class="col-6">
       <ul class="nav nav-pills mb-3 btnaction float-left " id="pills-tab" role="tablist">
         <li class="nav-item" *ngIf="data?.type == 'internal'">
-          <button id="High" name="priority" class="selectprior optionhigh" id="pills-home-tab" data-bs-toggle="pill"
+          <button id="High" name="priority" class="selectprior optionhigh addnew" id="pills-home-tab" data-bs-toggle="pill"
             data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="false"
             [ngClass]="isNewDocument? 'active' : '' "
             (click)="onFeatureClick('Document');isNewDocument= !isNewDocument;AddExistingSelected = true;UploadDocSelected=false;">Add New +</button>
@@ -569,16 +598,23 @@
         <li class="nav-item" *ngIf ="product !='corporate'">
           <button id="Medium" name="priority" class="selectprior optionaling" id="pills-profile-tab" [ngClass]="{'active':UploadDocSelected}"
             data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile"
-            aria-selected="false" (click)="UploadDocSelected=true;AddExistingSelected=false">Upload New</button>
+            aria-selected="false" (click)="UploadDocSelected=true;AddExistingSelected=false;onUploadCancel();">Upload New</button>
         </li>
       </ul>
     </div>
     <div class="compswitch" *ngIf="isNewDocument && AddExistingSelected">
       <div class="row">
         <div class="col-5">
-          <h6 style="color: #0B5A9A;font-weight: bold;">Selected Document(s)</h6>
+          <h6 style="color: #0B5A9A;font-weight: 900;float: left;">Selected Document(s)</h6>
           <div> <!--  *ngIf="selectedDocuments?.length>0" -->
-            <table class="table table-borderless tblgrid">
+            
+            <div class="row" *ngFor="let document of selectedDocuments">
+              <div class="col-6 docname">{{document.name}}</div>
+              <div class="col-6 docremove"><i class="fa fa-regular fa-circle-xmark calimg input-group-append sgroup" aria-hidden="true"
+                (click)="removeDocument(document)"></i></div>
+            </div>
+
+            <!-- <table class="table table-borderless tblgrid">
               <thead>
                 <tr class="theader">
                   <th>
@@ -603,20 +639,28 @@
                     (click)="removeDocument(document)"></i></td>
                 </tr>
               </tbody>
-            </table>
+            </table> -->
           </div>
         </div>
         <div class="col-1"></div>
         <div class="col-6">
+
+          <div class="form-group float-right">
+            <div class="input-group court grpo" id="search">
+              <input type="text" class="form-control textbox" placeholder="Search" [(ngModel)]="searchText" (keyup)="keyup('doc')" />
+              <img src="assets/img/search.svg" class="calimg calitemo input-group-append searchimg">
+            </div>
+          </div>
+
           <div class="col-3">
             <h6 style="color: #0B5A9A;font-weight: bold;">Uploaded Document(s)</h6>
           </div>
           <div class="col-3" style="float: right">
             <div class="form-group" id="selectbx">
-              <div class="input-group court" id="search" style="margin-left: -53px;margin-top: -48px;">
-                <div class="multicheck form-control textbox" style="border: none;background: white;">
-                  <label class="callselect">SelectAll</label>
-                  <input class="form-check-inpu calimg calitem input-group-append checkboxitem" type="checkbox" value=""
+              <div class="input-group court" id="search" style="margin-top: -48px;">
+                <div class="multicheck form-control textbox selectDoc">
+                  <label class="callselect">Select All</label>&nbsp;
+                  <input class="form-check-inpu calimg input-group-append checkboxitem" type="checkbox" value=""
                     id="selectAll" (change)="selectAll($event)">
                 </div>
               </div>
@@ -723,31 +767,45 @@
             </div>
           </div>
           <!--Groups added on Client doc--
-
         </div>-->
 
-         <div class="col-12">
+        <!-- <div class="row doco">
+          <div class="col-5 docclients">Client Name | <b style="color:#00498E">{{ clientNamesString }}</b></div> &nbsp; &nbsp; &nbsp; &nbsp;
+          <div class="col-5 docmatter">Matter | <b style="color:#00498E">{{data?.title}}</b></div>
+        </div> -->
+
+        <div class="row doco">
+          <div class="col-5 docclients holeClient">
+            Client Name | <b style="color:#00498E">{{ clientNamesString }}</b> 
+            <a class="viewmore" *ngIf="filteredClients.length > 1" (click)="toggleClientNames()">
+              {{ showAllClients ? 'View Less' : 'View More' }}
+            </a>
+          </div>              
+          <div class="col-5 docmatter holeMatter">
+            Matter | <b style="color:#00498E">{{ data?.title }}</b>
+          </div>
+        </div>
+
+         <div class="col-12 Individual createGroup">
             <ngx-file-drop [dropZoneClassName] = "'customcss'" [contentClassName]="'customcss1'" dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)" (onFileOver)="fileOver($event)"
               (onFileLeave)="fileLeave($event)" class="customcss1 center-content">
               <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
-                Drag and Drop Documents to upload
+                <p style="color: white;">Drag and Drop Documents to upload</p>
                 <button class="brwsebutton" type="button" (click)="openFileSelector()">Browse</button>
               </ng-template>
             </ngx-file-drop>
 
             <div class="row" *ngIf="uploadedDocs.length>0">
               <div class="col-6" *ngFor="let item of uploadedDocs;let i=index;">
-                  <div #itemlist class="documents-list ng-item" > {{item.name}}
+                  <div #itemlist class="documents-list ng-item input-group multicheck court" > {{item.name}}
                     <div class="icon-list">
                       <div class="icons">
-                        <i class="fa  fa-times-circle" style="color:red" (click)="removeNewDocument(item,i)"></i>
+                        <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup" aria-hidden="true" (click)="removeNewDocument(item,i)"></i>
                       </div>
                     </div>
                   </div>
               </div>
             </div>
-        </div>
-    </div>
 
         <div class="btnbox">
           <button type="reset" class="btn btn-default btncancel" (click)="onUploadCancel()">Cancel</button>
@@ -755,6 +813,10 @@
           [ngClass]="{'disabled':uploadedDocs.length==0}"
           (click)="DragAndDropView=false">Next</button>
         </div>
+
+        </div>
+    </div>
+
 
     </div>
     <div *ngIf="!DragAndDropView">
@@ -780,7 +842,7 @@
               <input type="radio" class="btn-check" name="btnradio1" id="btnradio4" autocomplete="off">
               <label class="btn btn-outline-primary" for="btnradio4" (click)="filterDoc('addTags')">Add Tags</label>
             </div>
-            <div *ngIf="!editMetaFlag" class="selectAll float-right"> Select All 
+            <div *ngIf="!editMetaFlag" class="selectAll float-right ryt"> Select All 
               <input class="inputEl" #inputEl
                 type="checkbox" (change)="checkAllItem(inputEl.checked)"></div>
           </div>
@@ -812,9 +874,12 @@
                     <div class="form-group">
                       <label for="documentName" class="fontbold">Document Name <span class="mandate">*</span>
                       </label>
-                      <input type="text" class="form-control textbox"  id="documentName"
+                      <input type="text" class="form-control textbox"  id="documentName" maxlength="50"
                         name="documentName" formControlName="name" (input)="restricttextSpace($event)" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_ ]|^ /g,'')"
                         [ngClass]="{'is-invalid':submitted && f.name.errors}">
+                      <div class="count-div">
+                        <div class="count-text" *ngIf="f.description">{{f.name.value.length}}/50</div>
+                      </div>
                       <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
                         <div *ngIf="f.name.errors.required">Document Name is required</div>
                       </div>
@@ -843,7 +908,7 @@
                     <div class="form-group">
                       <label for="filling date" class="fontbold">Description</label><!--<span class="mandate">*</span>-->
                       <textarea rows="4" cols="50" class="form-control textbox" (input)="restricttextSpace($event)" oninput="this.value = this.value.replace(/[^A-Za-z0-9-_ ]|^ /g,'')"
-                        formControlName="description" name="description"></textarea>
+                        formControlName="description" maxlength="300" name="description"></textarea>
                       <!-- 
                         [ngClass]="{'is-invalid':submitted && f.description.errors}" maxlength="300"
                         <div *ngIf="submitted && f.description.errors" class="invalid-feedback">
@@ -859,7 +924,6 @@
               <div class="btnbox">
                 <button type="button" class="btn btn-default btncancel" (click)="onReset()">Cancel</button>
                 <button type="submit" class="btn btn-default btnsave savecls">Save</button>
-  
               </div>
             </form>
           </div>
@@ -912,7 +976,7 @@
           <div class="btnbox">
             <button type="reset" class="btn btn-default btncancel" (click)="onUploadCancel()">Cancel</button>
             <button type="submit" class="btn btn-default btnsave savecls uploadClass" 
-              (click)="saveUploadedDocuments()">Save & Upload</button>
+              (click)="saveUploadedDocuments()">Upload</button>
   
           </div>
         </div>
@@ -928,43 +992,49 @@
       <table class="table table-borderless tblgrid">
         <thead>
           <tr class="theader">
-            <th></th>
             <th>
               <p class="thheadname">Document Name</p>
               <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('name',selectedDocuments)">
+            </th>
+            <th>
+              <p class="thheadname">Description</p>
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('description',selectedDocuments)">
             </th>
             <th>
               <p class="thheadname">Added By</p>
               <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('addedBy',selectedDocuments)">
             </th>
             <th>
-              <p class="thheadname">Description</p>
-              <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('description',selectedDocuments)">
+              <p class="thheadname">Added On</p>
+              <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('created',selectedDocuments)">
             </th>
             <!-- <th>
               <p class="thheadname">Tags</p>
               <img src="assets/img/SORT.PNG" class="sortico" (click)="sort('tags',selectedDocuments)">
             </th>  -->
+            <th>
+              <p class="thheadname textport">View</p>
+            </th>
+            <th>
+              <p class="thheadname textport">Remove</p>
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr class="rone veiw-items" *ngFor="let doc of selectedDocuments |filter:searchText">
-            <td class="tabclass" *ngIf="isMergeEnable">
+            <!-- <td class="tabclass" *ngIf="isMergeEnable">
               <input type="checkbox" [(ngModel)]="doc.checked" #inputE4 class="larger" name="checkBox2"
                 (change)="selectMergeDocument(inputE4.checked,doc)">
             </td>
-            <td class="tabclass" *ngIf="!isMergeEnable"></td>
+            <td class="tabclass" *ngIf="!isMergeEnable"></td> -->
             <td class="tabclass">{{doc.name}}</td>
-            <td class="tabclass">{{this.createdBy}}</td>
-            <!-- <td class="tabclass" *ngIf="doc.uploaded_by">{{doc.uploaded_by}}</td> -->
             <td class="tabclass">{{doc.description}}</td>
+            <td class="tabclass">{{doc.addedBy}}</td>
+            <td class="tabclass">{{doc.created | date: 'MMMM dd, yyyy'}}</td>
             <!-- <td class="tabclass" *ngIf="doc?.tags && doc.tags.length>0" [innerHTML]="doc?.tags[0]"></td>
             <td class="tabclass" *ngIf="!doc?.tags"></td> -->
-            <td class="tabclass">
-              <!-- <img src="assets/img/eyesico.svg" (click)="viewDocument(doc)">&nbsp; -->
-              <button (click)="viewDocument(doc)"><img src="assets/img/eyesico.svg"/></button>&nbsp;
-              <i (click)="documentDelete(doc)" *ngIf="data?.type == 'internal'"  class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup removedoc" aria-hidden="true"></i>
-            </td>
+            <td class="tabclass"><img (click)="viewDocument(doc)" src="assets/img/eyesico.svg"/></td>
+            <td class="tabclass"><i (click)="documentDelete(doc)" *ngIf="data?.type == 'internal'"  class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup removeddoc" aria-hidden="true"></i></td>
             <!-- <td class="tabclass"></td> -->
             <!-- <td (click)="documentDelete(doc)" *ngIf="data?.type == 'internal'">
               <i class="fa fa-regular fa-circle-xmark calimg calitem input-group-append sgroup removedoc" aria-hidden="true"></i>
@@ -983,4 +1053,24 @@
     </div>
   </div>
   <ngx-spinner  size="medium" type="ball-clip-rotate"></ngx-spinner>
+</div>
+
+<div class="modal" *ngIf='showConfirm' style="display:block;" tabindex="-1">
+  <div class="modal-dialog">
+      <div class="modal-content">
+              <button type="button" class="btn-close remBtn" data-bs-dismiss="modal" (click)="showConfirm = false;" aria-label="Close"></button>
+          <div class="modal-body">
+              <div class="alertpara"><p class="alertparatxt">Alert</p></div>
+          </div>
+          <div class="alertext remText">
+            Are you sure you want to remove <br> access for {{this.gro?.name}}?
+          </div>
+          <div class="alertbutton botPad">
+            <button class="btn btn-default alertbtn alertbtnyes" data-bs-dismiss="modal"
+                    (click)="showConfirm = false;" aria-label="Close">No</button>&nbsp;&nbsp;&nbsp;            
+            <button class="btn btn-default alertbtn alertbtnno" data-bs-dismiss="modal"
+                    aria-label="Close" (click)="deleMem()">Yes</button>
+           </div>
+          </div>
+      </div>
 </div>
