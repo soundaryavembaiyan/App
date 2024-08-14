@@ -13,6 +13,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class MatterDocumentsComponent {
 
     @Output() selectedDocumentsEvent: EventEmitter<any> = new EventEmitter();
+    @ViewChild('selectAllCheckbox') selectAllCheckbox!: ElementRef<HTMLInputElement>;
+
     @Input() data: any = {};
     @Input() groups: any[] = [];
     @Input() clients: any[] = [];
@@ -39,6 +41,7 @@ export class MatterDocumentsComponent {
     myInputVariable!: ElementRef;
     filteredData:any;
     isSelectAllVisible = true;
+    groupName:any;
 
     constructor(private httpservice: HttpService,
         private fb: FormBuilder,
@@ -77,6 +80,8 @@ export class MatterDocumentsComponent {
         //console.log("tagsArray  " + JSON.stringify(resultObj));
     }
     getDocuments() {
+        this.groupName = this.groups.map((obj: any) => obj.name);;
+        //console.log('grp',this.groupName)
         var cli =[]
         let grps = this.groups.map((obj: any) => obj.id);
         cli = this.clients.map((obj:any) => obj.id);
@@ -95,13 +100,18 @@ export class MatterDocumentsComponent {
         this.selectedDocuments.push(document);
         let index = this.documentsList.findIndex((d: any) => d.docid === document.docid); //find index in your array
         this.documentsList.splice(index, 1);
-        if (this.documentsList.length==0) {
-            let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
-            if (checkbox != null)
-              checkbox.checked = true;
+        // if (this.documentsList.length==0) {
+        //     let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
+        //     if (checkbox != null)
+        //       checkbox.checked = true;
+        //   }
+        if (this.documentsList.length === 0 && this.selectAllCheckbox) {
+            //console.log('checkbox', this.selectAllCheckbox.nativeElement);
+            this.selectAllCheckbox.nativeElement.checked = true;
           }
         this.searchText = '';
     }
+
     removeDocument(doc: any) {
         let index = this.selectedDocuments.findIndex((d: any) => d.docid === doc.docid); //find index in your array
         this.selectedDocuments.splice(index, 1);
