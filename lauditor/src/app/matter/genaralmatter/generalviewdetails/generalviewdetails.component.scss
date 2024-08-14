@@ -290,8 +290,8 @@ div#txt1 {
 .msgnotify1 {
     padding-right: 10px;
     margin-top: 5px;
-    height: 25px;
-    width: 32px;
+    // height: 25px;
+    // width: 32px;
     cursor: pointer;
 }
 .notfiy_tree {
@@ -407,6 +407,7 @@ div#txt1 {
 }
 .dashedborder{
     border-top: 1px dashed black;
+    margin-top: 25px;
 }
 // component css goes here
 .form-group {
@@ -430,7 +431,10 @@ label {
 }
 
 .documents-list {
-    background: #f8f8f8;
+    //background: #f8f8f8;
+    background: #EEEEEE;
+    border-radius: 2px;
+    border: 1px solid #eeeeee;
     padding: 7px;
     margin: 10px 0;
     width: 90%;
@@ -561,9 +565,19 @@ button:focus {
 .brwsebutton{
 	background: #00498e;
     color: white;
+    font-weight: 900;
     width: 80%;
+    height: 34px;
     margin-top: 14px;
+    margin-bottom: 20px;
     border-radius: 5px;
+}
+.Individual {
+    width:  100%;
+    margin-bottom: 100px;
+}
+.calitem{
+    margin-top: 0px;
 }
 .customcss{
 	border:none;
@@ -596,6 +610,12 @@ button:focus {
 	margin-top: -1px;
 	// margin-right: 223px;
     margin-right: 100px;
+    float: right;
+}
+//table icon
+.removeddoc{
+	margin-top: -10px;
+    margin-right: 120px;
     float: right;
 }
 
@@ -919,13 +939,14 @@ word-wrap: break-word;
     margin-left: -10px;       
 }
 .assign{
-    font-size: 1rem;
+    font-size: 18px;
     font-weight: 900;
     color: #00498E;
 }
 .cname{
     font-weight: 900;
-    font-size: 1rem;
+    font-size: 1.2rem;
+    color: #0B5A9A;
 }
 table td {
     white-space: nowrap;
@@ -941,4 +962,198 @@ table td {
     justify-content: center;
     text-align: center;
     //height: 100%;
+}
+.selectDoc{
+    border: none;
+    background: white;
+    //margin-right: 10px;
+}
+// .matterView{
+//     margin-left: -60px;
+// }
+.checkboxitem {
+    top: 8px;
+    right: -15px;
+}
+.calitemo{
+    float: right;
+    margin-top: 9px;
+    margin-right: 20px;
+    width: 21px;
+    position: absolute;
+    cursor: pointer;
+    right: 0px;
+    z-index: 9;
+}
+
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    .matterView{
+        margin-left: -30px;
+    }
+}
+@media (min-width: 1024px) and (max-width: 1439px) {
+    .matterView{
+        margin-left: -45px;
+    }
+    .grpo{
+        margin-bottom: 30px;
+        margin-left: -55px;
+        float: left;
+    }
+}
+@media (min-width: 1440px) and (max-width: 3839px) {
+    .matterView{
+        margin-left: -60px;
+    }
+    .grpo{
+        margin-bottom: 30px;
+        margin-left: -65px;
+        float: left;
+    }
+}
+@media (min-width: 3840px) {
+    .matterView{
+        margin-left: -110px;
+    }
+}
+.docname{
+    background: #EEEEEE;
+    padding: 10px;
+    text-align: start;
+    margin-bottom: 10px;
+    border-radius: 5px 0px 0px 5px;
+}
+.docremove{
+    background: #EEEEEE;
+    padding: 10px;
+    text-align: end;
+    margin-bottom: 10px;
+    border-radius: 0px 5px 5px 0px;
+}
+// .docmatter{
+//     margin-left: 520px;
+//     margin-top: -45px;
+//     font-weight: 900;
+//     font-size: 19px;
+// }
+// .docclients{
+//     margin-left: 280px;
+//     margin-top: -45px;
+//     font-weight: 900;
+//     font-size: 19px;
+// }
+
+.doco{
+    margin-left: 250px;
+    margin-top: -45px;
+}
+.doc-info {
+    display: flex; /* Use flexbox for layout */
+    flex-direction: column; /* Stack elements vertically on small screens */
+    margin: 0 20px; /* Add some horizontal margin */
+  }
+  
+  @media (min-width: 768px) {
+    .doc-info {
+      flex-direction: row; /* Align elements horizontally on larger screens */
+      justify-content: space-between; /* Space them apart */
+    }
+  }
+  
+  .docclients,
+  .docmatter {
+    font-weight: 900;
+    font-size: 19px;
+    margin: 10px 0; /* Add vertical margin */
+    word-wrap: break-word; /* Ensure text wraps properly */
+    overflow: hidden; /* Hide overflow */
+    text-overflow: ellipsis; /* Add ellipsis for overflow text */
+    white-space: nowrap; /* Prevent text from wrapping */
+    width: 100%; /* Use full width */
+    box-sizing: border-box; /* Include padding and border in width */
+  }
+  
+  .docclients b,
+  .docmatter b {
+    color: #00498E;
+  }
+  
+  @media (min-width: 768px) {
+    .docclients,
+    .docmatter {
+      width: auto; /* Use auto width for flexbox items */
+      margin: 0; /* Remove margin for flexbox layout */
+    }
+  }
+  
+  .ryt{
+    margin-right: 28px;
+    margin-top: 5px;
+    font-size: 15px !important;
+  }
+  .addnew{
+    font-weight: bolder;
+  }
+  .textport{
+    opacity: -1;
+  }
+  .holeClient{
+    display: inline-block;
+    width: 350px !important;
+    white-space: normal;
+  }
+  .holeMatter{
+    margin-left: 20px; 
+    display: inline-block;
+    width: 350px !important;
+    white-space: normal;
+  }
+  .viewmore{
+    width: auto;
+    font-size: 15px;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  .title-text {
+    color: #00498E;
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+  .selOn{
+    margin-left: -55px;
+    text-align: end;
+  }
+  .tex {
+    border: 1px solid antiquewhite; 
+    box-shadow: 0px 0px 1px 1px #e1e1e1;
+    outline: none; 
+}
+
+.tex:focus {
+    border: 1px solid antiquewhite;
+    box-shadow: 0px 0px 1px 1px #e1e1e1;
+    outline: none; 
+}
+.disableMode {
+    background: #a0bbd0;
+    color: #fff;
+}
+.remBtn{
+    margin-top: 10px;
+    margin-left: 460px;
+}
+.remText{
+    font-weight: 900;
+    font-size: 18px;
+}
+.botPad{
+    padding-bottom: 30px;
+}
+.alertparatxt{
+    font-weight: 900;
+    font-size: 1.5rem;
+}
+.alertext{
+    width: auto;
 }
