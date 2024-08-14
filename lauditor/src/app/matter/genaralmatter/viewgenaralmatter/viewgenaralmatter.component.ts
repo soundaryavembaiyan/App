@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-viewgeneralmatter',
@@ -17,8 +18,6 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class ViewGeneralmatterComponent implements OnInit {
   @Input() data: any;
-  @BlockUI()
-  blockUI!: NgBlockUI;
   generalMatters: any = [];
   isDesc: boolean = false;
   searchText: any = '';
@@ -31,28 +30,42 @@ export class ViewGeneralmatterComponent implements OnInit {
     { name: "External Matters", value: 2 }
   ];
   selectedOption: any;
+  //matterCount:any;
+  role: any;
   
   constructor(private httpservice: HttpService, private matterService: MatterService, 
     private router: Router, private toast: ToastrService,
-    private confirmationDialogService: ConfirmationDialogService) { }
+    private confirmationDialogService: ConfirmationDialogService, private spinnerService: NgxSpinnerService) { }
 
   ngOnInit() {
-    this.getLegalMatters();
+    // if(this.product == 'corporate'){
+    //   this.selectedOption = 'External Matters'
+    //   this.getExternalMatters();
+    // }
+    // else{
+    //   this.selectedOption = 'Internal Matters'
+      this.getLegalMatters();
+    // }
+    var role = localStorage.getItem("role")
+    this.role = role
   }
+
   getLegalMatters() {
-    this.blockUI.start()
+    this.spinnerService.show()
     this.httpservice.sendGetRequest(URLUtils.getGeneralMatter).subscribe((res: any) => {
       this.generalMatters = res && res["matters"];
-      this.blockUI.stop();
+      //this.matterCount = this.generalMatters.length;
+      //console.log('this.generalMatters',this.generalMatters.length)
+      this.spinnerService.hide()
     })
   }
 
-  
   getExternalMatters() {
-    this.blockUI.start()
+    this.spinnerService.show()
     this.httpservice.sendGetRequest(URLUtils.getGeneralExternalMatter).subscribe((res: any) => {
       this.generalMatters = res && res["matters"];
-      this.blockUI.stop()
+      //this.matterCount = this.generalMatters.length;
+      this.spinnerService.hide()
     })
   }
    
@@ -94,11 +107,16 @@ export class ViewGeneralmatterComponent implements OnInit {
     this.matterService.editGeneralMatter(legalMatter);
     this.router.navigate(['/matter/generalmatter/matterEdit'])
   }
-  loadViewDetails(legalMatter: any,type:any) {
+  loadViewDetails(legalMatter: any, type: any) {
     const legal = { ...legalMatter, type: type };
     this.matterService.editGeneralMatter(legal);
     this.router.navigate(['/matter/generalmatter/viewDetails'])
+
+    if (this.product == 'corporate' && this.selectedOption != 'External Matters') {
+      this.router.navigate(['/matter/generalmatter/generalinternalviewdetails'])
+    }
   }
+
   onMouseOver(grps: any) {
     let newList = [...grps]
     this.hoveredGroups = [];
@@ -119,8 +137,8 @@ export class ViewGeneralmatterComponent implements OnInit {
   updateMatterStatus(legalMatter: any, status: string) {
     let Documents = this.getDocuments(legalMatter.id);
     let s = status == 'Closed' ? 'close' : 'reopen';
-    let test = s + ' ' + legalMatter.title + ' ?';
-    this.confirmationDialogService.confirm('Confirmation', 'Are you sure do you want to ' + test, true)
+    let test = s + ' ' + legalMatter.title + ' matter ?';
+    this.confirmationDialogService.confirm('Confirmation', 'Are you sure you want to ' + test, true, 'Yes', 'No')
       .then((confirmed) => {
         if (confirmed) {
           let obj = {
@@ -148,7 +166,7 @@ export class ViewGeneralmatterComponent implements OnInit {
           this.httpservice.sendUpdateRequest(URLUtils.updateGeneralMatter(legalMatter.id), obj).subscribe((res: any) => {
             if (!res.error) {
               let s = status == 'Closed' ? 'closed' : 'reopened';
-              let test = s + ' ' + legalMatter.title + ' matter.';
+              let test = s + ' the ' + legalMatter.title + ' matter.';
               this.confirmationDialogService.confirm('Success', 'Congratulations! You have successfully ' + test, false, 'View Matter List', 'Cancel', true)
                 .then((confirmed) => {
                   if (confirmed) {
