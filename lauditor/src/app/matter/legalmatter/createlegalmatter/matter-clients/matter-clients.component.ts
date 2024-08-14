@@ -1,7 +1,7 @@
 import { ConfirmationDialogService } from './../../../../confirmation-dialog/confirmation-dialog.service';
 import { URLUtils } from 'src/app/urlUtils';
 import { HttpService } from 'src/app/services/http.service';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -24,6 +24,7 @@ export class MatterClientsComponent implements OnInit {
     @Input() groups: any[] = [];
     @Output() temporaryClientsEvent: EventEmitter<any> = new EventEmitter();
     @Output() childButtonEvent: EventEmitter<any> = new EventEmitter();
+    @ViewChild('searchInput') searchInput!: ElementRef;
 
     displayMouseOver: boolean = false;
     clientsList: any = [];
@@ -61,6 +62,8 @@ export class MatterClientsComponent implements OnInit {
     corpData: any[] = [];
     isSelectAllVisible = true;
     successModel: boolean = false;
+    formType: any;
+    keyModel: boolean = false;
 
     constructor(private httpservice: HttpService, private fb: FormBuilder,
         private confirmationDialogService: ConfirmationDialogService,
@@ -102,10 +105,10 @@ export class MatterClientsComponent implements OnInit {
 
         //this.getClientsData(); //doc. list clients
 
-        if(this.product == 'corporate'){
+        if (this.product == 'corporate') {
             this.getClients();
         }
-        else{
+        else {
             this.getClientsData();
         }
     }
@@ -121,7 +124,7 @@ export class MatterClientsComponent implements OnInit {
 
     //         this.tempList.length = this.clientsList.length;
     //         this.corporateList.length = this.clientsList.length;
-        
+
     //         // console.log('rel-clients',this.clients)
     //         // console.log('rel-corp',this.corpClients)
     //         // console.log('rel-selectedcli',this.selectedClients)
@@ -160,34 +163,34 @@ export class MatterClientsComponent implements OnInit {
     getClientsData() {
         this.relationshipSubscribe = this.httpservice.getFeaturesdata(URLUtils.getAllRelationship).subscribe((res: any) => {
             this.clientsList = res?.data?.relationships;
-            
+
             this.httpservice.getFeaturesdata(URLUtils.getCalenderExternal).subscribe((res: any) => {
                 this.corporateList = res?.relationships.map((obj: any) => ({ "id": obj.id, "type": "corporate", "name": obj.name }));
-                
+
                 // Filter selected clients from clientsList and corporateList
                 const selectedClientIds = this.selectedClients.map((client: { id: any; }) => client.id);
                 this.clientsList = this.clientsList.filter((client: { id: any; }) => !selectedClientIds.includes(client.id));
                 this.corporateList = this.corporateList.filter((client: { id: any; }) => !selectedClientIds.includes(client.id));
-    
+
                 // Combine clientsList and corporateList into clients
                 this.clients = [...this.clientsList, ...this.corporateList];
             });
-    
+
             this.tempList.length = this.clientsList.length;
             this.corporateList.length = this.corporateList.length;
-    
+
             if (this.clients && this.clients.length > 0) {
                 this.selectedClients = [...this.clients];
-                
+
                 // Update clientsList to exclude selected clients
                 this.clientsList = this.clientsList.filter((el: any) => {
                     return !this.selectedClients.find((element: any) => element.id === el.id);
                 });
             }
-    
+
             if (this.corpClients && this.corpClients.length > 0) {
                 this.selectedClients = [...this.corpClients];
-                
+
                 // Update corporateList to exclude selected clients
                 this.corporateList = this.corporateList.filter((el: any) => {
                     return !this.selectedClients.find((element: any) => element.id === el.id);
@@ -195,7 +198,7 @@ export class MatterClientsComponent implements OnInit {
             }
             // Final update of combined clients list
             this.clients = [...this.clientsList, ...this.corporateList];
-    
+
             if (this.selectedClients.length == 0) {
                 let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
                 if (checkbox != null)
@@ -234,76 +237,76 @@ export class MatterClientsComponent implements OnInit {
             this.tooltipgroupslist = tooltipGroupsArray.map((item: any, i: number) => item.name);
         }
         var payload
-        if(this.product=="corporate"){
-            payload = {'group_acls': grps,'attachment_type': 'corporate' ,'product':this.product}
+        if (this.product == "corporate") {
+            payload = { 'group_acls': grps, 'attachment_type': 'corporate', 'product': this.product }
 
         } else {
             payload = { 'group_acls': grps, 'attachment_type': 'clients' }
         }
-        this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements,payload).subscribe(
-                (res: any) => {
-                    //console.log('clientres',res)
+        this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements, payload).subscribe(
+            (res: any) => {
+                //console.log('clientres',res)
 
-                    if (!res['error'] && res['clients']?.length > 0){
-                        this.clientsList = res['clients'];
-                    } else if(!res['error'] && res['corporate']?.length > 0){
-                        this.clientsList = res['corporate'];
-                    }
-
-
-                    this.tempList.length = this.clientsList.length;
-                    //console.log('tlist',this.tempList)
-                    if (this.clients && this.clients.length > 0) {
-                        this.selectedClients = [...this.clients];
-                        //console.log('selectedClients....',this.selectedClients)
-                        let res = this.clientsList.filter((el: any) => {
-                            return !this.selectedClients.find((element: any) => {
-                                return element.id === el.id;
-                            });
-                        });
-                        this.clientsList = res;
-                        // console.log('clist',this.clientsList)
-                        // console.log('slist',this.selectedClients)
-
-                    }
-                    if (this.selectedClients.length == 0) {
-                        let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
-                        if (checkbox != null)
-                            checkbox.checked = false;
-                    }
+                if (!res['error'] && res['clients']?.length > 0) {
+                    this.clientsList = res['clients'];
+                } else if (!res['error'] && res['corporate']?.length > 0) {
+                    this.clientsList = res['corporate'];
                 }
-                )
-                this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements,
-                    { 'group_acls': grps, 'attachment_type': 'corporate' ,'product':this.product}
-                    ).subscribe(
-                        (res: any) => {
-                            //console.log('corpres',res)
 
-                            if (!res['error'] && res['corporate']?.length > 0)
-                                this.corporateList = res['corporate'];
-                                //console.log('corporateList',this.corporateList)
 
-                            this.tempList.length = this.corporateList.length;
+                this.tempList.length = this.clientsList.length;
+                //console.log('tlist',this.tempList)
+                if (this.clients && this.clients.length > 0) {
+                    this.selectedClients = [...this.clients];
+                    //console.log('selectedClients....',this.selectedClients)
+                    let res = this.clientsList.filter((el: any) => {
+                        return !this.selectedClients.find((element: any) => {
+                            return element.id === el.id;
+                        });
+                    });
+                    this.clientsList = res;
+                    // console.log('clist',this.clientsList)
+                    // console.log('slist',this.selectedClients)
 
-                            if (this.clients && this.clients.length > 0) {
-                                this.selectedClients = [...this.clients];
-                                let res = this.corporateList.filter((el: any) => {
-                                    return !this.selectedClients.find((element: any) => {
-                                        return element.id === el.id;
-                                    });
-                                });
+                }
+                if (this.selectedClients.length == 0) {
+                    let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
+                    if (checkbox != null)
+                        checkbox.checked = false;
+                }
+            }
+        )
+        this.httpservice.sendPutRequest(URLUtils.getFilterTypeAttachements,
+            { 'group_acls': grps, 'attachment_type': 'corporate', 'product': this.product }
+        ).subscribe(
+            (res: any) => {
+                //console.log('corpres',res)
 
-                                this.corporateList = res;
-                                //console.log('Ifcorplist',this.corporateList)
+                if (!res['error'] && res['corporate']?.length > 0)
+                    this.corporateList = res['corporate'];
+                //console.log('corporateList',this.corporateList)
 
-                            }
-                            if (this.selectedClients.length == 0) {
-                                let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
-                                if (checkbox != null)
-                                    checkbox.checked = false;
-                            }
-                        }
-                        )
+                this.tempList.length = this.corporateList.length;
+
+                if (this.clients && this.clients.length > 0) {
+                    this.selectedClients = [...this.clients];
+                    let res = this.corporateList.filter((el: any) => {
+                        return !this.selectedClients.find((element: any) => {
+                            return element.id === el.id;
+                        });
+                    });
+
+                    this.corporateList = res;
+                    //console.log('Ifcorplist',this.corporateList)
+
+                }
+                if (this.selectedClients.length == 0) {
+                    let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
+                    if (checkbox != null)
+                        checkbox.checked = false;
+                }
+            }
+        )
     }
 
     onFilterValueChange() {
@@ -316,19 +319,32 @@ export class MatterClientsComponent implements OnInit {
     selectAll(event: any) {
         if (event?.target?.checked) {
             this.tempList = !this.tempList;
-            if (this.clientsList?.length > 0) {
-                if (this.filteredData?.length > 0) {
-                    //this.selectedClients = this.selectedClients.concat(this.filteredData);
-                    this.selectedClients = this.selectedClients.concat(this.clientsList);
-                    this.clientsList = this.clientsList.filter((el: any) => {
-                        return !this.selectedClients.find((element: any) => {
-                            return element.id === el.id;
-                        });
+            // if (this.clientsList?.length > 0) {
+            //     if (this.filteredData?.length > 0) {
+            //         //this.selectedClients = this.selectedClients.concat(this.filteredData);
+            //         this.selectedClients = this.selectedClients.concat(this.clientsList);
+            //         this.clientsList = this.clientsList.filter((el: any) => {
+            //             return !this.selectedClients.find((element: any) => {
+            //                 return element.id === el.id;
+            //             });
+            //         });
+            //     } else {
+            //         this.selectedClients = this.selectedClients.concat(this.clientsList);
+            //         this.clientsList = [];
+            //     }
+            // }
+
+            // Filter clientsList based on searchText
+            const filteredClients = this.clientsList.filter((client: any) =>
+                client.name.toLowerCase().includes(this.searchText.toLowerCase())
+            );
+            if (filteredClients?.length > 0) {
+                this.selectedClients = this.selectedClients.concat(filteredClients);
+                this.clientsList = this.clientsList.filter((el: any) => {
+                    return !this.selectedClients.find((element: any) => {
+                        return element.id === el.id;
                     });
-                } else {
-                    this.selectedClients = this.selectedClients.concat(this.clientsList);
-                    this.clientsList = [];
-                }
+                });
             }
         } else {
             this.clientsList = this.selectedClients.concat(this.clientsList);
@@ -360,18 +376,40 @@ export class MatterClientsComponent implements OnInit {
         }
     }
 
-    selectClient(group: any, value?: any) {
-        this.selectedClients.push(group);
-        this.tempList = !this.tempList;
-        let index = this.clientsList.findIndex((d: any) => d.id === group.id); //find index in your array
-        this.clientsList.splice(index, 1);
+    // selectClient(group: any, value?: any) {
+    //     this.selectedClients.push(group);
+    //     this.tempList = !this.tempList;
+    //     let index = this.clientsList.findIndex((d: any) => d.id === group.id); //find index in your array
+    //     this.clientsList.splice(index, 1);
+    //     if (this.clientsList.length == 0) {
+    //         let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
+    //         if (checkbox != null)
+    //             checkbox.checked = true;
+    //     }
+    // }
+
+    selectClient(client: any, isChecked: boolean) {
+        if (isChecked) {
+            this.selectedClients.push(client);
+            let index = this.clientsList.findIndex((d: any) => d.id === client.id); // Find index in your array
+            if (index !== -1) {
+                this.clientsList.splice(index, 1);
+            }
+        } else {
+            // Handle unselecting a single client
+            let index = this.selectedClients.findIndex((d: any) => d.id === client.id);
+            if (index !== -1) {
+                this.selectedClients.splice(index, 1);
+                this.clientsList.push(client);
+            }
+        }
+
         if (this.clientsList.length == 0) {
             let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
-            if (checkbox != null)
+            if (checkbox != null) {
                 checkbox.checked = true;
+            }
         }
-        this.searchText = '';
-        //console.log("Cli selected clients "+JSON.stringify(this.selectedClients));
     }
 
     selectCorporate(group: any, value?: any) {
@@ -404,8 +442,15 @@ export class MatterClientsComponent implements OnInit {
                 checkbox.checked = false;
         }
     }
-    
+
     saveClients() {
+        let individualForm = this.tempClient.value.name != '' || this.tempClient.value.lastName != '' || this.tempClient.value.email != '' || this.tempClient.value.country != '';
+        let entityForm = this.entityClient.value.fullname != '' || this.entityClient.value.contact_person != '' || this.entityClient.value.email != '' || this.entityClient.value.country != '';
+        if (individualForm || entityForm) {
+            this.toastr.error('Please save your changes to proceed');
+            return;
+        }
+
         let selectedIds = this.tempClients.map((s: any) => s.id);
         this.temporaryClientsEvent.emit(selectedIds)
 
@@ -443,8 +488,8 @@ export class MatterClientsComponent implements OnInit {
         }
     }
     OnFormCancel() {
-        this.searchText = ' ';
         this.tempList = false;
+        this.isSelectAllVisible = true;
         this.showTempForm = false;
         this.entityClient.reset();
         this.tempClient.reset();
@@ -456,6 +501,7 @@ export class MatterClientsComponent implements OnInit {
         //this.getClients();
         //this.getClientsData();
         this.childButtonEvent.emit(this.clients);
+        this.searchText = '';
         // this.clientsList = this.clientsList.concat(this.selectedClients);
         // this.selectedClients =[];
     }
@@ -493,7 +539,7 @@ export class MatterClientsComponent implements OnInit {
     //         this.showTempForm = true;
     //     }
     //     this.isSelectAllVisible = this.filteredData.length > 0;
-    
+
     //     let checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
     //     if (checkbox != null) {
     //       checkbox.checked = false;
@@ -505,71 +551,127 @@ export class MatterClientsComponent implements OnInit {
             this.searchText = this.searchText.trim();
         }
         this.showTempForm = false;
-    
         // Convert search text to lowercase for case-insensitive search
         const searchLower = this.searchText.toLowerCase();
         this.filteredData = this.clientsList.filter((item: any) => item.name.toLowerCase().includes(searchLower));
-    
+
         // Update visibility based on the filtered data
         if (this.filteredData.length === 0) {
             this.showTempForm = true;
         }
-    
+
         this.isSelectAllVisible = this.filteredData.length > 0;
-    
+
         const checkbox = document.getElementById('selectAll') as HTMLInputElement | null;
         if (checkbox) {
             checkbox.checked = false;
         }
+
+        // Dialog opening logic
+        if (this.isFormIncomplete()) {
+            this.searchInput.nativeElement.blur();
+            this.keyModel = true;
+            return;
+        }
+        // else {
+        //     this.keyModel = false;
+        //     this.onReset();
+        //     this.onResetentity();
+        // }
     }
-    
-    // successResp(action: string){
-    //     if(action == 'yes'){
-    //         this.successModel = false
-    //         this.onReset();
-    //         this.onResetentity();
-    //     }
-    //     if(action == 'no'){
-    //       this.successModel = false
-    //     }
-    //   }
-    // getType(e: any, type: any) {
-    //     if (this.tempClient.dirty) {
-    //         this.successModel = true;
-    //         return;
-    //     }
-    //     else if (this.entityClient.dirty) {
-    //         this.successModel = true;
-    //         return;
-    //     }
-    //     else{
-    //         this.ClientType = e.target.name;
-    //         this.CorpType
-    //         this.tempClient.controls.type.patchValue(type);
-    //     }
-    // }
+
+    //if form is incomplete
+    isFormIncomplete(): boolean {
+        return (
+            this.tempClient.dirty ||
+            this.tempClient.touched ||
+            this.entityClient.dirty ||
+            this.entityClient.touched
+        );
+    }
 
     getType(e: any, type: any) {
-        if (this.tempClient.dirty) {
-            this.toastr.error('Please save your changes to proceed');
+        if (this.tempClient.value.name != '' || this.tempClient.value.lastName != '' || this.tempClient.value.email != '' || this.tempClient.value.country != '') {
+            this.successModel = true;
             return;
         }
-        else if (this.entityClient.dirty) {
-            this.toastr.error('Please save your changes to proceed');
+        else if (this.entityClient.value.fullname != '' || this.entityClient.value.contact_person != '' || this.entityClient.value.email != '' || this.entityClient.value.country != '') {
+            this.successModel = true;
             return;
         }
-        else{
+        else {
             this.ClientType = e.target.name;
             this.CorpType
             this.tempClient.controls.type.patchValue(type);
+            this.entityClient.controls.type.patchValue(type);
         }
     }
+
+    successResp(action: string) {
+        if (action == 'yes') {
+            this.successModel = false;
+            if (this.selectedType == 'individual') {
+                this.ClientType = 'entity';
+            }
+            else {
+                this.ClientType = 'individual';
+            }
+        }
+        this.onReset();
+        this.onResetentity();
+    }
+    noResp(action: string) {
+        if (action == 'no') {
+            this.successModel = false
+        }
+    }
+
+    keyResp(action: string) {
+        if (action == 'yes') {
+            //this.OnFormCancel();
+            this.keyModel = false;
+            this.searchText = '';
+            this.tempList = false;
+            this.isSelectAllVisible = true;
+            this.showTempForm = false;
+            this.entityClient.reset();
+            this.tempClient.reset();
+            this.submitted = false;
+            this.entitysubmitted = false;
+            this.childButtonEvent.emit(this.clients);
+        }
+    }
+    nokeyResp(action: string) {
+        if (action == 'no') {
+            this.keyModel = false
+        }
+    }
+
+    toggleType() {
+        this.selectedType = this.selectedType === 'individual' ? 'entity' : 'individual';
+    }
+
+    // getType(e: any, type: any) {
+    //     if (this.tempClient.dirty) {
+    //         this.toastr.error('Please save your changes to proceed');
+    //         return;
+    //     }
+    //     else if (this.entityClient.dirty) {
+    //         this.toastr.error('Please save your changes to proceed');
+    //         return;
+    //     }
+    //     else{}
+    //         this.ClientType = e.target.name;
+    //         this.CorpType
+    //         this.tempClient.controls.type.patchValue(type);
+    // }
 
     oneEntitySubmit() {
         this.entitysubmitted = true;
         if (this.entityClient.invalid) {
             return;
         }
+        console.log('eee', this.entityClient)
         if (this.inputsubmit == 'entity') {
             let object = {
                 "fullname": this.entityClient.value.fullname,
@@ -788,8 +890,8 @@ export class MatterClientsComponent implements OnInit {
 
     truncateString(text: string): string {
         if (text.length > 25) {
-          return text.slice(0, 25) + '...';
+            return text.slice(0, 25) + '...';
         }
         return text;
-    }   
+    }
 }
