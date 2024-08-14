@@ -3,18 +3,21 @@
     border-radius: 0;
     border: none;
 }
-.alignleft{
+
+.alignleft {
     display: flex;
 }
-.grpFont{
+
+.grpFont {
     font-size: 20px;
     font-weight: 900;
     font-variant: normal;
     color: #004d87;
     display: inline-block;
-    text-align:left;
-    float:left;
+    text-align: left;
+    float: left;
 }
+
 .calendorselect {
     height: 39px;
     background-color: #EEEEEE;
@@ -24,58 +27,100 @@
     background-size: 20px 18px !important;
     cursor: pointer;
     margin-top: 10px;
-	margin-left: 0;
-	width: 100%;
+    margin-left: 0;
+    width: 100%;
 }
-.Clientz{
+
+.Clientz {
     display: flex;
 }
-.matClient{
-    padding-right: 10px; 
-    width:50%;
+
+.matClient {
+    padding-right: 10px;
+    width: 50%;
 }
-.matCorp{
+
+.matCorp {
     padding-left: 10px;
-    width:100%;
+    width: 100%;
 }
-.addToBtn{
+
+.addToBtn {
     position: absolute;
     position: relative;
     top: 20px;
 }
-.actionbtn{
+
+.actionbtn {
     float: right;
 }
-.addCC{
+
+.addCC {
     color: #004d87;
 }
-.space{
+
+.space {
     padding-top: 20px;
 }
-.warn{
+
+.warn {
     color: red;
     font-weight: 900;
 }
-.addTemp{
+
+.addTemp {
     width: auto;
 }
+
 .disabled {
     opacity: 0.5;
     pointer-events: none;
 }
+
 .casetito {
     cursor: pointer;
     height: auto;
     width: 230px;
 }
-.selectto{
+
+.selectto {
     margin-left: 20px;
 }
-.textAl{
+
+.textAl {
     text-align: start;
+    margin-top: 3px;
 }
-.dataText{
+
+.selAl {
+    text-align: start;
+    margin-top: 3px;
+    margin-right: 60px;
+}
+
+.dataText {
     font-size: 17px;
     font-weight: 800;
     margin-top: -12px;
+}
+
+.iconclose {
+    text-align: right;
+    padding-top: 10px;
+    padding-right: 5px;
+    cursor: pointer;
+    margin-right: 15px;
+}
+
+.alertbutton {
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+.alertext {
+    width: 222px;
+    height: auto;
+    margin: auto;
+    text-align: center;
+    margin-top: 30px;
 }
