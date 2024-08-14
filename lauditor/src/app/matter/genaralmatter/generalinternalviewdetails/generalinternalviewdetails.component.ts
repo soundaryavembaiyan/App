@@ -13,6 +13,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
 import { ThemePalette } from '@angular/material/core';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-generalinternalviewdetails',
@@ -88,13 +89,16 @@ export class GeneralinternalviewdetailsComponent implements OnInit {
     color: ThemePalette = "primary";
     form: any; 
     isButtonClicked = false;
+    allowedFileTypes = ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/rtf','text/csv','text/rtf'];
+    docapi = environment.doc2pdf
   
     constructor(private matterService: MatterService, private httpservice: HttpService,
       private router: Router, private toast: ToastrService, 
       private confirmationDialogService: ConfirmationDialogService,
       private sanitizer: DomSanitizer,
       private docService: DocumentService,
-      private fb: FormBuilder) {
+      private fb: FormBuilder,
+      private spinnerService: NgxSpinnerService) {
   
     }
   
@@ -586,23 +590,101 @@ export class GeneralinternalviewdetailsComponent implements OnInit {
         }
       });
     };
+    // viewDocument(item: any) {
+    //   let data = {
+    //     'id': item.docid
+    //   }
+    //   this.httpservice.sendGetRequest(URLUtils.viewDocuments(data)).subscribe((res: any) => {
+    //     if (res && res.data && !res.error) {
+    //       this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(res.data.url);
+    //       let obj = {
+    //         'isIframe': true,
+    //         'url': this.urlSafe
+    //       }
+    //       this.confirmationDialogService.confirm('View', obj,true, "Ok", "Close", false,"lg");
+    //     }
+    //     else {
+    //       alert(res.msg)
+    //     }
+    //   });
+    // }
     viewDocument(item: any) {
-      let data = {
-        'id': item.docid
+      if(item.added_encryption){
+         
+          var body = new FormData();
+          body.append('docid', item.docid)
+          body.append('shared_doc',true.toString())
+          let url = environment.apiUrl + URLUtils.decryptFile
+          this.httpservice.sendPostDecryptRequest(url,body).subscribe((res:any)=>{
+              const blob = new Blob([res], { type: item.contentType });
+              const url = URL.createObjectURL(blob);
+              if(this.allowedFileTypes.includes(item.contentType)){
+                  let fdata = new FormData();
+                  fdata.append('file', blob);
+                  this.httpservice.sendPostDecryptRequest(environment.DOC2FILE,fdata).subscribe((ans:any)=>{
+                      const ansBlob = new Blob([ans], { type: 'application/pdf' });
+                      const ansUrl = URL.createObjectURL(ansBlob);
+                      this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(ansUrl)
+                      let obj = {
+                        'isIframe': true,
+                        'url': this.urlSafe
+                      }
+                      this.confirmationDialogService.confirm('View', obj, true, "Ok", "Close", false, "lg");
+                  })
+  
+              } else{
+               
+                  this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+                  let obj = {
+                    'isIframe': true,
+                    'url': this.urlSafe
+                  }
+                  this.confirmationDialogService.confirm('View', obj, true, "Ok", "Close", false, "lg");
+                
+                
+              }   
+              
+            
+          })
+      } 
+      if(item.added_encryption==false)  {
+        let id = {'id':item.docid}
+          this.httpservice.sendGetRequest(URLUtils.viewDocuments(id)).subscribe((res: any) => {
+              if(this.allowedFileTypes.includes(item.contentType)){
+                  this.spinnerService.show()
+                  this.httpservice.sendPostDocRequest(this.docapi,{'url':res.data.url}).subscribe((ans:any)=>{
+                      const blob = new Blob([ans], { type: 'application/pdf' });
+                      // Create a URL for the Blob
+                      const url = URL.createObjectURL(blob);
+                      this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(url)
+                      let obj = {
+                        'isIframe': true,
+                        'url': this.urlSafe
+                      }
+                      this.confirmationDialogService.confirm('View', obj, true, "Ok", "Close", false, "lg");
+                      this.spinnerService.hide()
+                  })
+                  
+  
+              } else {
+                if (res && res.data && !res.error) {
+                  this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(res.data.url);
+                  let obj = {
+                    'isIframe': true,
+                    'url': this.urlSafe
+                  }
+                  this.confirmationDialogService.confirm('View', obj, true, "Ok", "Close", false, "lg");
+                }
+                else {
+                  alert(res.msg)
+                }
+              }
+              
+              //console.log(" this.view    " + JSON.stringify(this.documents));
+          });
       }
-      this.httpservice.sendGetRequest(URLUtils.viewDocuments(data)).subscribe((res: any) => {
-        if (res && res.data && !res.error) {
-          this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(res.data.url);
-          let obj = {
-            'isIframe': true,
-            'url': this.urlSafe
-          }
-          this.confirmationDialogService.confirm('View', obj,true, "Ok", "Close", false,"lg");
-        }
-        else {
-          alert(res.msg)
-        }
-      });
+  
+  
     }
     getMergeDocuments() {
       this.httpservice.sendGetRequest(URLUtils.getClientPdfDocuments).subscribe(
@@ -835,7 +917,7 @@ export class GeneralinternalviewdetailsComponent implements OnInit {
               fdata.append('file', this.files[i])
               let sb: any = [];
               let mtrs: any = [];
-              fdata.append('subcategories', sb.push(this.data?.title))
+              // fdata.append('subcategories', sb.push(this.data?.title))
               fdata.append('matters', mtrs.push(this.data.id))
               fdata.append('clients', JSON.stringify(this.data?.clients.map((obj: any) => ({ "id": obj.id, "type": obj.type }))))
               fdata.append('downloadDisabled', this.downloadDisabled == true ? "Yes" : "No");
@@ -936,5 +1018,8 @@ export class GeneralinternalviewdetailsComponent implements OnInit {
     }
     onMessageClick(){
       this.router.navigate(['/messages/clients'])
+    }
+    onMessageClickTM() {
+      this.router.navigate(['/messages/teams'])
     }
   }
