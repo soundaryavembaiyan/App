@@ -51,7 +51,13 @@ export class CreategeneralmatterComponent implements OnInit {
         "Type": mInfo.case_type
       }
       this.matterInfo = mInfo;
-      this.selectedTabItem = 'matter-clients';
+      //this.selectedTabItem = 'matter-clients';
+      if(this.product == 'corporate'){
+        this.selectedTabItem = 'matter-groups';
+      }
+      else{
+        this.selectedTabItem = 'matter-clients';
+      }
     }
   }
 
@@ -59,7 +65,13 @@ export class CreategeneralmatterComponent implements OnInit {
     this.groups = groups;
     //this.selectedGroups = groups;
     this.groupsData = this.groups.map((obj: any) => obj.id);
-    this.selectedTabItem = 'matter-team-member';
+    //this.selectedTabItem = 'matter-team-member';
+    if(this.product == 'corporate'){
+      this.selectedTabItem = 'matter-clients';
+    }
+    else{
+      this.selectedTabItem = 'matter-team-member';
+    }
     // this.clients=[];
     // this.teammembers=[];
   }
@@ -81,7 +93,13 @@ export class CreategeneralmatterComponent implements OnInit {
     this.corpClients = corporateClient ? corporateClient.id : '';
 
     this.clientsData = this.clients.map((obj: any) => ({ id: obj.id, type: obj.type }));
-    this.selectedTabItem = 'matter-groups';
+    //this.selectedTabItem = 'matter-groups';
+    if(this.product == 'corporate'){
+      this.selectedTabItem = 'matter-team-member';
+    }
+    else{
+      this.selectedTabItem = 'matter-groups';
+    }
     this.selectedClients = this.corpClients;
   }
 
@@ -118,8 +136,8 @@ export class CreategeneralmatterComponent implements OnInit {
       "closedate": this.matterInfo.closedate && this.pipe.transform(this.matterInfo.closedate, 'dd-MM-yyyy'),
       "description": this.matterInfo.description,
       "matter_type": this.matterInfo.matterType,
-      "priority": this.matterInfo.priority,
-      "status": this.matterInfo.status,
+      "priority": this.matterInfo.priority ?? "High",
+      "status": this.matterInfo.status ?? "Active",
       "affidavit_isfiled": "na",
       "affidavit_filing_date": "",
       "clients": this.clientsData,
@@ -137,7 +155,7 @@ export class CreategeneralmatterComponent implements OnInit {
               if (this.docsData.length > 0) {
                 this.add_documents_from_matter(res.matter_id)
               }
-              this.confirmationDialogService.confirm('Success', 'Congratulations! You have successfully created the ' + this.matterInfo.title, true, 'View Matter List', 'Add Matter', true)
+              this.confirmationDialogService.confirm('Success', 'Congratulations! You have successfully created the matter.', true, 'View Matter List', 'Add Matter', true)
                 .then((confirmed) => {
                   if (confirmed) {
                     this.router.navigate(['/matter/generalmatter/view']);
