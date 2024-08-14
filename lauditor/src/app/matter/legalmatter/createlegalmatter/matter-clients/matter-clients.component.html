@@ -65,7 +65,6 @@
                 <i class="fa fa-regular fa-circle-xmark calimg calitem
                   input-group-append sgroup" aria-hidden="true"
                   (click)="removeTempClient(client)"></i>
-
               </div>
             </div>
           </div>
@@ -136,9 +135,10 @@
           <div class="form-group" id="selectbx">
             <div class="input-group court" id="search">
               <div class="multicheck form-control textbox" *ngIf="isSelectAllVisible">
-                <label class="callselect textAl">Select All</label>
+                <label class="callselect selAl">Select All</label>
                 <input class="form-check-inpu calimg calitem input-group-append
                   checkboxitem" type="checkbox" value="" 
+                  [checked]="filteredData?.length > 0 && selectedClients.length === filteredData.length"
                   id="selectAll" (change)="selectAll($event)">
               </div>
             </div>
@@ -164,7 +164,7 @@
         <div class="form-group" *ngIf="!corporateData"> <!--*ngIf="!corporateData"-->
           <div class="input-group group-custom-align court" id="search" *ngIf="product != 'corporate'">
             <input type="text" class="form-control textbox" placeholder="Search Client" [(ngModel)]="searchText"
-              (keyup)="keyup()" />
+              (keyup)="keyup()" #searchInput/>
             <img src="assets/img/search.svg" class="calimg calitem input-group-append searchimg">
           </div>
 
@@ -191,6 +191,7 @@
               <div class="callselect textAl" [innerHtml]="client.name"></div>
               <input class="form-check-inpu calimg calitem input-group-app
                 end checkboxitem" #inputEl type="checkbox" id="flexCheckDefault"
+                [checked]="selectedClients.includes(client)"
                 (change)="selectClient(client, inputEl.checked)">
             </div>
           </div>
@@ -408,16 +409,11 @@
 </div>
 
 
-<!-- <div class="modal"
-     id="successModal"
-     tabindex="-1"
-     aria-labelledby="successModalLabel"
-     aria-hidden="true"
-     style="display:block; margin-top:50px"
-     *ngIf='successModel'>
+<div *ngIf='successModel' class="modal" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true" style="display:block; margin-top:50px">
   <div class="modal-dialog">
       <div class="modal-content">
           <div class="modal-body">
+            <div class="iconclose" (click)="noResp('no');">X</div>
               <div class="alertpara">
                 <p class="alertparatxt">Alert</p>
               </div>
@@ -426,10 +422,31 @@
                 <p class="dataText">Do you want to proceed ?</p>
               </div>
               <div class="alertbutton">
-                <button class="btn btn-default alertbtn alertbtnyes" (click)="successResp('yes')">Yes</button>
-                <button class="btn btn-default alertbtn alertbtnno" (click)="successResp('no')">No</button>
+                <button class="btn btn-default alertbtn alertbtnyes" (click)="noResp('no')">No</button>
+                <button class="btn btn-default alertbtn alertbtnno" (click)="successResp('yes');toggleType()">Yes</button>
               </div>
           </div>
       </div>
   </div>
-</div> -->
+</div>
+
+<div *ngIf='keyModel' class="modal" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true" style="display:block; margin-top:50px">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-body">
+            <div class="iconclose" (click)="nokeyResp('no');">X</div>
+              <div class="alertpara">
+                <p class="alertparatxt">Alert</p>
+              </div>
+              <div class="alertext">
+                <p class="dataText">Data will not be saved.</p> 
+                <p class="dataText">Do you want to proceed ?</p>
+              </div>
+              <div class="alertbutton">
+                <button class="btn btn-default alertbtn alertbtnyes" (click)="nokeyResp('no')">No</button>
+                <button class="btn btn-default alertbtn alertbtnno" (click)="keyResp('yes')">Yes</button>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
