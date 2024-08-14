@@ -41,7 +41,7 @@ tr.veiw-items {
     color:#fff;
     .actionbtn {
         background: #fff !important;
-        color:#111;
+        color:#111 !important;
         border: none;
 
     }
@@ -136,13 +136,38 @@ tr.veiw-items {
    }
 
    .matBtn {
-       background-color: #004d87;
-       color: white;
-       font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-       font-size: 17px;
-   }
-
-   .matBtn:hover {
-       background-color: white !important;
-       color: #004d87 !important;
-   }
+       background-color: #004d87 !important;
+       color: white !important;
+    //font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        //font-size: 17px;
+    }
+    
+    .matBtn:hover {
+        background-color: white !important;
+        color: #004d87 !important;
+    }
+    
+    .table-scroll {
+        height: 450px;
+        overflow: auto;
+        margin-top: 20px;
+    }
+    
+    .table-wrapper table {
+        width: 100%;
+    }
+    
+    .table-wrapper table thead th .text {
+        position: absolute;
+        top: -20px;
+        z-index: 2;
+        height: 20px;
+        width: 35%;
+    }
+    .mattercount{
+        float: right;
+        font-size:18px;
+        font-weight:900;
+        margin-top:0px;
+        color:#004d87;
+    }
