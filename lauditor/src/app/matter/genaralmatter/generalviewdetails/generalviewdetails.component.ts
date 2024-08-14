@@ -91,7 +91,14 @@ export class GeneralViewDetailsComponent implements OnInit {
   isReadMore: boolean[] = [];
   isButtonClicked = false;
   allowedFileTypes = ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/rtf','text/csv','text/rtf'];
-  docapi = environment.doc2pdf
+  docapi = environment.doc2pdf;
+  filteredClients:any;
+  showCorporateNotes = false;
+  clientNamesString: string = '';
+  maxVisible: number = 3;
+  visibleClients: any[] = [];
+  showAllClients: boolean = false;
+  sortAscending = true; 
   
   //Initializing docUpload Variables
   // reactiveForm: any;
@@ -118,6 +125,8 @@ export class GeneralViewDetailsComponent implements OnInit {
   // clientdata:any;
   createdBy: any;
   generalMatters:any;
+  showConfirm = false;
+  gro:any;
 
   constructor(private matterService: MatterService, private httpservice: HttpService,
     private router: Router, private toast: ToastrService, 
@@ -146,20 +155,13 @@ export class GeneralViewDetailsComponent implements OnInit {
         this.httpservice.sendGetRequest(URLUtils.getGeneralHistory(args)).subscribe((res: any) => {
           if (res) {
             this.historyData = res.history;
-
             this.notes_list = res.history?.notes_list;
-            //this.noteList = res.history?.notes_list;
-            //console.log('noteList', this.noteList);
-
               this.historyData.forEach((res: any) => {
-                //console.log(`Notes: ${res.notes_list}`);
-                //console.log(`Notes:`, this.notes_list);
               });
           }
         });
       }
     });
-
 
     this.documentDetail = this.fb.group({
       name: ['', Validators.required],
@@ -167,8 +169,36 @@ export class GeneralViewDetailsComponent implements OnInit {
       date_of_filling: []
     });
 
-    this. getCorporateData();
+    this.getCorporateData();
+    this.getClientsData();
+    this.updateCorporateNotesVisibility();
+  }
 
+  updateCorporateNotesVisibility() {
+    this.httpservice.sendGetRequest(URLUtils.getGeneralHistoryMembers(this.data.id)).subscribe(
+      (res: any) => {
+        this.selectedClients = res.clients;
+        this.selectedCorp = res.corporate;
+        // Combine selectedClients and selectedCorp into one array
+        this.filteredClients = this.selectedClients.concat(this.selectedCorp);
+        this.updateClientNamesString();
+        //Show Corporate Notes radio only if there is corporate cli.
+        this.showCorporateNotes = this.selectedCorp.some((client: any) => client.type === 'corporate');
+      });
+  }
+
+  updateClientNamesString() {
+    if (this.showAllClients) {
+      this.clientNamesString = this.filteredClients.map((client: { name: any; }) => client.name).join(', ');
+    } else {
+      const limitedClients = this.filteredClients.slice(0, 1);
+      this.clientNamesString = limitedClients.map((client: { name: any; }) => client.name).join(', ');
+    }
+  }
+
+  toggleClientNames() {
+    this.showAllClients = !this.showAllClients;
+    this.updateClientNamesString();
   }
 
   onAdd() {
@@ -176,6 +206,37 @@ export class GeneralViewDetailsComponent implements OnInit {
     this.isButtonClicked = true;
    }
    
+   sortMembers() {
+    const fixedMember = this.selectedMembers[0]; // Extract the first fixed member
+    const membersToSort = this.selectedMembers.slice(1); // Members to be sorted
+
+    membersToSort.sort((a: { name: any; }, b: { name: any; }) => {
+      if (a.name < b.name) {
+        return this.sortAscending ? -1 : 1;
+      }
+      if (a.name > b.name) {
+        return this.sortAscending ? 1 : -1;
+      }
+      return 0;
+    });
+
+    // Reconstruct the array with the fixed member and sorted members
+    this.selectedMembers = [fixedMember, ...membersToSort];
+    this.sortAscending = !this.sortAscending; // toggle the sorting order
+  }
+  sortClients() {
+    this.selectedClients.sort((a: { name: any; }, b: { name: any; }) => {
+      if (a.name < b.name) {
+        return this.sortAscending ? -1 : 1;
+      }
+      if (a.name > b.name) {
+        return this.sortAscending ? 1 : -1;
+      }
+      return 0;
+    });
+    this.sortAscending = !this.sortAscending; // toggle the sorting order
+  }
+
   eventCheck(event: any) {
     this.toggleNote = event.target.checked;
     // console.log('eve',event.target.checked)
@@ -552,20 +613,36 @@ export class GeneralViewDetailsComponent implements OnInit {
   }
   removeTeammember(group: any) {
     this.isSaveEnableTM=false;
-    this.confirmationDialogService.confirm('Alert', 'Are you sure you want to remove access for ' + group.name + ' ?',true, 'Yes', 'No')
-      .then((confirmed) => {
-        if (confirmed) {
-          let index = this.selectedMembers.findIndex((d: any) => d.id === group.id); //find index in your array
-          this.selectedMembers.splice(index, 1);
-          this.teammembersList.push(group);
-          if (this.selectedMembers.length == 0) {
-            let checkbox = document.getElementById('selectAllMembers') as HTMLInputElement | null;
-            if (checkbox != null)
-              checkbox.checked = false;
-          }
-        }
-      })
+    this.showConfirm = true;
+    this.gro = group
+
+    // this.confirmationDialogService.confirm('Alert', 'Are you sure you want to remove access for ' + group.name + ' ?',true, 'Yes', 'No')
+    //   .then((confirmed) => {
+    //     if (confirmed) {
+    //       let index = this.selectedMembers.findIndex((d: any) => d.id === group.id); //find index in your array
+    //       this.selectedMembers.splice(index, 1);
+    //       this.teammembersList.push(group);
+    //       if (this.selectedMembers.length == 0) {
+    //         let checkbox = document.getElementById('selectAllMembers') as HTMLInputElement | null;
+    //         if (checkbox != null)
+    //           checkbox.checked = false;
+    //       }
+    //     }
+    //   })
   }
+
+  deleMem(){
+    let index = this.selectedMembers.findIndex((d: any) => d.id === this.gro.id); //find index in your array
+    this.selectedMembers.splice(index, 1);
+    this.teammembersList.push(this.gro);
+    if (this.selectedMembers.length == 0 || this.teammembersList.length == 1) {
+      let checkbox = document.getElementById('selectAllMembers') as HTMLInputElement | null;
+      if (checkbox != null)
+        checkbox.checked = false;
+    }
+    this.showConfirm = false;
+}
+
   removeClient(group: any) {
     this.isSaveEnableClient=false;
     this.confirmationDialogService.confirm('Alert', 'Are you sure you want to remove access for ' + group.name + ' ?',true, 'Yes', 'No')
@@ -605,7 +682,14 @@ export class GeneralViewDetailsComponent implements OnInit {
     this.httpservice.sendPutRequest(URLUtils.updateGeneralHistoryMembers({ id: this.data.id }), data).subscribe(
       (res: any) => {
         this.onFeatureClick('T&C');
-        this.confirmationDialogService.confirm('Success', res.msg,false, '', '', false,'sm', false);
+        //this.confirmationDialogService.confirm('Success', res.msg,false, '', '', false,'sm', false);
+        if(val === 'members'){
+          this.confirmationDialogService.confirm('Success', 'Team Members list updated successfully.', false, '', '', false, 'sm', false);
+        }
+        else if(val === 'clients'){
+          this.confirmationDialogService.confirm('Success', 'Clients list updated successfully.', false, '', '', false, 'sm', false);
+        }
+        else{}
       },
       (error: HttpErrorResponse) => {
         if (error.status === 401 || error.status === 403) {
@@ -869,6 +953,7 @@ export class GeneralViewDetailsComponent implements OnInit {
   }
   if( this.uploadedDocs.length==1){
       this.editMetaData=false;
+      this.editDoc = false;
   }
     // let index = this.uploadedDocs.findIndex((d: any) => d.name === item.name);
     this.uploadedDocs.splice(i, 1);
@@ -893,16 +978,16 @@ export class GeneralViewDetailsComponent implements OnInit {
       }
     }
   }
-  editDocument(item: any, i: any) {
-    this.selectedIdx = i;
-    this.editDoc = true;
-    //  this.editMeta = item;
-    if(item.description)
-    this.documentDetail.controls["description"].setValue(item.description);
-    this.documentDetail.controls["date_of_filling"].setValue(item.date_of_filling);
-    this.documentDetail.controls["name"].setValue(item.name);
-    //console.log(" this.editMeta  " + JSON.stringify(this.editMeta))
-  }
+  // editDocument(item: any, i: any) {
+  //   item.description = ' ';
+  //   this.selectedIdx = i;
+  //   this.editDoc = true;
+  //   //  this.editMeta = item;
+  //   if(item.description)
+  //   this.documentDetail.controls["description"].setValue(item.description);
+  //   this.documentDetail.controls["date_of_filling"].setValue(item.date_of_filling);
+  //   this.documentDetail.controls["name"].setValue(item.name);
+  // }
   checkedItem(val: any) {
     this.uploadedDocs.forEach((item: any) => {
       if (item.name == val.name) {
@@ -910,17 +995,48 @@ export class GeneralViewDetailsComponent implements OnInit {
       }
     })
   }
+  // onSubmit() {
+  //   if(this.documentDetail.value.name == ""){
+  //     this.toast.error('Please enter the document name');
+  //     return;
+  //   }
+  //   if (this.documentDetail.invalid) {
+  //     return;
+  //   }
+  //   this.uploadedDocs[this.selectedIdx]=this.documentDetail.value;
+  //   this.selectedIdx = null;
+  //   this.submitted = true;
+  //   this.editDoc = false;
+  //   this.uploadedDocs.forEach((val: any) => {
+  //     //console.log("val     " + JSON.stringify(val));
+  //   })
+  // }
+  editDocument(item: any, i: any) {
+    this.selectedIdx = i;
+    this.editDoc = true;
+    // Set the document name in the description field only if it is empty
+    if (!item.description || item.description.trim() === '') {
+      this.documentDetail.controls["description"].setValue(item.name);
+    } else {
+      this.documentDetail.controls["description"].setValue(item.description);
+    }
+    this.documentDetail.controls["date_of_filling"].setValue(item.date_of_filling);
+    this.documentDetail.controls["name"].setValue(item.name);
+  }
+  
   onSubmit() {
+    if (this.documentDetail.value.name == "") {
+      this.toast.error('Please enter the document name');
+      return;
+    }
     if (this.documentDetail.invalid) {
       return;
     }
-    this.uploadedDocs[this.selectedIdx]=this.documentDetail.value;
+    // Update the selected document with the new values
+    this.uploadedDocs[this.selectedIdx] = this.documentDetail.value;
     this.selectedIdx = null;
     this.submitted = true;
     this.editDoc = false;
-    this.uploadedDocs.forEach((val: any) => {
-      //console.log("val     " + JSON.stringify(val));
-    })
   }
   onResetTags() {
     this.editMetaFlag = true;
@@ -940,7 +1056,7 @@ export class GeneralViewDetailsComponent implements OnInit {
   }
 
   saveUploadedDocuments() {
-    this.confirmationDialogService.confirm('Confirmation', 'Are you sure you want to upload documents to ' + this.data.title + ' ?', true, 'Yes', 'No')
+    this.confirmationDialogService.confirm('Confirmation', 'Are you sure you want to upload documents to this matter?', true, 'Yes', 'No')
       .then((confirmed) => {
         if (confirmed) {
           const uploadPromises = [];
@@ -1034,10 +1150,10 @@ export class GeneralViewDetailsComponent implements OnInit {
     this.confirmationDialogService.confirm(alertType, message, false, '', '', false, 'sm', false);
   }
 
-  
   onUploadCancel() {
     this.DragAndDropView = true;
     this.uploadedDocs = [];
+    this.files=[];
   }
   onMergeCancel(){
     this.selectedDocuments.forEach((val: any) => { val.checked = false });
@@ -1075,6 +1191,12 @@ export class GeneralViewDetailsComponent implements OnInit {
   }
   onMessageClick(){
     this.router.navigate(['/messages/clients'])
+  }
+  onMessageClickTM(){
+    this.router.navigate(['/messages/teams'])
+  }
+  onMailClick() {
+    this.router.navigate(['/emails'])
   }
   restricttextSpace(event: any) {
     let inputValue: string = event.target.value;
