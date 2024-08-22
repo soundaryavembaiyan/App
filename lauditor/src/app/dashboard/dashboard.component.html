@@ -54,7 +54,7 @@
 					<!-- left menu for Lauditor-->
 					<div class="side-nav-back" *ngIf="product == 'lauditor'">
 						<div *ngFor="let item of navItem">
-							<div class="left-menu-icon" [ngClass]="item.id" (click)="getCategory(item.id)">
+							<div class="left-menu-icon" [ngClass]="{'active': isActive(item.id)}" (click)="getCategory(item.id)">
 								<a routerLink="{{item.link}}" class="iconlink" *ngIf="item.roles.indexOf(roleId) > -1">
 									<img class="mattersicon" src="{{item.image}}"> <span
 										class="icotxt">{{item.name}}</span>
@@ -64,24 +64,22 @@
 					</div>
 					<!-- left menu Lauditor ends here -->
 					
-					<!-- left menu for Lauditor-->
+					<!-- left menu for Corporate-->
 					<div class="side-nav-back" *ngIf="product == 'corporate'">
 						<div *ngFor="let item of navCorporate">
-							<div class="left-menu-icon" [ngClass]="item.id" (click)="getCategory(item.id)">
+							<div class="left-menu-icon" [ngClass]="{'active': isActive(item.id)}" (click)="getCategory(item.id)">
 								<a routerLink="{{item.link}}" class="iconlink" *ngIf="item.roles.indexOf(roleId) > -1">
 									<img class="mattersicon" src="{{item.image}}"> <span class="icotxt">{{item.name}}</span>
 								</a>
 							</div>
 						</div>
 					</div>
-					<!-- left menu Lauditor ends here -->
-
-
+					<!-- left menu Corporate ends here -->
 
 					<!-- left menu for Content-->
 					<div class="side-nav-back" *ngIf="product == 'content'">
 						<div *ngFor="let item of navContent">
-							<div class="left-menu-icon" [ngClass]="item.id" (click)="getCategory(item.id)">
+							<div class="left-menu-icon" [ngClass]="{'active': isActive(item.id)}" (click)="getCategory(item.id)">
 								<a routerLink="{{item.link}}" class="iconlink" *ngIf="item.roles.indexOf(roleId) > -1">
 									<img class="mattersicon" src="{{item.image}}"> <span
 										class="icotxt">{{item.name}}</span>
@@ -94,7 +92,7 @@
 					<!-- left menu for Connect-->
 					<div class="side-nav-back" *ngIf="product == 'connect'">
 						<div *ngFor="let item of navConnect">
-							<div class="left-menu-icon" [ngClass]="item.id" (click)="getCategory(item.id)">
+							<div class="left-menu-icon" [ngClass]="{'active': isActive(item.id)}" (click)="getCategory(item.id)">
 								<a routerLink="{{item.link}}" class="iconlink" *ngIf="item.roles.indexOf(roleId) > -1">
 									<img class="mattersicon" src="{{item.image}}"> <span
 										class="icotxt">{{item.name}}</span>
@@ -103,7 +101,6 @@
 						</div>
 					</div>
 					<!-- left menu Connect ends here -->
-
 
 				</div>
 				<div class="content-box1 full-width">
